@@ -13,43 +13,42 @@ GitHub is a web-based hosting service for software development projects that use
 1. Navigate to www.github.iu.edu
 2. Create a new user
 3. Navigate to and click on your student repository (repo) on www.github.iu.edu/QuantitativeBiodiversity
-4. For your repo by clicking on the Fork Icon in the top right of your screen <br>
-<img src="images/github-fork-btn.png" style="height: 48px;"/> 
+4. For your repo by clicking on the Fork Icon in the top right of your screen<br>
+<img src="images/github-fork-btn.png"> 
   You should now see the repo on your GitHub page.
 
 5. Clone the repo onto your local machine using the command line (terminal)
 
-  > cd ~/(Path to GitHub Folders)
-  > git clone https://github.iu.edu/[User Name]/[Repo]
-  > cd ./[Repo]
-  > git status
+    cd ~/(Path to GitHub Folders)
+    git clone https://github.iu.edu/[User Name]/[Repo]
+    cd ./[Repo]
+    git status
 
   The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
 
 6. Open and edit the README.md file
 
-  > nano README.md
+    nano README.md
 
   Edit the file as needed (we will demonstrate). When you are done, save the close the document
 
-  > [ctrl + o]
-  > [ctrl + x]
+    [ctrl + o]
+    [ctrl + x]
 
 7. Now we need to add and commit our changes to git
 
-  > git status
-  > git add ./README.md
-  > git commit -m "Updated README.md with student information"
+    git status
+    git add ./README.md
+    git commit -m "Updated README.md with student information"
 
 8. Now push the changes to GitHub
 
-  > git push master
+    git push master
 
   You should now see the repo on your GitHub page.
 
-9. Navigate to your GitHub page to amek srue that the file was uploaded correctly. If so, submit a Pull Request to submit your file to the course
-
-<img src="images/github-pull-request-btn.png" style="height: 48px;"/>
+9. Navigate to your GitHub page to amek srue that the file was uploaded correctly. If so, submit a Pull Request to submit your file to the course <br>
+  <img src="images/github-pr-btn.png">
 
   The course instructors can now see your work
 

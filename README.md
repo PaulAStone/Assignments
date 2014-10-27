@@ -16,6 +16,6 @@ Git (GitBash)
 
 
 ### Git / GitHub Resources
-
+http://git-scm.com/videos
 
 ### R / RStudio Resources
