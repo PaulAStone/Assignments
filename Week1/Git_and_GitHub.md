@@ -15,35 +15,46 @@ GitHub is a web-based hosting service for software development projects that use
 3. Navigate to and click on your student repository (repo) on www.github.iu.edu/QuantitativeBiodiversity
 4. For your repo by clicking on the Fork Icon in the top right of your screen<br>
 <img src="images/github-fork-btn.png"> 
+
   You should now see the repo on your GitHub page.
 
 5. Clone the repo onto your local machine using the command line (terminal)
 
+    ```sh
     cd ~/(Path to GitHub Folders)
     git clone https://github.iu.edu/[User Name]/[Repo]
     cd ./[Repo]
     git status
+    ```
 
   The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
 
 6. Open and edit the README.md file
 
+    ```sh
     nano README.md
+    ```
 
   Edit the file as needed (we will demonstrate). When you are done, save the close the document
 
+    ```sh
     [ctrl + o]
     [ctrl + x]
+    ```
 
 7. Now we need to add and commit our changes to git
 
+    ```sh
     git status
     git add ./README.md
     git commit -m "Updated README.md with student information"
+    ```
 
 8. Now push the changes to GitHub
 
+    ```sh
     git push master
+    ```
 
   You should now see the repo on your GitHub page.
 
