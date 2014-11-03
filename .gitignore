@@ -1,0 +1,8 @@
+# LaTeX Files
+*.aux
+*.out
+*.log
+*.synctex.gz
+
+# R Files
+.Rhistory
