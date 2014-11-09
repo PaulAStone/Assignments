@@ -1,0 +1,56 @@
+---
+title: "Week 2 Exercise"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "November 8, 2014"
+output: pdf_document
+---
+In this exercise, we will conduct exercises on alpha diversity
+
+##RETRIEVE AND SET YOUR WORKING DIRECTORY##
+```{r}
+getwd()
+setwd("/Users/lennonj/GitHub/Quantitative_Biodiversity/Assignments/Week2")
+```
+
+##INSTALL PACKAGES##
+People develop different packages for certain tasks that can be carried out in the R enviornment. Use the 'help'funciton to learn about package installation and add-ons. install.packages("vegan")
+```{r}
+require("vegan")
+library("vegan")
+```
+In the library of vegan, there is a data set that we will be using called BCI. BCI stands for Barro Colorado Island, which is a located in Panama. The BCI data frame has 50 plots (rows) of 1 hectare with counts of trees on each plot with total of 225 species (columns)
+```{r}
+data(BCI)
+```
+Let's look at the data in the first few plots
+```{r}
+head(BCI)
+```
+Calculate Shannon index. 'Margin = 1' means diversity is calculated row-wise; 'Margin = 2' means diversity is calcualted column-wise.With base = exp(1), we are esimating Shannon's index using the natural logrithm of each taxon's relative abundance using the equation; H` = -Si pi ln (Pi)
+```{r}
+shannon<-diversity(BCI,index="shannon", MARGIN=1,base=exp(1))
+```
+Can also calculate other diversity metrics
+```{r}
+simpson <- diversity(BCI, "simpson")
+invsimpson <- diversity(BCI, "inv")
+fisher <- fisher.alpha(BCI)
+```
+Let's plot
+```{r}
+pairs(cbind(shannon, simpson, invsimpson, fisher), pch="+", col="blue")
+```
+Species richness
+```{r}
+S <- specnumber(BCI)
+```
+Rarefaction
+```{r}
+(raremax <- min(rowSums(BCI)))
+Srare <- rarefy(BCI, raremax)
+plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
+abline(0, 1)
+rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
+```
+
+http://www.jennajacobs.org/R/rarefaction.html
