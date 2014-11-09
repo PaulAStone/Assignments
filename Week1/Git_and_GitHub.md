@@ -29,13 +29,15 @@ GitHub is a web-based hosting service for software development projects that use
 
   The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
 
+  We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage.
+
 6. Open and edit the README.md file
 
     ```sh
     nano README.md
     ```
 
-  Edit the file as needed (we will demonstrate). When you are done, save the close the document
+  Edit the file as needed (we will demonstrate). Update your '*Student Name*' with your full name. Enter your email address. Write a short Bio about yourself (~ 1 paragraph). List three to five course expectations. Hint: View the Markdown guide to learn about formatting and making numbered lists (https://guides.github.com/features/mastering-markdown/). When you are done, save the close the document
 
     ```sh
     [ctrl + o]
@@ -58,7 +60,7 @@ GitHub is a web-based hosting service for software development projects that use
 
   You should now see the repo on your GitHub page.
 
-9. Navigate to your GitHub page to amek srue that the file was uploaded correctly. If so, submit a Pull Request to submit your file to the course <br>
+9. Navigate to your GitHub page to make sure that the file was uploaded correctly. If so, submit a Pull Request to submit your file to the course <br>
   <img src="images/github-pr-btn.png">
 
   The course instructors can now see your work

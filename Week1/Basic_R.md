@@ -1,10 +1,12 @@
 ## Basic R
 
-R can be used for basic commands. For example. R can be used to for basic math func-
-tions and data manipulations. Below is a code block that denes a variable X and brie
-y
-summarieses properties of that variable. In this document, you will nd code in these code
-blocks. This is where you will eventually type your own code. Code blocks will include all
+R can be used for basic commands. For example, R can be used to for basic math functions and data manipulations. Below is a code block that defines a variable X and briefly summarizes properties of that variable. In this document, you will find code in these code blocks: 
+
+```
+
+
+```
+This is where you will eventually type your own code. Code blocks will include all
 code and R output. R output will be identifed with "##". Knitr will automatically format
 this when you compile to PDF. Oh yeah, I'm sure you just noticed all of the charactors.
 Well this is the price you will pay for using something as awesome as LATEX . There are
@@ -19,3 +21,18 @@ if x
 + Getting set up in Git and GitHub
 + Creating Accounts
 + Repos
+
+
+```R
+# Create a sequence of numbers
+X <- 2:10
+
+# Display basic statistics about X
+summary(X)
+
+## Min.  1st Qu.  Median  Mean  3rd Qu.  Max.
+##   2        4        6     6       8     10
+
+mean(X)
+
+## [1] 6
