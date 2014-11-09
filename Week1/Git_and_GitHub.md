@@ -37,7 +37,7 @@ GitHub is a web-based hosting service for software development projects that use
     nano README.md
     ```
 
-  Edit the file as needed (we will demonstrate). Update your '*Student Name*' with your full name. Enter your email address. Write a short Bio about yourself (~ 1 paragraph). List three to five course expectations. Hint: View the Markdown guide to learn about formatting and making numbered lists. When you are done, save the close the document
+  Edit the file as needed (we will demonstrate). Update your '*Student Name*' with your full name. Enter your email address. Write a short Bio about yourself (~ 1 paragraph). List three to five course expectations. Hint: View the Markdown guide to learn about formatting and making numbered lists (https://guides.github.com/features/mastering-markdown/). When you are done, save the close the document
 
     ```sh
     [ctrl + o]
