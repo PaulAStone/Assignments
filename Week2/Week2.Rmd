@@ -53,4 +53,29 @@ abline(0, 1)
 rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
 ```
 
-http://www.jennajacobs.org/R/rarefaction.html
+Example: http://www.jennajacobs.org/R/rarefaction.html
+
+Calculating relative abundances
+```{r}
+BCI_t <- t(BCI)
+
+BCIrel <- BCI_t
+for(i in 1:ncol(BCI_t)){BCIrel[,i]=BCI_t[,i]/sum(BCI_t[,i])}
+```
+What's one way to test that this worked?
+```{r}
+colSums(BCIrel)
+```
+Now let's create a rank abundance curve. First, let's rank taxa within a sample (site 1) by relative abundance
+```{r}
+rad <- BCIrel[order(BCIrel[,1],decreasing=TRUE),]
+head(rad)
+```
+Let's make a ranking now that species abundances are ordered/sorted
+```{r}
+ranks <- seq(1,nrow(rad))
+```
+Let's create RAD plot
+```{r}
+plot(ranks,rad[,1],type='l',col="black",xlab="Rank",lwd=8,ylab="Relative Abundance",xlim=range(ranks))
+```
