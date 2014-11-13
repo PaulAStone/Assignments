@@ -1,0 +1,31 @@
+---
+title: "R_Test"
+author: "Student"
+date: "Monday, November 10, 2014"
+output: pdf_document
+---
+
+
+In this exercise, we provide an introduction to some of the basic features of the R computing environment. We emphasize calcuations, data types, and simple commands that will be useful for you during the course. 
+
+```{r}
+print("Hello World")
+```
+
+Now, print your own statement
+```{r}
+
+```
+
+```{r}
+Sys.info()
+sessionInfo(package = NULL)
+print(sessionInfo(package = NULL), local = FALSE)
+system("git --version")
+
+toLatex(sessionInfo(), locale = TRUE)
+
+
+
+```
+
