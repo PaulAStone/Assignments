@@ -1,7 +1,7 @@
 ---
-title: "Week 1 Exercise"
+title: "Week 1 Exercise: Basic R"
 author: "Z620: Quantitative Biodiversity, Indiana University"
-date: "November 4, 2014"
+date: "January 16, 2015"
 output: pdf_document
 ---
 In this exercise, we provide an introduction to some of the basic features of the R computing environment. We emphasize calcuations, data types, and simple commands that will be useful for you during the course. 
