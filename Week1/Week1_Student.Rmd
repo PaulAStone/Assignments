@@ -1,7 +1,7 @@
 ---
-title: "Week 1 Exercise: Basic R"
+title: "Week 1 Exercise"
 author: "Z620: Quantitative Biodiversity, Indiana University"
-date: "January 16, 2015"
+date: "November 4, 2014"
 output: pdf_document
 ---
 In this exercise, we provide an introduction to some of the basic features of the R computing environment. We emphasize calcuations, data types, and simple commands that will be useful for you during the course. 
@@ -10,174 +10,226 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 ## RETRIEVING AND SETTING YOUR WORKING DIRECTORY
 ```{r}
-getwd()
-#The following line needs to be updated
-#setwd("/Users/lennonj/GitHub/Quantitative_Biodiversity/Assignments/Week1")
+
+
 ```
 ## USING R AS A CALCULATOR
 addition
 ```{r}
-1 + 3 
+
+
 ```
 subtraction
 ```{r}
-3 - 1 
+
+
 ```
 multiplication (with exponent)
 ```{r}
-3 * 10^2
+
+
 ```
 division (using a built-in constant)
 ```{r}
-10 / pi 
+
+
 ```
 trigonometry with a simple built-in *function* (i.e., 'sin') and *argument* (i.e., '4')
 ```{r}
-sin(4) 
+
+
 ```
 logarithms (another example of function and argument)
 ```{r}
-log10(100) 
-log(100)
+
+
 ```
 ## DEFINING VARIABLES
 In R, you will often find it useful and necessary to assign values to a variable. Generally speaking, it's best to use '<-' rather than '=' as an assignment operator.
 ```{r}
-a <- 10
-b <- a + 20
+
+
 ```
 What is the value of b?
 ```{r}
-a <- 200
+
+
 ```
 Now what is the value of b? Can you explain? Fix? It can help to examine variables with the following function 
 ```{r}
-ls()
+
+
 ```
 You can clear variables from R memory with following function (example of nested function)
 ```{r}
-rm(list=ls())
+
+
 ```
 You can also examine variables in the Environment windwow of R Studio. By clikcing 'clear' in this window, you can erase variables from memory
 
 ## WORKING WITH SCALARS, VECTORS, AND MATRICES
 Create a *scalar* by assigning a numeric value to a character
 ```{r}
-w <- 5 
+
+
 ```
 A *vector* (or array) is a one-dimensional row of numeric values. You can create a vector in R
 like this:
 ```{r}
-x <- c(2, 3, 6, w, w + 7, 12, 14)
+
+
 ```
-What is the function 'c'? The 'help' function is your friend.
+What is the function 'c'? The `help()` function is your friend.
 ```{r}
-help(c)
+
+
 ```
 What happens when you multiply a vector by a scalar?
 ```{r}
-y <- w * x
+
+
 ```
 What happens when you multiply two vectors?
 ```{r}
-z <- x * y 
+
+
 ```
 Here is how you reference an element in a vector
 ```{r}
-z[2]
+
+
 ```
 Here is how you reference multiple elements in a vector
 ```{r}
-z[2:5] 
+
+
 ```
 Here is how you can change the value of an element in a vector
 ```{r}
-z[2] <- 583 
+
+
 ```
 It's pretty easy to perform summary statistics on a vector using built-in fuctions
 ```{r}
-max(z)
-min(z)
-sum(z) 
-mean(z)
-median(z)
-var(z)
-sd(z)
+
+
+
+
 ```
 What happens when you take the standard error of the mean (sem) of z? Sometimes you need to make your own functions:
 ```{r}
-sem <- function(x){
-  sd(x)/sqrt(length(x))
-  }
+
+
+
 ```
 Often, datasets have missing values (designated as 'NA' in R)
 ```{r}
-i <- c(2, 3, 9, NA, 120, 33, 7, 44.5)
+
+
+
 ```
 What happens when you apply your sem function to vector i? One solution is to tell R to remove NA from the dataset:
 ```{r}
-sum(i, na.rm = TRUE)
+
+
+
 ```
 There are three common ways to create a matrix (two dimensional vectors) in R. **Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a vector using a new function 'rnorm'
 ```{r}
-j <- c(rnorm(length(z), mean = z)) 
+
+
+
 ```
 What does the rnorm function do? What are arguments doing?
 Now we will use the function 'cbind' to create a matrix
 ```{r}
-k <- cbind(z, j) 
+
+
+
 ```
 Use the 'help' function to learn about cbind
 Use the 'dim' function to describe the matrix you just created 
 
 **Approach 2** to making a matrix is to use the matrix function:
 ```{r}
-l <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2) 
+
+
+
 ```
 **Approach 3** to making a matrix is to import or 'load' a dataset from  your working directory (or elsewhere)
 ```{r}
-m <- as.matrix(read.table("matrix.txt", sep = "\t", header = FALSE))
+
+
+
 ```
 Often, when handling datasets, we want to be able to transpose a matrix. This is easy in R:
 ```{r}
-n <- t(m)
+
+
+
 ```
 Also, you will find that you need to subset data in a matrix:
 
 For example, maybe you want to take first three rows of a matrix:
 ```{r}
-n <- m[1:3, ]
+
+
+
 ```
+
 Or maybe you want the first two columns of a matrix:
 ```{r}
-n <- m[, 1:2]
+
+
+
 ```
 Or perhaps you want non-sequential columns of a matrix:
 ```{r}
-n <- m[, c(1:2, 5)]
+
+
+
 ```
+
+**Student Questions**
+
+1. This is an example Question
+
+    ```
+    Answers will be here.
+
+    ```
+
 ## Basic Plotting
 Included in R and various R packages are some basic datasets that are useful for testing functions and learning about R features and functions. One such dataset is *cars*. To learn about this dataset you can simple use the `{r} help` function
 
 ```{r}
 help(cars)
 ```
-Use the `{r} str()` and `{r} summary()' functiosn to see basic summary statistics about this dataset
+
+Use the `{r} summary()' function to see basic summary statistics about this dataset
+
 ```{r}
-str(cars)
 summary(cars)
 ```
+
+
 To visualize this data you can generate a simple plot with the `{r} plot()` function
+
 ```{r}
 plot(cars)
 ```
+
 You can also embed plots, for example:
+
 ```{r, echo=FALSE}
 plot(cars)
 ```
+
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.'
 
+
 ## Other Useful Features and Fucntions: Sorting, Subsetting, Sampling
+
 **Sorting**
 We can use another dataset (mtcars) to practice sorting (ordering) data. Learn about mtcars via `{r} help(mtcars)`
 
@@ -185,54 +237,68 @@ sort by mpg
 ```{r}
 newdata <- mtcars[order(mtcars$mpg),]
 ```
+
 sort by mpg and cyl
 ```{r}
 newdata <- mtcars[order(mtcars$mpg, mtcars$cyl),]
 ```
+
 sort by mpg (ascending) and cyl (descending)
 ```{r}
 newdata <- mtcars[order(mtcars$mpg, - mtcars$cyl),]
 ```
+
 Now, Let's make a new vector of data
 ```{r}
 z <- c(1.5, 1/6, 1/3)
 ```
+
 If we only want to view  the first two decimal places of z
+
 ```{r}
 round(z,2)
 ```
+
 Now, we can reverse the order of the elements in z
 ```{r}
 rev(z)
 ```
+
 And we can order z from smallest to largest
 ```{r}
 sort(z)
 ```
+
+
 We can also identify the ordering of z
 ```{r}
 order(z)
 ```
+
 i.e., the 2nd number is the min and the 1st number is the max
 
 Additionally, we can idenify the maximum values this way:
 ```{r}
 max(z)
 ```
+
 **Subsetting**
 Let's create a original object vector, x:
 ```{r}
 x <- c(3, 4, 7)
 x
 ```
+
 Now, let's subset this vector and keep only the first three values
 ```{r}
 x[-3]
 ```
+
 Now, let's subset this vector and keep only the velues greater than or equal to 5
 ```{r}
 x[x >= 5]
 ```
+
 Notice that we did this using a logic statement `{r} >=`. Here is a list of other logica operators that you might find useful:
 
 |Logic Operator|Meaning|
