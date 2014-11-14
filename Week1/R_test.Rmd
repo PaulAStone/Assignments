@@ -1,31 +1,37 @@
 ---
-title: "R_Test"
-author: "Student"
-date: "Monday, November 10, 2014"
+title: "R Test"
+author: "Student Name"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 output: pdf_document
 ---
+During this course, you might find yourself working at home and needing everything to function properly. In this short assignment, we will learn how to print a statement in R. In addition, the second half of this assignment will tell us about your computer, R, and Git environments. 
 
+1. Edit your name in the *author* line above (line 3)
 
-In this exercise, we provide an introduction to some of the basic features of the R computing environment. We emphasize calcuations, data types, and simple commands that will be useful for you during the course. 
+2. Print a message in the R terminal
 
+Ex. Print "*Hello, World!*"
 ```{r}
-print("Hello World")
+print("Hello, World!")
 ```
 
 Now, print your own statement
 ```{r}
 
+
 ```
 
+3. Tell us about your system. Basically, just leave this part alone and it will do magic
+
+**Do Not Modify This Part**
+
 ```{r}
-Sys.info()
-sessionInfo(package = NULL)
-print(sessionInfo(package = NULL), local = FALSE)
-system("git --version")
-
-toLatex(sessionInfo(), locale = TRUE)
-
-
-
+info <- unname(c(Sys.info()[6],
+          .Platform$OS.type,
+          Sys.info()[1:2],
+          R.version.string,
+          .Platform$GUI,
+          system("git --version", intern = TRUE)))
+info
 ```
 
