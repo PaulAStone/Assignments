@@ -63,13 +63,13 @@ If you are a **Windows User**:
 
 
 ### Fork and Clone a Repo
-3. Navigate to and click on your student repository (repo) on https://github.iu.edu/2015-QuantitativeBiodiversity
-4. Fork your repo by clicking on the Fork Icon in the top right of your screen<br>
+1. Navigate to and click on your student repository (repo) on https://github.iu.edu/2015-QuantitativeBiodiversity
+2. Fork your repo by clicking on the Fork Icon in the top right of your screen<br>
 <img src="images/github-fork-btn.png"> 
 
   You should now see the repo on your GitHub page.
 
-5. Clone the repo onto your local machine using the command line (terminal)
+3. Clone the repo onto your local machine using the command line (terminal)
 
     ```sh
     cd ~/(Path to GitHub Folders, e.g. ~/GitHub/)
@@ -82,7 +82,9 @@ If you are a **Windows User**:
 
   We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage.
 
-6. Open and edit the README.md file
+
+
+4. Open and edit the README.md file
 
     ```sh
     nano README.md
@@ -98,7 +100,7 @@ If you are a **Windows User**:
 --> I could not get this to work if I include "sh". 
 --> Also, unlikely most have ever used nano. We can explain what it is, but shoud describes steps needed to save/exit? (control-x in Mac). This stuff may seem intuitive, but if not explained to new user, can lose folks. 
 
-7. Now we need to add and commit our changes to git
+5. Now we need to add and commit our changes to git
 
     ```sh
     git status
