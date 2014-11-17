@@ -12,7 +12,7 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 ```{r}
 getwd()
 #The following line needs to be updated
-#setwd("/Users/lennonj/GitHub/Quantitative_Biodiversity/Assignments/Week1")
+#setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week1")
 ```
 ## USING R AS A CALCULATOR
 addition
@@ -41,7 +41,7 @@ log10(100)
 log(100)
 ```
 ## DEFINING VARIABLES
-In R, you will often find it useful and necessary to assign values to a variable. Generally speaking, it's best to use '<-' rather than '=' as an assignment operator.
+In R, you will often find it useful and necessary to assign values to a variable. Generally speaking, it's best to use `<-` rather than `=` as an assignment operator.
 ```{r}
 a <- 10
 b <- a + 20
@@ -60,17 +60,20 @@ rm(list=ls())
 ```
 You can also examine variables in the Environment windwow of R Studio. By clikcing 'clear' in this window, you can erase variables from memory
 
+### --> Time for discussing R as a caculator and assigning of variables
+
+
 ## WORKING WITH SCALARS, VECTORS, AND MATRICES
-Create a **scalar** by assigning a numeric value to a character
+There is a hierarchy of mathematical elements. First, a **scalar** is single numeric value. Let's assign a numeric value to a character:
 ```{r}
 w <- 5 
 ```
-A **vector** (or array) is a one-dimensional row of numeric values. You can create a vector in R
+A **vector** (or array) is a one-dimensional row of numeric values. You can create a vector in R:
 like this:
 ```{r}
 x <- c(2, 3, 6, w, w + 7, 12, 14)
 ```
-What is the function *c*? The *help* function is your friend. Let's try it out:
+What is the function `c()`? The `help()` function is your friend. Let's try it out:
 ```{r}
 help(c)
 ```
@@ -104,19 +107,19 @@ median(z) # median
 var(z)    # variance
 sd(z)     # standard deviation
 ```
-What happens when you take the standard error of the mean (sem) of z? Sometimes you need to make your own functions. Let's give it a try:
+What happens when you take the standard error of the mean (`sem`) of z? The standard error of the mean is defined as $SEM = \frac{sd (x)}{\sqrt{n}}$ Sometimes you need to make your own functions. Let's give it a try:
 ```{r}
-sem <- function(x){
-  sd(x)/sqrt(length(x))
+sem <- function(x, ...){
+  sd(x, ...)/sqrt(length(na.omit(x)))
   }
 ```
 Often, datasets have missing values (designated as 'NA' in R)
 ```{r}
 i <- c(2, 3, 9, NA, 120, 33, 7, 44.5)
 ```
-What happens when you apply your *sem* function to vector i? One solution is to tell R to remove NA from the dataset:
+What happens when you apply your `sem` function to vector i? One solution is to tell R to remove NA from the dataset:
 ```{r}
-sum(i, na.rm = TRUE)
+sem(i, na.rm = TRUE)
 ```
 There are three common ways to create a matrix (two dimensional vectors) in R. **Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a vector using a new function *rnorm*
 ```{r}
