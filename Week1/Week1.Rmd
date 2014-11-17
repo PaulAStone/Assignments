@@ -4,7 +4,7 @@ author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 output: pdf_document
 ---
-In this exercise, we provide an introduction to some of the basic features of the R computing environment. We emphasize calcuations, data types, and simple commands that will be useful for you during the course. 
+In this exercise, we provide an introduction to some of the basic features of the R computing environment. We emphasize calcuations, data types, and simple commands that will be useful for you during the course and beyond. 
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
 
@@ -31,7 +31,7 @@ division (using a built-in constant)
 ```{r}
 10 / pi 
 ```
-trigonometry with a simple built-in *function* (i.e., 'sin') and *argument* (i.e., '4')
+trigonometry with a simple built-in **function** (i.e., *sin*) and **argument** (i.e., '4')
 ```{r}
 sin(4) 
 ```
@@ -61,16 +61,16 @@ rm(list=ls())
 You can also examine variables in the Environment windwow of R Studio. By clikcing 'clear' in this window, you can erase variables from memory
 
 ## WORKING WITH SCALARS, VECTORS, AND MATRICES
-Create a *scalar* by assigning a numeric value to a character
+Create a **scalar** by assigning a numeric value to a character
 ```{r}
 w <- 5 
 ```
-A *vector* (or array) is a one-dimensional row of numeric values. You can create a vector in R
+A **vector** (or array) is a one-dimensional row of numeric values. You can create a vector in R
 like this:
 ```{r}
 x <- c(2, 3, 6, w, w + 7, 12, 14)
 ```
-What is the function 'c'? The 'help' function is your friend.
+What is the function *c*? The *help* function is your friend. Let's try it out:
 ```{r}
 help(c)
 ```
@@ -96,15 +96,15 @@ z[2] <- 583
 ```
 It's pretty easy to perform summary statistics on a vector using built-in fuctions
 ```{r}
-max(z)
-min(z)
-sum(z) 
-mean(z)
-median(z)
-var(z)
-sd(z)
+max(z)    # maximum
+min(z)    # minimum
+sum(z)    # sum
+mean(z)   # mean
+median(z) # median
+var(z)    # variance
+sd(z)     # standard deviation
 ```
-What happens when you take the standard error of the mean (sem) of z? Sometimes you need to make your own functions:
+What happens when you take the standard error of the mean (sem) of z? Sometimes you need to make your own functions. Let's give it a try:
 ```{r}
 sem <- function(x){
   sd(x)/sqrt(length(x))
@@ -114,21 +114,21 @@ Often, datasets have missing values (designated as 'NA' in R)
 ```{r}
 i <- c(2, 3, 9, NA, 120, 33, 7, 44.5)
 ```
-What happens when you apply your sem function to vector i? One solution is to tell R to remove NA from the dataset:
+What happens when you apply your *sem* function to vector i? One solution is to tell R to remove NA from the dataset:
 ```{r}
 sum(i, na.rm = TRUE)
 ```
-There are three common ways to create a matrix (two dimensional vectors) in R. **Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a vector using a new function 'rnorm'
+There are three common ways to create a matrix (two dimensional vectors) in R. **Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a vector using a new function *rnorm*
 ```{r}
 j <- c(rnorm(length(z), mean = z)) 
 ```
-What does the rnorm function do? What are arguments doing?
-Now we will use the function 'cbind' to create a matrix
+What does the *rnorm* function do? What are arguments doing?
+Now we will use the function *cbind* to create a matrix
 ```{r}
 k <- cbind(z, j) 
 ```
-Use the 'help' function to learn about cbind
-Use the 'dim' function to describe the matrix you just created 
+Use the *help* function to learn about *cbind*
+Use the *dim* function to describe the matrix you just created 
 
 **Approach 2** to making a matrix is to use the matrix function:
 ```{r}
@@ -152,12 +152,12 @@ Or maybe you want the first two columns of a matrix:
 ```{r}
 n <- m[, 1:2]
 ```
-Or perhaps you want non-sequential columns of a matrix:
+Or perhaps you want non-sequential columns of a matrix. How do we do that? It's easy when you understand how to reference data within a matrix:
 ```{r}
 n <- m[, c(1:2, 5)]
 ```
 ## Basic Plotting
-Included in R and various R packages are some basic datasets that are useful for testing functions and learning about R features and functions. One such dataset is *cars*. To learn about this dataset you can simple use the `{r} help` function
+Included in R and various R packages are some basic datasets that are useful for testing functions and learning about R features and functions. One such dataset is **cars**. To learn about this dataset you can simple use the `{r} help` function
 
 ```{r}
 help(cars)
@@ -171,13 +171,14 @@ To visualize this data you can generate a simple plot with the `{r} plot()` func
 ```{r}
 plot(cars)
 ```
-You can also embed plots, for example:
+You can also embed plots, for example: # JTL, line by line, got an error; plus not sure how useful? what's point?
 ```{r, echo=FALSE}
 plot(cars)
 ```
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.'
 
 ## Other Useful Features and Fucntions: Sorting, Subsetting, Sampling
+##JTL: seems like some of this could be combined with stuff above
 **Sorting**
 We can use another dataset (mtcars) to practice sorting (ordering) data. Learn about mtcars via `{r} help(mtcars)`
 
@@ -185,11 +186,11 @@ sort by mpg
 ```{r}
 newdata <- mtcars[order(mtcars$mpg),]
 ```
-sort by mpg and cyl
+sort by mpg and cyl # JTL: not sure how effect the cyl sort is
 ```{r}
 newdata <- mtcars[order(mtcars$mpg, mtcars$cyl),]
 ```
-sort by mpg (ascending) and cyl (descending)
+sort by mpg (ascending) and cyl (descending) #JTL: same as above?
 ```{r}
 newdata <- mtcars[order(mtcars$mpg, - mtcars$cyl),]
 ```
@@ -209,7 +210,7 @@ And we can order z from smallest to largest
 ```{r}
 sort(z)
 ```
-We can also identify the ordering of z
+We can also identify the ordering of z #JTL: with respect to what?
 ```{r}
 order(z)
 ```
@@ -235,7 +236,7 @@ x[x >= 5]
 ```
 Notice that we did this using a logic statement `{r} >=`. Here is a list of other logica operators that you might find useful:
 
-|Logic Operator|Meaning|
+|Logic Operator|Meaning| # confusing to start using new symbols "|"?
 |! x | Is Not "x"|
 |x & y| "x" and "y" (element by element) |
 |x && y| "x" and "y" (across all elements)|

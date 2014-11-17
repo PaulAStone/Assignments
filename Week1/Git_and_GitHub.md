@@ -1,8 +1,31 @@
-## Git and GitHub
+# Git and GitHub
 
-Git is a revision control system originally designed for software development. Git allows collaborators to simultaneously work on project code, data, and simple text documents by modifying local versions, 'pushing' changes to one's own online version, and then submitting requests for others to check and merge the changes into the group's project. In short, Git allows multiple people in remote locations to work on the same code, data, and text without irretrievably deleting or writing over others' work.
+## Git
+Git is a software system designed to allow collaborators to simultaneously work on text documents, project data, and computing code for websites and for analyzing data and conducting scientific analyses. Git is a form of *version control*.
 
-GitHub is a web-based hosting service for projects that use the Git revision control system. GitHub houses project repositories and provides a powerful graphical interface for 1) creating copies of a project's code, data, and text files that can later be merged with the "main project?", 2) identifying issues and resolving conflicts that can arise when collaborators' versions become greatly out-of-sync, and 3) for licensing and attracting copyright and copyleft for one's work while allowing it to be either visible to the public or only visible to the group or one's self. IU's Enterprise GitHub is a university managed version of GitHub available to faculty and student. In contrast with GitHub.com, IU's GitHub is only visible to members of the IU community. 
+## Version control 
+Version control is an approach to developing text, data, and code that allows users the ability to examine, comment on, and revert back to any changes within the life of a document. 
+In short, version control works when one make changes to a *local* version of a project (code, data, or text), and then *pushing* those changes to one's personal online version. 
+Having one's own online version keeps your project (or your version of a group's project) safe from loss or damage.
+If working with collaborators, one can then submit a *pull request* for others to check and *pull* the changes into the group's project. 
+
+In short, Git is a version control system allows multiple people in remote locations to work on the same code, data, and text without irretrievably deleting or writing over others' work.
+
+## GitHub
+GitHub is a web-based service for hosting projects that use the Git version control system. GitHub provides a graphical interface for viewing and managing a project's code, data, and text files, whether in collaboration with others or working individually.
+
+GitHub allows users to *fork* a personal version of a project.
+Nowadays, downloading new open-source software is often done by forking a GitHub repository.
+Forking immediately creates a copy of a project on your personal GitHub page or other GitHub page that you have permissions for.
+But, forking does not create a local copy of a project on your local machine.
+
+To create local copies, say, on your laptop, you would need to *clone* the repository.
+Cloning a repository can be done via GitHub (the graphical web-interface) or by working with Git directly on your local machine.
+
+##GitHub at Indiana University
+IU has an Enterprise GitHub system that is a university managed version of GitHub available to faculty and student.
+So, IU basically has basically forked a restricted version of the GitHub project.
+IU's Enterprise version GitHub is only visible to members of the IU community. 
 
 ### Goals
 + Install and Configure Git and other software
