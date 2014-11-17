@@ -11,6 +11,7 @@ In this exercise, we will conduct exercises on alpha diversity
 ```{r}
 getwd()
 #setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week2")
+setwd("/Users/lisalocey/Desktop/Repos/QB/Assignments/Week2")
 ```
 
 ## INSTALL PACKAGES
@@ -31,6 +32,8 @@ Let's look at the data in the first few plots
 
 ```{r}
 head(BCI)[,1:3] # MEM: Added column selection so that it didn't print everything.
+dim(BCI)  #gives you the dimensions of the data set, (rows, columns)
+BCI[1:4,1:6]	#shows the data for rows 1:4 and columns 1:6
 ```
 
 Calculate Shannon index. 'Margin = 1' means diversity is calculated row-wise; 'Margin = 2' means diversity is calcualted column-wise.With base = exp(1), we are esimating Shannon's index using the natural logrithm of each taxon's relative abundance using the equation; $H' = -{\sum ( p_{i} \times ln(p_{i}))}$
