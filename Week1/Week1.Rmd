@@ -8,7 +8,7 @@ In this exercise, we provide an introduction to some of the basic features of th
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
 
-## RETRIEVING AND SETTING YOUR WORKING DIRECTORY
+## SETTING YOUR WORKING DIRECTORY (explain what and why)
 ```{r}
 getwd()
 #The following line needs to be updated
@@ -121,23 +121,23 @@ What happens when you apply your `sem` function to vector i? One solution is to 
 ```{r}
 sem(i, na.rm = TRUE)
 ```
-There are three common ways to create a matrix (two dimensional vectors) in R. **Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a vector using a new function *rnorm*
+There are three common ways to create a matrix (two dimensional vectors) in R. **Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a vector using a new function `rnorm`
 ```{r}
 j <- c(rnorm(length(z), mean = z)) 
 ```
-What does the *rnorm* function do? What are arguments doing?
-Now we will use the function *cbind* to create a matrix
+What does the `rnorm` function do? What are arguments doing?
+Now we will use the function `cbind` to create a matrix
 ```{r}
 k <- cbind(z, j) 
 ```
-Use the *help* function to learn about *cbind*
-Use the *dim* function to describe the matrix you just created 
+Use the `help` function to learn about `cbind`
+Use the `dim` function to describe the matrix you just created 
 
 **Approach 2** to making a matrix is to use the matrix function:
 ```{r}
 l <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2) 
 ```
-**Approach 3** to making a matrix is to import or 'load' a dataset from  your working directory (or elsewhere)
+**Approach 3** to making a matrix is to import or *load a dataset* from  your working directory (or elsewhere)
 ```{r}
 m <- as.matrix(read.table("matrix.txt", sep = "\t", header = FALSE))
 ```
