@@ -6,7 +6,7 @@ output: pdf_document
 ---
 In this exercise, we provide an introduction to some of the basic features of the R computing environment. We emphasize calcuations, data types, and simple commands that will be useful for you during the course and beyond. 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using [R Markdown](<http://rmarkdown.rstudio.com>).When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
 
 ## SETTING YOUR WORKING DIRECTORY (explain what and why)
 ```{r}
@@ -145,9 +145,7 @@ Often, when handling datasets, we want to be able to transpose a matrix. This is
 ```{r}
 n <- t(m)
 ```
-Also, you will find that you need to subset data in a matrix:
-
-For example, maybe you want to take first three rows of a matrix:
+Also, you will find that you need to subset data in a matrix. For example, maybe you want to take first three rows of a matrix:
 ```{r}
 n <- m[1:3, ]
 ```
@@ -159,7 +157,79 @@ Or perhaps you want non-sequential columns of a matrix. How do we do that? It's 
 ```{r}
 n <- m[, c(1:2, 5)]
 ```
-## Basic Plotting
+## Basic Data Visualization and Statistical Analysis
+In the following exercise, we will use a dataset from [Lennon et al. (2003)](http://www.indiana.edu/~microbes/publications/Lennon_etal_2003.pdf), which looked at zooplankton community assembly along a trophic state gradient. Nutrients (nitrogen and phosphorus) were added to mesocosms over the course of six weeks at three different levels (low, medium, and high). We also direcly measured nutrients. So we have categorical and continuous predictors that we're going to use to help explain variaiton in zooplankton biomass.  
+
+The first thing we're going to do is load the data:
+```{r}
+meso <- read.table("zoop_nuts.txt", sep = "\t", header = TRUE)
+```
+Let's use the `str` function to look at the structure of the data. How does this dataset differ from the 'm' dataset above?
+```{r}
+str(meso)
+```
+Now, let's explore the data set a little bit:
+  -TANK = mesocosm identifier
+  
+  -NUTS = categorical nutrient treament 
+  
+  -TP = total phosphorus concentration ($\mu$g/L)
+  
+  -TN = total nitrogent concentration
+  
+  -SRP = soluble reactive phosphorus concentration
+  
+  -TIN = total inorganic nutrient concentration
+  
+  -CHLA = chlorophyll *a* (proxy for algal biomass)
+  
+  -ZP = zooplankton biomass 
+
+Let's look for any correlations among these variables. First, let's assign continuous numerical data in the 'meso' dataframe to make for less typing
+```{r}
+meso.num <- meso[,3:8]
+```
+Now, let's use simple correlation analysis with the base package of R with the `cor` function. 
+```{r}
+cor1<-cor(meso.num)
+```
+The base pakcage can't always meet all of our needs, however. This is why there are more than 6,000 additional packages that have been developed for R. Althought this can be overwhelming, it also means that there are a lot of really cool tools that people have created for various applications and problems. Here are a few examples of packages that introduce some more bells and whistles for doing correlations. 
+
+The first thing we need to do is install the non-base packages and their dependencies. We're going to start out by using the ['psych' package](http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf), which has a ton of features. 
+
+install.packages("psych") 
+require(psych) 
+
+Now, let's look at the correlations among variables and assess whether they are signficant:
+```{r}
+cor2<-corr.test(meso.num,use="pairwise",method="pearson",adjust="hochberg")
+print(cor2,digits=3)
+```
+Let's load another package now that will let us visualize the sign and stregth of the correlations:
+
+install.packages("corrplot")
+library(corrplot)
+corrplot(cor1, method = "circle")
+
+It seems that TN is a fairly good predictor of ZP and this is somethign that we directly manipulated. So, let's try some linear regression. 
+```{r}
+fit <- lm(ZP ~ TN, data = meso)
+layout(matrix(c(1,2,3,4),2,2))
+plot(fit)
+
+quartz()
+plot(meso$TN,meso$ZP,ylim=c(0,9),xlim=c(0,5000))
+abline(fit)
+newTN <- seq(min(meso$TN),max(meso$TN),10)
+conf95 <- predict(fit,newdata=data.frame(meso$TN=newTN),interval=c("confidence"),level=0.95,type="response")
+zconf95 <- predict(fit,interval="confidence")
+r<-matlines(meso$TN,conf95[,c("lwr","upr")],type="l",lty=1,lwd=1)
+
+
+
+
+
+
 Included in R and various R packages are some basic datasets that are useful for testing functions and learning about R features and functions. One such dataset is **cars**. To learn about this dataset you can simple use the `{r} help` function
 
 ```{r}
