@@ -1,0 +1,36 @@
+---
+title: "Week 3 Exercise"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "January 23, 2015"
+output: pdf_document
+---
+In this exercise, we will conduct exercises on beta diversity
+
+## RETRIEVE AND SET YOUR WORKING DIRECTORY
+
+```{r}
+getwd()
+setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week2")
+```
+
+## INSTALL PACKAGES
+People develop different packages for certain tasks that can be carried out in 
+the R enviornment. 
+Use the 'help'funciton to learn about package installation and add-ons.
+
+```{r}
+require("vegan")||install.packages("vegan");require("vegan")
+
+```
+
+In the library of vegan, there is a data set that we will be using called BCI. 
+BCI stands for Barro Colorado Island, which is a located in Panama. 
+The BCI data frame has 50 plots (rows) of 1 hectare with counts of trees on 
+each plot with total of 225 species (columns).
+
+We will again be using the BCI data set for part of this weeks exercises
+
+```{r}
+data(BCI)
+```
+
