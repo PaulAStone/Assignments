@@ -9,8 +9,9 @@ In this exercise, we will conduct exercises on beta diversity
 ## RETRIEVE AND SET YOUR WORKING DIRECTORY
 
 ```{r}
+rm(list=ls())
 getwd()
-setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week2")
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2")
 ```
 
 ## INSTALL PACKAGES
@@ -34,3 +35,23 @@ We will again be using the BCI data set for part of this weeks exercises
 data(BCI)
 ```
 
+
+## Turnover
+
+
+
+## Visualizaton
+
+
+### Cluter Analysis
+
+
+### Ordinations
+
+
+## Hypothesis Testing
+
+
+
+
+## Homework
