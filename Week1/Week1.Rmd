@@ -4,22 +4,25 @@ author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 output: pdf_document
 ---
-In this exercise, we provide an introduction to some of the basic features of the R computing environment. 
-We emphasize calcuations, data types, and simple commands that will be useful for you during the course and beyond. 
+In this exercise, we provide an introduction to some of the basic features of the R computing environment. We will briefly cover operators, data types, and simple commands that will be useful for you during the course and beyond. 
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. 
-For more details on using [R Markdown](<http://rmarkdown.rstudio.com>).
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. 
+You are working within an [R Markdown](<http://rmarkdown.rstudio.com>)document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. When you click the **Knit** button in of the scripting window a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. If there are errors in your markdown document, you will not be able to knit a PDF file. Assignments in this class will require that you create a PDF via knitr and submit it via [GitHub](<http://github.com>).
 
-## SETTING YOUR WORKING DIRECTORY (explain what and why)
+## SETTING YOUR WORKING DIRECTORY
+The first step of working with R is to set your working directory. This is where your R script and output will be saved. It's also a logical place to put data files that you plan to import into R. 
 
+The following command will return your current working directory
 ```{r}
 getwd()
-#The following line needs to be updated
-#setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week1")
+```
+
+If you want to change your working directory, use the following command (you will need to change this to reflect your desired directory):
+```{r}
+setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week1")
 ```
 
 ## USING R AS A CALCULATOR
+R is capable of performing various calcuations using simple operators and built-in **functions**
 
 addition
 ```{r}
@@ -31,7 +34,7 @@ subtraction
 3 - 1 
 ```
 
-multiplication (with exponent)
+multiplication (with an exponent)
 ```{r}
 3 * 10^2
 ```
@@ -41,95 +44,97 @@ division (using a built-in constant)
 10 / pi 
 ```
 
-trigonometry with a simple built-in **function** (i.e., *sin*) and **argument** (i.e., '4')
+trigonometry with a simple built-in **function** (i.e., *sin*) that takes an **argument** (i.e., '4')
 ```{r}
 sin(4) 
 ```
 
-logarithms (another example of function and argument)
+logarithms (another example of functions and arguments)
 ```{r}
 log10(100) 
 log(100)
 ```
 
-## DEFINING VARIABLES
-
-In R, you will often find it useful and necessary to assign values to a variable. 
+## ASSIGNING VARIABLES
+In R, you will often find it useful and necessary to assign values to a variable or **object**. 
 Generally speaking, it's best to use `<-` rather than `=` as an assignment operator.
 ```{r}
 a <- 10
 b <- a + 20
 ```
 
-What is the value of b?
+What is the value of b? 
+
+Now let's reassign a new value to `a`
 ```{r}
 a <- 200
 ```
 
-Now what is the value of b? Can you explain? Fix? It can help to examine variables with the following function 
---> This part doesn't really make sense to me - MEM**********.
+Now, what is the value of 'b'? What's going on? 
+
+R holds onto the original value of 'a' that was used when assigning values to 'b'. You can correct this using the `rm` function, which removes objects from your R **environment**. 
+```{r}
+rm("b")
+```
+
+What happens if we reassign `b` now?
+```{r}
+b <- a + 20
+```
+
+In some situations it's a good idea to clear all variables from your R environment. This can be done in a couple of ways. For example, you can just click `clear'in the Environment windwow of R Studio. The same procedure can performed at the command line. The *ls* function allows us to view a list of objects in our R environment:
 ```{r}
 ls()
 ```
 
-You can clear variables from R memory with following function (example of nested function)
+We can now clear all of the stored variables from R's memory (using two functions: `rm` and 'ls')
 ```{r}
 rm(list=ls())
 ```
 
-You can also examine variables in the Environment windwow of R Studio. 
-By clikcing 'clear' in this window, you can erase variables from memory
+## WORKING WITH VECTORS AND MATRICES
 
-### --> Time for discussing R as a caculator and assigning of variables
-
-
-## WORKING WITH SCALARS, VECTORS, AND MATRICES
-
-There is a hierarchy of mathematical elements. First, a **scalar** is single numeric value. 
-Let's assign a numeric value to a character:
+**Vectors** are the fundamental data type in R. Often, vectors are just a collection of data of a similar type, either numeric, integer, or character. The simplest type of vector is a single value, sometimes referred to as a **scalar** in other programming languages:
 ```{r}
 w <- 5 
 ```
 
-A **vector** (or array) is a one-dimensional row of numeric values. 
-You can create a vector in R:
-like this:
+We can create longer one-dimensional vectors in R like this: 
 ```{r}
 x <- c(2, 3, 6, w, w + 7, 12, 14)
 ```
 
-What is the function `c()`? The `help()` function is your friend. 
-Let's try it out:
+What is the function `c()`? The `help()` function is your friend. Let's try it out:
 ```{r}
 help(c)
 ```
 
-What happens when you multiply a vector by a scalar?
+What happens when you multiply a vector by a "scalar"?
 ```{r}
 y <- w * x
 ```
 
-What happens when you multiply two vectors?
+What happens when you multiply two vectors of the same length?
 ```{r}
 z <- x * y 
 ```
 
-Here is how you reference an element in a vector:
+You may want to reference a specific element in a vector. We will do this using the square brackets. In this case, the number inside of the square brackets tells R that we want the second element of vector `z`:
 ```{r}
 z[2]
 ```
 
-Here is how you reference multiple elements in a vector:
+You may also need to reference multiple elements in a vector:
 ```{r}
 z[2:5] 
 ```
 
-Here is how you can change the value of an element in a vector:
+In some instances, you may want to change the value of an element in a vector. Here's how you can substitute a new value for the second element of `z`:
 ```{r}
 z[2] <- 583 
 ```
 
-It's pretty easy to perform summary statistics on a vector using built-in fuctions:
+It's pretty easy to perform summary statistics on a vector using the built-in fuctions of R:
 ```{r}
 max(z)    # maximum
 min(z)    # minimum
@@ -141,13 +146,13 @@ sd(z)     # standard deviation
 ```
 
 What happens when you take the standard error of the mean (`sem`) of z? 
-The standard error of the mean is defined as $SEM = \frac{sd (x)}{\sqrt{n}}$ Sometimes you need to make your own functions. 
-Let's give it a try:
+The standard error of the mean is defined as $SEM = \frac{sd (x)}{\sqrt{n}}$. This function does not exist in the base package of R. Therefore, you need to write your own functions sometimes. Let's give it a try:
 ```{r}
 sem <- function(x, ...){
   sd(x, ...)/sqrt(length(na.omit(x)))
   }
 ```
+There are number of functions inside of `sem`. Take a moment to think about and describe what is going on here. 
 
 Often, datasets have missing values (designated as 'NA' in R)
 ```{r}
@@ -155,20 +160,28 @@ i <- c(2, 3, 9, NA, 120, 33, 7, 44.5)
 ```
 
 What happens when you apply your `sem` function to vector i? 
-One solution is to tell R to remove NA from the dataset: <-- 
+
+One solution is to tell R to remove NA from the dataset: 
 ```{r}
 sem(i, na.rm = TRUE)
 ```
 
+**Matrices** are just two-dimensional vector, with the stipulation that we discusse above that all of the data are of the same type (e.g., numeric, integer, character).
+
 There are three common ways to create a matrix (two dimensional vectors) in R. 
-**Approach 1** is to combine (or concatenate) two or more vectors. 
-Let's start by creating a vector using a new function `rnorm` <-- seems odd to introduce this here. Also, why not NAs?
+
+**Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a one-dimensional vector using a new function `rnorm` 
+
+<-- seems odd to introduce this here. Also, why not NAs? -- MEM
+<-- Doesn't seem odd to me, but I'm defintiely open to discuss -- JTL
+
 ```{r}
 j <- c(rnorm(length(z), mean = z)) 
 ```
 
-What does the `rnorm` function do? What are arguments doing?
-Now we will use the function `cbind` to create a matrix
+What does the `rnorm` function do? What are arguments doing? Remember your friend `help`!
+
+Now we will use the function `cbind` to create a matrix from the two one-dimensional vectors:
 ```{r}
 k <- cbind(z, j) 
 ```
@@ -176,22 +189,26 @@ k <- cbind(z, j)
 Use the `help` function to learn about `cbind`
 Use the `dim` function to describe the matrix you just created 
 
-**Approach 2** to making a matrix is to use the matrix function:
+**Approach 2** to making a matrix is to use the `matrix` function along with arguments that specify the number of rows (nrow) and columns (ncol):
 ```{r}
 l <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2) 
 ```
 
-**Approach 3** to making a matrix is to import or *load a dataset* from  your working directory (or elsewhere)
+**Approach 3** to making a matrix is to import or *load a dataset* from  your working directory:
 ```{r}
 m <- as.matrix(read.table("matrix.txt", sep = "\t", header = FALSE))
 ```
+In this case, we're reading in a tab-delimited file. The name of your file must be in quotes, and you specify tab-limited file type using the `sep` argument. The `header` argument tells R whether or not the names of the variables are contained in the first line; in the current example, that is not the case. 
 
-Often, when handling datasets, we want to be able to transpose a matrix. This is easy in R:
+Often, when handling datasets, we want to be able to transpose a matrix. This is an easy operation in R:
 ```{r}
 n <- t(m)
 ```
+Confirm the transposition using the `dim` function
 
-Also, you will find that you need to subset data in a matrix. For example, maybe you want to take first three rows of a matrix:
+Frequently, you will need to **index** or retrieve a certain portion of a matrix. As with the vector example above, we will use the square brackets to retrieve data from a matrix. Inside the square brackets, however, there are now two subscripts corresponding to the rows and columns, respectively, of the matrix. 
+
+For example, the following code will create a new matrix (`n') based on the first three rows of matrix (`m`):
 ```{r}
 n <- m[1:3, ]
 ```
@@ -201,46 +218,50 @@ Or maybe you want the first two columns of a matrix:
 n <- m[, 1:2]
 ```
 
-Or perhaps you want non-sequential columns of a matrix. How do we do that? It's easy when you understand how to reference data within a matrix:
+Or perhaps you want non-sequential columns of a matrix. How do we do that? 
+
+It's easy when you understand how to reference data within a matrix:
 ```{r}
 n <- m[, c(1:2, 5)]
 ```
 
+Describe what we just did in the last indexing.
+
+
 ## Basic Data Visualization and Statistical Analysis
 
-In the following exercise, we will use a dataset from [Lennon et al. (2003)](http://www.indiana.edu/~microbes/publications/Lennon_etal_2003.pdf), which looked at zooplankton community assembly along a trophic state gradient. 
-Nutrients (nitrogen and phosphorus) were added to mesocosms over the course of six weeks at three different levels (low, medium, and high). We also direcly measured nutrients. 
-So we have categorical and continuous predictors that we're going to use to help explain variaiton in zooplankton biomass.  
+In the following exercise, we will use a dataset from [Lennon et al. (2003)](http://www.indiana.edu/~microbes/publications/Lennon_etal_2003.pdf), which looked at zooplankton community assembly along an experimental nutrient gradient. Inorganic nitrogen and phosphorus were added to mesocosms for six weeks at three different levels (low, medium, and high), but we also direcly measured nutrient concentrations. So we have categorical and continuous predictors that we're going to use to help explain variaiton in zooplankton biomass.  
 
 The first thing we're going to do is load the data:
 ```{r}
 meso <- read.table("zoop_nuts.txt", sep = "\t", header = TRUE)
 ```
 
-Let's use the `str` function to look at the structure of the data. How does this dataset differ from the 'm' dataset above?
+Let's use the `str` function to look at the structure of the data. 
 ```{r}
 str(meso)
 ```
 
-Now, let's explore the data set a little bit:
+How does this dataset differ from the 'm' dataset above? We're now dealing with a new type of **data structure**. Specifically, the `meso` dataset is a **data frame** since it has a combination of numeric and character data. 
+
+Let's explore the data set a little bit:
   -TANK = mesocosm identifier
   
   -NUTS = categorical nutrient treament 
   
-  -TP = total phosphorus concentration ($\mu$g/L)
+  -TP = total phosphorus concentration (µg/L)
   
-  -TN = total nitrogent concentration
+  -TN = total nitrogen concentration (µg/L)
   
-  -SRP = soluble reactive phosphorus concentration
+  -SRP = soluble reactive phosphorus concentration (µg/L)
   
-  -TIN = total inorganic nutrient concentration
+  -TIN = total inorganic nutrient concentration (µg/L)
   
-  -CHLA = chlorophyll *a* (proxy for algal biomass)
+  -CHLA = chlorophyll *a* (proxy for algal biomass; µg/L)
   
-  -ZP = zooplankton biomass 
+  -ZP = zooplankton biomass (mg/L)
 
-Let's look for any correlations among these variables. 
-First, let's assign continuous numerical data in the 'meso' dataframe to make for less typing
+Let's look for any correlations among these variables. But before we do this, let's index our numerical (continous) data in the 'meso' dataframe. (This will make for a little less typing.)
 ```{r}
 meso.num <- meso[,3:8]
 ```
@@ -250,16 +271,16 @@ Now, let's use simple correlation analysis with the R `cor()` function.
 cor1 <- cor(meso.num)
 ```
 
-The base pakcage won't always meet all of our needs, however. 
-This is why there are more than 6,000 additional packages that have been developed for R. 
-Although this can be overwhelming, it also means that there are a lot of really cool tools that people have created for various applications and problems. 
-Here are a few examples of packages that introduce some more bells and whistles for doing correlations. 
+The base pakcage in R won't always meet all of our needs, however. This is why there are > 6,000 additional packages that have been developed for R. Although this may seem overwhelming, it also means that there are a lot of really cool tools that people have created for almost any problem you can think of. Here are a few examples of packages that introduce some more bells and whistles for performing correlation analyses. 
 
 The first thing we need to do is install the non-base packages and their dependencies. 
-We're going to start out by using the ['psych' package](http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf), which has many features, but we're going to use it specifically for the `corr.test` function, which generates p-values for each pairwise correlation.
+We're going to start out by using the ['psych' package](http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf), which has many features, but we're going to use it specifically for the `corr.test` function, which generates p-values for each pairwise correlation. (For whatever reason, the `cor` function in the base package does not provide p-values.)
+
+--> Stopped here
+
 ```{r}
 #require("psych")||install.packages("psych");require("psych")
-install.packages("psych")
+#install.packages("psych")
 require(psych)
 ```
 
