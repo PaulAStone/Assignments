@@ -1,17 +1,17 @@
 ---
 title: "Week 2 Exercise"
 author: "Z620: Quantitative Biodiversity, Indiana University"
-date: "November 8, 2014"
+date: "January 23, 2015"
 output: pdf_document
 ---
 In this exercise, we will conduct exercises on alpha diversity
 
 ## RETRIEVE AND SET YOUR WORKING DIRECTORY
 
-```{r}
-getwd()
-#setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week2")
-setwd("/Users/lisalocey/Desktop/Repos/QB/Assignments/Week2")
+```{r, echo=F}
+#getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2")
+#setwd("/Users/lisalocey/Desktop/Repos/QB/Assignments/Week2")
 ```
 
 ## INSTALL PACKAGES
@@ -20,6 +20,7 @@ People develop different packages for certain tasks that can be carried out in t
 ```{r}
 require("vegan") #Both of these are not needed
 library("vegan")
+require("vegan")||install.packages("vegan");require("vegan")
 ```
 
 In the library of vegan, there is a data set that we will be using called BCI. BCI stands for Barro Colorado Island, which is a located in Panama. The BCI data frame has 50 plots (rows) of 1 hectare with counts of trees on each plot with total of 225 species (columns)
@@ -36,44 +37,35 @@ dim(BCI)  #gives you the dimensions of the data set, (rows, columns)
 BCI[1:4,1:6]	#shows the data for rows 1:4 and columns 1:6
 ```
 
-Calculate Shannon index. 'Margin = 1' means diversity is calculated row-wise; 'Margin = 2' means diversity is calcualted column-wise.With base = exp(1), we are esimating Shannon's index using the natural logrithm of each taxon's relative abundance using the equation; $H' = -{\sum ( p_{i} \times ln(p_{i}))}$
+Notice that sites refered to sites and columns refered to species.
+This data structure in ecology is commonly refered to as the Site-by-Species matrix.
 
 ```{r}
-shannon <- diversity(BCI, index="shannon", MARGIN = 1, base=exp(1))
+BCI.a <- colSums(BCI)
+
+
 ```
 
-Can also calculate other diversity metrics
+
+
+# Species Richness (S)
+What is richness: (KEN Comment)
 
 ```{r}
-simpson <- diversity(BCI, "simpson")
-invsimpson <- diversity(BCI, "inv")
-fisher <- fisher.alpha(BCI)
-``` 
-
-Let's plot ***Pairs is not a normal plotting tool, introduce first***
-
-```{r}
-pairs(cbind(shannon, simpson, invsimpson, fisher), pch="+", col="blue")
+S <- specnumber(BCI[1:4,])
 ```
 
-Species richness
-
+# Total Abundance (N)
+(Ken lightly speak on this)
 ```{r}
-S <- specnumber(BCI)
+sum(BCI.a)
 ```
 
-Rarefaction
 
-```{r}
-(raremax <- min(rowSums(BCI)))
-Srare <- rarefy(BCI, raremax)
-plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
-abline(0, 1)
-rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
-```
+# How can we visualize abundances and diferences in abundances
+(commentary needed)
 
-Example: http://www.jennajacobs.org/R/rarefaction.html
-
+# Rank Abundance Distribution
 Calculating relative abundances
 ```{r}
 BCI_t <- t(BCI)
@@ -107,6 +99,133 @@ Let's create RAD plot
 ```{r}
 plot(ranks,rad[,1],type='l',col="black",xlab="Rank",lwd=8,ylab="Relative Abundance",xlim=range(ranks))
 ```
+
+
+
+
+# Evenness (i.e. shape)
+
+
+
+
+
+# Diversity (emperical)
+# Diversity Estimators
+
+Calculate Shannon index. 'Margin = 1' means diversity is calculated row-wise; 'Margin = 2' means diversity is calcualted column-wise.With base = exp(1), we are esimating Shannon's index using the natural logrithm of each taxon's relative abundance using the equation; $H' = -{\sum ( p_{i} \times ln(p_{i}))}$
+
+```{r}
+shannon <- diversity(BCI, index="shannon", MARGIN = 1, base=exp(1))
+```
+
+Can also calculate other diversity metrics
+
+```{r}
+simpson <- diversity(BCI, "simpson")
+invsimpson <- diversity(BCI, "inv")
+fisher <- fisher.alpha(BCI)
+
+```
+
+
+
+
+# Rarity
+
+
+
+# Dominance
+
+
+
+# Species Abunance Models and Model Fitting
+
+```{r}
+radfit(BCI[1,])
+```
+
+
+AIC, BIC
+
+# Non-Emperial Versions (what happens when we violate our assumptions of sample resemblance)
+# Non Emperical Approaches
+
+
+
+# Richness Estimation
+
+Why would you do this: 
+
+Chao
+ACE
+
+```{r}
+estimateR(BCI[1,])
+estimateR(BCI[2,])
+
+```
+
+Other Richness Estimators (Table)
+
+
+
+# Rarefaction
+
+Let's plot ***Pairs is not a normal plotting tool, introduce first***
+
+```{r}
+pairs(cbind(shannon, simpson, invsimpson, fisher), pch="+", col="blue")
+```
+
+
+Rarefaction <-- Is this better for Beta Diversity?
+
+```{r}
+(raremax <- min(rowSums(BCI)))
+Srare <- rarefy(BCI, raremax)
+plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
+abline(0, 1)
+rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
+```
+
+Example: http://www.jennajacobs.org/R/rarefaction.html
+
+
+
+# Rarefaction
+
+```{r}
+(raremax <- min(rowSums(BCI)))
+Srare <- rarefy(BCI, raremax)
+plot(S, Srare, xlab = "Observed No. of Species", ylab = "Rarefied No. of Species")
+abline(0, 1)
+rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
+```
+
+Example: http://www.jennajacobs.org/R/rarefaction.html
+
+
+
+# Homework
+
+
+
+
+
+########## END #################################################################
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
