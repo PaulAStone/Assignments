@@ -1,5 +1,5 @@
 ---
-title: "Week 2 Exercise"
+title: "Week 2 Exercise: Local diversity"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "November 8, 2014"
 output: pdf_document
@@ -7,37 +7,39 @@ output: pdf_document
 
 ## Overview
 
-In this exercise, we will use R and RStudio to explore aspects of local (alpha) diversity using the tropical forest dataset from Barro-Colorado Island (BCI), a 1,560-hectare island in the center of the Panama Canal that is administered by the Smithsonian. After setting up our working environment, we will explore the BCI dataset and ways to quantify and examine the alpha-diversity within individual plots of tropical trees.
+In this exercise, we will use R and RStudio to explore aspects of local or site-specific diversity, also known as alpha ($\alpha$) diversity. We will use the tropical forest dataset from Barro-Colorado Island (BCI), a 1,560-hectare island in the center of the Panama Canal that is administered by the Smithsonian. After setting up our working environment, we will explore the BCI dataset and ways to quantify and examine the $\alpha$-diversity within individual plots of tropical trees.
 
 ## RETRIEVE AND SET YOUR WORKING DIRECTORY
 
 ```{r, echo=FALSE}
-getwd()
+getwd() # prints the working directory
 setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week2")
 ```
 
 ## INSTALL PACKAGES
 
-Ecologists have developed many packages for conducting quantitative analyses using R. You can use the 'help' function to learn more about package installation and add-ons. We will often use the package called 'vegan', which contains tools commonly used in ecological research, including analyses of alpha-diversity. To install vegan into your R environment type: install.packages("vegan") into your RStudio console.
+Ecologists have developed many packages for conducting quantitative analyses in R. You can use the 'help' function to learn more about package installation and R add-ons. In this class, we will often use the package called 'vegan', which contains tools commonly used in ecological research, including analyses of ($\alpha$)-diversity. To install vegan into your R environment type: install.packages("vegan") into your RStudio console.
 
 ```{r}
 require("vegan") #You can also type: library("vegan"). The difference being that "require"
 #loads additional packages (dependencies) that vegan requires for some analyses.
 ```
 
-Conveniently, the vegan library contains a version of the BCI dataset, which is obtained by censusing the trees of 50 1-hectare plots. More information on this data can be found here: http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/.
+## LOADING BCI FROM VEGAN
+Conveniently, the vegan library contains a version of the BCI dataset, which is obtained by censusing the trees of 50 1-hectare plots. More information on the BCI forest dataset can be found here: http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/.
 
 ```{r}
 data(BCI) # Loading the BCI dataset
 ```
 
-In vegan, the BCI data are organized into a site-by-species matrix, that is, a data table where the abundances of all 225 tree species (columns) are given for each site (rows), to include absences. Consequently, this table should have 50 rows and 225 columns. Let's verify this using the dimension or "dim" function:
+## EXPLORING THE SITE-BY-SPECIES MATRIX
+In vegan, the BCI data are organized into a **site-by-species matrix**, that is, a data table where the abundances of all 225 tree species (columns) are given for each of the 50 sites (rows). Consequently, this table should have 50 rows and 225 columns. Let's verify this using the dimension or "dim" function:
 
 ```{r}
 dim(BCI)  # Prints the dimensions of the site (row) by species (column) matrix
 ```
 
-The **site-by-species matrix** is one of the most basic data structures used by ecologists. With the BCI site-by-species matrix loaded, let's print the abundances of 4 species found in the first 8 sites.
+The **site-by-species matrix** is one of the most basic data structures used by ecologists and contains the abundances (or presence-absence) of all species found among a given number of sites, e.g., quadrats, transects, etc. With the BCI site-by-species matrix loaded, let's print the abundances of 4 species found in the first 8 sites.
 
 ```{r}
 BCI[1:8, 14:17]	# print abundances for sites (rows) 1 to 8 and for species (columns) 14 to 17
@@ -46,8 +48,7 @@ BCI[1:8, 14:17]	# print abundances for sites (rows) 1 to 8 and for species (colu
 Here, we can see that Cabbage Bark (*Andira inermis*) is absent from six of the eight sites and is only found as a single individual in two sites. On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at all eight sites and is relatively much more abundant than any of the other three species that we selected.
 
 
-
-
+# EXPLORING LOCAL ($\alpha$) DIVERSITY 
 So far, you have been introduced to an important data structure, the site-by-species matrix. You have learned to print its dimensions and to print the abundances of particular species (columns) found in specific sites (rows). Now, let's focus on a specific site by selecting the first row and assigning it to a variable called "Site1":
 
 ```{r}
