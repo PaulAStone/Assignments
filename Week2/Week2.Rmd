@@ -37,17 +37,16 @@ In vegan, the BCI data are organized into a site-by-species matrix, that is, a d
 dim(BCI)  # Prints the dimensions of the site (row) by species (column) matrix
 ```
 
-The site-by-species matrix is one of the most basic and common data structures used by ecologists. With the site-by-species matrix for BCI loaded into R, let's examine data in the first site (row).
+The **site-by-species matrix** is one of the most basic data structures used by ecologists. With the BCI site-by-species matrix loaded, let's print the abundances of 4 species found in the first 8 sites.
 
 ```{r}
-head(BCI)[, 14:16] # prints data for sites (rows) 1 through 2 and species (columns) 1 through 3
+BCI[1:8, 14:17]	# print abundances for sites (rows) 1 to 8 and for species (columns) 14 to 17
 ```
 
-Using "head(BCI)" alone would print the entire dataset to the screen, so we've limited our output. By default, the to the first eight sites (rows) and the 14th to 16th species. But, as you can see, the "head" command defaults to printing "NA" after 6 rows. This is a good lesson in understanding what a function actually does and in checking what a function is actually doing. An alternative is to access the site-by-species matrix directly:  
+Here, we can see that Cabbage Bark (*Andira inermis*) is absent from six of the eight sites and is only found as a single individual in two sites. On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at all eight sites and is relatively much more abundant than any of the other three species that we selected.
 
-```{r}
-BCI[1:8, 14:16]	# prints data for sites (rows) 1 through 2 and species (columns) 1 through 3
-```
+
+
 
 So far, you have been introduced to an important data structure, the site-by-species matrix. You have learned to print its dimensions and to print the abundances of particular species (columns) found in specific sites (rows). Now, let's focus on a specific site by selecting the first row and assigning it to a variable called "Site1":
 
