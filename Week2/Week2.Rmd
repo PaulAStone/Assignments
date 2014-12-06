@@ -52,12 +52,17 @@ Here, we can see that Cabbage Bark (*Andira inermis*) is absent from six of the 
 So far, you have been introduced to an important data structure, the site-by-species matrix. You have learned to print its dimensions and to print the abundances of particular species (columns) found in specific sites (rows). Now, let's focus on a specific site by selecting the first row and assigning it to a variable called "Site1":
 
 ```{r}
-Site1 = BCI[1,] # assign the first row (site) to the variable Site1
+Site1 <- BCI[1,] # assign the first row (site) to the variable Site1
 dim(Site1) # print the dimensions of Site1 to the screen 
 ```
 
-You can see that Site1 has one row (only 1 site) and 225 columns. But note that the BCI site-by-species matrix also accounts for absences with zeros. That is, while there are 225 columns 
+You can see that Site1 has one row (it is only 1 site) and 225 columns. But remember that the BCI site-by-species matrix also accounts for absences, i.e., with zeros. Let's find out how many species actually occupied Site1 when it was censused:
 
+```{r}
+S1 = specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
+cat('there are', S1, 'species at Site1') # concatenates strings and numbers and then prints
+
+```
 
 
 
