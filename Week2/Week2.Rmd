@@ -4,38 +4,62 @@ author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "November 8, 2014"
 output: pdf_document
 ---
-In this exercise, we will conduct exercises on alpha diversity
+
+## Overview
+
+In this exercise, we will use R and RStudio to explore aspects of local (alpha) diversity using the tropical forest dataset from Barro-Colorado Island (BCI), a 1,560-hectare island in the center of the Panama Canal that is administered by the Smithsonian. After setting up our working environment, we will explore the BCI dataset and ways to quantify and examine the alpha-diversity within individual plots of tropical trees.
 
 ## RETRIEVE AND SET YOUR WORKING DIRECTORY
 
-```{r}
+```{r, echo=FALSE}
 getwd()
 setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week2")
 ```
 
 ## INSTALL PACKAGES
-People develop different packages for certain tasks that can be carried out in the R enviornment. Use the 'help'funciton to learn about package installation and add-ons. Throughout this course, we will use the R package called vegan, which is 
 
-install.packages("vegan")
-
-```{r}
-require("vegan") #Both of these are not needed
-library("vegan")
-```
-
-In the vegan library, there is a data set that we will be using called BCI. BCI stands for Barro Colorado Island, which is an island located in the center of the Panama canal. The BCI data frame has 50 plots (rows) of 1 hectare with counts of trees on each plot with total of 225 species (columns)
+Ecologists have developed many packages for conducting quantitative analyses using R. You can use the 'help' function to learn more about package installation and add-ons. We will often use the package called 'vegan', which contains tools commonly used in ecological research, including analyses of alpha-diversity. To install vegan into your R environment type: install.packages("vegan") into your RStudio console.
 
 ```{r}
-data(BCI)
+require("vegan") #You can also type: library("vegan"). The difference being that "require"
+#loads additional packages (dependencies) that vegan requires for some analyses.
 ```
 
-Let's look at the data in the first few plots
+Conveniently, the vegan library contains a version of the BCI dataset, which is obtained by censusing the trees of 50 1-hectare plots. More information on this data can be found here: http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/.
 
 ```{r}
-head(BCI)[,1:3] # MEM: Added column selection so that it didn't print everything.
-dim(BCI)  #gives you the dimensions of the data set, (rows, columns)
-BCI[1:4,1:6]	#shows the data for rows 1:4 and columns 1:6
+data(BCI) # Loading the BCI dataset
 ```
+
+In vegan, the BCI data are organized into a site-by-species matrix, that is, a data table where the abundances of all 225 tree species (columns) are given for each site (rows), to include absences. Consequently, this table should have 50 rows and 225 columns. Let's verify this using the dimension or "dim" function:
+
+```{r}
+dim(BCI)  # Prints the dimensions of the site (row) by species (column) matrix
+```
+
+The site-by-species matrix is one of the most basic and common data structures used by ecologists. With the site-by-species matrix for BCI loaded into R, let's examine data in the first site (row).
+
+```{r}
+head(BCI)[, 14:16] # prints data for sites (rows) 1 through 2 and species (columns) 1 through 3
+```
+
+Using "head(BCI)" alone would print the entire dataset to the screen, so we've limited our output. By default, the to the first eight sites (rows) and the 14th to 16th species. But, as you can see, the "head" command defaults to printing "NA" after 6 rows. This is a good lesson in understanding what a function actually does and in checking what a function is actually doing. An alternative is to access the site-by-species matrix directly:  
+
+```{r}
+BCI[1:8, 14:16]	# prints data for sites (rows) 1 through 2 and species (columns) 1 through 3
+```
+
+So far, you have been introduced to an important data structure, the site-by-species matrix. You have learned to print its dimensions and to print the abundances of particular species (columns) found in specific sites (rows). Now, let's focus on a specific site by selecting the first row and assigning it to a variable called "Site1":
+
+```{r}
+Site1 = BCI[1,] # assign the first row (site) to the variable Site1
+dim(Site1) # print the dimensions of Site1 to the screen 
+```
+
+You can see that Site1 has one row (only 1 site) and 225 columns. But note that the BCI site-by-species matrix also accounts for absences with zeros. That is, while there are 225 columns 
+
+
+
 
 Calculate Shannon index. 'Margin = 1' means diversity is calculated row-wise; 'Margin = 2' means diversity is calcualted column-wise.With base = exp(1), we are esimating Shannon's index using the natural logrithm of each taxon's relative abundance using the equation; $H' = -{\sum ( p_{i} \times ln(p_{i}))}$
 
