@@ -70,13 +70,27 @@ N1 <- sum(Site1) # find the number of individuals at Site1 and assign it to a va
 cat('There are', N1, 'individuals among', S1, 'species at Site1')
 ```
 
-Now we know the recorded species richness and recorded total abundance (usually denoted as *N*) of Site1 in the BCI site-by-species matrix. *N* and *S* are two of the most common pieces of data we obtain when sampling ecological communities and assemblages. Finally, we are beginning to quantify our data! But not stopping there, the next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. One of the most common ways to visually explore this relationship, commonly known as the **species abundance distribution** is simply to rank the species from greatest to least, that is, as a **rank-abundance curve (RAC)**.
+Now we know the recorded species richness and recorded total abundance (usually denoted as *N*) of Site1 in the BCI site-by-species matrix. *N* and *S* are two of the most common pieces of data we obtain when sampling ecological communities and assemblages. Finally, we are beginning to quantify our data! 
+
+A next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. One of the most common ways to visually explore this relationship, commonly known as the **species abundance distribution** is simply to rank the species from greatest to least, that is, as a **rank-abundance curve (RAC)**. Let's plot the RAC for Site1.
+
+Let's begin by first removing the zeros from Site1. This removes the species the species that, while in the site-by-species matrix, were not found at Site1.
+
+```{r}
+Site1 <- Site1[ !Site1 %in% c(0) ] # Remove all zeros
+```
+
+Now, we can plot the RAC, accounting only for the species that were found there.
 
 ```{r}
 RAD <- Site1[order(Site1, decreasing=TRUE)] # Rank the taxa by abundance (y-values)
 ranks <- seq(1, ncol(RAD)) # Create a sequence of S ranks (x-values)
 plot(ranks, RAD, type='l', xlab="Rank", ylab="Abundance") # plot the RAC
 ```
+
+Looking at the RAC for Site1, we can see that abundance is distributed very unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations.
+
+
 
 ## Ken hasn't touched from here on down
 
@@ -133,6 +147,4 @@ What's one way to test that this worked?
 ```{r}
 colSums(BCIrel)
 ```
-
-
 
