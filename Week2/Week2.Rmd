@@ -59,11 +59,26 @@ dim(Site1) # print the dimensions of Site1 to the screen
 You can see that Site1 has one row (it is only 1 site) and 225 columns. But remember that the BCI site-by-species matrix also accounts for absences, i.e., with zeros. Let's find out how many species actually occupied Site1 when it was censused:
 
 ```{r}
-S1 = specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
-cat('there are', S1, 'species at Site1') # concatenates strings and numbers and then prints
+S1 <- specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
+cat('There are', S1, 'species at Site1') # "cat()" concatenates strings and numbers
 
 ```
+Now we know that the recorded species richness (usually denoted as *S*) of Site1 is 93. Local species richness is the most basic aspect of diversity and is, in fact, what we usually refer to as $alpha$-diversity. Beyond knowing the number of species, we are often interested in knowing how many individuals were found among the, say, 93 species.
 
+```{r}
+N1 <- sum(Site1) # find the number of individuals at Site1 and assign it to a variable N1
+cat('There are', N1, 'individuals among', S1, 'species at Site1')
+```
+
+Now we know the recorded species richness and recorded total abundance (usually denoted as *N*) of Site1 in the BCI site-by-species matrix. *N* and *S* are two of the most common pieces of data we obtain when sampling ecological communities and assemblages. Finally, we are beginning to quantify our data! But not stopping there, the next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. One of the most common ways to visually explore this relationship, commonly known as the **species abundance distribution** is simply to rank the species from greatest to least, that is, as a **rank-abundance curve (RAC)**.
+
+```{r}
+RAD <- Site1[order(Site1, decreasing=TRUE)] # Rank the taxa by abundance (y-values)
+ranks <- seq(1, ncol(RAD)) # Create a sequence of S ranks (x-values)
+plot(ranks, RAD, type='l', xlab="Rank", ylab="Abundance") # plot the RAC
+```
+
+## Ken hasn't touched from here on down
 
 
 Calculate Shannon index. 'Margin = 1' means diversity is calculated row-wise; 'Margin = 2' means diversity is calcualted column-wise.With base = exp(1), we are esimating Shannon's index using the natural logrithm of each taxon's relative abundance using the equation; $H' = -{\sum ( p_{i} \times ln(p_{i}))}$
@@ -117,25 +132,6 @@ for(i in 1:ncol(BCI_t)){
 What's one way to test that this worked?
 ```{r}
 colSums(BCIrel)
-```
-
-Now let's create a rank abundance curve. First, let's rank taxa within a sample (site 1) by relative abundance
-
-```{r}
-rad <- BCIrel[order(BCIrel[,1], decreasing=TRUE), ]
-head(rad)
-```
-
-Let's make a ranking now that species abundances are ordered/sorted 
-
-```{r}
-ranks <- seq(1,nrow(rad))
-```
-
-Let's create RAD plot
-
-```{r}
-plot(ranks,rad[,1],type='l',col="black",xlab="Rank",lwd=8,ylab="Relative Abundance",xlim=range(ranks))
 ```
 
 
