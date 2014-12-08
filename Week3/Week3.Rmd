@@ -21,6 +21,8 @@ Use the 'help'funciton to learn about package installation and add-ons.
 
 ```{r}
 require("vegan")||install.packages("vegan");require("vegan")
+require("ade4")||install.packages("ade4");require("ade4")
+require("BiodiversityR")||install.packages("BiodiversityR");require("BiodiversityR")
 
 ```
 
@@ -33,10 +35,32 @@ We will again be using the BCI data set for part of this weeks exercises
 
 ```{r}
 data(BCI)
+data(BCI.env)
+BCI.soil <- read.delim ('http://www.davidzeleny.net/anadat-r/lib/exe/fetch.php?media=data:bci.soil.txt')
+data(doubs)
 ```
 
 
+## Recap
+S <- specnumber(BCI)
+simpson <- diversity(BCI, "simpson")
+invsimpson <- diversity(BCI, "inv") 
+
+spa <- doubs$xy
+
+windows()
+par(mar=c(5,5,4,6) + 0.1, xpd=TRUE)
+plot(spa, asp=1, cex=doubs$fish$Satr, main="Brown Trout", xlab = "X-Coordinate (km)", 
+ylab = "Y-Coordinate (km)")
+lines(spa, col="light blue")
+text(spa, row.names(spa), cex-0.8, col="red")
+text(45, 10, "Upstream", cex=1.2, col="red")
+text(38, 115, "Downstream", cex=1.2, col="red")
+legend("topright", inset=c(-0.25, 0), legend=c(1,2,3,4,5), pch=1, pt.cex=c(1,2,3,4,5), title="Fish", bty='n')
+
+
 ## Turnover
+
 
 
 
