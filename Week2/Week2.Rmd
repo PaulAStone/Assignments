@@ -58,24 +58,22 @@ dim(Site1) # print the dimensions of Site1 to the screen
 You can see that Site1 has one row (it is only 1 site) and 225 columns (225 potentially present species). Remember that the BCI site-by-species matrix also accounts for absences, i.e., with zeros. Let's find out how many species actually occupied Site1 when it was censused:
 
 ```{r}
-S1 <- specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
-cat('There are', S1, 'species at Site1') # "cat()" concatenates strings and numbers # Mario, feel free to edit this as you pointed out
+S <- specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
+cat('There are', S, 'species at Site1') # "cat()" concatenates strings and numbers
 ```
 
 Now we know that the recorded species richness (usually denoted as *S*) of Site1 is 93. Local species richness is the most basic aspect of diversity and is, in fact, what we usually refer to as $\alpha$-diversity. Beyond knowing the number of species, we are often interested in knowing how many individuals were found among them. That is, the number of individuals recorded at Site1.
 
 ```{r}
-N1 <- sum(Site1) # find the number of individuals at Site1 and assign it to a variable N1
-cat('There are', N1, 'individuals among', S1, 'species at Site1') # Mario, feel free to edit this as you pointed out
+N <- sum(Site1) # find the number of individuals at Site1 and assign it to a variable N1
+cat('There are', N, 'individuals among', S, 'species at Site1') # Mario, feel free to edit this as you pointed out
 ```
 
 Now we know the recorded species richness (*S*) and recorded total abundance (usually denoted as *N*) of Site1 in the BCI site-by-species matrix. *N* and *S* are two of the most common pieces of data we obtain when sampling ecological communities. Finally, we are beginning to quantify our data!
 
 ### The species abundance distribution
 
-A next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. One of the most common ways to visually explore this relationship, is simply to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1.
-
-Let's begin by first removing the zeros from Site1. This removes the species that, while in the BCI site-by-species matrix, were not found at Site1.
+A next natural step in exploring aspects of local diversity is to ask how abundance varies among species. One of the most common ways to visually explore this relationship is to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1. and let's begin by first removing the zeros from Site1. This removes the species that, while in the BCI site-by-species matrix, were not found at Site1.
 
 ```{r}
 Site1 <- Site1[ !Site1 %in% c(0) ] # Remove all zeros from Site1 and reassign the new vector
@@ -84,18 +82,35 @@ Site1 <- Site1[ !Site1 %in% c(0) ] # Remove all zeros from Site1 and reassign th
 Now, we can plot the RAC, accounting only for the species that were recorded at Site1.
 
 ```{r}
-RAC <- Site1[order(Site1, decreasing=TRUE)] # Rank the taxa by abundance (y-values)
-ranks <- seq(1, ncol(RAC)) # Create a sequence of S ranks (x-values)
-plot(ranks, RAC, type='l', xlab="Rank", ylab="Abundance") # plot the RAC
+Site1 <- Site1[order(Site1, decreasing=TRUE)] # Rank the taxa by abundance
+RAC <- as.vector(Site1, mode='numeric') # Convert Site1 from a data frame to a vector (y-values)
+ranks <- as.vector(seq(1, S), mode='numeric') # Create a sequence of S ranks (x-values)
+plot(ranks, log(RAC), type='p', xlab="Rank", ylab="Abundance") # plot the RAC
 ```
 
-Looking at the RAC for Site1, we can see that abundance is distributed unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations. In fact, the species abundance distribution (SAD) is one of the most widely studied patterns of biodiversity. We will explore another way of illustrating the SAD (other than as a rank-abundance curve) later on in this lesson.
+Looking at the RAC for Site1, we can see that abundance is distributed unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations. 
+
+The species abundance distribution (SAD) is one of the most widely studied patterns of biodiversity. We will explore another way of illustrating the SAD, other than as a rank-abundance curve, later on in this lesson. However, you may wonder whether all sites (rows) in the BCI site-by-species matrix also have highly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying species diversity in ways other than richness, and by quantifying evenness, dominance, and rarity among the species recorded at Site1.
 
 ### Species Evenness
 
-Now, you may wonder whether all sites in the BCI site-by-species matrix also have highly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying species diversity in ways other than richness, and by quantifying evenness, dominance, and rarity at Site1.
+Species evenness is generally defined as the similarity in abundance among species. Take for instance, the RAC for Site1. While there are many species with similar but low abundances, the few species with relatively high abundances actually drives the pattern to be uneven and, hence, the slope of the RAC to be steep. In fact, one way of quantifying evenness is simply to find the slope of regression through the points in RAC. This is referred to as the NHC evenness index, which is named after the authors of the paper that suggests it, i.e., Nee, Harvey, and Cotgreave (Nee et al. 1992).
 
-Species evenness is generally defined as the similarity in abundance among species. Take for instance, the RAC for Site1. While there are many species with similarly low abundances, the few species with relatively high abundances actually drives the pattern to be uneven and the slope of the RAC to be very steep. In fact, one way of quantifying evenness is simply to find the slope of the RAC. This is referred to as 
+```{r}
+fit  <- lm(log(RAC) ~ ranks)
+summary(fit)
+plot(ranks, log(RAC), type='p', xlab="Rank", ylab="Abundance") # plot the log-transformed RAC
+abline(fit, col = 'red')
+```
+
+We can see that the slope is nearly -0.035 with a good overall fit. Note, that the slope of this relationship must be either 0.0 or negative. This is because the RAC is constrained to be perfectly even (slope of 0) to infinitely uneven (negative infinity). Also, notice that while a slope of 0.0 implies a perfectly even distribution of abundance, a slope of -0.035 really doesn't communicate much. Likewise, it may also spring to mind that the number of ranks (i.e. species) will influence this slope by 'stretching' out the relationship. Imagine what the slope would be for *S* = 100,000 ranks! 
+
+**I know, I know, there's a lot of prose here. But, Ken is brain-storming with himself**
+
+This introduces an important consideration in intuiting the value of species evenness or any quantitive metric for that matter. First, we generally want to be able to intuit the values of our metric. Second, we generally want our metric to be bounded between a minimum (e.g. 0.0) and a maximum (e.g. 1.0). Third, and relating to species evenness, we generally do not want evenness among species to simply reflect the number of species; otherwise, comparing evenness among sites with different numbers of species really becomes a comparison of species richness; not evenness *per se*. We also don't want species evenness to simply reflect differences among the most abundant or among the most rare species. In short, we desire intuitive, bounded, and largely unbiased metrics of species evenness.
+
+To this end, more informative metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. 
+
 
 
 More quantitatively, species evenness reflects the nature of the sample variance. We can see this by considering how the sample variance and one very popular index of evenness (...) are calculated.
@@ -161,4 +176,9 @@ What's one way to test that this worked?
 ```{r}
 colSums(BCIrel)
 ```
+
+##HOMEWORK
+1) Recreate this exercise
+2) Redo the regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance)
+3) use knitr to create a pdf, push it to GitHub, and create a pull request
 
