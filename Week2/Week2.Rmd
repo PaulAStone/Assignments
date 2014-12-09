@@ -18,7 +18,7 @@ setwd("~/GitHub/Quantitative_Biodiversity/Assignments/Week2")
 
 ## INSTALL PACKAGES
 
-Ecologists have developed many packages for conducting quantitative analyses in R. You can use the 'help' function to learn more about package installation and R add-ons. In this class, we will often use the package called 'vegan', which contains tools commonly used in ecological research, including analyses of ($\alpha$)-diversity. To install vegan into your R environment type: install.packages("vegan") into your RStudio console.
+Ecologists have developed many packages for conducting quantitative analyses in R. You can use the 'help' function to learn more about package installation and add-ons. In this class, we will often use the package called 'vegan', which contains tools commonly used in ecological research, including analyses of ($\alpha$)-diversity. To install vegan into your R environment type: install.packages("vegan") into your RStudio console.
 
 ```{r}
 require("vegan") #You can also type: library("vegan"). The difference being that "require"
@@ -26,27 +26,26 @@ require("vegan") #You can also type: library("vegan"). The difference being that
 ```
 
 ## LOADING BCI FROM VEGAN
-Conveniently, the vegan library contains a version of the BCI dataset, which is obtained by censusing the trees of 50 1-hectare plots. More information on the BCI forest dataset can be found here: http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/.
+Conveniently, the vegan library contains a version of the BCI dataset, which is obtained by censusing the trees of 50 1-hectare plots every several years. More information on the BCI forest dataset can be found here: http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/.
 
 ```{r}
 data(BCI) # Loading the BCI dataset
 ```
 
 ## EXPLORING THE SITE-BY-SPECIES MATRIX
-In vegan, the BCI data are organized into a **site-by-species matrix**, that is, a data table where the abundances of all 225 tree species (columns) are given for each of the 50 sites (rows). Consequently, this table should have 50 rows and 225 columns. Let's verify this using the dimension or "dim" function:
+In vegan, the BCI data are organized into a **site-by-species matrix**, that is, a data table where the abundances of all 225 tree species (columns) are given for each of the 50 sites (rows). Consequently, this table should have 50 rows (sits) and 225 columns (species). Let's verify this using the dimension or "dim" function:
 
 ```{r}
 dim(BCI)  # Prints the dimensions of the site (row) by species (column) matrix
 ```
 
-The **site-by-species matrix** is one of the most basic data structures used by ecologists and contains the abundances (or presence-absence) of all species found among a given number of sites, e.g., quadrats, transects, etc. With the BCI site-by-species matrix loaded, let's print the abundances of 4 species found in the first 8 sites.
+The **site-by-species matrix** is one of the most basic data structures used by ecologists. It contains the abundances (or presence and absence) of all species found among a given number of sites, quadrats, transects, etc. With the BCI site-by-species matrix loaded, let's print the abundances of 4 species found in the first 8 sites.
 
 ```{r}
 BCI[1:8, 14:17]	# print abundances for sites (rows) 1 to 8 and for species (columns) 14 to 17
 ```
 
 Here, we can see that Cabbage Bark (*Andira inermis*) is absent from six of the eight sites and is only found as a single individual in two sites. On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at all eight sites and is relatively much more abundant than any of the other three species that we selected.
-
 
 ## EXPLORING LOCAL ($\alpha$) DIVERSITY 
 So far, you have been introduced to an important data structure, the site-by-species matrix. You have learned to print its dimensions and to print the abundances of particular species (columns) found in specific sites (rows). Now, let's focus on a specific site by selecting the first row and assigning it to a variable called "Site1":
@@ -56,25 +55,25 @@ Site1 <- BCI[1,] # assign the first row (site) to the variable Site1
 dim(Site1) # print the dimensions of Site1 to the screen 
 ```
 
-You can see that Site1 has one row (it is only 1 site) and 225 columns. But remember that the BCI site-by-species matrix also accounts for absences, i.e., with zeros. Let's find out how many species actually occupied Site1 when it was censused:
+You can see that Site1 has one row (it is only 1 site) and 225 columns (225 potentially present species). Remember that the BCI site-by-species matrix also accounts for absences, i.e., with zeros. Let's find out how many species actually occupied Site1 when it was censused:
 
 ```{r}
 S1 <- specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
-cat('There are', S1, 'species at Site1') # "cat()" concatenates strings and numbers
-
+cat('There are', S1, 'species at Site1') # "cat()" concatenates strings and numbers # Mario, feel free to edit this as you pointed out
 ```
-Now we know that the recorded species richness (usually denoted as *S*) of Site1 is 93. Local species richness is the most basic aspect of diversity and is, in fact, what we usually refer to as $\alpha$-diversity. Beyond knowing the number of species, we are often interested in knowing how many individuals were found among the, say, 93 species.
+
+Now we know that the recorded species richness (usually denoted as *S*) of Site1 is 93. Local species richness is the most basic aspect of diversity and is, in fact, what we usually refer to as $\alpha$-diversity. Beyond knowing the number of species, we are often interested in knowing how many individuals were found among them. That is, the number of individuals recorded at Site1.
 
 ```{r}
 N1 <- sum(Site1) # find the number of individuals at Site1 and assign it to a variable N1
-cat('There are', N1, 'individuals among', S1, 'species at Site1')
+cat('There are', N1, 'individuals among', S1, 'species at Site1') # Mario, feel free to edit this as you pointed out
 ```
 
-Now we know the recorded species richness and recorded total abundance (usually denoted as *N*) of Site1 in the BCI site-by-species matrix. *N* and *S* are two of the most common pieces of data we obtain when sampling ecological communities and assemblages. Finally, we are beginning to quantify our data! 
+Now we know the recorded species richness (*S*) and recorded total abundance (usually denoted as *N*) of Site1 in the BCI site-by-species matrix. *N* and *S* are two of the most common pieces of data we obtain when sampling ecological communities. Finally, we are beginning to quantify our data!
 
 ### The species abundance distribution
 
-A next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. One of the most common ways to visually explore this relationship, commonly known as the species abundance distribution (SAD) is simply to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1.
+A next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. We know there are *N*= 448 individuals among the *S*=93 species. One of the most common ways to visually explore this relationship, commonly known as the species abundance distribution (SAD) is simply to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1.
 
 Let's begin by first removing the zeros from Site1. This removes the species that, while in the BCI site-by-species matrix, were not found at Site1.
 
@@ -90,12 +89,18 @@ ranks <- seq(1, ncol(RAC)) # Create a sequence of S ranks (x-values)
 plot(ranks, RAC, type='l', xlab="Rank", ylab="Abundance") # plot the RAC
 ```
 
-Looking at the RAC for Site1, we can see that abundance is distributed very unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations. Now, you might ask whether all sites in the BCI site-by-species matrix have similarly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying evenness, diversity, dominance, and rarity at Site1.
+Looking at the RAC for Site1, we can see that abundance is distributed very unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations. Now, you might ask whether all sites in the BCI site-by-species matrix have similarly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying species diversity in ways other than richness, and by quantifying evenness, dominance, and rarity at Site1.
+
+### Species Diversity
+Species diversity 
 
 ### Species Evenness
 
+Species evenness is generally defined as the similarity in abundance among species. Take for instance, the RAC for Site1. While there are many species with similarly low abundances, the few species with relatively high abundances actually drives the pattern to be uneven and the slope of the RAC to be very steep. In fact, one way of quantifying evenness is simply to find the slope of the RAC. This is referred to as 
 
-### Species Diversity
+
+More quantitatively, species evenness reflects the nature of the sample variance. We can see this by considering how the sample variance and one very popular index of evenness (...) are calculated.
+
 
 
 ### Dominance and Rarity
