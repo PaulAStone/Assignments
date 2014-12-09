@@ -9,9 +9,9 @@ output: pdf_document
 This exercise will introduce you to some of the basic features of the R computing environment. We will briefly cover operators, data types, and simple commands that will be useful for you during the course and beyond. In addition to using R's base package, we wil also use a couple of contributed packages, which together will allow us to visualized data and peform relatively simple statistics (e.g., linear regression and ANOVA).
 
 ## HOW WE WILL BE USING R AND OTHER TOOLS
-During the course, we will use [RStudio](http://www.rstudio.com/), which is a relatively user-friendly integrated developement environment that allows R to interface with other tools. For example, you are currently working in an [R Markdown](<http://rmarkdown.rstudio.com>) document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. 
+During the course, we will use [RStudio](http://www.rstudio.com/), which is a relatively user-friendly integrated developement environment that allows R to interface with other tools. For example, you are currently working in an [R Markdown](<http://rmarkdown.rstudio.com>) document. Markdown is a simple formatting syntax for authoring HTML, PDF, and other documents. 
 
-We will also use a tool called [knitr](http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes both the content as well as the output of any embedded R code. If there are errors in your markdown document, however, you will not be able to knit a PDF file. Assignments in this class will require that you successfully create a PDF using knitr and submit it to the course respository hosted on [GitHub](<http://github.com>).
+We will also use a tool called [knitr](http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes both the content as well as the output of any embedded R code. If there are errors in your markdown document, however, you will not be able to knit a PDF file. Assignments in this class will require that you successfully create a PDF using knitr and submit it to the course respository hosted on [IU's GitHub](<https://github.iu.edu>).
 
 ## SETTING YOUR WORKING DIRECTORY
 The first step of working with R is to set your working directory. This is where your R script and output will be saved. It's also a logical place to put data files that you plan to import into R. 
@@ -139,6 +139,8 @@ In some instances, you may want to change the value of an element in a vector. H
 z[2] <- 583 
 ```
 
+## This should be a new section: How about summary statistics?
+
 It's pretty easy to perform summary statistics on a vector using the built-in fuctions of R:
 ```{r}
 max(z)    # maximum
@@ -152,10 +154,10 @@ sd(z)     # standard deviation
 
 What happens when you take the standard error of the mean (`sem`) of z? 
 
-The standard error of the mean is defined as $SEM = \frac{sd (x)}{\sqrt{n}}$. This function does not exist in the base package of R. Therefore, you need to write your own functions sometimes. Let's give it a try:
+The standard error of the mean is defined as $SEM = \frac{sd (x)}{\sqrt{n}}$. This function does not exist in the base package of R. Therefore, you need to write your own function. Let's give it a try:
 ```{r}
 sem <- function(x, ...){
-  sd(x, ...)/sqrt(length(na.omit(x)))
+  sd(x)/sqrt(length(na.omit(x)))
   }
 ```
 There are number of functions inside of `sem`. Take a moment to think about and describe what is going on here. 
@@ -172,15 +174,20 @@ One solution is to tell R to remove NA from the dataset:
 sem(i, na.rm = TRUE)
 ```
 
+** Jay, I think we should just write this as (always removes NA)
+```{r}
+sem <- function(x){
+  sd(x, na.rm = TRUE)/sqrt(length(na.omit(x)))
+  }
+```
+
+** Maybe my summary statistic idea was bad, sorry.
+
 **Matrices** are just two-dimensional vectors containing data of the same type (e.g., numeric, integer, character).
 
 There are three common ways to create a matrix (two dimensional vectors) in R. 
 
 **Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a one-dimensional vector using a new function `rnorm`.
-
-<-- seems odd to introduce this here. Also, why not NAs? -- MEM
-<-- Doesn't seem odd to me, but I'm defintiely open to discuss -- JTL
-<-- Were you wanting to build from the idea of NAs or something? -- JTL
 
 ```{r}
 j <- c(rnorm(length(z), mean = z)) 
@@ -201,10 +208,11 @@ Use the `dim` function to describe the matrix you just created. What did you lea
 l <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2) 
 ```
 
-**Approach 3** to making a matrix is to import or *load a dataset* from  your working directory:
+**Approach 3** to making a matrix is to import or *load a dataset* from your working directory:
 ```{r}
 m <- as.matrix(read.table("matrix.txt", sep = "\t", header = FALSE))
 ```
+
 In this case, we're reading in a tab-delimited file. The name of your file must be in quotes, and you need to specify tab-limited file type using the `sep` argument. The `header` argument tells R whether or not the names of the variables are contained in the first line; in the current example, they are not. 
 
 Often, when handling datasets, we want to be able to transpose a matrix. This is an easy operation in R:
@@ -253,7 +261,7 @@ How does this dataset differ from the 'm' dataset above? We're now dealing with 
 Here is a description of the column headers:
   -TANK = unique mesocosm identifier
   
-  -NUTS = categorical nutrient treament 
+  -NUTS = categorical nutrient treament
   
   -TP = total phosphorus concentration (µg/L)
   
@@ -277,7 +285,7 @@ We can conveniently visualize bi-plots of the data using the following command:
 pairs(meso.num)
 ```
 
-Now let's conduct a simple correlation analysis with the R `cor()` function. 
+Now let's conduct a simple (Pearson's) correlation analysis with the R `cor()` function. 
 ```{r}
 cor1 <- cor(meso.num)
 ```
@@ -291,6 +299,8 @@ When using one of the contributed packages, the first thing we need to do is **i
 ```{r}
 require("psych")||install.packages("psych");require("psych") # require? if not, install and then require
 ```
+
+<-- Should we describe this code?
 
 Now, let's look at the correlations among variables and assess whether they are signficant
 ```{r}
@@ -321,26 +331,28 @@ summary(fitreg)
 ```
 
 Now, let's look at a plot of the data used in our regression:
-```{r reglayer1, eval=TRUE} 
-TN <- meso$TN
-ZP <- meso$ZP
-plot(TN,ZP,ylim=c(0,10),xlim=c(500,5000), xlab=expression(paste("Total Nitrogen (", mu,"g/L)")),
-     ylab="Zooplankton Biomass (mg/L)",las=1)
+```{r reglayer1, eval = TRUE} 
+TN <- meso$TN # Not needed
+ZP <- meso$ZP # Not needed
+plot(meso$TN, meso$ZP, ylim = c(0, 10), xlim = c(500, 5000), 
+     xlab = expression(paste("Total Nitrogen (", mu,"g/L)")),
+     ylab = "Zooplankton Biomass (mg/L)", las = 1)
 ```
 
 To add the regression line, the first thing we need to do is generate a range of x-values and then generate the corresponding predicted values from our regression model:
-```{r reglayer2, echo=-1}
+```{r reglayer2, echo = -1}
 <<reglayer1>>
-newTN <- seq(min(TN),max(TN),10)
-regline <- predict(fitreg,newdata=data.frame(TN=newTN))
-lines(newTN,regline)
+newTN <- seq(min(TN), max(TN), 10)
+regline <- predict(fitreg, newdata = data.frame(TN = newTN))
+lines(newTN, regline)
 ```
 
-Now lets create and plot the 95% confidence intervals using the same procedure as above, that is, use newTN to generate corresponding confidence intervals from our regression model:
-```{r reglayer3, echo=-1}
+Now lets create and plot the 95% confidence intervals using the same procedure as above, that is, use 'newTN' to generate corresponding confidence intervals from our regression model:
+```{r reglayer3, echo = -1}
 <<reglayer2>>
-conf95 <- predict(fitreg,newdata=data.frame(TN=newTN),interval=c("confidence"),level=0.95,type="response")
-matlines(newTN,conf95[,c("lwr","upr")],type="l",lty=2,lwd=1,col="black")
+conf95 <- predict(fitreg, newdata = data.frame(TN = newTN),
+                  interval = c("confidence"), level = 0.95, type = "response")
+matlines(newTN, conf95[, c("lwr", "upr")], type="l", lty = 2, lwd = 1, col = "black")
 ```
 
 We should also look at the residuals (i.e., observed values - predicted values) to see if our data meet the assumptions of linear regression. Specifically, we want to make sure that the residuals are normally distributed and that they are homoskedastic. We can look for patterns in our residuals using the following diagnostics:
@@ -350,36 +362,40 @@ plot(fitreg)
 
 We also have the option of looking at the relationship between zooplankton and nutrients where the manipulation is treated categorically (low, medium, high). First, let's order the categorical nutrient treatments:
 ```{r}
-NUTS <- factor(meso$NUTS,levels = c('low','medium','high'))
+NUTS <- factor(meso$NUTS, levels = c('low', 'medium', 'high'))
 ```
 
 Before plotting, we need to calcualte the means and standard errors for zooplankton biomass in our nutrient treatments: 
 ```{r}
-sem <- function(x, ...){
-  sd(x, ...)/sqrt(length(na.omit(x)))
-}
+sem <- function(x){
+  sd(x, na.rm = TRUE)/sqrt(length(na.omit(x)))
+  }
 zp.means <- tapply(ZP, NUTS, mean)
 zp.sem <- tapply(ZP, NUTS, sem)
 ```
 
 Now let's make the barbplot:
-```{r boxlayer1, eval=TRUE}
-bp <- barplot(zp.means, ylim=c(0,round(max(ZP), digits=0)), pch=15, cex=1.25, las=1, xlab="nutrient supply", ylab="zooplankton biomass (mg/L)",cex.lab=1.4, cex.axis=1.25, names.arg=c("low","medium","high"))
-bp
+```{r boxlayer1, eval = TRUE}
+bp <- barplot(zp.means, ylim =c(0, round(max(ZP), digits = 0)), 
+              pch = 15, cex = 1.25, las = 1, cex.lab = 1.4, cex.axis = 1.25, 
+              xlab = "nutrient supply", 
+              ylab = "zooplankton biomass (mg/L)",
+              names.arg = c("low", "medium", "high"))
+bp <-- not needed?
 ```
 
 We need to add the error bars (+/- sem) as follows:
-```{r boxlayer2, echo=-1}
+```{r boxlayer2, echo = -1}
 <<boxlayer1>>
 arrows(x0 = bp, y0 = zp.means, y1 = zp.means - zp.sem, angle = 90,
-       length=0.1, lwd = 1) # 
+       length=0.1, lwd = 1)
 arrows(x0 = bp, y0 = zp.means, y1 = zp.means + zp.sem, angle = 90,
        length=0.1, lwd = 1)
 ```
 
 We can conduct a one-way analysis of variance (ANOVA) as follows
 ```{r}
-fitanova <- aov(meso$ZP ~ meso$NUTS, data = meso )
+fitanova <- aov(meso$ZP ~ meso$NUTS, data = meso ) # data part not needed if also in the formula part
 ```
 
 Let's look at the output in more detail (just as we did with regression):
@@ -397,4 +413,7 @@ Finally, we can conduct a post-hoc comparison of treatments using Tukey's HSD
 TukeyHSD(fitanova)
 ```
 
+<-- Similar to SAS output
+library(agricolae)
+HSD.test(fitanova, "meso$NUTS", group = TRUE, console = TRUE)
 
