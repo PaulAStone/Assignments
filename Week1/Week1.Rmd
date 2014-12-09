@@ -335,7 +335,7 @@ Let's examine the output of the regression model:
 summary(fitreg)
 ```
 
-Now, let's look at a plot of the data used in our regression:
+Now, let's look at a plot of the data used in the regression:
 ```{r reglayer1, eval = TRUE} 
 TN <- meso$TN # Not needed
 ZP <- meso$ZP # Not needed
