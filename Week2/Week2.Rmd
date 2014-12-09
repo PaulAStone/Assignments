@@ -47,7 +47,7 @@ BCI[1:8, 14:17]	# print abundances for sites (rows) 1 to 8 and for species (colu
 
 Here, we can see that Cabbage Bark (*Andira inermis*) is absent from six of the eight sites and is only found as a single individual in two sites. On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at all eight sites and is relatively much more abundant than any of the other three species that we selected.
 
-## EXPLORING LOCAL ($\alpha$) DIVERSITY 
+## EXPLORING LOCAL DIVERSITY 
 So far, you have been introduced to an important data structure, the site-by-species matrix. You have learned to print its dimensions and to print the abundances of particular species (columns) found in specific sites (rows). Now, let's focus on a specific site by selecting the first row and assigning it to a variable called "Site1":
 
 ```{r}
@@ -73,7 +73,7 @@ Now we know the recorded species richness (*S*) and recorded total abundance (us
 
 ### The species abundance distribution
 
-A next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. We know there are *N*= 448 individuals among the *S*=93 species. One of the most common ways to visually explore this relationship, commonly known as the species abundance distribution (SAD) is simply to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1.
+A next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. One of the most common ways to visually explore this relationship, is simply to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1.
 
 Let's begin by first removing the zeros from Site1. This removes the species that, while in the BCI site-by-species matrix, were not found at Site1.
 
@@ -81,7 +81,7 @@ Let's begin by first removing the zeros from Site1. This removes the species tha
 Site1 <- Site1[ !Site1 %in% c(0) ] # Remove all zeros from Site1 and reassign the new vector
 ```
 
-Now, we can plot the RAC, accounting only for the species that were found there.
+Now, we can plot the RAC, accounting only for the species that were recorded at Site1.
 
 ```{r}
 RAC <- Site1[order(Site1, decreasing=TRUE)] # Rank the taxa by abundance (y-values)
@@ -89,12 +89,11 @@ ranks <- seq(1, ncol(RAC)) # Create a sequence of S ranks (x-values)
 plot(ranks, RAC, type='l', xlab="Rank", ylab="Abundance") # plot the RAC
 ```
 
-Looking at the RAC for Site1, we can see that abundance is distributed very unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations. Now, you might ask whether all sites in the BCI site-by-species matrix have similarly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying species diversity in ways other than richness, and by quantifying evenness, dominance, and rarity at Site1.
-
-### Species Diversity
-Species diversity 
+Looking at the RAC for Site1, we can see that abundance is distributed unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations. In fact, the species abundance distribution (SAD) is one of the most widely studied patterns of biodiversity. We will explore another way of illustrating the SAD (other than as a rank-abundance curve) later on in this lesson.
 
 ### Species Evenness
+
+Now, you may wonder whether all sites in the BCI site-by-species matrix also have highly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying species diversity in ways other than richness, and by quantifying evenness, dominance, and rarity at Site1.
 
 Species evenness is generally defined as the similarity in abundance among species. Take for instance, the RAC for Site1. While there are many species with similarly low abundances, the few species with relatively high abundances actually drives the pattern to be uneven and the slope of the RAC to be very steep. In fact, one way of quantifying evenness is simply to find the slope of the RAC. This is referred to as 
 
