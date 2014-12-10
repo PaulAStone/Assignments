@@ -105,16 +105,23 @@ plot(ranks, log(RAC), type='p', xlab="Rank", ylab="log(abundance)") # plot the l
 abline(fit, col = 'red')
 ```
 
-We can see that the slope is nearly -0.035 with a good overall fit. Note, that the slope of this relationship must be either 0.0 or negative because the RAC is constrained to between perfect evenness (slope of 0) and infinite unevenness (negative infinity). Also, notice that while a slope of 0.0 implies a perfectly even distribution of abundance, a slope of -0.035 really doesn't communicate much. Likewise, the number of ranks (i.e. species) influences the slope by 'stretching' out the relationship. Imagine what the slope would be for *S* = 100,000 ranks!
+We can see that the slope is nearly -0.035 with a good overall fit. Note, that the slope of this relationship must be either 0.0 or negative because the RAC is constrained to between perfect evenness (slope of 0) and infinite unevenness (negative infinity). Also, notice that while a slope of 0 implies a perfectly even distribution of abundance among spcies, a slope of -0.035 really doesn't communicate much. Likewise, the number of ranks (i.e. species) influences the slope by 'stretching' out the relationship. Imagine what the slope would be for *S* = 100,000 ranks!
 
 ### Desired properties of evenness
-Shortcomings of the NHC index reveal important considerations when quantifying species evenness. First, we want to be able to intuit the values of our metric. Second, we generally want our metric to be bounded between a minimum (e.g. 0.0) and a maximum (e.g. 1.0). Third, and relating to species evenness, we generally do not want evenness among species to simply reflect the number of species; otherwise, comparing evenness among sites with different numbers of species really becomes a comparison of species richness; not evenness *per se*. We also don't want species evenness to simply reflect differences among the most abundant or among the most rare species. In short, we desire intuitive, bounded, and largely unbiased metrics of species evenness.
+Shortcomings of the NHC index reveal important considerations when quantifying species evenness. First, we want to be able to intuit the values of our metric. Second, we want our metric to be bounded between a minimum (e.g. 0.0) and a maximum (e.g. 1.0). Third, we do not want evenness among species to simply reflect the number of species (i.e. *S*); otherwise, comparing evenness among sites with different numbers of species really becomes a comparison of species richness; not evenness *per se*. We also don't want species evenness to simply reflect differences among the most abundant or among the most rare species. In short, we desire an intuitive, bounded, and largely unbiased metric of species evenness.
 
-To this end, more informative metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. 
+Seveal well-known metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. Here, we will introduce four: Simpson's evenness, Smith and Wilson's evenness index, Heip's evenness index, and Shannon's evenness.
 
+### Shannon's (or Pielou's) evenness
+Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness is calculated as: ${J' = }  \frac{H'} {ln(S)}$,
 
+### Simpson's evenness
 
-More quantitatively, species evenness reflects the nature of the sample variance. We can see this by considering how the sample variance and one very popular index of evenness (...) are calculated.
+Simpson's evenness is calculated as ${E_\frac{1}{D} = } \frac{1}{S} \sum \frac{N(N-1)} {n_i(n_i-1)}$, where *S* is species richness, *N* is total abundance, *i* is the *i*th species. Let's use the vegan package to calculate Simpson's evenness for Site1:
+
+```{r}
+```
+
 
 
 
