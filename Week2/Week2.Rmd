@@ -110,35 +110,55 @@ We can see that the slope is nearly -0.035 with a good overall fit. Note, that t
 ### Desired properties of evenness
 Shortcomings of the NHC index reveal important considerations when quantifying species evenness. First, we want to be able to intuit the values of our metric. Second, we want our metric to be bounded between a minimum (e.g. 0.0) and a maximum (e.g. 1.0). Third, we do not want evenness among species to simply reflect the number of species (i.e. *S*); otherwise, comparing evenness among sites with different numbers of species really becomes a comparison of species richness; not evenness *per se*. We also don't want species evenness to simply reflect differences among the most abundant or among the most rare species. In short, we desire an intuitive, bounded, and largely unbiased metric of species evenness.
 
-Seveal well-known metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. Here, we will introduce four: Simpson's evenness, Smith and Wilson's evenness index, and Shannon's evenness.
+Seveal well-known metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. Here, we will introduce three: Simpson's evenness, Smith and Wilson's evenness index, and Shannon's evenness.
 
-### Shannon's (or Pielou's) evenness
-Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and is calculated as ${H' = -}  \sum p_i ln(p_i)$ and where $p_i$ is the relative abundance of the *i*th species.
+### Shannon's (or Pielou's) evenness, J'
+Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and is calculated as ${H' = -}  \sum p_i ln(p_i)$ and where $p_i$ is the relative abundance of the *i*th species. Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
 
-The vegan package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy.
+The vegan package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy, sometimes referred to as Shannon's diversity, the Shannon-Weiner diversity index, among others.
+
 ```{r}
-H <- diversity(Site1) # find Shannon's entropy (H')
+H <- diversity(Site1, index="shannon") # find Shannon's entropy (H')
 J <- H/log(S) # find Shannon's evenness (J')
 J
 ```
 
-You can see that Shannon's evenness is quite high for Site1. Yet, this doesn't intuitively reflect what we saw in the RAC. In fact, because of the way Shannon's is calculated, most values for ecological communities are commonly greater than 0.7, meaning that an intermediate value of *J'* does not really mean an intermediate evenness. Compare this to another evenness metric, Simpson's evenness.
+You can see that Shannon's evenness is quite high for Site1. Yet, this doesn't intuitively reflect what we saw in the RAC. In fact, because of the way Shannon's is calculated, values for ecological communities are commonly greater than 0.5. Consequently, an intermediate value of *J'* does not necessarily mean an intermediate evenness. Compare this to another evenness metric, i.e., Simpson's evenness.
 
-### Simpson's evenness
+### Simpson's evenness, $E_\frac{1}{D}$
 
-Simpson's evenness is calculated as ${E_\frac{1}{D} = } \frac{1}{S} \sum \frac{N(N-1)} {n_i(n_i-1)}$, where *S* is species richness, *N* is total abundance, *i* is the *i*th species. In essence, Simpson's evenness metric represents the sample variance. Let's use the vegan package to calculate Simpson's evenness for Site1:
+Simpson's evenness metric essentially reflects the sample variance of the SAD, and is calculated as ${E_\frac{1}{D} = } \frac{1}{S} \sum \frac{N(N-1)} {n_i(n_i-1)}$, where *S* is species richness, *N* is total abundance, *i* is the *i*th species. 
+
+Once, again vegan has no function for Simpson's evenness but does calculate Simpson's diversity, i.e., the probability that the next sampled individual belongs to a different species:
 
 ```{r}
-D <- diversity(Site1, "simp") # find Shannon's entropy (H')
-E <- (1/D)/S # find Shannon's evenness (J')
+D <- diversity(Site1, "simp") # find Simpson's diversity (D)
+E <- (1/D)/S # find Simpson's evenness (E)
 E
 ```
 
-Here, we can see that Simpson's evenness reveals that species evenness for Site1 is quite low, i.e., > 0.1. However, Simpson's evenness has also been criticized for being biased towards the most abundant taxa, i.e., revealing differences in abundances among the first few ranks and is less influenced by the many similarly abundant but rarer species. Let's examine the value of one more and purportedly less-biased evenness metric, $E_{var}$.
+Here, we can see that Simpson's evenness reveals that species evenness for Site1 is quite low, i.e., > 0.1. However, Simpson's evenness has also been criticized for being biased towards the most abundant taxa, i.e., revealing differences in abundances among the first few ranks and is less influenced by the many similarly abundant but rarer species. Let's examine the value of evenness for Site1 using a different and purportedly less-biased evenness metric, $E_{var}$.
 
-### Smith and Wilson's evenness index
+### Smith and Wilson's evenness index, $E_{var}$
 
-Smith and Wilson (1996) reviewed metrics of species evenness. Some of their conclusions about the desired characteristics of species evenness are reflected in this assignment. They derived a robust measure of species evenness (${E_{var}}$) that represented, in essence, the sample variance. that was independent of *S* and was standardized to take values between 0 (no evenness) and 1 (perfect evenness). Their metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi * \arctan( \sum_{i=1}^{i=S} ln(n_i) - \sum_{j=1}^{j=S} ln(n_j)/S)}$
+Smith and Wilson (1996) reviewed metrics of species evenness. Some of their conclusions about the desired characteristics of species evenness are reflected in this assignment. They derived a robust measure of species evenness (${E_{var}}$) that represented, in essence, the sample variance. that was independent of *S* and was standardized to take values between 0 (no evenness) and 1 (perfect evenness). Their metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi * \arctan( \sum_{i=1}^{i=S} ln(n_i) - \sum_{j=1}^{j=S} ln(n_j)/S)}$.
+
+Let's walk through quantifying ${E_{var}}$ for Site1.
+
+```{r}
+P <- log(RAC)
+AvgAb <- mean(P)
+X <- 0
+Evar <- 0
+
+for (x in P)
+{
+X = X + (x - AvgAb)^2 / S
+Evar = 1 - (2/pi)*atan(X)
+}
+
+Evar # print Evar for Site1
+```
 
 ### Dominance and Rarity
 
