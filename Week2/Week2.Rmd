@@ -183,14 +183,31 @@ for (sp in RAC){
 }
 H
 
-diversity(Site1, index="shannon")
+diversity(RAC, index="shannon")
 ```
 
-
-
 ### Simpson's diversity (or dominance)
+Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. Simpson's index is often expressed as 1/*D* or 1-*D*, so that diversity naturally increases with 1/*D*. Let's calculate Simpson's diversity for Site1 and then compare it to vegan's estimate:
 
+```{r}
+D <- 0.0
+N <- sum(RAC)
+for (ni in RAC){
+  D = D + (ni*ni)/(N*N)
+}
 
+invD <- 1/D # using the 1/D variation
+invD
+
+invD <- diversity(RAC, "inv") # using vegan
+invD
+
+D <- 1 - D # using the 1 - D variation
+D
+
+D <- diversity(RAC, "simp") # using vegan
+D
+```
 
 ### Dominance and Rarity
 
@@ -253,7 +270,9 @@ colSums(BCIrel)
 ```
 
 ##HOMEWORK
-1) Recreate this exercise
-2) Redo the regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance)
+1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
+
+2) ...
+
 3) use knitr to create a pdf, push it to GitHub, and create a pull request
 
