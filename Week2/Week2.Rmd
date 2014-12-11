@@ -146,19 +146,27 @@ Smith and Wilson (1996) reviewed metrics of species evenness. Some of their conc
 Let's walk through quantifying ${E_{var}}$ for Site1.
 
 ```{r}
-P <- log(RAC)
-AvgAb <- mean(P)
-X <- 0
-Evar <- 0
-
-for (x in P)
-{
-X = X + (x - AvgAb)^2 / S
-Evar = 1 - (2/pi)*atan(X)
+P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
+AvgAb <- mean(P) # find the average of the log abundances
+X <- 0 # declare a scalar variable X
+Evar <- 0 # declare  a scalar varible Evar
+for (x in P) {
+  X = X + (x - AvgAb)^2 / (S-1)
 }
-
+Evar = 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
+
+While considerably more involved to calcualte, $E_{var}$ really reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to a value between 0 and 1.
+
+```{r}
+X <- var(log(RAC))
+Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
+Evar # print Evar for Site1
+```
+
+
+
 
 ### Dominance and Rarity
 
