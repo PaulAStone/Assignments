@@ -210,7 +210,7 @@ D
 ```
 
 ### Fisher's $\alpha$
-R. A. Fisher (1943) derived one of the first and most successful models for how abundance varies among species, i.e., the log-series distribution. This model has only a single fitted parameter, i.e., $\alpha$. Later, we will explore the log-series model. For now, let's concentrate on the Fisher's $\alpha$, which has often been used as a diversity metric and is the root of 'alpha' diversity. Fisher's $\alpha$, according to the authors of the vegan package is asymptotically similar to inverse Simpson's. Let's compare using Site1.
+R.A. Fisher (1943) derived one of the first and most successful models for how abundance varies among species, i.e., the log-series distribution. This model has only a single fitted parameter, i.e., $\alpha$, which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$. However, this does not tell us exactly how to estimate $\alpha$, and this is because $\alpha$ is a fitted parameter. Later, we will explore the log-series. For now, let's concentrate on the Fisher's $\alpha$, which has often been used as a diversity metric and is the root of 'alpha' diversity. Fisher's $\alpha$, according to the authors of the vegan package is asymptotically similar to inverse Simpson's. Let's compare using Site1.
 
 ```{r}
 invD <- diversity(RAC, "inv")
@@ -219,40 +219,9 @@ Fisher <- fisher.alpha(RAC)
 Fisher
 ```
 
-As we can see, the two measurements are somewhat similar. They would converge if our community was much greater.
+As we can see, the two measurements are somewhat similar. They would converge if our community was much greater in total abundance and richness. However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
-### Dominance and Rarity
-
-
-
-## Ken hasn't touched from here on down, except for the homework
-
-
-Calculate Shannon index. 'Margin = 1' means diversity is calculated row-wise; 'Margin = 2' means diversity is calcualted column-wise.With base = exp(1), we are esimating Shannon's index using the natural logrithm of each taxon's relative abundance using the equation; $H' = -{\sum ( p_{i} \times ln(p_{i}))}$
-
-```{r}
-shannon <- diversity(BCI, index="shannon", MARGIN = 1, base=exp(1))
-```
-
-Can also calculate other diversity metrics
-
-```{r}
-simpson <- diversity(BCI, "simpson")
-invsimpson <- diversity(BCI, "inv")
-fisher <- fisher.alpha(BCI)
-``` 
-
-Let's plot ***Pairs is not a normal plotting tool, introduce first***
-
-```{r}
-pairs(cbind(shannon, simpson, invsimpson, fisher), pch="+", col="blue")
-```
-
-Species richness
-
-```{r}
-S <- specnumber(BCI)
-```
+## Estimating richness and diversity
 
 Rarefaction
 
@@ -265,21 +234,6 @@ rarecurve(BCI, step = 20, sample = raremax, col = "blue", cex = 0.6)
 ```
 
 Example: http://www.jennajacobs.org/R/rarefaction.html
-
-Calculating relative abundances
-```{r}
-BCI_t <- t(BCI)
-
-BCIrel <- BCI_t
-for(i in 1:ncol(BCI_t)){
-  BCIrel[,i] = BCI_t[,i] / sum(BCI_t[,i])
-  }
-```
-
-What's one way to test that this worked?
-```{r}
-colSums(BCIrel)
-```
 
 ##HOMEWORK
 1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
