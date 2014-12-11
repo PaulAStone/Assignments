@@ -58,24 +58,24 @@ dim(Site1) # print the dimensions of Site1 to the screen
 You can see that Site1 has one row (it is only 1 site) and 225 columns (225 potentially present species). Remember that the BCI site-by-species matrix also accounts for absences, i.e., with zeros. Let's find out how many species actually occupied Site1 when it was censused:
 
 ```{r}
-S1 <- specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
-cat('There are', S1, 'species at Site1') # "cat()" concatenates strings and numbers # Mario, feel free to edit this as you pointed out
+S <- specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S1
+cat('There are', S, 'species at Site1') # "cat()" concatenates strings and numbers
 ```
 
 Now we know that the recorded species richness (usually denoted as *S*) of Site1 is 93. Local species richness is the most basic aspect of diversity and is, in fact, what we usually refer to as $\alpha$-diversity. Beyond knowing the number of species, we are often interested in knowing how many individuals were found among them. That is, the number of individuals recorded at Site1.
 
 ```{r}
-N1 <- sum(Site1) # find the number of individuals at Site1 and assign it to a variable N1
-cat('There are', N1, 'individuals among', S1, 'species at Site1') # Mario, feel free to edit this as you pointed out
+N <- sum(Site1) # find the number of individuals at Site1 and assign it to a variable N1
+cat('There are', N, 'individuals among', S, 'species at Site1') # Mario, feel free to edit this as you pointed out
 ```
 
 Now we know the recorded species richness (*S*) and recorded total abundance (usually denoted as *N*) of Site1 in the BCI site-by-species matrix. *N* and *S* are two of the most common pieces of data we obtain when sampling ecological communities. Finally, we are beginning to quantify our data!
 
 ### The species abundance distribution
 
-A next natural step in exploring aspects of local diversity is simply to ask how abundance varies among species. One of the most common ways to visually explore this relationship, is simply to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1.
+A next natural step in exploring aspects of local diversity is to ask how abundance varies among species. One of the most common ways to visually explore this relationship is to rank the species from greatest to least, that is, as a rank-abundance curve (RAC). Let's plot the RAC for Site1. 
 
-Let's begin by first removing the zeros from Site1. This removes the species that, while in the BCI site-by-species matrix, were not found at Site1.
+Let's begin by removing the zeros from Site1. This removes the species that, while in the BCI site-by-species matrix, were not found at Site1.
 
 ```{r}
 Site1 <- Site1[ !Site1 %in% c(0) ] # Remove all zeros from Site1 and reassign the new vector
@@ -84,23 +84,130 @@ Site1 <- Site1[ !Site1 %in% c(0) ] # Remove all zeros from Site1 and reassign th
 Now, we can plot the RAC, accounting only for the species that were recorded at Site1.
 
 ```{r}
-RAC <- Site1[order(Site1, decreasing=TRUE)] # Rank the taxa by abundance (y-values)
-ranks <- seq(1, ncol(RAC)) # Create a sequence of S ranks (x-values)
-plot(ranks, RAC, type='l', xlab="Rank", ylab="Abundance") # plot the RAC
+Site1 <- Site1[order(Site1, decreasing=TRUE)] # Rank the taxa by abundance
+RAC <- as.vector(Site1, mode='numeric') # Convert Site1 from a data frame to a vector (y-values)
+ranks <- as.vector(seq(1, S), mode='numeric') # Create a sequence of S ranks (x-values)
+plot(ranks, log(RAC), type='p', xlab="Rank", ylab="log(abundance)") # plot the RAC
 ```
 
-Looking at the RAC for Site1, we can see that abundance is distributed unevenly among species. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations. In fact, the species abundance distribution (SAD) is one of the most widely studied patterns of biodiversity. We will explore another way of illustrating the SAD (other than as a rank-abundance curve) later on in this lesson.
+Looking at the RAC for Site1, we can see that abundance is distributed unevenly among species, even when abundances are log-transformed. In fact, few species have more than 10 individuals and most species have less than 5. This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations (McGill et al. 2007).
+
+You may wonder whether all sites (rows) in the BCI site-by-species matrix also have highly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying species diversity in ways other than richness, and by quantifying evenness, dominance, and rarity among the species recorded at Site1.
 
 ### Species Evenness
 
-Now, you may wonder whether all sites in the BCI site-by-species matrix also have highly uneven RACs. But, before moving on to other sites, let's explore aspects of local diversity at Site1 more deeply, that is, by quantifying species diversity in ways other than richness, and by quantifying evenness, dominance, and rarity at Site1.
+Species evenness is generally defined as the similarity in abundance among species. Take for instance, the RAC for Site1. While there are many species with similar but low abundances, the few species with relatively high abundances actually drives the pattern to be uneven and, hence, the slope of the RAC to be steep. In fact, one way of quantifying evenness is simply to find the slope of regression through the points in RAC. This is referred to as the NHC evenness index (Nee et al. 1992).
 
-Species evenness is generally defined as the similarity in abundance among species. Take for instance, the RAC for Site1. While there are many species with similarly low abundances, the few species with relatively high abundances actually drives the pattern to be uneven and the slope of the RAC to be very steep. In fact, one way of quantifying evenness is simply to find the slope of the RAC. This is referred to as 
+```{r}
+fit  <- lm(log(RAC) ~ ranks)
+summary(fit)
+plot(ranks, log(RAC), type='p', xlab="Rank", ylab="log(abundance)") # plot the log-transformed RAC
+abline(fit, col = 'red')
+```
 
+We can see that the slope is nearly -0.035 with a good overall fit. Note, that the slope of this relationship must be either 0.0 or negative because the RAC is constrained to between perfect evenness (slope of 0) and infinite unevenness (negative infinity). Also, notice that while a slope of 0 implies a perfectly even distribution of abundance among spcies, a slope of -0.035 really doesn't communicate much. Likewise, the number of ranks (i.e. species) influences the slope by 'stretching' out the relationship. Imagine what the slope would be for *S* = 100,000 ranks!
 
-More quantitatively, species evenness reflects the nature of the sample variance. We can see this by considering how the sample variance and one very popular index of evenness (...) are calculated.
+### Desired properties of evenness
+Shortcomings of the NHC index reveal important considerations when quantifying species evenness. First, we want to be able to intuit the values of our metric. Second, we want our metric to be bounded between a minimum (e.g. 0.0) and a maximum (e.g. 1.0). Third, we do not want evenness among species to simply reflect the number of species (i.e. *S*); otherwise, comparing evenness among sites with different numbers of species really becomes a comparison of species richness; not evenness *per se*. We also don't want species evenness to simply reflect differences among the most abundant or among the most rare species. In short, we desire an intuitive, bounded, and largely unbiased metric of species evenness.
 
+Seveal well-known metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. Here, we will introduce three: Simpson's evenness, Smith and Wilson's evenness index, and Shannon's evenness.
 
+### Shannon's (or Pielou's) evenness, J'
+Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and where $p_i$ is the relative abundance of the *i*th species. Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
+
+The vegan package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy, sometimes referred to as Shannon's diversity, the Shannon-Weiner diversity index, among others.
+
+```{r}
+H <- diversity(Site1, index="shannon") # find Shannon's entropy (H')
+J <- H/log(S) # find Shannon's evenness (J')
+J
+```
+
+You can see that Shannon's evenness is quite high for Site1. Yet, this doesn't intuitively reflect what we saw in the RAC. In fact, because of the way Shannon's is calculated, values for ecological communities are commonly greater than 0.5. Consequently, an intermediate value of *J'* does not necessarily mean an intermediate evenness. Compare this to another evenness metric, i.e., Simpson's evenness.
+
+### Simpson's evenness, $E_\frac{1}{D}$
+
+Simpson's evenness metric essentially reflects the sample variance of the SAD, and is calculated as ${E_\frac{1}{D} = } \frac{1}{S} \sum \frac{N(N-1)} {n_i(n_i-1)}$, where *S* is species richness, *N* is total abundance, *i* is the *i*th species. 
+
+Once, again vegan has no function for Simpson's evenness but does calculate Simpson's diversity, i.e., the probability that the next sampled individual belongs to a different species:
+
+```{r}
+D <- diversity(Site1, "simp") # find Simpson's diversity (D)
+E <- (1/D)/S # find Simpson's evenness (E)
+E
+```
+
+Here, we can see that Simpson's evenness reveals that species evenness for Site1 is quite low, i.e., > 0.1. However, Simpson's evenness has also been criticized for being biased towards the most abundant taxa, i.e., revealing differences in abundances among the first few ranks and is less influenced by the many similarly abundant but rarer species. Let's examine the value of evenness for Site1 using a different and purportedly less-biased evenness metric, $E_{var}$.
+
+### Smith and Wilson's evenness index, $E_{var}$
+
+Smith and Wilson (1996) reviewed metrics of species evenness. Some of their conclusions about the desired characteristics of species evenness are reflected in this assignment. They derived a robust measure of species evenness called (${E_{var}}$). This metric represents the sample variance of logarithmic abundances. Abundances are log-transformed to decrease bias towards very rare or very abundant species. $E_{var}$ is independent of *S* and is standardized to take values between 0 (no evenness) and 1 (perfect evenness). The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi * \arctan( \sum_{i=1}^{i=S} ln(n_i) - \sum_{j=1}^{j=S} ln(n_j)/S)}$.
+
+While considerably more involved to calcualte, $E_{var}$ really reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to a value between 0 and 1.
+
+```{r}
+X <- var(log(RAC))
+Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
+Evar # print Evar for Site1
+```
+
+We can confirm this with a more explicit R chunk:
+
+```{r}
+P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
+AvgAb <- mean(P) # find the average of the log abundances
+X <- 0 # declare a scalar variable X
+Evar <- 0 # declare a scalar varible Evar
+
+for (x in P) {
+  X = X + (x - AvgAb)^2 / (S-1)
+}
+
+Evar = 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
+Evar # print Evar for Site1
+```
+
+As you can, the value of $E_{var}$ suggests an intermediate value of species evenness. Likewise, you can see that different evenness metrics, even when bound between 0 and 1 still return very different values. This is not because each is inaccurate but because each metric emphasizes different aspects of the SAD (or RAC). Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ is nearly as influenced by the abundance of dominant species as that of rare ones. In effect, the metric of evenness one used, even if only using NHC, depends on the aspects of similarity in species abundances one prefers to emphasize.
+
+## Species Diversity
+You saw in the derivation of Shannon's evenness and Simpson's evenness that we called the R diversity function, and then specified either "shannon" or "simp". In effect, in estimating Shannon's or Simpson's evenness we first estimated Shannon's diversity (*H'*) and Simpson's diversity (*D*)! Species diversity is commonly defined as the relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$. Can you see this in looking back at how we calculated Shannon's and Simpson's evenness? Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates.
+
+### Shannon's diversity (or entropy)
+Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$. Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
+
+```{r}
+H <- 0
+for (sp in RAC){
+  p = sp/sum(RAC)
+  H = H - p*log(p) 
+}
+H
+
+diversity(RAC, index="shannon")
+```
+
+### Simpson's diversity (or dominance)
+Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. Simpson's index is often expressed as 1/*D* or 1-*D*, so that diversity naturally increases with 1/*D*. Let's calculate Simpson's diversity for Site1 and then compare it to vegan's estimate:
+
+```{r}
+D <- 0.0
+N <- sum(RAC)
+for (ni in RAC){
+  D = D + (ni*ni)/(N*N)
+}
+
+invD <- 1/D # using the 1/D variation
+invD
+
+invD <- diversity(RAC, "inv") # using vegan
+invD
+
+D <- 1 - D # using the 1 - D variation
+D
+
+D <- diversity(RAC, "simp") # using vegan
+D
+```
 
 ### Dominance and Rarity
 
@@ -161,4 +268,11 @@ What's one way to test that this worked?
 ```{r}
 colSums(BCIrel)
 ```
+
+##HOMEWORK
+1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
+
+2) ...
+
+3) use knitr to create a pdf, push it to GitHub, and create a pull request
 
