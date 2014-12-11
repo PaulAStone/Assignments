@@ -157,15 +157,27 @@ We can confirm this with a more explicit R chunk:
 P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
 AvgAb <- mean(P) # find the average of the log abundances
 X <- 0 # declare a scalar variable X
-Evar <- 0 # declare  a scalar varible Evar
+Evar <- 0 # declare a scalar varible Evar
+
 for (x in P) {
   X = X + (x - AvgAb)^2 / (S-1)
 }
+
 Evar = 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
 
-As you can, the value of $E_{var}$ suggests an intermediate value of species evenness. $E_{var}$ 
+As you can, the value of $E_{var}$ suggests an intermediate value of species evenness. Likewise, you can see that different evenness metrics, even when bound between 0 and 1 still return very different values. This is not because each is inaccurate but because each metric emphasizes different aspects of the SAD (or RAC). Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ is nearly as influenced by the abundance of dominant species as that of rare ones. In effect, the metric of evenness one used, even if only using NHC, depends on the aspects of similarity in species abundances one prefers to emphasize.
+
+## Species Diversity
+You saw in the derivation of Shannon's evenness and Simpson's evenness that we called the R diversity function, and then specified either "shannon" or "simp". In effect, in estimating Shannon's or Simpson's evenness we first estimated Shannon's diversity (*H'*) and Simpson's diversity (*D*)! Species diversity is commonly defined as the relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$. Can you see this in looking back at how we calculated Shannon's and Simpson's evenness? Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates.
+
+### Shannon's diversity (or entropy)
+
+
+
+### Simpson's diversity (or dominance)
+
 
 
 ### Dominance and Rarity
