@@ -113,7 +113,7 @@ Shortcomings of the NHC index reveal important considerations when quantifying s
 Seveal well-known metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. Here, we will introduce three: Simpson's evenness, Smith and Wilson's evenness index, and Shannon's evenness.
 
 ### Shannon's (or Pielou's) evenness, J'
-Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and is calculated as ${H' = -}  \sum p_i ln(p_i)$ and where $p_i$ is the relative abundance of the *i*th species. Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
+Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and where $p_i$ is the relative abundance of the *i*th species. Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
 
 The vegan package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy, sometimes referred to as Shannon's diversity, the Shannon-Weiner diversity index, among others.
 
@@ -173,6 +173,18 @@ As you can, the value of $E_{var}$ suggests an intermediate value of species eve
 You saw in the derivation of Shannon's evenness and Simpson's evenness that we called the R diversity function, and then specified either "shannon" or "simp". In effect, in estimating Shannon's or Simpson's evenness we first estimated Shannon's diversity (*H'*) and Simpson's diversity (*D*)! Species diversity is commonly defined as the relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$. Can you see this in looking back at how we calculated Shannon's and Simpson's evenness? Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates.
 
 ### Shannon's diversity (or entropy)
+Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$. Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
+
+```{r}
+H <- 0
+for (sp in RAC){
+  p = sp/sum(RAC)
+  H = H - p*log(p) 
+}
+H
+
+diversity(Site1, index="shannon")
+```
 
 
 
