@@ -113,7 +113,7 @@ Shortcomings of the NHC index reveal important considerations when quantifying s
 Seveal well-known metrics of evenness have been derived (see Smith and Wilson 1996) that range between 0 (no evenness) and 1 (perfect evenness), are largely independent of the number of species (i.e. *S*), and are more or less unbiased towards either very abundant species or very rare species. Here, we will introduce three: Simpson's evenness, Smith and Wilson's evenness index, and Shannon's evenness.
 
 ### Shannon's (or Pielou's) evenness, J'
-Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and is calculated as ${H' = -}  \sum p_i ln(p_i)$ and where $p_i$ is the relative abundance of the *i*th species. Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
+Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and where $p_i$ is the relative abundance of the *i*th species. Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
 
 The vegan package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy, sometimes referred to as Shannon's diversity, the Shannon-Weiner diversity index, among others.
 
@@ -157,16 +157,57 @@ We can confirm this with a more explicit R chunk:
 P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
 AvgAb <- mean(P) # find the average of the log abundances
 X <- 0 # declare a scalar variable X
-Evar <- 0 # declare  a scalar varible Evar
+Evar <- 0 # declare a scalar varible Evar
+
 for (x in P) {
   X = X + (x - AvgAb)^2 / (S-1)
 }
+
 Evar = 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
 
-As you can, the value of $E_{var}$ suggests an intermediate value of species evenness. $E_{var}$ 
+As you can, the value of $E_{var}$ suggests an intermediate value of species evenness. Likewise, you can see that different evenness metrics, even when bound between 0 and 1 still return very different values. This is not because each is inaccurate but because each metric emphasizes different aspects of the SAD (or RAC). Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ is nearly as influenced by the abundance of dominant species as that of rare ones. In effect, the metric of evenness one used, even if only using NHC, depends on the aspects of similarity in species abundances one prefers to emphasize.
 
+## Species Diversity
+You saw in the derivation of Shannon's evenness and Simpson's evenness that we called the R diversity function, and then specified either "shannon" or "simp". In effect, in estimating Shannon's or Simpson's evenness we first estimated Shannon's diversity (*H'*) and Simpson's diversity (*D*)! Species diversity is commonly defined as the relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$. Can you see this in looking back at how we calculated Shannon's and Simpson's evenness? Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates.
+
+### Shannon's diversity (or entropy)
+Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$. Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
+
+```{r}
+H <- 0
+for (sp in RAC){
+  p = sp/sum(RAC)
+  H = H - p*log(p) 
+}
+H
+
+diversity(RAC, index="shannon")
+```
+
+### Simpson's diversity (or dominance)
+Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. Simpson's index is often expressed as 1/*D* or 1-*D*, so that diversity naturally increases with 1/*D*. Let's calculate Simpson's diversity for Site1 and then compare it to vegan's estimate:
+
+```{r}
+D <- 0.0
+N <- sum(RAC)
+for (ni in RAC){
+  D = D + (ni*ni)/(N*N)
+}
+
+invD <- 1/D # using the 1/D variation
+invD
+
+invD <- diversity(RAC, "inv") # using vegan
+invD
+
+D <- 1 - D # using the 1 - D variation
+D
+
+D <- diversity(RAC, "simp") # using vegan
+D
+```
 
 ### Dominance and Rarity
 
@@ -229,7 +270,9 @@ colSums(BCIrel)
 ```
 
 ##HOMEWORK
-1) Recreate this exercise
-2) Redo the regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance)
+1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
+
+2) ...
+
 3) use knitr to create a pdf, push it to GitHub, and create a pull request
 
