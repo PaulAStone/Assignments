@@ -141,9 +141,17 @@ Here, we can see that Simpson's evenness reveals that species evenness for Site1
 
 ### Smith and Wilson's evenness index, $E_{var}$
 
-Smith and Wilson (1996) reviewed metrics of species evenness. Some of their conclusions about the desired characteristics of species evenness are reflected in this assignment. They derived a robust measure of species evenness (${E_{var}}$) that represented, in essence, the sample variance. that was independent of *S* and was standardized to take values between 0 (no evenness) and 1 (perfect evenness). Their metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi * \arctan( \sum_{i=1}^{i=S} ln(n_i) - \sum_{j=1}^{j=S} ln(n_j)/S)}$.
+Smith and Wilson (1996) reviewed metrics of species evenness. Some of their conclusions about the desired characteristics of species evenness are reflected in this assignment. They derived a robust measure of species evenness called (${E_{var}}$). This metric represents the sample variance of logarithmic abundances. Abundances are log-transformed to decrease bias towards very rare or very abundant species. $E_{var}$ is independent of *S* and is standardized to take values between 0 (no evenness) and 1 (perfect evenness). The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi * \arctan( \sum_{i=1}^{i=S} ln(n_i) - \sum_{j=1}^{j=S} ln(n_j)/S)}$.
 
-Let's walk through quantifying ${E_{var}}$ for Site1.
+While considerably more involved to calcualte, $E_{var}$ really reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to a value between 0 and 1.
+
+```{r}
+X <- var(log(RAC))
+Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
+Evar # print Evar for Site1
+```
+
+We can confirm this with a more explicit R chunk:
 
 ```{r}
 P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
@@ -157,15 +165,7 @@ Evar = 1 - (2/pi)*atan(X) # these operations make the value of Evar range betwee
 Evar # print Evar for Site1
 ```
 
-While considerably more involved to calcualte, $E_{var}$ really reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to a value between 0 and 1.
-
-```{r}
-X <- var(log(RAC))
-Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
-Evar # print Evar for Site1
-```
-
-
+As you can, the value of $E_{var}$ suggests an intermediate value of species evenness. $E_{var}$ 
 
 
 ### Dominance and Rarity
