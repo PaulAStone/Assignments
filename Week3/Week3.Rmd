@@ -345,6 +345,8 @@ coldiss(spe.db, byrank=FALSE, diag=TRUE)
 coldiss(spe.db, byrank=TRUE, diag=TRUE)
 ```
 
+### What is the difference between Distance (dissiilarity) and Similarity
+Commone issues
 
 
 ## D. Visualizaton
@@ -417,7 +419,7 @@ evplot <- function(ev)
 	for (i in 2:n) bsm$p[i] <- bsm$p[i-1] + (1/(n + 1 - i))
 	bsm$p <- 100*bsm$p/n
 	# Plot eigenvalues and % of variation for each axis
-	op <- par(mfrow=c(2,1))
+	par(mfrow=c(2,1))
 	barplot(ev, main="Eigenvalues", col="bisque", las=2)
 	abline(h=mean(ev), col="red")
 	legend("topright", "Average eigenvalue", lwd=1, col=2, bty="n")
@@ -425,7 +427,6 @@ evplot <- function(ev)
 		main="% variation", col=c("bisque",2), las=2)
 	legend("topright", c("% eigenvalue", "Broken stick model"), 
 		pch=15, col=c("bisque",2), bty="n")
-	par(op)
 }
 
 evplot(spe.b.pcoa$eig)
@@ -438,11 +439,17 @@ evplot(spe.b.pcoa$eig)
 
 
 ### Why not PCA?
+
+
+
+
 ```{r}
 
 
 ```
 
+
+## E. Hypothesis Testing
 
 ### Constrained Ordination
 
@@ -463,16 +470,33 @@ anova.cca(spe.rda, step=1000)
 ```
 
 
-## Variance Partitioning
+### Variance Partitioning
 ```{r}
 spe.part.all <- varpart(spe.hel, envchem, envtopo)
 
 
 ```
 
-## Hypothesis Testing
+### Multivariate Models
+Mantel Test
+
+PERMANOVA
 
 
 
 
 ## Homework
+Microbes in an Agricultural System
+
+History of the system
+Define hypotheses
+
+Richness (rarefied) for each treatment (barplot, box-n-whisker plot)
+Bray Curtis
+PCoA
+PERMANOVA
+Indicator groups
+
+BCI Data - which physical property underlies variation in Tree Composition
+
+
