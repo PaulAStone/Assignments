@@ -294,21 +294,32 @@ However, this measure works best for comparing two sites.
 When comparing multiple communities, measures of resemblance (similarity).
 These measures can either be based on incidence (presence-absence; qualitative) data, or abundance (absolute or total; quantitative) data. 
 
-#### 1. Incidence-Based 
-\begin{tabular}{ | l | l | l | l |}
-  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference}\\ \hline \hline
-  Jaccard & $S_7 = \frac{a}{a+b+c}$ &    & Jaccard 1900 \\
-  Sørensen & $S_8 = \frac{2a}{(2a+b+c)}$ &     & Sørensen 1948 \\
+### 1. Incidence-Based
+
+--------------------------------------------------------------------------------
+   **Index**   **Equation**                **Properties**        **Reference**
+-------------- --------------------------- ------------------- -----------------
+   Jaccard     $S_7 = \frac{a}{a+b+c}$                            Jaccard 1900 
+   
+   Sørensen    $S_8 = \frac{2a}{(2a+b+c)}$                        Sørensen 1948 
+--------------------------------------------------------------------------------
+
+\begin{tabular}{  p{2.5cm}  p{4.5cm}  p{5cm}  p{2cm} }
+  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference}\\ \hline \hline 
+  Jaccard & $S_7 = \frac{a}{a+b+c}$ &    & Jaccard 1900 \\ [0.4cm]
+  Sørensen & $S_8 = \frac{2a}{(2a+b+c)}$ &     & Sørensen 1948 \\ \hline
   \end{tabular}
 
 where a = the number of shared speces, b = the number of unique species in the first assemblage, and c = the number of unique species in the second assemblage
 
-#### 2. Abundance-Based
-\begin{tabular}{ | l | l |  p{5cm} | l |}
-  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference} \\ \hline \hline
-  Bray-Curtis Dissimilarity & $D_{14} = \frac{\sum\limits_{j=1}^{p}\left |{y_{1j} \cdot y_{2j}}\right |}{\sum\limits_{j = 1}^{p}(y_{1j} + y_{2j})}$  & & \\
-  Chord Distance & $D_3 = \sqrt{2(1 - \frac{\sum\limits_{j=1}^{p}y_{1j} \cdot  y_{2j}}{\sum\limits_{j=1}^{p}y_{1j}^{2} \cdot \sum\limits_{j=1}^{p} y_{2j}^{2}})}$   & Range: $\sqrt{2}$ (no species in common) to 0 (two sites share the sampe speces in the sampe proportions)  & Orlici 1967 \\
-  Chi-Squared Distance & $D_16 = \frac{1}{2}$ & &
+### 2. Abundance-Based
+
+\begin{tabular}{  p{2.5cm}  p{4.5cm}   p{5cm}  p{2cm} }
+\raggedright
+  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference} \\ \hline \hline 
+  \raggedright Bray-Curtis Dissimilarity & $D_{14} = \frac{\sum\limits_{j=1}^{p}\left |{y_{1j} \cdot y_{2j}}\right |}{\sum\limits_{j = 1}^{p}(y_{1j} + y_{2j})}$  & & \\ [0.4cm] 
+  Chord Distance & $D_3 = \sqrt{2(1 - \frac{\sum\limits_{j=1}^{p}y_{1j} \cdot  y_{2j}}{\sum\limits_{j=1}^{p}y_{1j}^{2} \cdot \sum\limits_{j=1}^{p} y_{2j}^{2}})}$   & Range: $\sqrt{2}$ (no species in common) to 0 (two sites share the sampe speces in the sampe proportions)  & Orlici 1967 \\ [0.4cm] 
+  Chi-Squared Distance & $D_{16} = \frac{1}{2}$ & & \\ \hline
   \end{tabular}
 
 #### 3. Other Measures (may not be appropriate for species abundaces)
