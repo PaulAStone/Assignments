@@ -3,7 +3,9 @@ title: "Week 3 Exercise"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 23, 2015"
 output: pdf_document
----
+---'
+
+## Overview
 In this exercise, we will explore between site biodiversity. 
 We will start by using the methods we learned for measuring biodiversity within a single site.
 We will then expand this to learn how to compare communities between communities.
@@ -70,7 +72,7 @@ We can visualize these data using a box and whisker plot.
 We are going to start our plot by changing the plotting environment using the `par()` function. 
 Adjust the values in `mar` to see how it changes the plot. 
 You can learn more about the diverse plotting options with the help files (`help(par)`)
-```{r, fig.width = 3, fig.height = 3}
+```{r, fig.width = 2.5, fig.height = 2.5}
 par(mar=c(0.5, 4.5, 3, 0.5) + 0.1)
 boxplot(bci.S, ylim=c(75, 115), las = 1, cex.lab = 1.2,
         main="All BCI Sites", ylab = "Tree Richness (S)")
@@ -103,60 +105,53 @@ But how do we know how these sites are arranged?
 Well lucky for us, the BCI soil dataset includes standardized XY-coordinates for each plot
 
 ```{r}
-head(BCI.soil)
+head(BCI.soil, n =2L)
 ```
 
 The BCI environmental dataset actually has the UTM coordinates for each plot, but the standarized version is easier to use for our purposes.
-<-- Add info about plotting parameters
+Here we are going to start by plotting sites in XY-coordinate space using the same plotting symbol but we will use our heatmap color to display site richness.
+In addition, we will add a legend to the plot so that readers understand the heatmap scale.
 ```{r, fig.width=6, fig.height=3.5}
 # BCI Tree Richness
 par(mar=c(4,4,3,4) + 0.1, xpd=TRUE)
 plot(BCI.soil$x, BCI.soil$y, asp = 1, pch = 22, cex = 4, las = 1, 
      bg = BCI.S.color[bci.S + 1], 
-     xlim = c(0, 1000), ylim = c(0, 500), 
-     main = "BCI Richness (S)", 
-     xlab = "X-Coordinate (m)", 
-     ylab = "Y-Coordinate (m)")
+     xlim = c(0, 1000), ylim = c(0, 500), main = "BCI Richness (S)", 
+     xlab = "X-Coordinate (m)", ylab = "Y-Coordinate (m)")
 text(BCI.soil$x, BCI.soil$y, bci.S, cex = 0.5, col = "red")
 legend("topright", inset = c(-0.2, 0), pch = 22, pt.cex = 3, title = "S", 
-       bty='n', legend = seq(0, 150, 25), 
-       pt.bg = BCI.S.color[seq(1, 151, 25)])
+       bty ='n', legend = seq(0, 150, 25), pt.bg = BCI.S.color[seq(1, 151, 25)])
 ```
 
 What do you notice when you compare all 50 sites? 
 Is this a good way to compare the sites?
+What does this method of comparing sites miss?
 
 ### BCI Individual Tree Abunance
 What would happen if we looked at only specific tree species? 
 Let's use a similar plotting method and just focus on the abundance of two specific trees: the Cocoa tree and the Prioria tree. 
 We can use the abundance heatmap pallette we created earlier.
-
+We will plot these data in the same way we did for richness.
 ```{r, fig.width=6, fig.height=3.5}
 # BCI Cocoa Abundance
 par(mar=c(4,4,3,4) + 0.1, xpd=TRUE)
 plot(BCI.soil$x, BCI.soil$y, asp = 1, pch = 22, cex = 4, las = 1, 
      bg = BCI.N.color[BCI$Theobroma.cacao + 1], 
-     xlim = c(0, 1000), ylim = c(0, 500), 
-     main = "Cocoa Abundance (N)", 
-     xlab = "X-Coordinate (m)", 
-     ylab = "Y-Coordinate (m)")
+     xlim = c(0, 1000), ylim = c(0, 500), main = "Cocoa Abundance (N)", 
+     xlab = "X-Coordinate (m)", ylab = "Y-Coordinate (m)")
 text(BCI.soil$x, BCI.soil$y, BCI$Theobroma.cacao, cex = 0.5, col = "red")
 legend("topright", inset=c(-0.2, 0), pch=22, pt.cex=3, bty='n', 
-       title="N", legend=seq(0, 40, 10), 
-       pt.bg = BCI.N.color[seq(1, 41, 10)])
+       title="N", legend=seq(0, 40, 10), pt.bg = BCI.N.color[seq(1, 41, 10)])
 
 # BCI Prioria Abundance
 par(mar=c(4,4,3,4) + 0.1, xpd=TRUE)
 plot(BCI.soil$x, BCI.soil$y, asp = 1, pch = 22, cex = 4, las = 1, 
      bg = BCI.N.color[BCI$Prioria.copaifera + 1], 
-     xlim = c(0,1000), ylim = c(0, 500), 
-     main = "Prioria Abundance (N)", 
-     xlab = "X-Coordinate (m)", 
-     ylab = "Y-Coordinate (m)")
+     xlim = c(0,1000), ylim = c(0, 500), main = "Prioria Abundance (N)", 
+     xlab = "X-Coordinate (m)", ylab = "Y-Coordinate (m)")
 text(BCI.soil$x, BCI.soil$y, BCI$Prioria.copaifera, cex = 0.5, col="red")
 legend("topright", inset=c(-0.2, 0), pch=22, pt.cex=3, bty='n',
-       title="N", legend=seq(0, 40, 10), 
-       pt.bg = BCI.N.color[seq(1, 41, 10)])
+       title="N", legend=seq(0, 40, 10), pt.bg = BCI.N.color[seq(1, 41, 10)])
 ```
 
 What do you observe across BCI?
@@ -197,45 +192,36 @@ spa.N.color <- rev(terrain.colors(7))     # Define Abundance Color Pallette
 
 # Stream Fish Richness
 plot(doubs$xy, type = 'l', col = "light blue", lwd = 10, 
-     xlim = c(0,280), ylim = c(0,280), 
-     main = "Fish Richneses (S)", 
-     xlab = "X-Coordinate (km)", 
-     ylab = "Y-Coordinate (km)")
+     xlim = c(0,280), ylim = c(0,280), main = "Fish Richneses (S)", 
+     xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
 points(doubs$xy, pch = 22, cex=2, bg = spa.S.color[spa.S + 1])
 text(doubs$xy, as.character(spa.S), cex = 0.5, col="red")
 text(150, 0, "Upstream", cex = 1, col = "red")
 text(48, 114, "Downstream", cex = 1, col = "red")
 legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
-       title = "S", legend = seq(0, 30, 10), 
-       pt.bg = spa.S.color[seq(1, 31, 10)])
+       title = "S", legend = seq(0, 30, 10), pt.bg = spa.S.color[seq(1, 31, 10)])
 
 # Brown Trout Abundance
 plot(doubs$xy, type = 'l', col = "light blue", lwd = 10, 
-     xlim = c(0, 280), ylim = c(0, 280),
-     main = "Brown Trout Abundance (N)", 
-     xlab = "X-Coordinate (km)", 
-     ylab = "Y-Coordinate (km)")
+     xlim = c(0, 280), ylim = c(0, 280),main = "Brown Trout Abundance (N)", 
+     xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
 points(doubs$xy, pch = 22, cex=2, bg = spa.N.color[doubs$fish$Satr + 1])
 text(doubs$xy, as.character(doubs$fish$Satr), cex = 0.5, col="red")
 text(150, 0, "Upstream", cex=1, col="red")
 text(48, 114, "Downstream", cex=1, col="red")
 legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
-       title = "N", legend = seq(0, 6, 2), 
-       pt.bg = spa.N.color[seq(1, 7, 2)])
+       title = "N", legend = seq(0, 6, 2), pt.bg = spa.N.color[seq(1, 7, 2)])
 
 # Common Roach Abundance
 plot(doubs$xy, type = 'l', col = "light blue", lwd = 10, 
-     xlim = c(0, 280), ylim = c(0, 280),
-     main = "Common Roach Abundance (N)", 
-     xlab = "X-Coordinate (km)", 
-     ylab = "Y-Coordinate (km)")
+     xlim = c(0, 280), ylim = c(0, 280),main = "Common Roach Abundance (N)", 
+     xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
 points(doubs$xy, pch = 22, cex=2, bg = spa.N.color[doubs$fish$Ruru + 1])
 text(doubs$xy, as.character(doubs$fish$Ruru), cex = 0.5, col="red")
 text(150, 0, "Upstream", cex = 1, col = "red")
 text(48, 114, "Downstream", cex = 1, col = "red")
 legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
-       title = "N", legend = seq(0, 6, 2), 
-       pt.bg = spa.N.color[seq(1, 7, 2)])
+       title = "N", legend = seq(0, 6, 2), pt.bg = spa.N.color[seq(1, 7, 2)])
 ```
 
 How does this dataset differ from the BCI data? 
@@ -296,37 +282,40 @@ These measures can either be based on incidence (presence-absence; qualitative) 
 
 ### 1. Incidence-Based
 
---------------------------------------------------------------------------------
-   **Index**   **Equation**                **Properties**        **Reference**
--------------- --------------------------- ------------------- -----------------
-   Jaccard     $S_7 = \frac{a}{a+b+c}$                            Jaccard 1900 
-   
-   Sørensen    $S_8 = \frac{2a}{(2a+b+c)}$                        Sørensen 1948 
---------------------------------------------------------------------------------
-
-\begin{tabular}{  p{2.5cm}  p{4.5cm}  p{5cm}  p{2cm} }
-  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference}\\ \hline \hline 
-  Jaccard & $S_7 = \frac{a}{a+b+c}$ &    & Jaccard 1900 \\ [0.4cm]
-  Sørensen & $S_8 = \frac{2a}{(2a+b+c)}$ &     & Sørensen 1948 \\ \hline
+\begin{center}
+\begin{tabular}{  p{2.5cm}  p{5cm}  p{5cm}  p{2cm} }
+  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference} \\
+  \hline \hline \\ [-1.5ex]
+  Jaccard  & $S_7 = \frac{a}{a+b+c}$     &     & Jaccard 1900  \\ [0.4cm]
+  Sørensen & $S_8 = \frac{2a}{(2a+b+c)}$ &     & Sørensen 1948 \\ 
+  \hline
   \end{tabular}
+  \end{center}
 
 where a = the number of shared speces, b = the number of unique species in the first assemblage, and c = the number of unique species in the second assemblage
 
 ### 2. Abundance-Based
 
-\begin{tabular}{  p{2.5cm}  p{4.5cm}   p{5cm}  p{2cm} }
-\raggedright
-  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference} \\ \hline \hline 
-  \raggedright Bray-Curtis Dissimilarity & $D_{14} = \frac{\sum\limits_{j=1}^{p}\left |{y_{1j} \cdot y_{2j}}\right |}{\sum\limits_{j = 1}^{p}(y_{1j} + y_{2j})}$  & & \\ [0.4cm] 
-  Chord Distance & $D_3 = \sqrt{2(1 - \frac{\sum\limits_{j=1}^{p}y_{1j} \cdot  y_{2j}}{\sum\limits_{j=1}^{p}y_{1j}^{2} \cdot \sum\limits_{j=1}^{p} y_{2j}^{2}})}$   & Range: $\sqrt{2}$ (no species in common) to 0 (two sites share the sampe speces in the sampe proportions)  & Orlici 1967 \\ [0.4cm] 
-  Chi-Squared Distance & $D_{16} = \frac{1}{2}$ & & \\ \hline
+\begin{center}
+\begin{tabular}{  p{2.5cm}  p{5cm}   p{5cm}  p{2cm} }
+  \textbf{Index} & \textbf{Equation} & \textbf{Properties} & \textbf{Reference} \\ 
+  \hline \hline \\ [-1.5ex]
+  \raggedright Bray-Curtis Dissimilarity & $D_{14} = \frac{\sum\limits_{j=1}^{p}\left |{y_{1j} \cdot y_{2j}}\right |}{\sum\limits_{j = 1}^{p}(y_{1j} + y_{2j})}$  & & \\ 
+  \\ [-1.5ex]
+  Chord Distance & $D_3 = \sqrt{2(1 - \frac{\sum\limits_{j=1}^{p}y_{1j} \cdot  y_{2j}}{\sum\limits_{j=1}^{p}y_{1j}^{2} \cdot \sum\limits_{j=1}^{p} y_{2j}^{2}})}$   & \raggedright Range: 0 to $\sqrt{2}$ (two sites share the sampe speces in the sampe proportions to no species in common)  & Orlici 1967 \\ 
+  \\ [-1.5ex]
+  \raggedright Chi-Squared Distance & $D_{16} = \frac{1}{2}$ & & \\ 
+  \hline
   \end{tabular}
+  \end{center}
+
+Where
 
 #### 3. Other Measures (may not be appropriate for species abundaces)
-|Euclidean
+Euclidean
 
-### Calculate Bray Curtis Dissimilarity 
-Many of these similarity metrixs are in the vegan `vegdist()` function
+### Calculate Sample Resemblance
+Many of these similarity metrics are in the vegan `vegdist()` function
 ```{r}
 spe <- doubs$fish
 env <- doubs$env
@@ -337,10 +326,18 @@ spe <- spe[-8, ]
 env <- env[-8, ]
 
 # Calculate Bray-Curtis Dissimilarty between doubs river sites
-spe.db <- vegdist(spe, method="bray")
+spe.db <- vegdist(spe, method="bray", Upper=T, Diag=T)
 
 # Calculate Jaccard Dissimilarty 
 spe.dj <- vegdist(spe, method="jaccard", binary=TRUE)
+```
+
+We have now measured the resemblance off all Doubs River sites. 
+How do you visulize these data
+Well, if you have a few samples, we might just look at the distance matrix
+```{r}
+
+spe.db[2:3,2:3]
 
 # Visualize association matrices
 source("coldiss.R")
