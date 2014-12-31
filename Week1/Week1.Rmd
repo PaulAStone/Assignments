@@ -6,17 +6,34 @@ output: pdf_document
 ---
 
 ## OVERVIEW
-This exercise will introduce some of the basic features of the R computing environment. We will briefly cover operators, data types, and simple commands that will be useful for you during the course and beyond. In addition to using R's base package, we wil also use contributed packages, which together will allow us to visualize data and peform relatively simple statistics (e.g., linear regression and ANOVA).
 
-## HOW WE WILL BE USING R AND OTHER TOOLS
-During the course, we will use [RStudio](http://www.rstudio.com/), which is a relatively user-friendly integrated developement environment that allows R to interface with other tools. For example, you are currently working in an [R Markdown](<http://rmarkdown.rstudio.com>) document. Markdown is a simple formatting syntax for authoring HTML, PDF, and other documents. 
+This exercise will introduce some of the basic features of the R computing environment. 
+We will briefly cover operators, data types, and simple commands that will be useful for you during the course and beyond. 
+In addition to using R's base package, we wil also use contributed packages, which together will allow us to visualize data and peform relatively simple statistics (e.g., linear regression and ANOVA).
 
-We will also use a tool called [knitr](http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes both the content as well as the output of any embedded R code. 
+## 1) HOW WE WILL BE USING R AND OTHER TOOLS
 
-If there are errors in your markdown document, however, you will not be able to knit a PDF file. Assignments in this class will require that you successfully create a Markdown-generated PDF using knitr; you will then need to push this document to the course respository hosted on [IU's GitHub](<https://github.iu.edu>) and generate a pull request.
+During the course, we will use [RStudio](http://www.rstudio.com/), which is a relatively user-friendly integrated developement environment that allows R to interface with other tools. 
+For example, you are currently working in an [R Markdown](<http://rmarkdown.rstudio.com>) document. 
+Markdown is a simple formatting syntax for authoring HTML, PDF, and other documents. 
 
-## SETTING YOUR WORKING DIRECTORY
-The first step of working with R is to set your working directory. This is where your R script and output will be saved. It's also a logical place to put data files that you plan to import into R. The following command will return your current working directory:
+We will also use a tool called [knitr](http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. 
+For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes both the content as well as the output of any embedded R code. 
+
+If there are errors in your markdown document, however, you will not be able to knit a PDF file. 
+Assignments in this class will require that you successfully create a Markdown-generated PDF using knitr; you will then need to push this document to the course respository hosted on [IU's GitHub](<https://github.iu.edu>) and generate a pull request.
+
+## 2) SETTING YOUR WORKING DIRECTORY
+
+A good first step when you sit down to work in R is to clear your working directory of any variables from your workspace:
+```{r, results = 'hide'}
+rm(list=ls()) # removes all variables from your workspace
+```
+
+Now we want to set your working directory. 
+This is where your R script and output will be saved. 
+It's also a logical place to put data files that you plan to import into R. 
+The following command will return your current working directory:
 ```{r}
 getwd()
 ```
@@ -26,7 +43,7 @@ To change your directory, you can can use the following command (but note that y
 setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week1")
 ```
 
-## USING R AS A CALCULATOR
+## 3) USING R AS A CALCULATOR
 R is capable of performing various calcuations using simple operators and built-in **functions**
 
 + _addition_:
@@ -60,7 +77,8 @@ log10(100)
 log(100)
 ```
 
-## ASSIGNING VARIABLES
+## 4) ASSIGNING VARIABLES
+
 In R, you will often find it useful and necessary to assign values to a variable or **object**. 
 Generally speaking, it's best to use `<-` rather than `=` as an assignment operator.
 ```{r}
@@ -77,7 +95,8 @@ a <- 200
 
 Now, what is the value of 'b'? What's going on? 
 
-R holds onto the original value of 'a' that was used when assigning values to 'b'. You can correct this using the `rm` function, which removes objects from your R **environment**. 
+R holds onto the original value of 'a' that was used when assigning values to 'b'. 
+You can correct this using the `rm` function, which removes objects from your R **environment**. 
 ```{r}
 rm("b")
 ```
@@ -87,19 +106,26 @@ What happens if we reassign `b` now?
 b <- a + 20
 ```
 
-Sometimes it's good practice to clear all variables from your R environment (e.g., you've been working on multiple projects). This can be done in a couple of ways. For example, you can just click `clear` in the Environment windwow of R Studio. The same procedure can be performed at the command line. To do this, you can use the `ls` function to view a list of all the objects in the R environment:
+Sometimes it's good practice to clear all variables from your R environment (e.g., you've been working on multiple projects). 
+This can be done in a couple of ways. 
+For example, you can just click `clear` in the Environment windwow of R Studio. 
+The same procedure can be performed at the command line. 
+To do this, you can use the `ls` function to view a list of all the objects in the R environment:
 ```{r}
 ls()
 ```
 
-You can now clear all of the stored variables from R's memory (using two functions: `rm` and `ls`):
+You can now clear all of the stored variables from R's memory (using two functions: `rm` and `ls`) as we did above prior to setting our workind directory:
 ```{r}
 rm(list=ls())
 ```
 
-## WORKING WITH VECTORS AND MATRICES
+## 5) WORKING WITH VECTORS
+###Basic Features of Vectors
 
-**Vectors** are the fundamental data type in R. Often, vectors are just a collection of data of a similar type, either numeric (e.g., 17.5), integer (e.g., 2), or character (e.g., "low"). The simplest type of vector is a single value, sometimes referred to as a **scalar** in other programming languages:
+**Vectors** are the fundamental data type in R. 
+Often, vectors are just a collection of data of a similar type, either numeric (e.g., 17.5), integer (e.g., 2), or character (e.g., "low"). 
+The simplest type of vector is a single value, sometimes referred to as a **scalar** in other programming languages:
 ```{r}
 w <- 5 
 ```
@@ -109,7 +135,9 @@ We can create longer one-dimensional vectors in R like this:
 x <- c(2, 3, 6, w, w + 7, 12, 14)
 ```
 
-What is the function `c`() that we just used to create a vector? To answer this question, trying typing `help`() function at the command line. Let's try it out:
+What is the function `c`() that we just used to create a vector? 
+To answer this question, trying typing `help`() function at the command line. 
+Let's try it out:
 ```{r}
 help(c)
 ```
@@ -124,7 +152,8 @@ What happens when you multiply two vectors of the same length?
 z <- x * y 
 ```
 
-You may need to reference a specific **element** in a vector. We will do this using the square brackets. In this case, the number inside of the square brackets tells R that we want call the second element of vector `z`:
+You may need to reference a specific **element** in a vector. We will do this using the square brackets. 
+In this case, the number inside of the square brackets tells R that we want call the second element of vector `z`:
 ```{r}
 z[2]
 ```
@@ -134,12 +163,13 @@ You can also reference multiple elements in a vector:
 z[2:5] 
 ```
 
-In some instances, you may want to change the value of an element in a vector. Here's how you can substitute a new value for the second element of `z`:
+In some instances, you may want to change the value of an element in a vector. 
+Here's how you can substitute a new value for the second element of `z`:
 ```{r}
 z[2] <- 583 
 ```
 
-## This should be a new section: How about summary statistics?
+###Summary Statictics of Vectors
 
 It's pretty easy to perform summary statistics on a vector using the built-in fuctions of R:
 ```{r}
@@ -154,11 +184,9 @@ sd(z)     # standard deviation
 
 What happens when you take the standard error of the mean (`sem`) of z? 
 
-Mario: 
-The standard error of the mean is defined as $SEM = \frac{sd (x)}{\sqrt{n}}$. This function does not exist in the base package of R. Therefore, you need to write your own function. Let's give it a try:
-
-Jay:
-The standard error of the mean is defined as $sem = \frac{sd (x)}{\sqrt{n}}$. This function does not exist in the base package of R. Sometimes you will need to write your own functions. Let's give it a try:
+The standard error of the mean is defined as $sem = \frac{sd (x)}{\sqrt{n}}$. 
+This function does not exist in the base package of R. 
+Therefore, you need to write your own function. Let's give it a try:
 
 ```{r}
 sem <- function(x, ...){
@@ -166,7 +194,8 @@ sem <- function(x, ...){
   }
 ```
 
-There are number of functions inside of `sem`. Take a moment to think about and describe what is going on here. 
+There are number of functions inside of `sem`. 
+Take a moment to think about and describe what is going on here. 
 
 Often, datasets have missing values (designated as 'NA' in R):
 ```{r}
@@ -180,20 +209,25 @@ One solution is to tell R to remove NA from the dataset:
 sem(i, na.rm = TRUE)
 ```
 
-** Jay, I think we should just write this as (always removes NA)
+Alternatively, we can modify the original `sem` function so it removes NAs right from the start:
 ```{r}
 sem <- function(x){
   sd(x, na.rm = TRUE)/sqrt(length(na.omit(x)))
   }
 ```
 
-** Maybe my summary statistic idea was bad, sorry.
+## 5) WORKING WITH MATRICES
 
-**Matrices** are just two-dimensional vectors containing data of the same type (e.g., numeric, integer, character).
+**Matrices** are another data type in R. 
+They are just two-dimensional vectors containing data of the same type (e.g., numeric, integer, character). 
+Thereofore, much of what we just discussed about vectors translates directly into dealing with matrices. 
+
+### Making a Matrix
 
 There are three common ways to create a matrix in R. 
 
-**Approach 1** is to combine (or concatenate) two or more vectors. Let's start by creating a one-dimensional vector using a new function `rnorm`.
+**Approach 1** is to combine (or concatenate) two or more vectors. 
+Let's start by creating a one-dimensional vector using a new function `rnorm`.
 ```{r}
 j <- c(rnorm(length(z), mean = z)) 
 ```
@@ -218,7 +252,9 @@ l <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2)
 m <- as.matrix(read.table("matrix.txt", sep = "\t", header = FALSE))
 ```
 
-In this case, we're reading in a tab-delimited file. The name of your file must be in quotes, and you need to specify tab-limited file type using the `sep` argument. The `header` argument tells R whether or not the names of the variables are contained in the first line; in the current example, they are not. 
+In this case, we're reading in a tab-delimited file. 
+The name of your file must be in quotes, and you need to specify tab-limited file type using the `sep` argument. 
+The `header` argument tells R whether or not the names of the variables are contained in the first line; in the current example, they are not. 
 
 Often, when handling datasets, we want to be able to transpose a matrix. This is an easy operation in R:
 ```{r}
@@ -227,7 +263,11 @@ n <- t(m)
 
 Confirm the transposition using the `dim` function.
 
-Frequently, you will need to **index** or retrieve a certain portion of a matrix. As with the vector example above, we will use the square brackets to retrieve data from a matrix. Inside the square brackets, there are now two subscripts corresponding to the rows and columns, respectively, of the matrix. 
+###Indexing a Matrix
+
+Frequently, you will need to **index** or retrieve a certain portion of a matrix. 
+As with the vector example above, we will use the square brackets to retrieve data from a matrix. 
+Inside the square brackets, there are now two subscripts corresponding to the rows and columns, respectively, of the matrix. 
 
 The following code will create a new matrix (`n') based on the first three rows of matrix (`m`):
 ```{r}
@@ -239,16 +279,20 @@ Or maybe you want the first two columns of a matrix:
 n <- m[, 1:2]
 ```
 
-Or perhaps you want non-sequential columns of a matrix. How do we do that? It's easy when you understand how to reference data within a matrix:
+Or perhaps you want non-sequential columns of a matrix. 
+How do we do that? It's easy when you understand how to reference data within a matrix:
 ```{r}
 n <- m[, c(1:2, 5)]
 ```
 
 Describe what we just did in the last indexing.
 
-## BASIC DATA VISUALIZATION AND STATISTICAL ANALYSIS
+## 6) BASIC DATA VISUALIZATION AND STATISTICAL ANALYSIS
+### Load Zooplankton Dataset
 
-In the following exercise, we will use a dataset from [Lennon et al. (2003)](http://www.indiana.edu/~microbes/publications/Lennon_etal_2003.pdf), which looked at zooplankton community assembly along an experimental nutrient gradient. Inorganic nitrogen and phosphorus were added to mesocosms for six weeks at three different levels (low, medium, and high), but we also direcly measured nutrient concentrations in the mesocosms. So we have categorical and continuous predictors that we're going to use to help explain variaiton in zooplankton biomass.  
+In the following exercise, we will use a dataset from [Lennon et al. (2003)](http://www.indiana.edu/~microbes/publications/Lennon_etal_2003.pdf), which looked at zooplankton community assembly along an experimental nutrient gradient. 
+Inorganic nitrogen and phosphorus were added to mesocosms for six weeks at three different levels (low, medium, and high), but we also direcly measured nutrient concentrations in the mesocosms. 
+So we have categorical and continuous predictors that we're going to use to help explain variaiton in zooplankton biomass.  
 
 The first thing we're going to do is load the data:
 ```{r}
@@ -260,13 +304,15 @@ Let's use the `str` function to look at the structure of the data.
 str(meso)
 ```
 
-How does this dataset differ from the `m` dataset above? We're now dealing with a new type of **data structure**. Specifically, the `meso` dataset is a **data frame** since it has a combination of numeric and character data. 
+How does this dataset differ from the `m` dataset above? 
+We're now dealing with a new type of **data structure**. 
+Specifically, the `meso` dataset is a **data frame** since it has a combination of numeric and character data. 
 
 Here is a description of the column headers:
 
   + TANK = unique mesocosm identifier
 
-  + NUTS = categorical nutrient treament 
+  + NUTS = categorical nutrient treament; "L" = low, "M" = medium, "H" = high
   
   + TP = total phosphorus concentration (µg/L)
   
@@ -280,32 +326,46 @@ Here is a description of the column headers:
   
   + ZP = zooplankton biomass (mg/L)
 
-A common step in data exploration is to look at correlations among variables. Before we do this, let's index our numerical (continuous) data in the 'meso' dataframe. (correlations don't work well on categorical data.)
+### Correlation
+A common step in data exploration is to look at correlations among variables. 
+Before we do this, let's **index** our numerical (continuous) data in the 'meso' dataframe. 
+(Correlations typiclly don't work well on categorical data.)
 ```{r}
 meso.num <- meso[,3:8]
 ```
 
-We can conveniently visualize pairwise bi-plots of the data using the following command:
+We can conveniently visualize pairwise **bi-plots** of the data using the following command:
 ```{r}
 pairs(meso.num)
 ```
 
-Now let's conduct a simple (Pearson's) correlation analysis with the R `cor()` function. 
+Now let's conduct a simple **Pearson's correlation** analysis with the R `cor()` function. 
 ```{r}
 cor1 <- cor(meso.num)
 ```
 
 Describe what you found from the visualization and correlation anaylysis above?
+```
 
-The base pakcage in R won't always meet all of our needs. This is why there are > 6,000 **contributed packages** that have been developed for R. This may seem overwhelming, but it also means that there are tools (and web support) for just about any problem you can think of.  
+```
 
-When using one of the contributed packages, the first thing we need to do is **install** them along with their dependencies (other packages). We're going to start out by using the ['psych' package](http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf), which has many features, but we're going to use it specifically for the `corr.test` function, which generates p-values for each pairwise correlation. (For whatever reason, the `cor` function in the base package does not provide p-values.)
+### Loading Contributed Packages
+The base pakcage in R won't always meet all of our needs. 
+This is why there are > 6,000 **contributed packages** that have been developed for R. 
+This may seem overwhelming, but it also means that there are tools (and web support) for just about any problem you can think of.  
+
+When using one of the contributed packages, the first thing we need to do is **install** them along with their dependencies (other packages). 
+We're going to start out by using the [_psych_ package](http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf). 
+The _psych_ package has many features, but we're going to use it specifically for the `corr.test` function.
+This function generates p-values for each pairwise correlation. 
+(For whatever reason, the `cor` function in the `base` package of R does not provide p-values.)
 
 ```{r}
 require("psych")||install.packages("psych");require("psych") 
 ```
 
-<-- Should we describe this code?
+You can load an R package and its dependencies using the `require()` function. 
+With the commands above, if the package is not found using `require()`, R will use the `install.packages()` function followed by `require()`:
 
 Now, let's look at the correlations among variables and assess whether they are signficant
 ```{r}
@@ -317,7 +377,8 @@ _Notes on corr.test_:
 
 a) for rank-based correlations (i.e., non-parametric), use method = "kendall" or "spearman". Give it a try!
 
-b) the adjust = "BH" statement supplies the Benjamini & Hochberg-corrected p-values in the upper right diagonal of the square matrix; the uncorrected p-values are below the diagonal. This process corrects for **false discovery rate**, which arises whe making multiple comparisons. 
+b) the adjust = "BH" statement supplies the Benjamini & Hochberg-corrected **p-values** in the upper right diagonal of the square matrix; the uncorrected p-values are below the diagonal. 
+This process corrects for **false discovery rate**, which arises whe making multiple comparisons. 
 
 Let's load another package now that will let us visualize the sign and strength of the correlations:
 ```{r}
@@ -325,7 +386,8 @@ require("corrplot")||install.packages("corrplot");require("corrplot")
 corrplot(cor1, method = "ellipse")
 ```
 
-It seems that TN is a fairly good predictor of ZP and this is something that we directly manipulated. So, let's try some linear regression using the `lm` function:
+### Linear Regression
+It seems that total nitrogen (TN) is a fairly good predictor of zooplankton biomass (ZP) and this is something that we directly manipulated. So, let's try some linear regression using the `lm` function:
 ```{r}
 fitreg <- lm(ZP ~ TN, data = meso)
 ```
@@ -337,24 +399,28 @@ summary(fitreg)
 
 Now, let's look at a plot of the data used in the regression:
 ```{r reglayer1, eval = TRUE} 
-TN <- meso$TN # Not needed
-ZP <- meso$ZP # Not needed
 plot(meso$TN, meso$ZP, ylim = c(0, 10), xlim = c(500, 5000), 
      xlab = expression(paste("Total Nitrogen (", mu,"g/L)")),
      ylab = "Zooplankton Biomass (mg/L)", las = 1)
 ```
 
-To add the regression line, the first thing we need to do is identify a range of x-values and then generate the corresponding predicted values from our regression model:
-```{r reglayer2, echo = -1}
+We can add some text to the plot to visualize the categorical nutrient treatments:
+```{reg reglayer2, echo=-1}
 <<reglayer1>>
+text(meso$TN, meso$ZP,meso$NUTS,pos=3,cex=0.8)
+```
+
+To add the regression line, the first thing we need to do is identify a range of x-values and then generate the corresponding predicted values from our regression model:
+```{r reglayer3, echo = -1}
+<<reglayer2>>
 newTN <- seq(min(TN), max(TN), 10)
 regline <- predict(fitreg, newdata = data.frame(TN = newTN))
 lines(newTN, regline)
 ```
 
 Now let's create and plot the 95% confidence intervals using the same procedure as above, that is, use 'newTN' to generate corresponding confidence intervals from our regression model:
-```{r reglayer3, echo = -1}
-<<reglayer2>>
+```{r reglayer4, echo = -1}
+<<reglayer3>>
 conf95 <- predict(fitreg, newdata = data.frame(TN = newTN),
                   interval = c("confidence"), level = 0.95, type = "response")
 matlines(newTN, conf95[, c("lwr", "upr")], type="l", lty = 2, lwd = 1, col = "black")
@@ -366,9 +432,10 @@ par(mfrow = c(2, 2), mar = c(5.1,4.1,4.1,2.1))
 plot(fitreg)
 ```
 
+### ANALYSIS OF VARIANCE (ANOVA)
 We also have the option of looking at the relationship between zooplankton and nutrients where the manipulation is treated categorically (low, medium, high). First, let's order the categorical nutrient treatments from low to high (R's default is to order alphabetically):
 ```{r}
-NUTS <- factor(meso$NUTS, levels = c('low', 'medium', 'high'))
+NUTS <- factor(meso$NUTS, levels = c('L', 'M', 'H'))
 ```
 
 Before plotting, we need to calcualte the means and standard errors for zooplankton biomass in our nutrient treatments. We are goint to use an important function called `tapply`. This allows us to apply a function (e.g., mean) to a vector (e.g., ZP) based on information in another column (e.g., nutrient treatment). 
@@ -387,7 +454,6 @@ bp <- barplot(zp.means, ylim =c(0, round(max(ZP), digits = 0)),
               xlab = "nutrient supply", 
               ylab = "zooplankton biomass (mg/L)",
               names.arg = c("low", "medium", "high"))
-bp ## not needed?
 ```
 
 We need to add the error bars (+/- sem) "manually" as follows:
@@ -422,14 +488,17 @@ plot(fitanova)
 
 
 <-- Similar to SAS output
+###Not sure what this generates. HSD.test didn't work. Important?
 ```{r}
 require("agricolae")||install.packages("agricolae");require("agricolae")
-HSD.test(fitanova, "meso$NUTS", group = TRUE, console = TRUE)
+hsd<-HSD.test(fitanova, "meso$NUTS", group = TRUE, console = TRUE)
 ```
 
 ##HOMEWORK
-1) Recreate this exercise
-2) Redo the regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance)
-3) use knitr to create a pdf, push it to GitHub, and create a pull request
+1) Complete this exercise
+
+2) Redo the linear regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance). Do you think this is a better analysis?
+
+3) Use knitr to create a pdf of your completed exercise, push it to GitHub, and create a pull request.
 
 
