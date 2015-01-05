@@ -8,52 +8,62 @@ output: pdf_document
 ## Overview 
 
 In this exercise, we will explore aspects of local or site-specific diversity, also known as alpha ($\alpha$) diversity. 
-We will use the tropical forest dataset from Barro-Colorado Island (BCI).
-BCI is a 1,560-hectare island in the center of the Panama Canal that is administered by the [Smithsonian Tropical Research Institution](http://www.stri.si.edu/english/research/facilities/terrestrial/barro_colorado/). 
-We will use the BCI dataset to 1) exmaine species abundance distributions (SAD) and rank-abundance curves (RAC), 2) calculate evenness and other diversity metrics, and 3) estimate sample richness via rarefaction. 
+We will begin by introducting one of the primary ecological data structures: the **site-by-species matrix**.
+From this data structure, you will learn how to quantify two of the fundamental components of ($\alpha$) diversity: **richness** and **evenness**. 
+We will then discusss ways to integrate richness and evenness. 
+This will include univariate metrics of "diversity" along with and investigation of **species abundance distributions (SAD)**.
 
 ## 1) Setup
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
+rm(list=ls()) # removes all variables from your workspace
 getwd() # prints the working directory
-setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2")
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2") # sets the working directory
 ```
 
 ### Install Packages
 
 In this excercise, we will rely heavily on a contributed R package called `vegan`, which contains tools commonly used in ecological research, including analyses of $\alpha$-diversity. 
+Jari Oksanen has created an [excellent tutorial](http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf) that provides an overview of the `vegan` package. 
+
 Recall from last week that we can load a package and dependencies using the `require()` function. 
 If the package is not found, then we will use the `install.packages()` function followed by `require()`:
-
 ```{r, results = 'hide'}
 require("vegan")||install.packages("vegan");require("vegan") 
 ```
 
-## 2) Loading data
+## 2) Loading Data
 
-Conveniently, the vegan library contains a version of the BCI dataset. 
-The dataset comes from the censusing of trees in 50 one-hectare plots every several years. 
+We will be using the tropical forest dataset from **Barro-Colorado Island (BCI)**.
+BCI is a 1,560-hectare island in the center of the Panama Canal that is administered by the [Smithsonian Tropical Research Institution](http://www.stri.si.edu/english/research/facilities/terrestrial/barro_colorado/). 
+Conveniently, the `vegan` library contains a version of the BCI dataset. 
+The dataset comes from the censusing of tree species in 50 one-hectare plots every several years. 
 More information on the BCI forest dataset can be found [here](http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/). 
 Specific details about the BCI dataset associated with the 'vegan' package can be obtained by typing `help(BCI)` in the command line.
 Let's load the data:
-
 ```{r}
 data(BCI)
 ```
 
-## 3) Exploring the Site-By-Species Matrix
+## 3) Exploring The Site-By-Species Matrix
 
-In vegan, the BCI data are organized into a **site-by-species matrix**, that is, a data frame where the abundances of all 225 tree species (columns) are given for each of the 50 sites (rows). Let's verify this using the `dim` function, which was introduced last week:
+The **site-by-species matrix** is one of the primary ecological data structures. 
+We will draw inferences from this type of data structure throughout the course. 
+The site-by-species matrix contains the abundance, relative abundances, or presence-absence of species (or other taxonomic units) recovered from different sampling sites. 
 
+In `vegan`, the BCI **site-by-species matrix** has the abundances of all 225 tree species in the columns for each of the 50 sites, which are in the rows. 
+It is worth noting, that each row could just as easily be a species and each column could be a site. 
+Some programs that you encounter will prefer data to be in one format or the other. 
+Recall that that transpose function (`t()`) can be used to easily modify the the site-by-species matrix for you. 
+
+Let's verify the structure of the BCI site-by-species matrix using the `dim` function, which was introduced last week:
 ```{r}
 dim(BCI)  # Prints the dimensions of the site (row) by species (column) data frame
 ```
 
-The **site-by-species matrix** is one of the most basic data structures used by ecologists. 
-It contains the abundances (or presence and absence) of all taxa found among a given number of sites, quadrats, transects, etc. With the BCI site-by-species matrix loaded, let's print the abundances of 4 species found in the first 8 sites using the indexing tools that were introduced last week.
-
-```{r}
+With the BCI site-by-species matrix now loaded, let's print the abundances of four species found in the first eight sites using the indexing tools that were introduced last week.
+```{r, results = 'hide'}
 BCI[1:8, 14:17]	# print abundances for sites (rows) 1 to 8 and for species (columns) 14 to 17
 ```
 
@@ -62,40 +72,130 @@ On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at a
 
 ## 4) Species Richness (S)  
 
-[## JTL, bigger picture thoughts: I think we may want to consider tweaking the organization just a little bit. 
-I found it confusing to talk about richness early on and then talk about rarefaction at the end of the excercise. 
-This [website](http://palaeo-electronica.org/2011_1/238/estimate.htm) handles diversity estimation in an interesting way. 
-We may want to think about borrowing some of the framework. 
-Here's my pitch: calcuating richness seems pretty straigh-forward at first, but there are a few important pitfalls that are somewhat related. 
+**Species richness** is the most basic aspect of diversity. 
+In fact, it is usually what we refer to as $\alpha$-diversity.
+Estimating species richness for a single sample may seem fairly straight-forward. 
+However, there are a few things to consider and pitfalls that we should avoid. 
+
+###Adding Up Species In A Site Or Sample
+
+The simplest way to calcuate species richness is to just add up the number of species that have non-zero abundances in a site. 
+Let's calculate species richness using this approach for one of the BCI sites. 
+Using some of the basics from last week, let's assign the first row to a variable called "site1":
+```{r}
+site1 <- BCI[1,] # assign the first row (site) to the variable site1 
+dim(site1) # print the dimensions of site1 to the screen 
+```
+
+The site could contain up to 225 species (columns). 
+It is important to note, however, that site-by-species matrices also account for absences (i.e., zero occurences). 
+Let's write a function that will allow us to estimate observed species richness of a site:
+```{r}
+S_obs <- function(x){
+  rowSums(x>0)*1
+  }
+```
+
+###But How Well Did You Sample Your Site?
+Accurate estimates of richness are invariably influneced by sampling effort.
+The more individuals that are censused, the more likely you are to encounter new species. 
+There are a number of indices avaiable that will provide an estimate of how well we've sampled our site. 
+One is known as **Good's Coverage (C)**, which is defined as 1 - (n1/N), where n1 is the number of singletons (i.e., species that are encountered only once in a sample) and N is the total number of individuals in a sample.  
+```{r}
+goods <- function(x){
+  1 - (sum(x==1)/rowSums(x))
+  }
+```
+
+Have the researchers at BCI done a good job of sampling site1?
+What is the range of values that can be generated by Good's Coverage?
+What proportion of "present" taxa in site1 consisted of singletons?
+Pick another site at BCI and address the questions above. {Homework}
+
+###Richness Estimators
+
+There are number of techniques that have been developed by biodiversity researchers to estimate species richness from species accumulation curves, which plot the number of species in a sample as a function of the number of individuals identified (e.g., [Hughes et al. 2001](http://aem.asm.org/content/67/10/4399). 
+
+Here, we will hightlight to non-paremetric diversity estimators. 
+The first is **Chao1**, which is calculated as the observed richness (S) plus the proportion of singletons to doubletons. 
+This technique tends to be used in systems that are skewed towards low-abundance classes.
+Let's right a function for Chao1:
+
+```{r}
+S_chao <- function(x){
+  rowSums(x>0)*1 + (sum(x==1)^2)/(2*sum(x==2)) ## need to square singletons; 2x doubletons
+  }
+```
+
+```{r}
+
+want to 
+  1) create vector of richness classes 1,2,3....25
+  2) sum up number of observations at each richnnes class level
+
+f<-1 #starting richness level
+store<-NULL
+for (f in 1:max(site1)) #counter that creates richness levels
+  f<-f+1
+  {  
+  store<-sum((site1==f)*site1)  
+   }  
+
+
+
+
+
+for (n in 1:ncol(site1)){
+  vec[n] = (site1==1)*site1 #singleton, doubleton, tripleton..
+  
+  f<-f+1  
+  vec[k] = (site1==f)*site1 
+  for (k in 1:ncol(site1))
+}
+```
+
+
+ACE_CV <- function(x){
+  for(i in 1:nrow(x)){
+  ACE_CV[i,]=x==1*x
+  }
+  }
+  
+
+Another commonly used non-parametric estimator of richness is **ACE**. This estimator requires the following:
+
+thresh<-10
+```{r}
+S_abund <- rowSums(site1>thresh)*1 # Species richness when abundance greater than or equal to 10
+S_rare <- rowSums((site1 <=thresh & site1>0)*1) # Species richness when abundances less than or equal to 10, but greater than zero; note S_abund + S_rare = S_total
+N_rare <- sum((site1<=thresh)*site1) # Abundance (# of individuals) across rare species
+C_ace <- 1 - sum(site1==1)/N_rare # ACE coverage; 1 minus singleton species divided by abundance of rare species; proportion of all individuals in rare species that are not singletons.
+G_ace <- (S_rare/C_ace)
+N_rare*(N_rare-1)*
+
+```
+
+
+
+Estimators
+
+Coverage
+
+Rarefaction
+
+
+
 Rarefaction deals with the fact that it's inappropriate to compare richness among samples if there's unequal sampling effort. 
 This can be handled by making comparisions for samples with the "lowest common denominator" of effort. 
 Another strategy is to extrapolate richness using, for example, non-parameteric estimators (e.g. Chao1). 
 Perhaps estimating of richness becomes most problematic when a sample or site is *undersampled*. 
 One metric that is commonly used -- at least among microbial ecologists who have had to wrestle with undersampling -- is [Good's Coverage](http://www.mothur.org/wiki/Coverage).]
 
-**Species richness** is the most basic aspect of diversity. 
-In fact, it is usually what we refer to as $\alpha$-diversity.
-Estimating species richness for a single sample is fairly straight-forward. 
-Some additional thought is needed when estimating richness for multiple samples, especially if there is unequal sampling effor. 
+
+Some additional thought is needed when estimating richness for multiple samples, especially if there is unequal sampling effort. 
 
 ### Calculating richness for a single sample 
-Let's calculate species richness for one of the BCI sites. 
-We will select the first row and assign it to a variable called "Site1":
 
-```{r}
-Site1 <- BCI[1,] # assign the first row (site) to the variable Site1 
-dim(Site1) # print the dimensions of Site1 to the screen 
-```
-
-Site1 could contain up to 225 species (columns). 
-It is important to note, however, that site-by-species matrices also account for absences (i.e., zero occurences). 
-So, let's find out how many species actually occupied Site1 when it was censused:
-
-```{r}
-Sj <- rowSums(Site1>0)*1 # **This may be more instructive/illustrative, and doesn't rely on vegan; btw help(specnumber) is pretty useless** 
-S <- specnumber(Site1) # Find the number of species in Site1 and assign it to a varible S
-cat('There are', S, 'species at Site1') # "cat()" concatenates strings and numbers
-```
 
 ### Calculating richness for multiple samples
 Often we want to compare species richness among samples. For example, is plant richness higher at low vs. high latitudes? Or, are stream invertebrate communities less diverse downstream vs. upstream of a paper mill? Sampling effort has a big effect on our estimates of species richness. The more individuals that are counted, the higher the estimates of species richness. Ideally, all of our samples would be obtained with equal effort. However, it is very common in biodiversity surveys for this *not* to be the case. 
