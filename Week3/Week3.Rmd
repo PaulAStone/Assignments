@@ -8,143 +8,121 @@ output: pdf_document
 ---
 
 ## Overview
-In this exercise, we will explore between site biodiversity. 
-We will start by using the methods we learned for measuring biodiversity within a single site.
-We will then expand this to learn how to properly measure and compare biodiversity between sites.
-We will also learn various graphics and hypothesis testing techniques.
+In this exercise, you will explore among-site biodiversity, also known as beta ($\beta$) diversity. 
+First, you will learn how to formally quantify ($\beta$) diversity.
+Second, you will learn how to visualize ($\beta$) diversity using cluster analysis, ordination, and heatmaps. 
+Finally, you will be introduced to some multivariate techniques to test hypotheses about beta ($\beta$) diversity. 
 
-## Initial Setup
+## 1) Setup
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
-rm(list=ls())
-getwd()
-setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week3")
+rm(list=ls()) # removes all variables from your workspace
+getwd() # prints the working directory
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week3") #sets the working directory
 ```
 
-### Install Packages
-Ecologists and other data scietists have developed numerous packages for various tasks in the R enviornment. 
-This week we will be using a few different R packages.
-You can use the 'help' funciton to learn more about each package. 
-Let's go ahead and load a few of the packages that we will be using.
+### Install Packages 
 
-```{r, results = 'hide', message = FALSE, warning = FALSE}
+From last week's exercises, you should now be familiar with some of the features in the R package `vegan`.
+This week, in addition to using `vegan`, we will also install `ade4` and `BiodiversityR`.
+You can use the 'help' funciton to learn more about each package. 
+##Are we using any functions from ade4 and BiodiveristyR? If not, should we just have them import the data from their directory? {JTL}
+
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
+# should we be using above hide messages for all grey coding regions? want to be consistent across weeks {JTL}
 require("vegan")||install.packages("vegan");require("vegan")
 require("ade4")||install.packages("ade4");require("ade4")
 require("BiodiversityR")||install.packages("BiodiversityR");require("BiodiversityR")
 ```
 
-At this point you should be familiar with `vegan`.
-The other packages (`ade4` and `BiodiversityR`) contain some of the data sets that we will use this week.
-
-### User Defined Functions
-It helps to start scripts with any user defined functions that you know that you will need.
-For example, this week we will be using the `sem()` function we wrote in week 1. 
-Let's go ahead and define this function.
-
-```{r}
-sem <- function(x){
-  sd(x, na.rm = TRUE)/sqrt(length(na.omit(x)))
-  }
-```
-
-### Import Data
-We will again be using the BCI data set (in `vegan`) for part of this weeks exercises. 
+## 2) Loading Data
+We will again be using the BCI data set contained in `vegan` for part of this week's exercise. 
 In addition, we will be using environmental data for the BCI plots.
-The `BiodiversityR` package has some BCI environmental data (BCI.env). 
-There is additional data avaiable for BCI and your Weeek3 folder has soil data for each plot (bci.soil.txt).
-We will go ahead and import all of these data now.
+The `BiodiversityR` package contains some BCI environmental data (BCI.env). 
+Your Weeek3 folder has soil data for each of the BCI plots (bci.soil.txt).
+Let's go ahead and import all of these data now.
 
 ```{r}
 data(BCI)                                   # BCI Tree Abundance (vegan)
 data(BCI.env)                               # BCI Environmental Data (BiodiversityR)
-BCI.soil <- read.delim("./bci.soil.txt")    # BCI Soil Data
+BCI.soil <- read.delim("./bci.soil.txt")    # BCI Soil Data (your working directory)
 ```
 
-## A. Between Site Diversity
-Last week we learned about alpha diversity. 
-We calculated things like species richness, evenness, and diversity. 
-However, as you will soon see, these tools are not always adequate when comparing communities.
+## 3) Exploring Beta ($\Beta$) Diversity
+Last week, we learned about alpha ($\alpha$) diversity, where we calculated things like species richness and evenness. 
+These metrics are great for assessing the diversity of a single sample, but overlook spatial and temporal heterogeneity.
+Beta ($\Beta$) diversity is a measure of between-habitat diversity, or the difference in species composition between two or more samples. 
 
-Let's go back to the BCI dataset and calculate the tree richness across all sites. 
+### BCI Species Richness
+To illustrate the importance of ($\beta$) diversity, let's go back to the BCI dataset and examine tree richness among all sites. 
+First, let's calculate richness for the BCI sites:
 
 ```{r}
-bci.S <- specnumber(BCI)
-mean(bci.S)
-sem(bci.S)
+BCI.S <- rowSums(BCI>0)*1
 ```
 
-We can visualize these data using a box and whisker plot. 
-We are going to start our plot by changing the plotting environment using the `par()` function. 
-Adjust the values in `mar` to see how it changes the plot. 
-You can learn more about the diverse plotting options with the help files (`help(par)`)
-
-```{r, fig.width = 2.5, fig.height = 2.5}
-par(mar = c(0.5, 4.5, 3, 0.5) + 0.1)
-boxplot(bci.S, ylim = c(75, 115), las = 1, cex.lab = 1.2,
-        main = "All BCI Sites", ylab = "Tree Richness (S)")
-```
-
-However, this doesn't allow us to compare between site variation. 
-One way we can viualize this is by seperating sites. 
-Since there aren't any factors that seperate BCI sites into groups, we can just plot them based on location (based on XY-coordinates).
-To make it easy to visualize differences, we can color code sites based on tree richness using a heatmap.
-
+Now, we are going to visualize tree species richness by ploting sites based on their locations.
+We are going to color-code the sites based on tree species richness using a **heatmap**.
 In R there are a few tools that allow you to make color pallets. 
-Here we are going to use `terrain.colors` but you can learn about others by looking at the `Pallettes` help file: `help(Pallettes)`.
-
+Here we are going to use `terrain.colors` but you can learn about other colors families by looking at the `Pallettes` help file: `help(Pallettes)`.
 Let's start by making a color pallette for both Richness (S) and Abundance (N)
 
 ```{r}
-BCI.S.color <- rev(terrain.colors(151))
-BCI.N.color <- rev(terrain.colors(41))
+BCI.S.color <- rev(terrain.colors(151)) ## what about max(BCI.S)
 ```
 
-Notice that we reversed ('rev()') the sequence of colors in the pallette, this was done to make the colors more intuitive. 
-You will have to make these decisions yourself when you make future figure. 
-Also, notice that we hade to define the number of colors in each pallette. 
+Notice that we reversed ('rev()') the sequence of colors in the pallette, this was done to make the color ranges more intuitive (darker colors correspond with larger values of S). 
+Also, notice that we have to define the number of colors in each pallette. 
 Here we used 151 for S and 41 for N. 
-You can adjust these values if needed, but you will see soon why we used odd numbers.
+Notice that when you are using our heatmap color pallette that we add 1 to each value.
+This is done to deal with any 0s in our data.
+This is why we used 151 instead of 150.
 
-### BCI Tree Richness
 Let's start by plotting tree richness for each plot at BCI. 
 But how do we know how these sites are arranged? 
-Well lucky for us, the BCI soil dataset includes standardized XY-coordinates for each plot
+Well lucky for us, the BCI soil dataset includes standardized XY-coordinates for each plot:
 
 ```{r}
 head(BCI.soil, n = 2L)    # What does n = 2L do?
 ```
 
-The BCI environmental dataset actually has the UTM coordinates for each plot, but the standarized version is easier to use for our purposes.
-Here we are going to start by plotting sites in XY-coordinate space using the same plotting symbol but we will use our heatmap color to display site richness.
-Notice that when you are using our heatmap color pallette that we add 1 to each value.
-This is done to deal with any 0s in our data.
-This is also why we used 151 instead of 150.
+Here we are going to plot sites in a standardized XY-coordinate space and use our heatmap color to display tree species richness for each of the 50 sites.
 In addition, we will add a legend to the plot so that readers understand the heatmap scale.
-This plot also includes a bunch of new commands.
-You can change them to learn what they do, or you can use `help()` files.
+This plot also includes a bunch of new commands that are important for producing effective figures.
+To learn more about these commands, you can modify them or use the `help()` files. Take a few minutes to investigate.
 
 ```{r, fig.width=6, fig.height=3.5}
 # BCI Tree Richness
 par(mar=c(4,4,3,4) + 0.1, xpd=TRUE) # What is xpd? It allows the legend to appear outside of the plot
 plot(BCI.soil$x, BCI.soil$y, asp = 1, pch = 22, cex = 4, las = 1, 
-     bg = BCI.S.color[bci.S + 1], 
+     bg = BCI.S.color[BCI.S + 1], 
      xlim = c(0, 1000), ylim = c(0, 500), main = "BCI Richness (S)", 
      xlab = "X-Coordinate (m)", ylab = "Y-Coordinate (m)")
-text(BCI.soil$x, BCI.soil$y, bci.S, cex = 0.5, col = "red")
+text(BCI.soil$x, BCI.soil$y, BCI.S, cex = 0.5, col = "red")
 legend("topright", inset = c(-0.2, 0), pch = 22, pt.cex = 3, title = "S", 
        bty ='n', legend = seq(0, 150, 25), pt.bg = BCI.S.color[seq(1, 151, 25)])
 ```
 
-What do you notice when you compare all 50 sites? 
-Is this a good way to compare the sites?
-What does this method of comparing sites miss?
+**Questions**
+
++ What do you notice when you compare all 50 sites? 
+
++ Is this a good way to compare the sites?
+
++ What does this method of comparing sites miss?
 
 ### BCI Individual Tree Abunance
-What would happen if we looked at only specific tree species? 
-Let's use a similar plotting method and just focus on the abundance of a specific tree: the Prioria tree. 
-We can use the abundance heatmap pallette we created earlier.
-We will plot these data in the same way we did for richness.
+Patterns in richness may obscure differences in tree species composition across the BCI landscape.
+To investigate this, let's just focus on the abundance of a specific tree: the Prioria tree. 
+
+First, let's generate a heatmap pallette for tree abundance.
+We will plot the abundance data in the same way we did for richness.
+
+```{r}
+BCI.N.color <- rev(terrain.colors(41))
+```
+
 
 ```{r, fig.width=6, fig.height=3.5}
 # BCI Prioria Abundance
@@ -158,7 +136,11 @@ legend("topright", inset=c(-0.2, 0), pch=22, pt.cex=3, bty='n',
        title="N", legend=seq(0, 40, 10), pt.bg = BCI.N.color[seq(1, 41, 10)])
 ```
 
-What do you observe across BCI?
+**Questions**
+
++ What do you observe across BCI?
+
++ How does this compare to the patterns of species richness?
 
 ### Doubs River Fish Abundance
 In contrast, some datasets might show variation in alpha diversity across samples or sites. 
@@ -183,7 +165,7 @@ There are 11 environmental variables in this dataset.
 See the help file for more information on each (including units). 
 The second component are the abundances at each site for 27 fish species. 
 The third component has the xy spatial coordinates for each site. 
-The last componet contains the names of each fish species. 
+The last component contains the names of each fish species. 
 
 Let's plot fish richness in these stream communities.
 We will first need to calculate richness and define our color pallettes.
@@ -253,17 +235,22 @@ What do they miss?
 This week we are going to compare the diversity of communities across sites. 
 We will start by comparing diversity across sites. 
 
-## B. Beta Diversity
-Beta diversity is a measure of between-habitat diversity, or the difference in species composition between two or more localities. 
+
+
+
+## 4) Quantifying Beta ($\Beta$) Diversity
+The previous section was intended to visually demonstrate that aggregate measures of biodiversity -- like richness -- do not always capture meaningful differences in species composition among sites. In this section, we will introduce some of the ways in which beta ($\Beta$) diversity is directly quantified. 
 
 ### Turnover
-One way to think about beta diversity is the change in communities over time or space. 
+One way to think about  beta ($\beta$) diversity is the change in communities over time or space. 
 This concept is generally refered to as *turnover*.
 Turnover is defined as the rate or magnitude of change in species composition in time or along a predefined spatial or environmental gradient. 
 
 We can calculate turnover with the following equation:
 $t = \frac{b + c}{S_1 + S_2}$
 where b = the number of speces present in only the first census; c = the number of species present in only the second census; $S_1$ = the total number of species in the first census; and $S_2$ = the number of species in the second census. 
+
+## Is the "census" verbiage necessary? Can we just say "sample"?
 
 In R, we could write this as a function as follows:
 
@@ -283,7 +270,7 @@ turnover <- function(site1 = " ", site2 = " "){
 We can now use this function to calculate turnover between any two points in time or space.
 
 ```{r}
-turnover(doubs$fish[1,], doubs$fish[2,])
+turnover(doubs$fish[1,], doubs$fish[2,]) # change to BCI?
 ```
 
 ### ß-Diversity
@@ -311,12 +298,15 @@ However, this measure works best for comparing two sites.
 
 Using our new R function, we can now calculate $\beta_{w}$ between two sites:
 ```{r}
-beta.w(doubs$fish[1, ], doubs$fish[2, ])
+beta.w(doubs$fish[1, ], doubs$fish[2, ]) # change to BCI?
 ```
 
 These measures of $\beta$-diversity are usuful when comparing two sites, but special precautions must be made before making multiple comparisions.
 These precautions involve things like corrections for time and for sample size, and you can find modifications to each.
 However, there are also better ways to compare multiple communities at the same time.
+
+##I'm a little confused about some of the precautions. We introduce potential pitfalls, but don't explain why they are pitfalls or how to avoid them. 
+
 
 ### Measures of compositional similarity
 When comparing multiple communities, measures of resemblance (similarity) are the most appropriate way to compare sites. <-- I think this should be more detailed
@@ -381,6 +371,7 @@ See Table 7.2 in Legendre & Legendre 2012 for more information.
 Where $y_{1j}$ is the abundance of each species (1:p) in community 1 and $y_{2j}$ in community 2, $y_{1+}$ is the sum of abundances in community 1 and $y_{2+}$ in community 2, $y_{++}$ is the sum of all abuncances at all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across communities, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
 
 It should be noted that many of these distances are not Euclidean. 
+## should we include Euclidean since it's sort of an outlier? perhaps save for PCoA where it's easy to implement and visualize
 In `vegan`, distances are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
 See Table 7.3 in Legendre & Legendre 2012 for more information.
 
@@ -444,7 +435,7 @@ heatmap(as.matrix(spe.db), Rowv=NA, Colv=NA, symm=TRUE,  margins=c(2,2))
 
 
 ### Cluster Analysis
-### Hierarchial Clustering (Ward Clustering)
+### Hierarchical Clustering (Ward Clustering)
 ```{r}
 spe.db <- vegdist(spe, method="bray")
 spe.norm <- decostand(spe, "normalize")
