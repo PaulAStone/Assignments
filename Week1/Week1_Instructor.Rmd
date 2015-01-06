@@ -121,7 +121,7 @@ rm(list=ls())
 ```
 
 ## 5) WORKING WITH VECTORS
-###Basic Features of Vectors
+###Basic Features Of Vectors
 
 **Vectors** are the fundamental data type in R. 
 Often, vectors are just a collection of data of a similar type, either numeric (e.g., 17.5), integer (e.g., 2), or character (e.g., "low"). 
@@ -169,7 +169,7 @@ Here's how you can substitute a new value for the second element of `z`:
 z[2] <- 583 
 ```
 
-###Summary Statictics of Vectors
+###Summary Statictics Of Vectors
 
 It's pretty easy to perform summary statistics on a vector using the built-in fuctions of R:
 ```{r}
@@ -221,7 +221,7 @@ Now run `sem` on `i`.
 They are just two-dimensional vectors containing data of the same type (e.g., numeric, integer, character). 
 Thereofore, much of what we just discussed about vectors translates directly into dealing with matrices. 
 
-### Making a Matrix
+### Making A Matrix
 
 There are three common ways to create a matrix in R. 
 
@@ -262,7 +262,7 @@ n <- t(m)
 
 Confirm the transposition using the `dim` function.
 
-###Indexing a Matrix
+###Indexing A Matrix
 
 Frequently, you will need to **index** or retrieve a certain portion of a matrix. 
 As with the vector example above, we will use the square brackets to retrieve data from a matrix. 
@@ -447,6 +447,7 @@ plot(fitreg)
  + Borrom right: leverage indicates the influence of a point; contours correspond with Cook's distance, where values > |1| are "suspicious"
 
 ### ANALYSIS OF VARIANCE (ANOVA)
+
 We also have the option of looking at the relationship between zooplankton and nutrients where the manipulation is treated categorically (low, medium, high). First, let's order the categorical nutrient treatments from low to high (R's default is to order alphabetically):
 ```{r}
 NUTS <- factor(meso$NUTS, levels = c('L', 'M', 'H'))
