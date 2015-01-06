@@ -1,1 +1,24 @@
-# LaTeX Files*.aux*.out*.log*.synctex.gz# R Files.Rhistory./Week1/.Rhistory./Week2/.Rhistory./Week3/.Rhistory# RMarkdown Output Files./Week1/Week1.pdf./Week2/Week2.pdf./Week3/Week3.pdf./Week4/Week4.pdf./Week5/Week5.pdf./Week6/Week6.pdf./Week7/Week7.pdf./Week8/Week8.pdf
+# LaTeX Files
+*.aux
+*.out
+*.log
+*.synctex.gz
+
+# R Files
+.Rhistory
+./Week1/.Rhistory
+./Week2/.Rhistory
+./Week3/.Rhistory
+.Rhistory
+.Rapp.history
+
+
+# RMarkdown Output Files
+./Week1/Week1.pdf
+./Week2/Week2.pdf
+./Week3/Week3.pdf
+./Week4/Week4.pdf
+./Week5/Week5.pdf
+./Week6/Week6.pdf
+./Week7/Week7.pdf
+./Week8/Week8.pdf

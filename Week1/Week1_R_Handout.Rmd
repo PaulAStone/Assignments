@@ -413,7 +413,7 @@ plot(meso$TN, meso$ZP, ylim = c(0, 10), xlim = c(500, 5000),
 ```
 
 We can add some text to the plot to visualize the categorical nutrient treatments:
-```{reg reglayer2, echo=-1}
+```{r reglayer2, echo=-1}
 <<reglayer1>>
 text(meso$TN, meso$ZP,meso$NUTS,pos=3,cex=0.8)
 ```

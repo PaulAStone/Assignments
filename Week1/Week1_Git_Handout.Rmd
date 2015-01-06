@@ -1,4 +1,11 @@
-# Git and GitHub
+---
+title: "Week 1 Exercise: Git and GitHub"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "January 16, 2015"
+header-includes:
+   - \usepackage{graphicx}
+output: pdf_document
+---
 
 ## Git
 Git is a software system designed to allow collaborators to simultaneously work on text documents, project data, and computing code for websites and for analyzing data and conducting scientific analyses. Git is a form of *version control*.
@@ -27,7 +34,7 @@ IU has an Enterprise GitHub system that is a university managed version of GitHu
 So, IU basically has basically forked a restricted version of the GitHub project.
 IU's Enterprise version GitHub is only visible to members of the IU community. 
 
-### Goals
+## Goals
 + Install and Configure Git and other software
 + Create an GitHub account using IU's GitHub Enterprise
 + Learn what a Repo is and how we will be using Repos during in Quantitative Biodiversity
@@ -40,7 +47,7 @@ If you do not have a current Git installation (already installed in computer lab
 3. The download should start automatically
 4. Open the installer and follow the onscreen directions
 
-  **On Mac**: You will need to make sure you have Xcode Command Line Tools installed
+  **On Mac**: You will need to make sure you have Xcode Command Line Tools installed.  
   **On Windows**: This process will install Git Bash (msysGit). We recommend this over editing your path to use Git Tools in Command Prompt or PowerShell (If you are an experienced user you can decided for yourself).
 
 ### Nano Installation
@@ -55,7 +62,7 @@ If you are a **Windows User**:
   1. From Control Panel: Go to User Accounts
   2. Select: *Change My Environmental Varaibles*
   3. Highlight *PATH* and select Edit
-  4. Add the following to the end: "C:\Program Files (x86)\nano\;" (make sure that there is a ";" separating each PATH entry)
+  4. Add the following to the end: `C:\Program Files (x86)\nano\;` (make sure that there is a ";" separating each PATH entry)
   5. Open Command Prompt and Type "nano" to test ("Ctrl + X" will exit)
 
 ### Git Setup
@@ -80,17 +87,17 @@ If you are a **Windows User**:
 1. Navigate to https://github.iu.edu
 2. Sign in with your IU Username and Passphrase
 3. On the top right of your screen, click on your Username
-4. Click on the Edit Profile Icon to edit your profile 
+4. Click on the Edit Profile Icon to edit your profile<br>
 
-  <img src="images/github-edit-btn.png">
-
+    \includegraphics[scale=0.50]{images/github_edit_btn.png}
 
 ### Fork and Clone a Repo
 1. Navigate to and click on your student repository (repo) on https://github.iu.edu/2015-QuantitativeBiodiversity
 2. Fork your repo by clicking on the Fork Icon in the top right of your screen<br>
-<img src="images/github-fork-btn.png"> 
 
-  You should now see the repo on your GitHub page.
+    \includegraphics[scale=0.50]{images/github_fork_btn.png}
+
+    You should now see the repo on your GitHub page.
 
 3. Clone the repo onto your local machine using the command line (terminal)
 
@@ -101,9 +108,9 @@ If you are a **Windows User**:
     git status
     ```
 
-  The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
+    The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
 
-  We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage.
+    We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage.
 
 
 
@@ -113,15 +120,10 @@ If you are a **Windows User**:
     nano README.md
     ```
 
-  Edit the file as needed (we will demonstrate). Update your '*Student Name*' with your full name. Enter your email address. Write a short Bio about yourself (~ 1 paragraph). List three to five course expectations. Hint: View the Markdown guide to learn about formatting and making ordered lists (https://guides.github.com/features/mastering-markdown/). When you are done, save the close the document
+    Edit the file as needed (we will demonstrate). Update your '*Student Name*' with your full name. Enter your email address. Write a short Bio about yourself (~ 1 paragraph). List three to five course expectations. Hint: View the Markdown guide to learn about formatting and making ordered lists (https://guides.github.com/features/mastering-markdown/). When you are done, save the close the document
 
-    ```sh
-    [ctrl + o]
-    [ctrl + x]
-    ```
-
---> I could not get this to work if I include "sh". 
---> Also, unlikely most have ever used nano. We can explain what it is, but shoud describes steps needed to save/exit? (control-x in Mac). This stuff may seem intuitive, but if not explained to new user, can lose folks. 
+        [ctrl + o]  # Saves document
+        [ctrl + x]  # Closes document
 
 5. Now we need to add and commit our changes to git
 
@@ -131,16 +133,17 @@ If you are a **Windows User**:
     git commit -m "Updated README.md with student information"
     ```
 
-8. Now push the changes to GitHub
+6. Now push the changes to GitHub
 
     ```sh
     git push master
     ```
 
-  You should now see the repo on your GitHub page.
+    You should now see the repo on your GitHub page.
 
-9. Navigate to your GitHub page to make sure that the file was uploaded correctly. If so, submit a Pull Request to submit your file to the course <br>
-  <img src="images/github-pr-btn.png">
+7. Navigate to your GitHub page to make sure that the file was uploaded correctly. If so, submit a Pull Request to submit your file to the course <br>
 
-  The course instructors can now see your work
+    \includegraphics[scale=0.50]{images/github_pr_btn.png}
+  
+    The course instructors can now see your work
 
