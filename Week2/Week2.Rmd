@@ -161,6 +161,32 @@ By convention, ACE defines rare species as taxa that have 10 or fewer individual
 The ACE estimator requires the following:
 
 ```{r}
+S.ace <- function(x = "", thresh = 10){
+  x <- x[x>0]
+  S.abund <- length(which(x > thresh))
+  S.rare  <- length(which(x <= thresh))
+  singlt  <- length(which(x == 1))
+  N.rare  <- sum(x[which(x <= thresh)])
+  C.ace   <- 1 - (sum(x == 1) / N.rare)
+  i       <- 1:thresh
+  count   <- function(i, y){
+    length(y[y == i])
+  }
+  a.1          <- sapply(i, count, x)
+  f.1           <- (i * (i - 1)) * a.1
+  G.ace   <- (S.rare/C.ace)*(sum(f.1)/(N.rare*(N.rare -1)))
+  S.ace   <- S.abund + (S.rare/C.ace) + (singlt/C.ace) * max(G.ace,0) # 
+  return(S.ace)
+}
+
+
+
+
+
+
+
+
+```{r}
 x <- soilbac1 # Change this according to what sample you want to analyze
 thresh<-10 # Rarity threshold (# of individuals)
 S_abund <- rowSums(x>thresh)*1 # Species richness when abundance exceeds threshold
@@ -171,8 +197,10 @@ C_ace <- 1 - sum(x==1)/N_rare # ACE coverage; 1 minus number of singleton specie
 
 f=c() # create empty vector of richness classes
 f[1] = 1 # starting richness class of f (i.e. singleton)
+a<-c()
 for (i in 1:10){ # counter for richness classes
-  f[i]=sum(x==i)*(i*i-1) # loop 
+  a[i]<-sum(x==i)
+  f[i]=sum(x==i)*(i*(i-1)) # loop 
   }
 
 G_ace <- (S_rare/C_ace)*(sum(f)/(N_rare*(N_rare-1)))
@@ -319,7 +347,7 @@ Shannon's evenness metric is derived from Shannon's information entropy, a measu
 Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and where $p_i$ is the relative abundance of the *i*th species. 
 Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
 
-The vegan package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy, sometimes referred to as Shannon's diversity, the Shannon-Weiner diversity index, among others.
+The `vegan` package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy, sometimes referred to as Shannon's diversity, the Shannon-Weiner diversity index, among others.
 
 ```{r}
 H <- diversity(Site1, index="shannon") # find Shannon's entropy (H')
