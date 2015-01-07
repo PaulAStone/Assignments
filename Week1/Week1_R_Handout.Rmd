@@ -86,7 +86,11 @@ a <- 10
 b <- a + 20
 ```
 
-What is the value of b? 
+What is the value of b?
+
+    ```
+    *Provide Answer Here*
+    ```
 
 Now let's reassign a new value to `a`:
 ```{r}
@@ -241,6 +245,10 @@ k <- cbind(z, j)
 Use the `help` function to learn about `cbind`.
 Use the `dim` function to describe the matrix you just created. What did you learn from this? 
 
+    ```
+    *Provide Answer Here*
+    ```
+
 **Approach 2** to making a matrix is to use the `matrix` function along with arguments that specify the number of rows (`nrow`) and columns (`ncol`):
 ```{r}
 l <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2) 
@@ -248,7 +256,7 @@ l <- matrix(c(2, 4, 3, 1, 5, 7), nrow = 3, ncol = 2)
 
 **Approach 3** to making a matrix is to import or *load a dataset* from your working directory:
 ```{r}
-m <- as.matrix(read.table("matrix.txt", sep = "\t", header = FALSE))
+m <- as.matrix(read.table("./data/matrix.txt", sep = "\t", header = FALSE))
 ```
 
 In this case, we're reading in a tab-delimited file. 
@@ -296,7 +304,7 @@ So we have categorical and continuous predictors that we're going to use to help
 
 The first thing we're going to do is load the data:
 ```{r}
-meso <- read.table("zoop_nuts.txt", sep = "\t", header = TRUE)
+meso <- read.table("./data/zoop_nuts.txt", sep = "\t", header = TRUE)
 ```
 
 Let's use the `str` function to look at the structure of the data. 
@@ -341,15 +349,16 @@ We can conveniently visualize pairwise **bi-plots** of the data using the follow
 pairs(meso.num)
 ```
 
-Now let's conduct a simple **Pearson's correlation** analysis with the`cor()` function. 
+Now let's conduct a simple **Pearson's correlation** analysis with the `cor()` function. 
 ```{r}
 cor1 <- cor(meso.num)
 ```
 
 Describe what you found from the visualization and correlation anaylysis above?
-```
-### want to have some way to "grey out" an area where students will be expected to fill in answers {JTL}
-```
+
+    ```
+    *Provide Answer Here*
+    ```
 
 ### Loading Contributed Packages
 The base pakcage in R won't always meet all of our needs. 
@@ -382,9 +391,10 @@ b) the adjust = "BH" statement supplies the Benjamini & Hochberg-corrected **p-v
 This process corrects for **false discovery rate**, which arises whe making multiple comparisons. 
 
 Describe what you learned from corr.test and the notes:
-```
-###fill in blank###
-```
+
+    ```
+    *Provide Answer Here*
+    ```
 
 Now, Let's load another package that will let us visualize the sign and strength of the correlations:
 ```{r}
@@ -438,7 +448,7 @@ We should also look at the residuals (i.e., observed values - predicted values) 
 Specifically, we want to make sure that the residuals are normally distributed and that they are homoskedastic (i.e., equal variance). 
 We can look for patterns in our residuals using the following diagnostics:
 ```{r}
-par(mfrow = c(2, 2), mar = c(5.1,4.1,4.1,2.1))
+par(mfrow = c(2, 2), mar = c(5.1 ,4.1 ,4.1 ,2.1))
 plot(fitreg)
 ```
  + Upper left: is there a random distribtion of the residuals around zero (horizontal line)?
@@ -499,9 +509,23 @@ plot(fitanova)
 ```
 
 ##HOMEWORK
-1) Complete this the entire exercise, but 
 
-2) Redo the linear regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance). Do you think this is a better analysis?
+1) Complete this the entire exercise
+
+2) Redo the linear regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance).
+
+    ```{r}
+    # Provide Code Here
+    ```
+
+
+        Do you think this is a better analysis?
+
+```
+        Provide Answer Here
+```
+    
+
 
 3) Use knitr to create a pdf of your completed exercise, push it to GitHub, and create a pull request.
 
