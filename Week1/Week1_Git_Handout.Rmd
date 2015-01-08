@@ -50,30 +50,35 @@ If you do not have a current Git installation (already installed in computer lab
   **On Mac**: You will need to make sure you have Xcode Command Line Tools installed.  
   **On Windows**: This process will install Git Bash (msysGit). We recommend this over editing your path to use Git Tools in Command Prompt or PowerShell (If you are an experienced user you can decided for yourself).
 
-### Nano Installation
-In addition to Git, we will also be using the program Nano. Nano (http://www.nano-editor.org/docs.php) is a non-GUI text editor that is useful when working in the command line and on UNIX based systems. During the course we will use it to quickly edit files. Because Nano is a command-line interface (i.e. not a GUI), it relies on keyboard commands ONLY. Most Nano commands are invoked by holding down the Ctrl key (that is, the control key), and pressing one of the other keys. While using Nano, the control key is referred to using ^. For example, ^X means "*hold down the CTRL key and press the x key*". Most of the important commands are listed at the bottom of your screen (and ^G = nano help)
+### Git Test
+Before we get started with Git, we firs tneed to test our current installation to make sure there aren't any issues.
+The easiest way to do this is to look up the Git version currently installed.
+We will use terminal (GitBash on Windows) to accomplish this.
 
-If you are a **Mac User** you already have Nano. 
-If you are a **Windows User**: 
-1. Download the WinNT/9x binary, .zip format nano from http://www.nano-editor.org/download.php 
-2. Unzip the archive and rename the unzipped folder from nano-2.x.x to nano 
-3. Now, move this nano folder to the Program Files folder (e.g. Program Files (x86)) 
-4. Edit your User Path to include Nano:
-  1. From Control Panel: Go to User Accounts
-  2. Select: *Change My Environmental Varaibles*
-  3. Highlight *PATH* and select Edit
-  4. Add the following to the end: `C:\Program Files (x86)\nano\;` (make sure that there is a ";" separating each PATH entry)
-  5. Open Command Prompt and Type "nano" to test ("Ctrl + X" will exit)
+The first thing we need to do is find and start terminal.
+On the lab computers, you can find terminal in the **Utilities Folder**
 
-### Git Setup
+1. Find terminal and open a new window
+2. Type the following commands:
+
+    ```sh
+    pwd
+    ls
+    git --version
+    ```
+
+### Git User Setup
 1. We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage. (Windows Users: Do this from GitBash)
 
     ```sh
     cd ~
     mkdir ./GitHub/
     cd ./GitHub
+    pwd
     ```
-2. You will need to configure your local Git installation
+2. You will need to configure your local Git installation.
+We will do this by entering your name and email. 
+We will also set two defaults: push and credential save
 
     ```sh
     git config --global user.name "John Doe"
@@ -110,20 +115,28 @@ If you are a **Windows User**:
 
     The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
 
-    We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage.
-
-
-
-4. Open and edit the README.md file
+4. Check and update remote repo
 
     ```sh
-    nano README.md
+    git remote -v
+    git remote add upstream https://github.iu.edu/2015-QuantitativeBiodiversity/[Student Repo]
+    git remote -v
     ```
+    You can copy and paste the URL for your upstream repo from the GitHub website.
 
-    Edit the file as needed (we will demonstrate). Update your '*Student Name*' with your full name. Enter your email address. Write a short Bio about yourself (~ 1 paragraph). List three to five course expectations. Hint: View the Markdown guide to learn about formatting and making ordered lists (https://guides.github.com/features/mastering-markdown/). When you are done, save the close the document
+4. Open and edit the README.md file:
 
-        [ctrl + o]  # Saves document
-        [ctrl + x]  # Closes document
+    This file is a Markdown file.
+    Markdown is markup language for writing and editing text that can be easily converted to other formats (e.g. HTML, PDF, Word).
+    We will edit Markdown files using RStudio.
+    Open RStudio.
+    From RStudio, navigate to and open your README.md file.
+    Edit the file as needed (we will demonstrate). 
+    Update your '*Student Name*' with your full name. 
+    Enter your email address. Write a short Bio about yourself (~ 1 paragraph). 
+    List three to five course expectations. 
+    Hint: View the Markdown guide to learn about formatting and making ordered lists (https://guides.github.com/features/mastering-markdown/). 
+    When you are done, save the close the document.
 
 5. Now we need to add and commit our changes to git
 
@@ -145,5 +158,7 @@ If you are a **Windows User**:
 
     \includegraphics[scale=0.50]{images/github_pr_btn.png}
   
-    The course instructors can now see your work
+    The course instructors can now see your work.
+    During this course, you will submit all assignments using this method.
+    In addition, you will use Git and GitHub to contribute to project in class and on your personal computers.
 
