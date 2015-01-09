@@ -141,7 +141,7 @@ x <- c(2, 3, 6, w, w + 7, 12, 14)
 What is the function `c`() that we just used to create a vector? 
 To answer this question, trying typing `help`() function at the command line. 
 Let's try it out:
-```{r}
+```{r, results = 'hide'}
 help(c)
 ```
 
@@ -193,7 +193,7 @@ Therefore, you need to write your own function.
 Let's give it a try:
 
 ```{r}
-sem <- function(x, ...){ #######Do we need the ", ..." here
+sem <- function(x){
   sd(x)/sqrt(length(x))
   }
 ```
@@ -213,7 +213,7 @@ What happens when you apply your `sem` function to vector `i`? This is a problem
 We should modify the original `sem` function so it removes NAs right from the start. We can do this by using the `na.rm` function within the `sd` function and the `na.omit` function within `length` function. 
 ```{r}
 sem <- function(x){
-  sd(x, na.rm = TRUE)/sqrt(length(na.omit(x))) ### can't recall the difference between na.rm and na.omit; assueme latter just ignores?
+  sd(x, na.rm = TRUE)/sqrt(length(na.omit(x))) 
   }
 ```
  
@@ -245,9 +245,6 @@ k <- cbind(z, j)
 Use the `help` function to learn about `cbind`.
 Use the `dim` function to describe the matrix you just created. 
 What did you learn from this? 
-
-### example of where we can include grey box for text responses in student version
-
 
 **Approach 2** to making a matrix is to use the `matrix` function along with arguments that specify the number of rows (`nrow`) and columns (`ncol`):
 
@@ -295,8 +292,8 @@ It's easy when you understand how to reference data within a matrix:
 n <- m[, c(1:2, 5)]
 ```
 
-Describe what we just did in the last indexing operation.
-### Space for student text response###
+Describe what we just did in the last indexing operation:
+
 
 
 ## 6) BASIC DATA VISUALIZATION AND STATISTICAL ANALYSIS
@@ -359,9 +356,10 @@ cor1 <- cor(meso.num)
 ```
 
 Describe what you found from the visualization and correlation anaylysis above?
-```
-### want to have some way to "grey out" an area where students will be expected to fill in answers {JTL}
-```
+
+    ```
+    *Provide Answer Here*
+    ```
 
 ### Loading Contributed Packages
 The base pakcage in R won't always meet all of our needs. 
@@ -394,9 +392,10 @@ b) the adjust = "BH" statement supplies the Benjamini & Hochberg-corrected p-val
 This process corrects for **false discovery rate**, which arises whe making multiple comparisons. 
 
 Describe what you learned from corr.test and the notes:
-```
-###fill in blank###
-```
+
+    ```
+    *Provide Answer Here*
+    ```
 
 Now, let's load another package that will let us visualize the sign and strength of the correlations:
 ```{r}
@@ -429,9 +428,6 @@ We can add some text to the plot to visualize the categorical nutrient treatment
 <<reglayer1>>
 text(meso$TN, meso$ZP,meso$NUTS,pos=3,cex=0.8)
 ```
-###There's a problem here: "text(meso..." is being carried over probably because of improper use of <<reglayer>>
-
-
 
 To add the regression line, the first thing we need to do is identify a range of x-values and then generate the corresponding **predicted values** from our regression model:
 ```{r reglayer3, echo = -1}
@@ -453,7 +449,7 @@ We should also look at the residuals (i.e., observed values - predicted values) 
 Specifically, we want to make sure that the residuals are normally distributed and that they are homoskedastic (i.e., equal variance). 
 We can look for patterns in our residuals using the following diagnostics:
 ```{r}
-par(mfrow = c(2, 2), mar = c(5.1,4.1,4.1,2.1))
+par(mfrow = c(2, 2), mar = c(5.1 ,4.1 ,4.1 ,2.1))
 plot(fitreg)
 ```
 
@@ -515,9 +511,22 @@ plot(fitanova)
 ```
 
 ##HOMEWORK
-1) Complete the entire exercise, but 
+1) Complete this the entire exercise
 
-2) Redo the linear regression and ANOVA with log10-transformed zooplankton biomass data (often, log-transformations help with meeting assumptions of normality and equal variance). Do you think this is a better analysis? ###provide some space to answer?###
+2) Redo the linear regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance).
+
+    ```{r}
+    # Provide Code Here
+    ```
+
+
+        Do you think this is a better analysis?
+
+```
+        Provide Answer Here
+```
+    
+
 
 3) Use knitr to create a pdf of your completed exercise, push it to GitHub, and create a pull request.
 

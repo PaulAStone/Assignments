@@ -5,7 +5,7 @@ date: "January 16, 2015"
 output: pdf_document
 ---
 
-During this course, you will likely be using R, RStudio and Git at home to complete assighments.
+During this course, you will be using R, RStudio and Git at home to complete assighments.
 The goal of this short assignment to to make sure that your personal computing environment is functioning as needed for the course.
 In this short assignment, we will learn how to print a statement in R. 
 In addition, the second half of this assignment will tell us about your computer, R, and Git environments.
