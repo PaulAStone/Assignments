@@ -8,7 +8,7 @@ output: pdf_document
 ---
 
 ## Overview
-In this exercise, you will explore among-site biodiversity, also known as beta ($\beta$) diversity. 
+In this exercise, you will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
 First, you will learn how to formally quantify ($\beta$) diversity.
 Second, you will learn how to visualize ($\beta$) diversity using cluster analysis, ordination, and heatmaps. 
 Finally, you will be introduced to some multivariate techniques to test hypotheses about beta ($\beta$) diversity. 
@@ -17,35 +17,28 @@ Finally, you will be introduced to some multivariate techniques to test hypothes
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
-rm(list=ls()) # removes all variables from your workspace
-getwd() # prints the working directory
-setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week3") #sets the working directory
+rm(list=ls())                                                # removes all variables from your workspace
+getwd()                                                      # prints the working directory
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week3") #sets working directory
 ```
 
-### Install Packages 
+### Load Packages 
 
 From last week's exercises, you should now be familiar with some of the features in the R package `vegan`.
-This week, in addition to using `vegan`, we will also install `ade4` and `BiodiversityR`.
-You can use the 'help' funciton to learn more about each package. 
-##Are we using any functions from ade4 and BiodiveristyR? If not, should we just have them import the data from their directory? {JTL}
+We will again be using this pacakge and can load it now.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
-# should we be using above hide messages for all grey coding regions? want to be consistent across weeks {JTL}
-require("vegan")||install.packages("vegan");require("vegan")
-require("ade4")||install.packages("ade4");require("ade4")
-require("BiodiversityR")||install.packages("BiodiversityR");require("BiodiversityR")
+require("vegan")
 ```
 
 ## 2) Loading Data
 We will again be using the BCI data set contained in `vegan` for part of this week's exercise. 
-In addition, we will be using environmental data for the BCI plots.
-The `BiodiversityR` package contains some BCI environmental data (BCI.env). 
+In addition, we will be using environmental data for the BCI plots. 
 Your Weeek3 folder has soil data for each of the BCI plots (bci.soil.txt).
 Let's go ahead and import all of these data now.
 
 ```{r}
 data(BCI)                                   # BCI Tree Abundance (vegan)
-data(BCI.env)                               # BCI Environmental Data (BiodiversityR)
 BCI.soil <- read.delim("./bci.soil.txt")    # BCI Soil Data (your working directory)
 ```
 
@@ -59,25 +52,23 @@ To illustrate the importance of ($\beta$) diversity, let's go back to the BCI da
 First, let's calculate richness for the BCI sites:
 
 ```{r}
-BCI.S <- rowSums(BCI>0)*1
+BCI.S <- rowSums(BCI > 0) * 1
 ```
 
 Now, we are going to visualize tree species richness by ploting sites based on their locations.
 We are going to color-code the sites based on tree species richness using a **heatmap**.
 In R there are a few tools that allow you to make color pallets. 
 Here we are going to use `terrain.colors` but you can learn about other colors families by looking at the `Pallettes` help file: `help(Pallettes)`.
-Let's start by making a color pallette for both Richness (S) and Abundance (N)
+Let's start by making a color pallette for Richness (S):
 
 ```{r}
-BCI.S.color <- rev(terrain.colors(151)) ## what about max(BCI.S)
+BCI.S.color <- rev(terrain.colors(max(BCI.S) + 1))
 ```
 
 Notice that we reversed ('rev()') the sequence of colors in the pallette, this was done to make the color ranges more intuitive (darker colors correspond with larger values of S). 
 Also, notice that we have to define the number of colors in each pallette. 
-Here we used 151 for S and 41 for N. 
-Notice that when you are using our heatmap color pallette that we add 1 to each value.
+Here we used one more than the max values for S. 
 This is done to deal with any 0s in our data.
-This is why we used 151 instead of 150.
 
 Let's start by plotting tree richness for each plot at BCI. 
 But how do we know how these sites are arranged? 
@@ -94,7 +85,7 @@ To learn more about these commands, you can modify them or use the `help()` file
 
 ```{r, fig.width=6, fig.height=3.5}
 # BCI Tree Richness
-par(mar=c(4,4,3,4) + 0.1, xpd=TRUE) # What is xpd? It allows the legend to appear outside of the plot
+par(mar=c(4,4,3,4) + 0.1, xpd=TRUE) # xpd allows the legend to appear outside of the plot
 plot(BCI.soil$x, BCI.soil$y, asp = 1, pch = 22, cex = 4, las = 1, 
      bg = BCI.S.color[BCI.S + 1], 
      xlim = c(0, 1000), ylim = c(0, 500), main = "BCI Richness (S)", 
@@ -106,11 +97,23 @@ legend("topright", inset = c(-0.2, 0), pch = 22, pt.cex = 3, title = "S",
 
 **Questions**
 
-+ What do you notice when you compare all 50 sites? 
+A. What do you notice when you compare all 50 sites? 
 
-+ Is this a good way to compare the sites?
+```
+    Please Provide Answer Here
+```
 
-+ What does this method of comparing sites miss?
+B. Is this a good way to compare the sites?
+
+```
+    Please Provide Answer Here
+```
+
+C. What does this method of comparing sites miss?
+
+```
+    Please Provide Answer Here
+```
 
 ### BCI Individual Tree Abunance
 Patterns in richness may obscure differences in tree species composition across the BCI landscape.
@@ -138,9 +141,17 @@ legend("topright", inset=c(-0.2, 0), pch=22, pt.cex=3, bty='n',
 
 **Questions**
 
-+ What do you observe across BCI?
+D. What do you observe across BCI?
 
-+ How does this compare to the patterns of species richness?
+```
+    Please Provide Answer Here
+```
+
+E. How does this compare to the patterns of species richness?
+
+```
+    Please Provide Answer Here
+```
 
 ### Doubs River Fish Abundance
 In contrast, some datasets might show variation in alpha diversity across samples or sites. 
@@ -153,8 +164,9 @@ We can also look at the dataset to see what it contains.
 We will use the `str()` function to see what information is in the dataset.
 
 ```{r}
+require(ade4)
 data(doubs)
-str(doubs, max.level = 1)                 # What does max.level do?
+str(doubs, max.level = 1)                 # max.level limits the str output
 ```
 
 Notice that the doubs data set is actully a list with 4 components (elements).
@@ -227,19 +239,30 @@ legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
        title = "N", legend = seq(0, 6, 2), pt.bg = spa.N.color[seq(1, 7, 2)])
 ```
 
-How does this dataset differ from the BCI data? 
-Is richness the most appropriate tool to compare communities? 
-What about other $\alpha$-diversity measures?
-What do they miss?
+F. How does this dataset differ from the BCI data? 
+
+```
+    Please Provide Answer Here
+```
+
+G. Is richness the most appropriate tool to compare communities, why or why not?
+
+```
+    Please Provide Answer Here
+```
+
+H. What about other $\alpha$-diversity measures?
+
+```
+    Please Provide Answer Here
+```
 
 This week we are going to compare the diversity of communities across sites. 
 We will start by comparing diversity across sites. 
 
-
-
-
 ## 4) Quantifying Beta ($\Beta$) Diversity
-The previous section was intended to visually demonstrate that aggregate measures of biodiversity -- like richness -- do not always capture meaningful differences in species composition among sites. In this section, we will introduce some of the ways in which beta ($\Beta$) diversity is directly quantified. 
+The previous section was intended to visually demonstrate that aggregate measures of biodiversity -- like richness -- do not always capture meaningful differences in species composition among sites. 
+In this section, we will introduce some of the ways in which beta ($\Beta$) diversity is directly quantified. 
 
 ### Turnover
 One way to think about  beta ($\beta$) diversity is the change in communities over time or space. 
@@ -247,10 +270,8 @@ This concept is generally refered to as *turnover*.
 Turnover is defined as the rate or magnitude of change in species composition in time or along a predefined spatial or environmental gradient. 
 
 We can calculate turnover with the following equation:
-$t = \frac{b + c}{S_1 + S_2}$
-where b = the number of speces present in only the first census; c = the number of species present in only the second census; $S_1$ = the total number of species in the first census; and $S_2$ = the number of species in the second census. 
-
-## Is the "census" verbiage necessary? Can we just say "sample"?
+$turnover = \frac{b + c}{S_1 + S_2}$
+where b = the number of speces present in only the first sample; c = the number of species present in only the second sample; $S_1$ = the total number of species in the first sample; and $S_2$ = the number of species in the second sample. 
 
 In R, we could write this as a function as follows:
 
@@ -270,7 +291,8 @@ turnover <- function(site1 = " ", site2 = " "){
 We can now use this function to calculate turnover between any two points in time or space.
 
 ```{r}
-turnover(doubs$fish[1,], doubs$fish[2,]) # change to BCI?
+turnover(doubs$fish[1,], doubs$fish[2,]) 
+turnover(BCI[1,], BCI[2,])
 ```
 
 ### ß-Diversity
@@ -288,30 +310,28 @@ beta.w <- function(site1 = "", site2 = ""){
   gamma = union(colnames(site1), colnames(site2))         # Gamma species pool
   s     = length(gamma)
   a.bar = mean(c(specnumber(site1), specnumber(site2)))
-  b.w   = s/a.bar - 1
+  b.w   = round(s/a.bar - 1, 3)
   return(b.w)
 }
 ```
 
 $\beta_{w}$ ranges from 0 (minimum $\beta$ diversity) to 1 (maximum $\beta$ diverstity).
-However, this measure works best for comparing two sites.
 
 Using our new R function, we can now calculate $\beta_{w}$ between two sites:
 ```{r}
-beta.w(doubs$fish[1, ], doubs$fish[2, ]) # change to BCI?
+beta.w(doubs$fish[1, ], doubs$fish[2, ])
+beta.w(BCI[1,], BCI[2,])
 ```
 
-These measures of $\beta$-diversity are usuful when comparing two sites, but special precautions must be made before making multiple comparisions.
-These precautions involve things like corrections for time and for sample size, and you can find modifications to each.
-However, there are also better ways to compare multiple communities at the same time.
+These measures of $\beta$-diversity are useful when comparing two sites.
+However, we often want to compare multiple sites at the same time. 
 
-##I'm a little confused about some of the precautions. We introduce potential pitfalls, but don't explain why they are pitfalls or how to avoid them. 
-
-
-### Measures of compositional similarity
-When comparing multiple communities, measures of resemblance (similarity) are the most appropriate way to compare sites. <-- I think this should be more detailed
-These measures can either be based on incidence (presence-absence; qualitative) data, or abundance (absolute or total; quantitative) data. 
-We will use common notations when refering to these measures.
+### Measures of Compositional Similarity
+When comparing multiple communities, measures of resemblance (similarity) are the most appropriate way to compare communities. 
+This is because we can use our site-by-species matrix to generate another ecological data structure: the **Resemblance Matrix**.
+The resemblance matrix is a diagonal matrix comprised of all pair-wise similarities between a group of objects. 
+In ecology, these similarity measures can either be based on incidence (presence-absence; qualitative) data, or abundance (absolute or total; quantitative) data. 
+Here, we will use common notations when refering to these measures.
 For reference, all notations will follow that of Legendre & Legendre 2012. 
 
 ### 1. Incidence-Based
@@ -333,12 +353,16 @@ For reference, all notations will follow that of Legendre & Legendre 2012.
   \end{center}
 
 Where a = the number of shared speces, b = the number of unique species in the first assemblage, and c = the number of unique species in the second assemblage.
-What are the differences between these two measures?
-Why might you be interested in using one over the other?
+
+I. What are the differences between these two measures, and Why might you be interested in using one over the other?
+
+```
+    Please Provide Answer Here
+```
+
 We should note that there are other measures (including: Ochiai, Kulczynski-Cody, ...).
 See Table 6.1 in Magurran & McGill 2011, or Table 7.2 in Legendre & Legendre 2012 for more details. 
-Also note, these equations calculate similarity.
-However, these values are often converted to dissimilarity, or distance, when calculated in R.
+Also, it should be noted that these equations calculate similarity, but can be converted to dissimilarity, or distance.
 In `vegan`, distances are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
 See Table 7.2 in Legendre & Legendre 2012 for more information.
 
@@ -371,8 +395,6 @@ See Table 7.2 in Legendre & Legendre 2012 for more information.
 Where $y_{1j}$ is the abundance of each species (1:p) in community 1 and $y_{2j}$ in community 2, $y_{1+}$ is the sum of abundances in community 1 and $y_{2+}$ in community 2, $y_{++}$ is the sum of all abuncances at all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across communities, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
 
 It should be noted that many of these distances are not Euclidean. 
-## should we include Euclidean since it's sort of an outlier? perhaps save for PCoA where it's easy to implement and visualize
-In `vegan`, distances are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
 See Table 7.3 in Legendre & Legendre 2012 for more information.
 
 ### 3. Other Measures (may not be appropriate for species abundaces)
@@ -384,8 +406,8 @@ Manhattan Metric:
 $D_{7} = \sum\limits_{j = 1}^{p} \left| y_{ij} - y_{2j} \right|$
   
 ### Calculate Sample Resemblance
-Many of these similarity metrics are in the vegan `vegdist()` function.
-We can use these to measure resemblance in each of our fish communities in the Doubs River.
+Though given enought time we could code functions for all of these measures, many of the similarity metrics are included in the vegan `vegdist()` function.
+Here, we will use a few metrics to measure resemblance in each of the fish communities in the Doubs River.
 However, remember from our plots above that site 8 had no observations.
 We will need to remove that site from the data set.
 
@@ -397,14 +419,14 @@ rowSums(spe)    # Notice site 8 is empty
 spe <- spe[-8, ]
 
 # Calculate Jaccard Dissimilarty 
-spe.dj <- vegdist(spe, method="jaccard", binary=TRUE) # Binary?
+spe.dj <- vegdist(spe, method="jaccard", binary=TRUE) # For the Jaccard mentioned above, use binary = TRUE
 
 # Calculate Bray-Curtis Dissimilarty between Doubs River sites
 spe.db <- vegdist(spe, method="bray")
 ```
 
-We have now measured the resemblance off all Doubs River sites. 
-How do you visulize these data?
+We have now measured the resemblance of fish communities in all of the Doubs River sites. 
+But, how do you visulize these data?
 Well, you could print the resemblance matrix:
 
 ```{r, results='hide'}
@@ -421,20 +443,31 @@ However, if you wanted a square resemblance matrix, you could use the following 
 spe.db <- vegdist(spe, method="bray", upper=TRUE, diag=TRUE)
 ```
 
-Again, you could look at this resemblance matrix by printing the values, but that is not easy to interpret and does not show relations between sites.
+J. Using the R console, view this matrix. Does this resemblance matrix show similarity or distance? How do you know?
+
+```
+    Please Provide Answer Here
+```
+
+Again, you could look at this resemblance matrix by printing the values, but that is not easy to interpret and does not easily show relations between sites.
 In the next part, we will learn more elaborate ways to visualize the ecological resemblance of communities.
 
 ## D. Visualizaton
 
 ### Heatmaps
 One way to visualize $\beta$-diversity is to plot the data in our resemblance matrix using a heatmap.
-R has a nice heatmap function that makes this fairly easy
+R has various heatmap functions.
+Here we are going to use the `levelplot()` function.
+In addtion, we will define our own color palette, and custom order our matrix so that our ploat looks like a resemblance matrix. 
+
 ```{r}
-heatmap(as.matrix(spe.db), Rowv=NA, Colv=NA, symm=TRUE,  margins=c(2,2))
+jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+order <- rev(attr(spe.db, "Labels"))
+levelplot(as.matrix(spe.db)[, order], aspect = "iso", col.regions = jet.colors, xlab="Doubs Site", ylab = "Doubs Site", main = "Bray-Curtis Distance")
 ```
 
-
 ### Cluster Analysis
+Another common way to visualize $\beta$-diversity is to use a clusering diagram
 ### Hierarchical Clustering (Ward Clustering)
 ```{r}
 spe.db <- vegdist(spe, method="bray")
