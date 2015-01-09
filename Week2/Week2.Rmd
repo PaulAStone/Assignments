@@ -109,7 +109,9 @@ There is also a function in the `vegan` package called `specnumber`. Do we get t
 Accurate estimates of richness are invariably influneced by sampling effort.
 The more individuals that are censused, the more likely you are to encounter new species. 
 There are a number of indices avaiable that will provide an estimate of how well we've sampled our site. 
-One is known as **Good's Coverage (C)**, which is defined as 1 - (**n1**/**N**), where n1 is the number of number of individuals belonging to singleton species, i.e. species encountered only once in a sample, and **N** is the total number of individuals in a sample. Since **n1**/**N** is just the proportion of individuals belonging to singleton species, 1 - **n1**/**N** is the proportion of individuals belonging to non-singleton species. Let's write a function and estimate Good's Coverage for site1 of BCI:
+One is known as **Good's Coverage (C)**, which is defined as 1 - (**n1**/**N**), where n1 is the number of number of individuals belonging to singleton species, i.e. species encountered only once in a sample, and **N** is the total number of individuals in a sample. 
+Since **n1**/**N** is just the proportion of individuals belonging to singleton species, 1 - **n1**/**N** is the proportion of individuals belonging to non-singleton species. 
+Let's write a function and estimate Good's Coverage for site1 of BCI:
 
 ```{r}
 goods <- function(x){
