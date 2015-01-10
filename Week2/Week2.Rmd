@@ -101,8 +101,14 @@ S.obs <- function(x){
   rowSums(x>0)*1
   }
 ```
-
-There is also a function in the `vegan` package called `specnumber`. Do we get the same value? Try it! 
+The use of functions is elemental to programming, in general.
+The basic concept behind functions is to define a piece of code that operates on a single or set of variables and data structures.
+So, instead of rewriting the code to calculate richness over and over, we just define a function called S.obs that calculate richness of a given vector x. 
+We can then type (or "call") the S.obs function whenever we want to calculate richness for a given vector, x.
+There is also a function in the `vegan` package called `specnumber`. 
+Do we get the same value? Try it! 
+In fact, functions in the vegan package are defined and operate the same way that the functions we define and write ourselves.
+The benefit of packages such as vegan is that they offer a standard set of functions and statistical tools that we don't have to derive, define, and test, ourselves.
 
 ### But How Well Did You Sample Your Site?
 
@@ -252,13 +258,13 @@ Let's construct an RAC using site1 of the BCI data set.
 First, we will remove species that had zero occurences in site1. 
 
 ```{r}
-site1z <- site1[site1>0] # Remove all zeros from Site1 and reassign the new vector
+site1 <- site1[site1>0] # Remove all zeros from Site1 and reassign the new vector
 ```
 
 ```{r}
-site1.rank <- site1z[order(site1z, decreasing = TRUE)] # Use `order` function and "decreasing" argument to rank taxa by abundance
-ranks <- as.vector(seq(1, length(site1z)))             # Create a sequence of S ranks
-plot(ranks, log(site1.rank), type = 'p', las = 1,      # Plot the RAC
+site1.ranked <- site1z[order(site1, decreasing = TRUE)] # Use `order` function and "decreasing" argument to rank taxa by abundance
+ranks <- as.vector(seq(1, length(site1)))             # Create a sequence of S ranks
+plot(ranks, log(site1.ranked), type = 'p', las = 1,      # Plot the RAC
      xlab = "Rank", ylab = "log(abundance)")           # "type = 'p'" = points; "las = 1" labels are horizontal
 ```
 
@@ -289,6 +295,7 @@ Once, again vegan has no function for Simpson's evenness but does calculate Simp
 
 ```{r}
 D <- diversity(site1, "simp") # find Simpson's diversity (D)
+S <- specnumber(site1)
 E <- (1/D)/S # find Simpson's evenness (E)
 E
 ```
@@ -309,14 +316,14 @@ The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi \cdot \arctan( \sum
 While seeminly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to take values between 0 and 1 by using elementary trigonometry.
 
 ```{r}
-X <- var(log(RAC))
+X <- var(log(site1.ranked))
 Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
 $E_{var}$ uses the arctangent, which varies between -$\pi$/2 and $\pi$/2 and without being periodic like waves of the sine and cosine functions. Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1. Finally, subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. We can confirm this with a more explicit R chunk:
 
 ```{r}
-P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
+P <- log(log(site1.ranked)) # log-tranform the abundances of the RAC and assign them to a vector P
 AvgAb <- mean(P) # find the average of the log abundances
 X <- 0 # assign zero to variable X
 Evar <- 0 # declare a scalar varible Evar
@@ -438,7 +445,8 @@ The difference being that an estimate of diversity implicitly or explicitly acco
 
 ## Examining and interpreting the SAD 
 
-
+RACresults <- radfit(RAC)
+RACresults
 
 ### Other Diversity Estimators
 **We need to think about how this will fit in with the flow of the rest of the exercise {JTL}**
