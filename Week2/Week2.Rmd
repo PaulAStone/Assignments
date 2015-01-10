@@ -355,8 +355,8 @@ You saw in the derivation of Simpson's evenness that we called the R diversity f
 In effect, in estimating Simpson's evenness we first estimated Simpson's diversity (*D*). Species diversity is commonly defined as a relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$.
 Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates. 
 
-#### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Ken
-#### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. 
+#### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Jay
+#### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. -Ken
 #### Not only is there no magic, but even us normal folk can code up the functions we see in papers, books, and usually leave to super-geeks to develop. -Ken 
 #### It's about being empowered and non-phobic through comprehending. -Ken
 
