@@ -195,7 +195,8 @@ S.ace <- function(x = "", thresh = 10){
 
 ### Or we can just drop it and stick with Chao1; I'm guessing -- conservatively -- it may take 15 minutes to get this transcribed from handout and running. -Jay
 ### And the question is: what will they take away? -Jay
-### Maybe do Chao1 and Chao2 in class. Then, for homework, give a short explanation of ACE and then say, "Using the example provided, code up the ACE estimator and estimate species richness for ..." -Ken
+### Agreed. -Ken
+### Maybe do Chao1 and Chao2 in class. Then, for homework, give a short explanation of ACE and then say, "Using the example provided, code up the ACE estimator and estimate species richness for sample x" -Ken
 
 ### One idea I had is that we could put "bits" of stuff that we do in "Supplementary" files. Even if students don't use it right away, it's there for them, but perhaps more importantly us! -Jay
 ### If the students don't use it, then they should see it; avoiding clutter. -Ken
@@ -228,14 +229,21 @@ rarecurve(soilbac, step = 20, sample = min.N, col = "blue", cex = 0.6, las=1) # 
 abline(0, 1, col = 'red')             # 1:1 line for reference
 text(1500, 1500, "1:1", pos = 2, col = 'red')
 ```
-### I think there's probably some math to explain here
-### what about errors associated with estimates?
-### how about species accumulation curves using specaccum()? Redundant with rarefy?
+### I think there's probably some math to explain here -Jay (?)
+### Agreed; I'd want students to know just what 'rarefy' does and why.
+
+### what about errors associated with estimates? -Jay (?)
+### Would be more rigorous with errors or CIs. -Ken
+
+### how about species accumulation curves using specaccum()? -Jay(?) 
+### Redundant with rarefy? -Jay(?)
+### Not really: Species accumulation curves show the rate at which new species are found within a community and can be extrapolated to provide an estimate of species richness. -Ken
+### See: http://www.vsni.co.uk/software/genstat/htmlhelp/ecology/AccumulationCurve.htm; A big literature on SACs and collector's curve. -Ken
 
 ##5) Species evenness
 There is more to ($\alpha$) diversity than just the number of species in a plot. 
-Specifically, it is important to consider **evenness**: how abundance varies among species.
-Many important biodiversity issues -- including endangered speices and invasive specie -- relate to variation in the abundance of taxa. 
+Specifically, it is important to consider how abundance varies among species, that is, **species evenness**.
+Many important biodiversity issues -- species coexistence, community stability, the detection of rare taxa, the observation of compositional change and turnover due to disturbance, invasion, and random population fluctuations -- relate to variation in the abundance of taxa. 
 
 ### Visualizing Evennes: The Rank Abundance Curve (RAC)
 One of the most common ways to visualize evenness is to rank the species from greatest (most abudnant) to least (most rare), that is, as a rank-abundance curve (RAC). 
