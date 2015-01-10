@@ -258,13 +258,13 @@ Let's construct an RAC using site1 of the BCI data set.
 First, we will remove species that had zero occurences in site1. 
 
 ```{r}
-site1 <- site1[site1>0] # Remove all zeros from Site1 and reassign the new vector
+site1.ab <- site1[site1>0] # Remove all zeros from Site1 and reassign the new vector
 ```
 
 ```{r}
-site1.ranked <- site1z[order(site1, decreasing = TRUE)] # Use `order` function and "decreasing" argument to rank taxa by abundance
+site1.ab.ranked <- site1.ab[order(site1, decreasing = TRUE)] # Use `order` function and "decreasing" argument to rank taxa by abundance
 ranks <- as.vector(seq(1, length(site1)))             # Create a sequence of S ranks
-plot(ranks, log(site1.ranked), type = 'p', las = 1,      # Plot the RAC
+plot(ranks, log(site1.ab.ranked), type = 'p', las = 1,      # Plot the RAC
      xlab = "Rank", ylab = "log(abundance)")           # "type = 'p'" = points; "las = 1" labels are horizontal
 ```
 
@@ -294,8 +294,8 @@ Simpson's evenness metric essentially reflects the sample variance of the SAD, a
 Once, again vegan has no function for Simpson's evenness but does calculate Simpson's diversity, i.e., the probability that the next sampled individual belongs to a different species:
 
 ```{r}
-D <- diversity(site1, "simp") # find Simpson's diversity (D)
-S <- specnumber(site1)
+D <- diversity(site1.ab, "simp") # find Simpson's diversity (D)
+S <- specnumber(site1.ab)
 E <- (1/D)/S # find Simpson's evenness (E)
 E
 ```
@@ -316,14 +316,14 @@ The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi \cdot \arctan( \sum
 While seeminly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to take values between 0 and 1 by using elementary trigonometry.
 
 ```{r}
-X <- var(log(site1.ranked))
+X <- var(log(site1.ab))
 Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
 $E_{var}$ uses the arctangent, which varies between -$\pi$/2 and $\pi$/2 and without being periodic like waves of the sine and cosine functions. Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1. Finally, subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. We can confirm this with a more explicit R chunk:
 
 ```{r}
-P <- log(log(site1.ranked)) # log-tranform the abundances of the RAC and assign them to a vector P
+P <- log(log(site1.ab)) # log-tranform the abundances of the RAC and assign them to a vector P
 AvgAb <- mean(P) # find the average of the log abundances
 X <- 0 # assign zero to variable X
 Evar <- 0 # declare a scalar varible Evar
@@ -351,10 +351,10 @@ k <- sample(nrow(BCI), 1) ## take a random site from BCI
 ### I would suggest not doing this because you might get a pretty crappy site. -Ken
 ### Best to have control over it, especially since students homework won't end up agreeing. -Ken
 ### Maybe just use the original site chosen from BCI (site1), which I had already checked for having a decent number of species. -Ken
-fisher <- fisherfit(BCI[k,]) # use an unambiguous naming convention
+fisher <- fisherfit(BCI[k,]) # using an unambiguous naming convention
 
 ```{r}
-N <- sum(site1) # find the number of individuals at site1 and assign it to a variable N
+N <- sum(site1.ab) # find the number of individuals at site1 and assign it to a variable N
 cat('There are', N, 'individuals among', S, 'species at Site1') 
 ```
 
@@ -383,6 +383,7 @@ This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$.
 Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
 
 ```{r}
+RAC <- site1.ab.ranked
 H <- 0
 for (sp in RAC){
   p = sp / sum(RAC)
@@ -434,7 +435,7 @@ Let's compare using Site1.
 ```{r}
 invD <- diversity(RAC, "inv")
 invD
-Fisher <- fisher.alpha(RAC)
+Fisher <- fisher.alpha(BCI)
 Fisher
 ```
 
@@ -444,8 +445,9 @@ However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of e
 The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
 ## Examining and interpreting the SAD 
-
-RACresults <- radfit(RAC)
+library(vegan)
+data(BCI)
+RACresults <- radfit(BCI[1,])
 RACresults
 
 ### Other Diversity Estimators
@@ -455,8 +457,7 @@ ___
 
 ## Homework
 
-1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. 
-For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
+1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. #For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
 Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
 
 2) ...
