@@ -186,12 +186,12 @@ S.ace <- function(x = "", thresh = 10){
 }
 ```
 ### This is pretty hairy I guess. -Jay
-### Not if you can simplify your code; functions are rarely coded as efficiently as they could be. -Ken
+### Can simplify your code, i.e. make it cleaner? -Ken
 
 ### Opportunity to teach about loops and alternatives in R (sapply). -Jay
 ### sapply is nice if the task is relatively simple. -Ken
 ### This is a bad example for teaching loops. -Ken
-### Loops are too rudimentary a skill and this function is too complicated to stop inside of and say, "oh BTW, while you're thinking about estimating richness we're going to teach you a new control structure" -Ken
+### My opinion: Loops are too rudimentary a skill and this function is too complicated to stop inside of and say, "While you're thinking about estimating richness we're going to teach you a new control structure" -Ken
 
 ### Or we can just drop it and stick with Chao1; I'm guessing -- conservatively -- it may take 15 minutes to get this transcribed from handout and running. -Jay
 ### And the question is: what will they take away? -Jay
