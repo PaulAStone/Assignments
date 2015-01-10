@@ -444,17 +444,20 @@ They would converge if our community was much greater in total abundance and ric
 However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. 
 The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
-## Examining and interpreting the SAD 
+## Species abundance models
+Recall that the species rank-abundance curve RAC is simply the abundance of species ranked from most-to-least abundant.
+The RAC is a simple data structure that is both a vector of abundances and a row in the site-by-species matrix (minus the zeros, i.e., absences). 
+Despite it's simplicity the RAC contains a lot of information.
+For example, the sum of the abundances in the RAC is commonly referred to as the observed **total abundance** and denoted as **N** while the length of the RAC (the number of ranks) is simply the observed **species richness**, denoted as **S**. 
+The RAC also contains the information needed to estimate richness and calculate evenness and diversity.
+Moreover, the RAC represents a type of species-abundance distribution (SAD), the form of which has been intensively studied and modeled.
+Species abundance models attempt to predict the form of the SAD (e.g. as an RAC) according to mechanisms and processes that underpin general ecological and biodiversity theory.
 
+Let's use the radfit() function in the vegan package to fit the predictions of various species abundance models to the RAC of site1 in BCI 
 ```{r}
-#library(vegan)
-#data(BCI)
 RACresults <- radfit(RAC)
 RACresults
 ```
-
-### Other Diversity Estimators
-**We need to think about how this will fit in with the flow of the rest of the exercise {JTL}**
 
 ___
 
