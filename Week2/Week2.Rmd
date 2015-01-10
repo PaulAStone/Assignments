@@ -201,7 +201,6 @@ S.ace <- function(x = "", thresh = 10){
 ### If the students don't use it, then they should see it; avoiding clutter. -Ken
 ### But yes, might do well in the instructor materials...or better as homework -Ken
 
-
 How does observed richness compare to estimated richness for soilbac1?
 
 _Notes_
@@ -259,15 +258,18 @@ It is clear from looking at the RAC for site1 that the abundance of individuals 
 This is true even when abundances are log-transformed (note the plotting options above). 
 This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations [McGill et al. 2007](http://www.ncbi.nlm.nih.gov/pubmed/17845298).
 
-### Quantifying Evenness
-Evenness is perhaps a less intuitive component of $\alpha$-diversity to measure than richness. 
+### Species Evenness
+Species evenness is generally defined as the similarity in abundance among species. 
+If **N**/**S** equals average species abundance of a sample, you can think of species evenness as being related to the samples variance.
 Researchers have attempted to identify important features that evenness measures should strive for:
 
 1. We want to be able to intuit the values of our metric. 
-2. We want our metric to be bounded between a minimum (e.g. 0.0) and a maximum (e.g. 1.0). 
-3. We do not want evenness among species to simply reflect the number of species (i.e. *S*); otherwise, comparing evenness among sites with different numbers of species really becomes a comparison of species richness; not evenness *per se*. 
- 
-In short, we desire an intuitive, bounded, and largely unbiased metric of species evenness.
+2. We want our metric to be bounded between a minimum evenness (i.e. 0.0) and a maximum evenness (i.e. 1.0). 
+3. We also want intermediate values of our metric (e.g. 0.5) to represent an intuitive intermediate evenness.
+4. We do not want evenness among species to simply reflect the number of species (i.e. *S*); otherwise, comparing evenness among sites with different numbers of species really becomes a comparison of species richness; not evenness *per se*. 
+5. Adding a singleton species should decrease our the value of evenness.
+
+In short, desirable evenness metrics are bounded, unbiased, and have intuitive values.
 Here, we will introduce two metrics of evenness that meet the above criteria: Simpson's evenness and Smith and Wilson's evenness index 
 
 ### Simpson's evenness, $E_{1/D}$
@@ -295,14 +297,14 @@ Abundances are transformed to their natural logarithms to decrease bias towards 
 $E_{var}$, like all desireable measures of evennness, is independent of richness *S*.
 The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi \cdot \arctan( \sum\limits_{i=1}^{i=S} ln(n_i) - \sum\limits_{j=1}^{j=S} ln(n_j)/S)}$.
 
-While considerably more involved to calcualte, $E_{var}$ really reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to take values between 0 and 1 by using the trigonometric function arctangent, which varies between -$\pi$/2 and $\pi$/2. 
+While seeminly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to take values between 0 and 1 by using elementary trigonometry.
 
 ```{r}
 X <- var(log(RAC))
 Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
-Multiplying an arctangent by 2/pi forces the result to take values between 0 and 1, and then subtracting this from 1 allows low evenness to be associated with 0 and high evenness to be associated with 1. We can confirm this with a more explicit R chunk:
+$E_{var}$ uses the arctangent, which varies between -$\pi$/2 and $\pi$/2 and without being periodic like waves of the sine and cosine functions. Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1. Finally, subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. We can confirm this with a more explicit R chunk:
 
 ```{r}
 P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
@@ -310,7 +312,7 @@ AvgAb <- mean(P) # find the average of the log abundances
 X <- 0 # assign zero to variable X
 Evar <- 0 # declare a scalar varible Evar
 
-for (x in P) {
+for (x in P) { # making use of a 'for' loop. for loops are an elementary control structure in all programming languages.
   X = X + (x - AvgAb)^2 / (S - 1)
 }
 
@@ -323,23 +325,16 @@ Likewise, you can see that different evenness metrics, even when bound between 0
 This is not because each is inaccurate but because each metric emphasizes different aspects of the RAC. 
 Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ gives nearly equal weight to dominant, intermediately abundant, and rare species.
 
-Integrating richness and evenness
-  1) Let's quantify "diversity"
-      a) Shannon's entropy
-      b) Simpson's
-      c) Fisher's
-
---> Do we nned all three diversity?
-
-  2) Let's model test via vegan
-      a) log normal
-      b) log series
-      c) geometric and/or zipf
-
 * not sure if we should use BCI or bacteria data for above. could choose one and then ask them to do other for homework and compare!
 
+#### You're already going from observed values (e.g. richness), to estimated values, and then back to observed values. -Ken
+#### Are you sure you also want to go from BCI, to microbes, and back to BCI? -Ken
+#### Could be more linear from observed to estimated and/or from BCI (or microbes) to microbes (or BCI). -Ken
+
 k <- sample(nrow(BCI), 1) ## take a random site from BCI
-fish <- fisherfit(BCI[k,])
+#### I would suggest not doing this because you might get a pretty crappy site. Best to have control over it, especially since students homework won't end up agreeing. -Ken
+#### Maybe just use the original site chosen from BCI (site1), which I had already checked for having a decent number of species.
+fisher <- fisherfit(BCI[k,]) # use an unambiguous naming convention
 
 ```{r}
 N <- sum(site1) # find the number of individuals at site1 and assign it to a variable N
@@ -347,85 +342,23 @@ cat('There are', N, 'individuals among', S, 'species at Site1')
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-## Species Evenness
-
-Species evenness is generally defined as the similarity in abundance among species. 
-Take for instance, the RAC for Site1. 
-While there are many species with similar but low abundances, the few species with relatively high abundances actually drives the pattern to be uneven and, hence, the slope of the RAC to be steep. 
-In fact, one way of quantifying evenness is simply to find the slope of regression through the points in RAC. 
-This is referred to as the NHC evenness index (Nee et al. 1992).
-
-```{r}
-fit  <- lm(log(RAC) ~ ranks)                 # Simple Linear Regression
-summary(fit)
-plot(ranks, log(RAC), type = 'p', las = 1,
-     xlab = "Rank", ylab = "log(abundance)") 
-abline(fit, col = 'red')                     # Add Regression Line
-```
-
-Note, that the slope of this relationship must be either 0.0 or negative because the RAC is constrained to between perfect evenness (slope of 0) and infinite unevenness (negative infinity). 
-Also, notice that while a slope of 0 implies a perfectly even distribution of abundance among spcies, a slope of -0.035 really doesn't convey much. 
-Likewise, the number of ranks (i.e. species) influences the slope by 'stretching' out the relationship. 
-Imagine what the slope would be for *S* = 100,000 ranks!
-** Section above (following regression code) could be convey major points more clearly. 
-
-
-
-Shortcomings of the NHC index reveal important considerations when quantifying species evenness. 
-
-### Shannon's (or Pielou's) evenness, J'
-Shannon's evenness metric is derived from Shannon's information entropy, a measure of uncertainty, and is standardized by *S* to remove the bias of *S* on the statistic. 
-Shannon's evenness (*J'*) is calculated as: ${J' = }  \frac{H'} {ln(S)}$, where *H'* is Shannon's information entropy and where $p_i$ is the relative abundance of the *i*th species. 
-Shannon's evenness was derived by Pielou (1969, 1975) and is sometimes referred to as Pielou's evenness.
-
-The `vegan` package does not have functions to calculate Shannon's evenness but does have a function to calculate Shannon's entropy, sometimes referred to as Shannon's diversity, the Shannon-Weiner diversity index, among others.
-
-```{r}
-H <- diversity(Site1, index="shannon") # find Shannon's entropy (H')
-J <- H/log(S) # find Shannon's evenness (J')
-J
-```
-
-You can see that Shannon's evenness is quite high for Site1. 
-Yet, this doesn't intuitively reflect what we saw in the RAC. In fact, because of the way Shannon's is calculated, values for ecological communities are commonly greater than 0.5. 
-Consequently, an intermediate value of *J'* does not necessarily mean an intermediate evenness. Compare this to another evenness metric, i.e., Simpson's evenness.
-
-
-**What is the takehome? from the Shannon/Pielou's section? Confusing because we're jumping into diversity metrics (Shannon-Weiner) {JTL}*
-
-
-
-** I need to go through this more carefully, but I think I'm missing the "takehome" point of the R chunk above. {JTL}**
-
-
-
-
-
-
-
 ##6) Integrating richness and evenness: "diversity metrics"
-Stuff developed from information theory. Useful and commonly used. Go through some examples. Upshot, however, is that there's loss of information. Segue into SADs
+Metrics developed from information theory. Commonly used. Rarely understood.
 
 ##7) Integrating richness and evenness: Species Abundance Distributions (SAD)
 
-
+#### Be careful not to confuse "diversity metrics" with the SAD as so-called 'integrations' of richness and evenness. -Ken
 
 
 ## Species Diversity
-You saw in the derivation of Shannon's evenness and Simpson's evenness that we called the R diversity function, and then specified either "shannon" or "simp". 
-In effect, in estimating Shannon's or Simpson's evenness we first estimated Shannon's diversity (*H'*) and Simpson's diversity (*D*)! Species diversity is commonly defined as the relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$. 
-Can you see this in looking back at how we calculated Shannon's and Simpson's evenness? **How will we know whether or not students "see" this?**
-Here, we will estimate popular indices of diversity (Shannon's, Simpson's, Fisher's alpha) using our own derivation and then check this against vegan's estimates. **"For the purpose of..." is the learning objective to just check vegan to make sure it's right?**
+You saw in the derivation of Simpson's evenness that we called the R diversity function, and then specified "simp". 
+In effect, in estimating Simpson's evenness we first estimated Simpson's diversity (*D*). Species diversity is commonly defined as a relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$.
+Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates. 
+
+#### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Ken
+#### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. 
+#### Not only is there no magic, but even us normal folk can code up the functions we see in papers, books, and usually leave to super-geeks to develop. -Ken 
+#### It's about being empowered and non-phobic through comprehending. -Ken
 
 ### Shannon's diversity (or entropy)
 Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. 
@@ -509,6 +442,4 @@ Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
 2) ...
 
 3) use knitr to create a pdf, push it to GitHub, and create a pull request
-
-**We have talked about using the Shaw et al. 2008 paper as a model for a homework assignment.  See [here](https://quantitativebiodiversity.etherpad.mozilla.org/4) {JTL}**
 
