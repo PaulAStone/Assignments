@@ -365,14 +365,14 @@ You saw in the derivation of Simpson's evenness that we called the R diversity f
 In effect, in estimating Simpson's evenness we first estimated Simpson's diversity (*D*). Species diversity is commonly defined as a relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$.
 Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates. 
 
-#### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Jay
-#### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. -Ken
-#### Not only is there no magic, but even us normal folk can code up the functions we see in papers, books, and usually leave to super-geeks to develop. -Ken 
-#### It's about being empowered and non-phobic through comprehending. -Ken
+### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Jay
+### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. -Ken
+### Not only is there no magic, but even us normal folk can code up the functions we see in papers, books, and usually leave to super-geeks to develop. -Ken 
+### It's about being empowered and non-phobic through comprehending. -Ken
 
 ### Shannon's diversity (or entropy)
 Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. 
-This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$. 
+This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$.
 Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
 
 ```{r}
@@ -386,7 +386,9 @@ H
 diversity(RAC, index="shannon")
 ```
 
-**Are they the same? {MEM}**
+#### Are they the same? -Mario
+#### Unless you have a Ph.D. in Statistical physics or Information theory and can actually geek out on various forms of entropy, Yes. -Ken
+#### Claude Shannon's original paper: http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf -Ken
 
 ### Simpson's diversity (or dominance)
 Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
@@ -434,7 +436,7 @@ They would converge if our community was much greater in total abundance and ric
 However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. 
 The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
-## Estimating Richness and Diversity
+## Examining and interpreting the SAD 
 
 
 
