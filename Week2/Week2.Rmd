@@ -386,9 +386,9 @@ H
 diversity(RAC, index="shannon")
 ```
 
-#### Are they the same? -Mario
-#### Unless you have a Ph.D. in Statistical physics or Information theory and can actually geek out on various forms of entropy, Yes. -Ken
-#### Claude Shannon's original paper: http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf -Ken
+### Are they the same? -Mario
+### Unless you have a Ph.D. in Statistical physics or Information theory and can actually geek out on various forms of entropy, Yes. -Ken
+### Claude Shannon's original paper: http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf -Ken
 
 ### Simpson's diversity (or dominance)
 Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
