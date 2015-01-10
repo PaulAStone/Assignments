@@ -245,10 +245,10 @@ There is more to ($\alpha$) diversity than just the number of species in a plot.
 Specifically, it is important to consider how abundance varies among species, that is, **species evenness**.
 Many important biodiversity issues -- species coexistence, community stability, the detection of rare taxa, the observation of compositional change and turnover due to disturbance, invasion, and random population fluctuations -- relate to variation in the abundance of taxa. 
 
-### Visualizing Evennes: The Rank Abundance Curve (RAC)
-One of the most common ways to visualize evenness is to rank the species from greatest (most abudnant) to least (most rare), that is, as a rank-abundance curve (RAC). 
+### Visualizing Evenness: The Rank Abundance Curve (RAC)
+One of the most common ways to visualize evenness is to rank the species from most abundant to least abundant without respect to species labels (and hence no worries about 'ties' in abundance). This **rank-abundance curve (RAC)** is also referred to as a rank-abundance distribution and as a Whittaker plot. 
 
-Let's construct a RAC using site1 of the BCI data set. 
+Let's construct an RAC using site1 of the BCI data set. 
 First, we will remove species that had zero occurences in site1. 
 
 ```{r}
@@ -262,8 +262,9 @@ plot(ranks, log(site1.rank), type = 'p', las = 1,      # Plot the RAC
      xlab = "Rank", ylab = "log(abundance)")           # "type = 'p'" = points; "las = 1" labels are horizontal
 ```
 
-It is clear from looking at the RAC for site1 that the abundance of individuals is unequally distrbuted. 
-This is true even when abundances are log-transformed (note the plotting options above). 
+It is clear from looking at the RAC for site1 that abundance among species is unequally distributed. 
+This is true even when abundances are log-transformed (note the plotting options above), which deemphasizes the influence of the few most abundant species.
+That is, we don't want our interpretation of the overall pattern to be entirely driven by a few species.
 This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations [McGill et al. 2007](http://www.ncbi.nlm.nih.gov/pubmed/17845298).
 
 ### Species Evenness
