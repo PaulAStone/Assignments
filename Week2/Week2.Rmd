@@ -161,11 +161,13 @@ S.chao <- function(x){
 
 Another commonly used estimator is **ACE**, which stands for abundance-based coverage estimator. 
 While Chao1 makes inferences based on the number of singletons and doubletons, ACE implements a threshold to look at the abundance of other *rare* species. 
-By convention, ACE defines rare species as taxa that have 10 or fewer individuals. 
+By convention, ACE defines rare species as taxa that have 10 or fewer individuals.
+Consequently, whether one uses the ACE estimator depends on whether one's samples tend to have many species of few individuals.
+If so, the ACE estimator may ignore the majority of sampled species.
 Now we will write a function for the ACE estimator:
 
 ```{r}
-S.ace <- function(x = "", thresh = 10){
+S.ace <- function(x = "", thresh = 10){ 
   x <- x[x>0]                           # excludes zero-abundance taxa
   S.abund <- length(which(x > thresh))  # richness of abundant taxa
   S.rare  <- length(which(x <= thresh)) # richness of rare taxa
@@ -183,9 +185,22 @@ S.ace <- function(x = "", thresh = 10){
   return(S.ace)
 }
 ```
-### this is pretty hairy I guess. Opportunity to teach about loops and alternatives in R (sapply). Or we can just drop it and stick with Chao1; I'm guessing -- conservatively -- it may take 15 minutes to get this transcribed from handout and running. Adn the question is: what will they take away? 
+### This is pretty hairy I guess. -Jay
+### Not if you can simplify your code; functions are rarely coded as efficiently as they could be. -Ken
 
-### One idea I had is that we could put "bits" of stuff that we do in "Supplementary" files. Even if students don't use it right away, it's there for them, but perhaps more importantly us!
+### Opportunity to teach about loops and alternatives in R (sapply). -Jay
+### sapply is nice if the task is relatively simple. -Ken
+### This is a bad example for teaching loops. -Ken
+### Loops are too rudimentary a skill and this function is too complicated to stop inside of and say, "oh BTW, while you're thinking about estimating richness we're going to teach you a new control structure" -Ken
+
+### Or we can just drop it and stick with Chao1; I'm guessing -- conservatively -- it may take 15 minutes to get this transcribed from handout and running. -Jay
+### And the question is: what will they take away? -Jay
+### Maybe do Chao1 and Chao2 in class. Then, for homework, give a short explanation of ACE and then say, "Using the example provided, code up the ACE estimator and estimate species richness for ..." -Ken
+
+### One idea I had is that we could put "bits" of stuff that we do in "Supplementary" files. Even if students don't use it right away, it's there for them, but perhaps more importantly us! -Jay
+### If the students don't use it, then they should see it; avoiding clutter. -Ken
+### But yes, might do well in the instructor materials...or better as homework -Ken
+
 
 How does observed richness compare to estimated richness for soilbac1?
 
