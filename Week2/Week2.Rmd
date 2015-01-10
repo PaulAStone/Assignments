@@ -336,13 +336,14 @@ Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ giv
 
 * not sure if we should use BCI or bacteria data for above. could choose one and then ask them to do other for homework and compare!
 
-#### You're already going from observed values (e.g. richness), to estimated values, and then back to observed values. -Ken
-#### Are you sure you also want to go from BCI, to microbes, and back to BCI? -Ken
-#### Could be more linear from observed to estimated and/or from BCI (or microbes) to microbes (or BCI). -Ken
+### You're going from observed values (e.g. richness), to estimated values, and then back to observed values. -Ken
+### Are you sure that you also want to go from BCI, to microbes, and back to BCI? -Ken
+### Could be more linear by just going from observed to estimated and/or from BCI (or microbes) to microbes (or BCI). -Ken
 
 k <- sample(nrow(BCI), 1) ## take a random site from BCI
-#### I would suggest not doing this because you might get a pretty crappy site. Best to have control over it, especially since students homework won't end up agreeing. -Ken
-#### Maybe just use the original site chosen from BCI (site1), which I had already checked for having a decent number of species.
+### I would suggest not doing this because you might get a pretty crappy site. -Ken
+### Best to have control over it, especially since students homework won't end up agreeing. -Ken
+### Maybe just use the original site chosen from BCI (site1), which I had already checked for having a decent number of species. -Ken
 fisher <- fisherfit(BCI[k,]) # use an unambiguous naming convention
 
 ```{r}
@@ -356,7 +357,7 @@ Metrics developed from information theory. Commonly used. Rarely understood.
 
 ##7) Integrating richness and evenness: Species Abundance Distributions (SAD)
 
-#### Be careful not to confuse "diversity metrics" with the SAD as so-called 'integrations' of richness and evenness. -Ken
+### Be careful not to confuse "diversity metrics" with the SAD as so-called 'integrations' of richness and evenness. -Ken
 
 
 ## Species Diversity
