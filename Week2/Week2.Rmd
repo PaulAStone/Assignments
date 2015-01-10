@@ -25,7 +25,7 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2") # sets the working 
 ### Install Packages
 
 In this excercise, we will rely heavily on a **contributed R package** called `vegan`, which contains tools commonly used in ecological research, including analyses of $\alpha$-diversity. 
-Jari Oksanen has created an [excellent tutorial](http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf) that provides an overview of the `vegan` package. 
+Jari Oksanen has created an [excellent tutorial](http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf) that provides an overview of the `vegan` package.
 
 Recall from last week that we can load a package and dependencies using the `require()` function. 
 If the package is not found, then we will use the `install.packages()` function followed by `require()`:
@@ -216,7 +216,7 @@ _Notes_
 + You can look more into the code in R packages using commands like this: vegan:::estimateR.default
 + Try it out!
 ## estimateR gives Chao estimates that are very close, but not identical to S.chao. 
-## estimate R give ACE estimates thar are significantly offf, perhaps due to their error. 
+## estimate R give ACE estimates thar are significantly off, perhaps due to their error. 
   
 ## Rarefaction
 
@@ -244,7 +244,7 @@ text(1500, 1500, "1:1", pos = 2, col = 'red')
 ### how about species accumulation curves using specaccum()? -Jay(?) 
 ### Redundant with rarefy? -Jay(?)
 ### Not really: Species accumulation curves show the rate at which new species are found within a community and can be extrapolated to provide an estimate of species richness. -Ken
-### See: http://www.vsni.co.uk/software/genstat/htmlhelp/ecology/AccumulationCurve.htm; A big literature on SACs and collector's curve. -Ken
+### [Clarification](http://www.vsni.co.uk/software/genstat/htmlhelp/ecology/AccumulationCurve.htm); A big literature on SACs and collector's curve. -Ken
 
 ##5) Species evenness
 There is more to ($\alpha$) diversity than just the number of species in a plot. 
@@ -396,7 +396,7 @@ diversity(RAC, index="shannon")
 
 ### Are they the same? -Mario
 ### Unless you have a Ph.D. in Statistical physics or Information theory and can actually geek out on various forms of entropy, Yes. -Ken
-### Claude Shannon's original paper: http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf -Ken
+### [Claude Shannon's original paper](http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf) -Ken
 
 ### Simpson's diversity (or dominance)
 Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
@@ -445,10 +445,13 @@ However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of e
 The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
 ## Examining and interpreting the SAD 
-library(vegan)
-data(BCI)
-RACresults <- radfit(BCI[1,])
+
+```{r}
+#library(vegan)
+#data(BCI)
+RACresults <- radfit(RAC)
 RACresults
+```
 
 ### Other Diversity Estimators
 **We need to think about how this will fit in with the flow of the rest of the exercise {JTL}**
