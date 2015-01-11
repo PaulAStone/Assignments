@@ -25,7 +25,7 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2") # sets the working 
 ### Install Packages
 
 In this excercise, we will rely heavily on a **contributed R package** called `vegan`, which contains tools commonly used in ecological research, including analyses of $\alpha$-diversity. 
-Jari Oksanen has created an [excellent tutorial](http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf) that provides an overview of the `vegan` package. 
+Jari Oksanen has created an [excellent tutorial](http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf) that provides an overview of the `vegan` package.
 
 Recall from last week that we can load a package and dependencies using the `require()` function. 
 If the package is not found, then we will use the `install.packages()` function followed by `require()`:
@@ -101,8 +101,14 @@ S.obs <- function(x){
   rowSums(x>0)*1
   }
 ```
-
-There is also a function in the `vegan` package called `specnumber`. Do we get the same value? Try it! 
+The use of functions is elemental to programming, in general.
+The basic concept behind functions is to define a piece of code that operates on a single or set of variables and data structures.
+So, instead of rewriting the code to calculate richness over and over, we just define a function called S.obs that calculate richness of a given vector x. 
+We can then type (or "call") the S.obs function whenever we want to calculate richness for a given vector, x.
+There is also a function in the `vegan` package called `specnumber`. 
+Do we get the same value? Try it! 
+In fact, functions in the vegan package are defined and operate the same way that the functions we define and write ourselves.
+The benefit of packages such as vegan is that they offer a standard set of functions and statistical tools that we don't have to derive, define, and test, ourselves.
 
 ### But How Well Did You Sample Your Site?
 
@@ -186,16 +192,17 @@ S.ace <- function(x = "", thresh = 10){
 }
 ```
 ### This is pretty hairy I guess. -Jay
-### Not if you can simplify your code; functions are rarely coded as efficiently as they could be. -Ken
+### Can simplify your code, i.e. make it cleaner? -Ken
 
 ### Opportunity to teach about loops and alternatives in R (sapply). -Jay
 ### sapply is nice if the task is relatively simple. -Ken
 ### This is a bad example for teaching loops. -Ken
-### Loops are too rudimentary a skill and this function is too complicated to stop inside of and say, "oh BTW, while you're thinking about estimating richness we're going to teach you a new control structure" -Ken
+### My opinion: Loops are too rudimentary a skill and this function is too complicated to stop inside of and say, "While you're thinking about estimating richness we're going to teach you a new control structure" -Ken
 
 ### Or we can just drop it and stick with Chao1; I'm guessing -- conservatively -- it may take 15 minutes to get this transcribed from handout and running. -Jay
 ### And the question is: what will they take away? -Jay
-### Maybe do Chao1 and Chao2 in class. Then, for homework, give a short explanation of ACE and then say, "Using the example provided, code up the ACE estimator and estimate species richness for ..." -Ken
+### Agreed. -Ken
+### Maybe do Chao1 and Chao2 in class. Then, for homework, give a short explanation of ACE and then say, "Using the example provided, code up the ACE estimator and estimate species richness for sample x" -Ken
 
 ### One idea I had is that we could put "bits" of stuff that we do in "Supplementary" files. Even if students don't use it right away, it's there for them, but perhaps more importantly us! -Jay
 ### If the students don't use it, then they should see it; avoiding clutter. -Ken
@@ -209,7 +216,7 @@ _Notes_
 + You can look more into the code in R packages using commands like this: vegan:::estimateR.default
 + Try it out!
 ## estimateR gives Chao estimates that are very close, but not identical to S.chao. 
-## estimate R give ACE estimates thar are significantly offf, perhaps due to their error. 
+## estimate R give ACE estimates thar are significantly off, perhaps due to their error. 
   
 ## Rarefaction
 
@@ -228,34 +235,42 @@ rarecurve(soilbac, step = 20, sample = min.N, col = "blue", cex = 0.6, las=1) # 
 abline(0, 1, col = 'red')             # 1:1 line for reference
 text(1500, 1500, "1:1", pos = 2, col = 'red')
 ```
-### I think there's probably some math to explain here
-### what about errors associated with estimates?
-### how about species accumulation curves using specaccum()? Redundant with rarefy?
+### I think there's probably some math to explain here -Jay (?)
+### Agreed; I'd want students to know just what 'rarefy' does and why.
+
+### what about errors associated with estimates? -Jay (?)
+### Would be more rigorous with errors or CIs. -Ken
+
+### how about species accumulation curves using specaccum()? -Jay(?) 
+### Redundant with rarefy? -Jay(?)
+### Not really: Species accumulation curves show the rate at which new species are found within a community and can be extrapolated to provide an estimate of species richness. -Ken
+### [Clarification](http://www.vsni.co.uk/software/genstat/htmlhelp/ecology/AccumulationCurve.htm); A big literature on SACs and collector's curve. -Ken
 
 ##5) Species evenness
 There is more to ($\alpha$) diversity than just the number of species in a plot. 
-Specifically, it is important to consider **evenness**: how abundance varies among species.
-Many important biodiversity issues -- including endangered speices and invasive specie -- relate to variation in the abundance of taxa. 
+Specifically, it is important to consider how abundance varies among species, that is, **species evenness**.
+Many important biodiversity issues -- species coexistence, community stability, the detection of rare taxa, the observation of compositional change and turnover due to disturbance, invasion, and random population fluctuations -- relate to variation in the abundance of taxa. 
 
-### Visualizing Evennes: The Rank Abundance Curve (RAC)
-One of the most common ways to visualize evenness is to rank the species from greatest (most abudnant) to least (most rare), that is, as a rank-abundance curve (RAC). 
+### Visualizing Evenness: The Rank Abundance Curve (RAC)
+One of the most common ways to visualize evenness is to rank the species from most abundant to least abundant without respect to species labels (and hence no worries about 'ties' in abundance). This **rank-abundance curve (RAC)** is also referred to as a rank-abundance distribution and as a Whittaker plot. 
 
-Let's construct a RAC using site1 of the BCI data set. 
+Let's construct an RAC using site1 of the BCI data set. 
 First, we will remove species that had zero occurences in site1. 
 
 ```{r}
-site1z <- site1[site1>0] # Remove all zeros from Site1 and reassign the new vector
+site1.ab <- site1[site1>0] # Remove all zeros from Site1 and reassign the new vector
 ```
 
 ```{r}
-site1.rank <- site1z[order(site1z, decreasing = TRUE)] # Use `order` function and "decreasing" argument to rank taxa by abundance
-ranks <- as.vector(seq(1, length(site1z)))             # Create a sequence of S ranks
-plot(ranks, log(site1.rank), type = 'p', las = 1,      # Plot the RAC
+site1.ab.ranked <- site1.ab[order(site1, decreasing = TRUE)] # Use `order` function and "decreasing" argument to rank taxa by abundance
+ranks <- as.vector(seq(1, length(site1)))             # Create a sequence of S ranks
+plot(ranks, log(site1.ab.ranked), type = 'p', las = 1,      # Plot the RAC
      xlab = "Rank", ylab = "log(abundance)")           # "type = 'p'" = points; "las = 1" labels are horizontal
 ```
 
-It is clear from looking at the RAC for site1 that the abundance of individuals is unequally distrbuted. 
-This is true even when abundances are log-transformed (note the plotting options above). 
+It is clear from looking at the RAC for site1 that abundance among species is unequally distributed. 
+This is true even when abundances are log-transformed (note the plotting options above), which deemphasizes the influence of the few most abundant species.
+That is, we don't want our interpretation of the overall pattern to be entirely driven by a few species.
 This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations [McGill et al. 2007](http://www.ncbi.nlm.nih.gov/pubmed/17845298).
 
 ### Species Evenness
@@ -279,7 +294,8 @@ Simpson's evenness metric essentially reflects the sample variance of the SAD, a
 Once, again vegan has no function for Simpson's evenness but does calculate Simpson's diversity, i.e., the probability that the next sampled individual belongs to a different species:
 
 ```{r}
-D <- diversity(site1, "simp") # find Simpson's diversity (D)
+D <- diversity(site1.ab, "simp") # find Simpson's diversity (D)
+S <- specnumber(site1.ab)
 E <- (1/D)/S # find Simpson's evenness (E)
 E
 ```
@@ -300,14 +316,14 @@ The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi \cdot \arctan( \sum
 While seeminly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to take values between 0 and 1 by using elementary trigonometry.
 
 ```{r}
-X <- var(log(RAC))
+X <- var(log(site1.ab))
 Evar <- 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
 $E_{var}$ uses the arctangent, which varies between -$\pi$/2 and $\pi$/2 and without being periodic like waves of the sine and cosine functions. Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1. Finally, subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. We can confirm this with a more explicit R chunk:
 
 ```{r}
-P <- log(RAC) # log-tranform the abundances of the RAC and assign them to a vector P
+P <- log(log(site1.ab)) # log-tranform the abundances of the RAC and assign them to a vector P
 AvgAb <- mean(P) # find the average of the log abundances
 X <- 0 # assign zero to variable X
 Evar <- 0 # declare a scalar varible Evar
@@ -327,17 +343,18 @@ Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ giv
 
 * not sure if we should use BCI or bacteria data for above. could choose one and then ask them to do other for homework and compare!
 
-#### You're already going from observed values (e.g. richness), to estimated values, and then back to observed values. -Ken
-#### Are you sure you also want to go from BCI, to microbes, and back to BCI? -Ken
-#### Could be more linear from observed to estimated and/or from BCI (or microbes) to microbes (or BCI). -Ken
+### You're going from observed values (e.g. richness), to estimated values, and then back to observed values. -Ken
+### Are you sure that you also want to go from BCI, to microbes, and back to BCI? -Ken
+### Could be more linear by just going from observed to estimated and/or from BCI (or microbes) to microbes (or BCI). -Ken
 
 k <- sample(nrow(BCI), 1) ## take a random site from BCI
-#### I would suggest not doing this because you might get a pretty crappy site. Best to have control over it, especially since students homework won't end up agreeing. -Ken
-#### Maybe just use the original site chosen from BCI (site1), which I had already checked for having a decent number of species.
-fisher <- fisherfit(BCI[k,]) # use an unambiguous naming convention
+### I would suggest not doing this because you might get a pretty crappy site. -Ken
+### Best to have control over it, especially since students homework won't end up agreeing. -Ken
+### Maybe just use the original site chosen from BCI (site1), which I had already checked for having a decent number of species. -Ken
+fisher <- fisherfit(BCI[k,]) # using an unambiguous naming convention
 
 ```{r}
-N <- sum(site1) # find the number of individuals at site1 and assign it to a variable N
+N <- sum(site1.ab) # find the number of individuals at site1 and assign it to a variable N
 cat('There are', N, 'individuals among', S, 'species at Site1') 
 ```
 
@@ -347,7 +364,7 @@ Metrics developed from information theory. Commonly used. Rarely understood.
 
 ##7) Integrating richness and evenness: Species Abundance Distributions (SAD)
 
-#### Be careful not to confuse "diversity metrics" with the SAD as so-called 'integrations' of richness and evenness. -Ken
+### Be careful not to confuse "diversity metrics" with the SAD as so-called 'integrations' of richness and evenness. -Ken
 
 
 ## Species Diversity
@@ -355,17 +372,18 @@ You saw in the derivation of Simpson's evenness that we called the R diversity f
 In effect, in estimating Simpson's evenness we first estimated Simpson's diversity (*D*). Species diversity is commonly defined as a relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$.
 Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates. 
 
-#### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Ken
-#### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. 
-#### Not only is there no magic, but even us normal folk can code up the functions we see in papers, books, and usually leave to super-geeks to develop. -Ken 
-#### It's about being empowered and non-phobic through comprehending. -Ken
+### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Jay
+### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. -Ken
+### Not only is there no magic, but even us normal folk can code up the functions we see in papers, books, and usually leave to super-geeks to develop. -Ken 
+### It's about being empowered and non-phobic through comprehending. -Ken
 
 ### Shannon's diversity (or entropy)
 Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. 
-This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$. 
+This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$.
 Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
 
 ```{r}
+RAC <- site1.ab.ranked
 H <- 0
 for (sp in RAC){
   p = sp / sum(RAC)
@@ -376,7 +394,9 @@ H
 diversity(RAC, index="shannon")
 ```
 
-**Are they the same? {MEM}**
+### Are they the same? -Mario
+### Unless you have a Ph.D. in Statistical physics or Information theory and can actually geek out on various forms of entropy, Yes. -Ken
+### [Claude Shannon's original paper](http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf) -Ken
 
 ### Simpson's diversity (or dominance)
 Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
@@ -415,7 +435,7 @@ Let's compare using Site1.
 ```{r}
 invD <- diversity(RAC, "inv")
 invD
-Fisher <- fisher.alpha(RAC)
+Fisher <- fisher.alpha(BCI)
 Fisher
 ```
 
@@ -424,19 +444,26 @@ They would converge if our community was much greater in total abundance and ric
 However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. 
 The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
-## Estimating Richness and Diversity
+## Species abundance models
+Recall that the species rank-abundance curve RAC is simply the abundance of species ranked from most-to-least abundant.
+The RAC is a simple data structure that is both a vector of abundances and a row in the site-by-species matrix (minus the zeros, i.e., absences). 
+Despite it's simplicity the RAC contains a lot of information.
+For example, the sum of the abundances in the RAC is commonly referred to as the observed **total abundance** and denoted as **N** while the length of the RAC (the number of ranks) is simply the observed **species richness**, denoted as **S**. 
+The RAC also contains the information needed to estimate richness and calculate evenness and diversity.
+Moreover, the RAC represents a type of species-abundance distribution (SAD), the form of which has been intensively studied and modeled.
+Species abundance models attempt to predict the form of the SAD (e.g. as an RAC) according to mechanisms and processes that underpin general ecological and biodiversity theory.
 
-
-
-### Other Diversity Estimators
-**We need to think about how this will fit in with the flow of the rest of the exercise {JTL}**
+Let's use the radfit() function in the vegan package to fit the predictions of various species abundance models to the RAC of site1 in BCI 
+```{r}
+RACresults <- radfit(RAC)
+RACresults
+```
 
 ___
 
 ## Homework
 
-1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. 
-For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
+1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. #For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
 Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
 
 2) ...
