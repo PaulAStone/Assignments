@@ -3,25 +3,26 @@ title: "Week 1 Exercise: Basic R"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 output: pdf_document
+geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
 
-This exercise introduces some of the basic features of the [R] (http://www.r-project.org/) computing environment. 
+This exercise introduces some of the basic features of the R (http://www.r-project.org/) computing environment. 
 We will briefly cover operators, data types, and simple commands that will be useful for you during the course and beyond. 
 In addition to using R's base package, we will also use contributed packages, which together will allow us to visualize data and peform relatively simple statistics (e.g., linear regression and ANOVA).
 
 ## 1) HOW WE WILL BE USING R AND OTHER TOOLS
 
-During the course, we will use [RStudio](http://www.rstudio.com/), which is a user-friendly integrated developement environment (IDE) that allows R to interface with other tools. 
-For example, the document you are reading was generated in [R Markdown](<http://rmarkdown.rstudio.com>). 
+During the course, we will useRStudio (http://www.rstudio.com/), which is a user-friendly integrated developement environment (IDE) that allows R to interface with other tools. 
+For example, the document you are reading was generated in R Markdown (<http://rmarkdown.rstudio.com>). 
 Markdown is a simple formatting syntax for authoring HTML, PDF, and other documents. 
 
-We will also use a tool called [knitr](http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. 
-For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes [LaTeX](http://www.latex-project.org/) typesetting as well as the output of any embedded R code. 
+We will also use a tool called knitr (http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. 
+For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes LaTeX (http://www.latex-project.org/) typesetting as well as the output of any embedded R code. 
 
 However, if there are errors in the Rcode contained in your markdown document, you will not be able to knit a PDF file. 
-Assignments in this class will require that you successfully create a Markdown-generated PDF using knitr; you will then **push** this document to the course **respository** hosted on [IU's GitHub](<https://github.iu.edu>) and generate a **pull request**.
+Assignments in this class will require that you successfully create a Markdown-generated PDF using knitr; you will then **push** this document to the course **respository** hosted on IU's GitHub (<https://github.iu.edu>) and generate a **pull request**.
 
 ## 2) SETTING YOUR WORKING DIRECTORY
 
