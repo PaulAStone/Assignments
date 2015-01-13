@@ -28,14 +28,14 @@ Assignments in this class will require that you successfully create a Markdown-g
 
 A good first step when you sit down to work in R is to clear your working directory of any variables from your workspace:
 ```{r, results = 'hide'}
-rm(list=ls()) # removes all variables from your workspace
+rm(list=ls()) 
 ```
 
 Now we want to set the working directory. 
 This is where your R script and output will be saved. 
 It's also a logical place to put data files that you plan to import into R. 
 The following command will return your current working directory:
-```{r}
+```{r, results = 'hide'}
 getwd()
 ```
 
@@ -48,33 +48,33 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week1")
 
 R is capable of performing various calcuations using simple operators and built-in **functions**
 
-**_Addition_**:
-```{r}
+***Addition***:
+```{r, results = 'hide'}
 1 + 3 
 ```
 
-**_Subtraction_**:
-```{r}
+***Subtraction***:
+```{r, results = 'hide'}
 3 - 1 
 ```
 
-**_Multiplication_** (with an exponent):
-```{r}
+***Multiplication*** (with an exponent):
+```{r, results = 'hide'}
 3 * 10^2
 ```
 
-**_Division_** (using a built-in constant; pi):
-```{r}
+***Division*** (using a built-in constant; pi):
+```{r, results = 'hide'}
 10 / pi 
 ```
 
-**_Trigonometry_** with a simple built-in function (i.e., *sin*) that takes an **argument** (i.e., '4'):
-```{r}
+***Trigonometry*** with a simple built-in function (i.e., *sin*) that takes an **argument** (i.e., '4'):
+```{r, results = 'hide'}
 sin(4) 
 ```
 
-**_Logarithms_** (another example of functions and arguments)
-```{r}
+***Logarithms*** (another example of functions and arguments)
+```{r, results = 'hide'}
 log10(100)  # log base 10
 log(100)    # log base e "natural log"  
 ```
@@ -118,7 +118,7 @@ To do this, you can use the `ls` function to view a list of all the objects in t
 ls()
 ```
 
-You can now clear all of the stored variables from R's memory using two functions: `rm` and `ls`. (Note: we did this above prior to setting our working directory)
+You can now clear all of the stored variables from R's memory using two functions: `rm` and `ls`. (Note: we did this above prior to setting our working directory).
 ```{r}
 rm(list=ls())
 ```
@@ -156,12 +156,8 @@ What happens when you multiply two vectors of the same length?
 z <- x * y 
 ```
 
-##**I would like to have a small reference to matrix multiplication, but I can't get it to work...strange**##
-
-
-
 You may need to reference a specific **element** in a vector. We will do this using the square brackets. 
-In this case, the number inside of the square brackets tells R that we want call the ith element of vector `z`:
+In this case, the number inside of the square brackets tells R that we want call the *i*th element of vector `z`:
 ```{r}
 z[2]
 ```
@@ -177,10 +173,10 @@ Here's how you can substitute a new value for the second element of `z`:
 z[2] <- 583 
 ```
 
-###Summary Statictics Of Vectors
+###Summary Statictics of Vectors
 
 It's pretty easy to perform summary statistics on a vector using the built-in fuctions of R:
-```{r}
+```{r, results = 'hide'}
 max(z)    # maximum
 min(z)    # minimum
 sum(z)    # sum
@@ -214,10 +210,9 @@ i <- c(2, 3, 9, NA, 120, 33, 7, 44.5)
 
 What happens when you apply your `sem` function to vector `i`? This is a problem!
 
-##Mario, you had a suggestion for how to deal with na.rm vs. na.omit, other than just explainign that these functions take different arguments. Not sure if it's worth it...##
 ```{r}
 sem <- function(x){
-  sd(x, na.rm = TRUE)/sqrt(length(na.omit(x))) 
+  sd(na.omit(x))/sqrt(length(na.omit(x))) 
   }
 ```
  
@@ -239,7 +234,7 @@ Let's start by creating a one-dimensional vector using a new function `rnorm` ba
 j <- c(rnorm(length(z), mean = z)) 
 ```
 
-What does the `rnorm` function do? What are the arguments specifying? 
+**Q1:** What does the `rnorm` function do? What are the arguments specifying? 
 Remember to use `help()` or type `?rnorm`.
 
 Now we will use the function `cbind` to create a matrix from the two one-dimensional vectors:
@@ -249,7 +244,10 @@ k <- cbind(z, j)
 
 Use the `help` function to learn about `cbind`.
 Use the `dim` function to describe the matrix you just created. 
-What did you learn from this? 
+
+```{r, results = 'hide'}
+dim(k) 
+```
 
 **Approach 2** to making a matrix is to use the `matrix` function along with arguments that specify the number of rows (`nrow`) and columns (`ncol`):
 
@@ -272,7 +270,7 @@ Often, when handling datasets, we want to be able to **transpose** a matrix. Thi
 n <- t(m)
 ```
 
-Confirm the transposition using the `dim` function.
+**Q2:** What are the dimensions of the matrix you just transposed?
 
 ###Indexing a Matrix
 
@@ -297,14 +295,12 @@ It's easy when you understand how to reference data within a matrix:
 n <- m[, c(1:2, 5)]
 ```
 
-Describe what we just did in the last indexing operation:
-
-
+**Q3:** Describe what we just did in the last indexing operation?
 
 ## 6) BASIC DATA VISUALIZATION AND STATISTICAL ANALYSIS
 ### Load Zooplankton Dataset
 
-In the following exercise, we will use a dataset from [Lennon et al. (2003)](http://www.indiana.edu/~microbes/publications/Lennon_etal_2003.pdf), which looked at zooplankton communities along an experimental nutrient gradient in aquatic mesocosms. 
+In the following exercise, we will use a dataset from Lennon et al. (2003) (http://goo.gl/JplHwd), which looked at zooplankton communities along an experimental nutrient gradient in aquatic mesocosms. 
 Inorganic nitrogen and phosphorus were added to mesocosms for six weeks at three different levels (low, medium, and high), but we also direcly measured nutrient concentrations of water samples. 
 So we have **categorical** and **continuous** predictors that we're going to use to help explain variaiton in zooplankton biomass.  
 
@@ -360,7 +356,7 @@ Now let's conduct a simple **Pearson's correlation** analysis with the `cor()` f
 cor1 <- cor(meso.num)
 ```
 
-Describe what you found from the visualization and correlation anaylysis above?
+**Q4:** Describe some of the general features based on the visualization and correlation anaylysis above?
 
 ### Loading Contributed Packages
 The base pakcage in R won't always meet all of our needs. 
@@ -373,10 +369,15 @@ The _psych_ package has many features, but we're going to use it specifically fo
 This function generates **p-values** for each pairwise correlation. 
 (For whatever reason, the `cor` function in the `base` package of R does not generate p-values.)
 
-You can load an R package and its dependencies using the `require()` function. 
-With the following string of commands, if the package is not found using `require()`, R will use the `install.packages()` function followed by `require()`:
-```{r}
-require("psych")||install.packages("psych");require("psych") 
+You can load an R package and its dependencies using the `require()` function: 
+```{r, results = 'hide'}
+require("psych")
+```
+
+If the package is not found, you will need to install it first and then load dependencies:
+```{r, eval = FALSE}
+install.packages("psych")
+require("psych")
 ```
 
 Now, let's look at the correlations among variables and assess whether they are signficant:
@@ -392,11 +393,9 @@ a) for rank-based correlations (i.e., non-parametric), use method = "kendall" or
 b) the adjust = "BH" statement supplies the Benjamini & Hochberg-corrected p-values in the upper right diagonal of the square matrix; the uncorrected p-values are below the diagonal. 
 This process corrects for **false discovery rate**, which arises whe making multiple comparisons. 
 
-Describe what you learned from corr.test and the notes:
-
-    ```
-    *Provide Answer Here*
-    ```
+**Q5:** Describe what you learned from corr.test. 
+Specifically, are the results sensitive to whether you use parametric (i.e., Pearson's) or non-parametric methods?
+With the Pearson's method, is thre evidence for false discovery rate due to multiple comparisons?
 
 Now, let's load another package that will let us visualize the sign and strength of the correlations:
 ```{r}
@@ -413,9 +412,11 @@ fitreg <- lm(ZP ~ TN, data = meso)
 ```
 
 Let's examine the output of the regression model:
-```{r}
+```{r, results ='hide'}
 summary(fitreg)
 ```
+
+**Q6:** Interpret the results from the regression model
 
 Now, let's look at a plot of the data used in the regression analysis:
 ```{r reglayer1, eval = TRUE} 
@@ -445,6 +446,8 @@ conf95 <- predict(fitreg, newdata = data.frame(TN = newTN),
                   interval = c("confidence"), level = 0.95, type = "response")
 matlines(newTN, conf95[, c("lwr", "upr")], type="l", lty = 2, lwd = 1, col = "black")
 ```
+
+**Q7:** Explain what you were just using the `predict()` function for?
 
 We should also look at the residuals (i.e., observed values - predicted values) to see if our data meet the assumptions of linear regression. 
 Specifically, we want to make sure that the residuals are normally distributed and that they are homoskedastic (i.e., equal variance). 
@@ -496,41 +499,28 @@ fitanova <- aov(ZP ~ NUTS, data = meso)
 ```
 
 Let's look at the output in more detail (just as we did with regression):
-```{r}
+```{r, results='hide'}
 summary(fitanova)
 ```
 
-Finally, we can conduct a post-hoc comparison of treatments using Tukey's HSD (Honest Significant Differences). This will tell us whether or not there are differences (alpha = 0.05) among pairs of the three nutrient treatments
-```{r}
+Finally, we can conduct a post-hoc comparison of treatments using Tukey's HSD (Honest Significant Differences). 
+This will tell us whether or not there are differences (alpha = 0.05) among pairs of the three nutrient treatments
+```{r, results='hide'}
 TukeyHSD(fitanova)
 ```
 
+**Q8** How do you interpret the ANOVA results relative to the regression results?
+Do you have any concerns about this analysis?
+
 Just like the regression analysis above, it's good to look at the residuals:
 ```{r}
-par(mfrow = c(2, 2), mar = c(5.1,4.1,4.1,2.1))
+par(mfrow = c(2, 2), mar = c(5.1, 4.1, 4.1, 2.1))
 plot(fitanova)
 ```
 
 ##HOMEWORK
-1) Complete this the entire exercise
+1) Complete the entire exercise in the Week1_R.Rmd
 
-2) Redo the linear regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance).
+2) In addition, redo the section on linear regression (including summary statistics, plotting, and diagnostics) using log10-transformed zooplankton biomas data. Does the transformation help meet assumption of linear regression or change the interpretation of the analysis in anyway? Describe.
 
-#### Do we want to keep this version "clean" and modify for hte student version? If so, mabye we can remove formatting below
-
-    ```{r}
-    # Provide Code Here
-    ```
-
-
-        Do you think this is a better analysis?
-
-```
-        Provide Answer Here
-```
-    
-
-
-3) Use knitr to create a pdf of your completed exercise, push it to GitHub, and create a pull request.
-
-
+3) Use knitr to create a pdf of your completed Weed1_R.rmd document, push it to GitHub, and create a pull request.
