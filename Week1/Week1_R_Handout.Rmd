@@ -7,7 +7,7 @@ output: pdf_document
 
 ## OVERVIEW
 
-This exercise introduces some of the basic features of the R computing environment. 
+This exercise introduces some of the basic features of the [R] (http://www.r-project.org/) computing environment. 
 We will briefly cover operators, data types, and simple commands that will be useful for you during the course and beyond. 
 In addition to using R's base package, we will also use contributed packages, which together will allow us to visualize data and peform relatively simple statistics (e.g., linear regression and ANOVA).
 
@@ -20,7 +20,7 @@ Markdown is a simple formatting syntax for authoring HTML, PDF, and other docume
 We will also use a tool called [knitr](http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. 
 For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes [LaTeX](http://www.latex-project.org/) typesetting as well as the output of any embedded R code. 
 
-If there are errors in your markdown document, however, you will not be able to knit a PDF file. 
+However, if there are errors in the Rcode contained in your markdown document, you will not be able to knit a PDF file. 
 Assignments in this class will require that you successfully create a Markdown-generated PDF using knitr; you will then **push** this document to the course **respository** hosted on [IU's GitHub](<https://github.iu.edu>) and generate a **pull request**.
 
 ## 2) SETTING YOUR WORKING DIRECTORY
@@ -47,32 +47,32 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week1")
 
 R is capable of performing various calcuations using simple operators and built-in **functions**
 
-+ _addition_:
+**_Addition_**:
 ```{r}
 1 + 3 
 ```
 
-+ _subtraction_:
+**_Subtraction_**:
 ```{r}
 3 - 1 
 ```
 
-+ _multiplication_ (with an exponent):
+**_Multiplication_** (with an exponent):
 ```{r}
 3 * 10^2
 ```
 
-+ _division_ (using a built-in constant; pi):
+**_Division_** (using a built-in constant; pi):
 ```{r}
 10 / pi 
 ```
 
-+ _trigonometry_ with a simple built-in function (i.e., *sin*) that takes an **argument** (i.e., '4'):
+**_Trigonometry_** with a simple built-in function (i.e., *sin*) that takes an **argument** (i.e., '4'):
 ```{r}
 sin(4) 
 ```
 
-+ _logarithms_ (another example of functions and arguments)
+**_Logarithms_** (another example of functions and arguments)
 ```{r}
 log10(100)  # log base 10
 log(100)    # log base e "natural log"  
@@ -110,18 +110,18 @@ b <- a + 20
 
 Sometimes it's good practice to clear all variables from your R environment (e.g., you've been working on multiple projects during the day). 
 This can be done in a couple of ways. 
-For example, you can just click `clear` in the Environment window of R Studio. 
-The same procedure can be performed at the **command line** in the Rstudio **console pane** or **script editor pane**.
+For example, you can just click `clear` in the **Environment/History pane** window of R Studio. 
+The same procedure can be performed at the **command line** in the Rstudio **Console pane** or **Script Editor pane**.
 To do this, you can use the `ls` function to view a list of all the objects in the R environment:
 ```{r}
 ls()
 ```
 
-You can now clear all of the stored variables from R's memory (using two functions: `rm` and `ls`).
-(Note: we did this above prior to setting our working directory)
+You can now clear all of the stored variables from R's memory using two functions: `rm` and `ls`. (Note: we did this above prior to setting our working directory)
 ```{r}
 rm(list=ls())
 ```
+
 
 ## 5) WORKING WITH VECTORS
 ###Basic Features Of Vectors
@@ -155,13 +155,17 @@ What happens when you multiply two vectors of the same length?
 z <- x * y 
 ```
 
+##**I would like to have a small reference to matrix multiplication, but I can't get it to work...strange**##
+
+
+
 You may need to reference a specific **element** in a vector. We will do this using the square brackets. 
-In this case, the number inside of the square brackets tells R that we want call the second element of vector `z`:
+In this case, the number inside of the square brackets tells R that we want call the ith element of vector `z`:
 ```{r}
 z[2]
 ```
 
-You can also reference multiple elements in a vector:
+You can also reference **multiple elements** in a vector using the square brackets and the colon symbol:
 ```{r}
 z[2:5] 
 ```
@@ -185,7 +189,7 @@ var(z)    # variance
 sd(z)     # standard deviation
 ```
 
-What happens when you take the standard error of the mean (`sem`) of z? 
+What happens when you take the standard error of the mean (`sem`) of `z`? 
 
 The standard error of the mean is defined as $\frac{sd (x)}{\sqrt{n}}$. 
 This function does not exist in the base package of R. 
@@ -208,9 +212,8 @@ i <- c(2, 3, 9, NA, 120, 33, 7, 44.5)
 ```
 
 What happens when you apply your `sem` function to vector `i`? This is a problem!
-### example of where we can include grey box for text responses in student version
 
-We should modify the original `sem` function so it removes NAs right from the start. We can do this by using the `na.rm` function within the `sd` function and the `na.omit` function within `length` function. 
+##Mario, you had a suggestion for how to deal with na.rm vs. na.omit, other than just explainign that these functions take different arguments. Not sure if it's worth it...##
 ```{r}
 sem <- function(x){
   sd(x, na.rm = TRUE)/sqrt(length(na.omit(x))) 
@@ -235,9 +238,10 @@ Let's start by creating a one-dimensional vector using a new function `rnorm` ba
 j <- c(rnorm(length(z), mean = z)) 
 ```
 
-What does the `rnorm` function do? What are the arguments specifying? Remember your friend `help()` or type `?rnorm`.
+What does the `rnorm` function do? What are the arguments specifying? 
+Remember to use `help()` or type `?rnorm`.
 
-Now we will use the function `cbind` to create a matrix by combining the two one-dimensional vectors:
+Now we will use the function `cbind` to create a matrix from the two one-dimensional vectors:
 ```{r}
 k <- cbind(z, j) 
 ```
@@ -259,7 +263,7 @@ m <- as.matrix(read.table("data/matrix.txt", sep = "\t", header = FALSE))
 ```
 
 In this case, we're reading in a tab-delimited file. 
-The name of your file must be in quotes, and you need to specify tab-limited file type using the `sep` argument. 
+The name of your file must be in quotes, and you need to specify that it is a tab-delimited file type using the `sep` argument. 
 The `header` argument tells R whether or not the names of the variables are contained in the first line; in the current example, they are not. 
 
 Often, when handling datasets, we want to be able to **transpose** a matrix. This is an easy operation in R that uses the `t` function:
@@ -269,10 +273,10 @@ n <- t(m)
 
 Confirm the transposition using the `dim` function.
 
-###Indexing A Matrix
+###Indexing a Matrix
 
 Frequently, you will need to **index** or retrieve a certain portion of a matrix. 
-As with the vector example above, we will use the square brackets to retrieve data from a matrix. 
+As with the vector example above, we will use the square brackets to return data from a matrix. 
 Inside the square brackets, there are now two subscripts corresponding to the rows and columns, respectively, of the matrix. 
 
 The following code will create a new matrix (`n`) based on the first three rows of matrix (`m`):
@@ -314,8 +318,8 @@ str(meso)
 ```
 
 How does this dataset differ from the `m` dataset above? 
-We're now dealing with a new type of **data structure**. 
-Specifically, the `meso` dataset is a **data frame** since it has a combination of numeric and character data (i.e., `Factor`). 
+The answer is, we're now dealing with a new type of **data structure**. 
+Specifically, the `meso` dataset is a **data frame** since it has a combination of numeric and character data (i.e., note the `Factor`, `int`, and `num` data types generated from `str` function). 
 (Remember, **matrices** and **vectors** are only comprised of a _single_ data type.)
 
 Here is a description of the column headers:
@@ -356,10 +360,6 @@ cor1 <- cor(meso.num)
 ```
 
 Describe what you found from the visualization and correlation anaylysis above?
-
-    ```
-    *Provide Answer Here*
-    ```
 
 ### Loading Contributed Packages
 The base pakcage in R won't always meet all of our needs. 
@@ -489,7 +489,7 @@ arrows(x0 = bp, y0 = zp.means, y1 = zp.means + zp.sem, angle = 90,
        length=0.1, lwd = 1)
 ```
 
-We can conduct a one-way analysis of variance (ANOVA) as follows:
+Last, we can conduct a one-way analysis of variance (ANOVA) as follows:
 ```{r}
 fitanova <- aov(ZP ~ NUTS, data = meso)
 ```
@@ -499,7 +499,7 @@ Let's look at the output in more detail (just as we did with regression):
 summary(fitanova)
 ```
 
-Finally, we can conduct a post-hoc comparison of treatments using Tukey's HSD (Honest Significant Differences). This will tell us whether or not their are differences (alpha = 0.05) among pairs of the three nutrient treatments
+Finally, we can conduct a post-hoc comparison of treatments using Tukey's HSD (Honest Significant Differences). This will tell us whether or not there are differences (alpha = 0.05) among pairs of the three nutrient treatments
 ```{r}
 TukeyHSD(fitanova)
 ```
@@ -514,6 +514,8 @@ plot(fitanova)
 1) Complete this the entire exercise
 
 2) Redo the linear regression and ANOVA with log10-transformed zooplankton biomas data (often, log-transformations help with meeting assumptions of normality and equal variance).
+
+#### Do we want to keep this version "clean" and modify for hte student version? If so, mabye we can remove formatting below
 
     ```{r}
     # Provide Code Here
