@@ -103,7 +103,10 @@ All are defined with respect to how we will be using Git and GitHub in this clas
   \end{center}
 
 ## Git Installation
-If you do not have a current Git installation (already installed in the computer lab), please do the following: ***how will they know? first step: check and see if Git is currently insalled***
+If you are working on a Mac, Git may already be installed. You can check this by entering the folowing in your terminal window: 
+git --version 
+
+If you do not have a current Git installation, please do the following:
 
 1. Open a web browser and naviate to git-scm.com/download/
 2. Select the appropriate operating system
