@@ -9,25 +9,28 @@ geometry: margin=2.54cm
 The goal of this short assignment to to make sure that your personal computing environment is functioning as needed for the course.
 From the RMarkdown file (`R_test.Rmd`), you will print a simple statement and then retrieve information about the operating system and versions of software on your computer.
 You will then  **Knit** the text and code into a PDF file.
-Last, you will submit this as your first assignment, which is due on **January 20^th^, 2015 at 12:00 PM**
+Last, you will submit this as your first assignment, which is due on **January 20^th^, 2015 at 12:00 PM**.
 
-1. Edit your name in the *author* line above (line 3)
+1. Open `R_Test.Rmd` in RStudio
 
-2. Print a message in the R terminal (***do you mean the "Console Pane?") using the `print` command:
+2. Edit your name in the *author* line above (line 3)
+
+3. Print a message from R using the `print` command (practice in the console):
 
     Ex. Print "*Hello, World!*"
+        
 ```{r}
 print("Hello, World!")
 ```
 
-    Now, print your own statement (it can be anything):
+4. Now, print your own statement (it can be anything):
 ```{r}
-
-
+    
+    
 ```
 
-3. Now we'll run the code below to retrieve information about your local computing system. 
-You do not need to make any changes to the code. 
+5. Now run the code below to retrieve information about your local computing environment. 
+You do not need to make any changes to this code. 
 The output below is what was returned from Mario's computer:
 
 ```{r}
