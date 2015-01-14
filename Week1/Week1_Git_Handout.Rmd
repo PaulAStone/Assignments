@@ -5,6 +5,7 @@ date: "January 16, 2015"
 header-includes:
    - \usepackage{graphicx}
 output: pdf_document
+geometry: margin=2.54cm
 ---
 
 ## Git
@@ -23,21 +24,21 @@ GitHub is a web-based service for hosting projects that use the Git version cont
 
 GitHub allows users to *fork* a personal version of a project.
 Nowadays, downloading new open-source software is often done by forking a GitHub repository.
-Forking immediately creates a copy of a project on your personal GitHub page or other GitHub page that you have permissions for.
+Forking immediately creates a copy of a project on your personal GitHub page or other GitHub page that you have permissions.
 But, forking does not create a local copy of a project on your local machine.
 
 To create local copies, say, on your laptop, you would need to *clone* the repository.
 Cloning a repository can be done via GitHub (the graphical web-interface) or by working with Git directly on your local machine.
 
 ##GitHub at Indiana University
-IU has an Enterprise GitHub system that is a university managed version of GitHub available to faculty and student.
+IU has an Enterprise GitHub system that is a university managed version of GitHub available to IU faculty, staff, and students.
 So, IU basically has basically forked a restricted version of the GitHub project.
 IU's Enterprise version GitHub is only visible to members of the IU community. 
 
 ## Goals
-+ Install and Configure Git and other software
++ Install and Configure Git
 + Create an GitHub account using IU's GitHub Enterprise
-+ Learn what a Repo is and how we will be using Repos during in Quantitative Biodiversity
++ Learn what repositories are and they will be used during Quantitative Biodiversity
 
 ### Git Installation
 If you do not have a current Git installation (already installed in computer lab), please do the following:
@@ -48,17 +49,27 @@ If you do not have a current Git installation (already installed in computer lab
 4. Open the installer and follow the onscreen directions
 
   **On Mac**: You will need to make sure you have Xcode Command Line Tools installed.  
-  **On Windows**: This process will install Git Bash (msysGit). We recommend this over editing your path to use Git Tools in Command Prompt or PowerShell (If you are an experienced user you can decided for yourself).
+  **On Windows**: This process will install Git Bash (msysGit). 
+  During installation, you will be asekd to adjust your PATH environment.
+  We recommend that you select the option to "Use Git from the Windows Command Prompt".
+  This will give you the most flexibility with Git.
+  In addition, we recommend that during installation you select Use OpenSSH for your secure shell client with GitBash.
+  
+  During both installation processes you will be asked how to configure the line ending conversions
+  **On Mac**: We recommend "Checkout as-is, commit Unix-style line endings"
+  **On Windows**: We recommend "Checkout Windows-style, commit Unix-style line endings"
+  However, we will also configure this below and explain line endings.  
 
 ### Git Test
-Before we get started with Git, we firs tneed to test our current installation to make sure there aren't any issues.
+Before we get started with Git, we first need to test our current installation to make sure there aren't any issues.
 The easiest way to do this is to look up the Git version currently installed.
 We will use terminal (GitBash on Windows) to accomplish this.
 
 The first thing we need to do is find and start terminal.
-On the lab computers, you can find terminal in the **Utilities Folder**
+On the lab computers, you can find terminal in the **Utilities Folder**.
+On your personal computer: **Mac** you can search for terminal with spotlight [Cmd+Space]; **Windows** you can find GitBash in the Start Menu.
 
-1. Find terminal and open a new window
+1. Find terminal (or GitBash) and open a new window
 2. Type the following commands:
 
     ```sh
@@ -68,7 +79,7 @@ On the lab computers, you can find terminal in the **Utilities Folder**
     ```
 
 ### Git User Setup
-1. We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage. (Windows Users: Do this from GitBash)
+1. We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage. (**Mac** Users: Do this from Terminal; **Windows** Users: Do this from GitBash)
 
     ```sh
     cd ~
@@ -76,6 +87,7 @@ On the lab computers, you can find terminal in the **Utilities Folder**
     cd ./GitHub
     pwd
     ```
+    
 2. You will need to configure your local Git installation.
 We will do this by entering your name and email. 
 We will also set two defaults: push and credential save
@@ -86,7 +98,28 @@ We will also set two defaults: push and credential save
     git config --global push.default simple
     git config --global credential.helper store
     ```
-  You are now ready to ***Git*** **!!!**
+    
+3. The last thing you need to do is configure how Git handles line endings.
+Line endings are invisible characters that your operating system places at the end of each line in a document.
+On Unix machines (e.g. Mac), this is the linefeed character (LF).
+On Windows machines, this is the carriage-return (CR) and linefeed (LF) characters.
+This difference in line endings between Mac and Windows causes incompatabilities between the two systems.
+However, Git is enabled to handle the differences by silently converting line endings when repos are push to remote servers.
+We recommend that you configure this behavior in order to prevent any future issues when collaborating across computer platforms.
+
+    **On Mac**
+
+    ```sh
+        git config --global core.autocrlf input
+    ```
+
+    **On Windows**
+
+    ```sh
+        git config --global core.autocrlf true
+    ```    
+    
+**You are now ready to** ***Git !!!***
 
 ### Create User with IU's Enterprise GitHub Service
 1. Navigate to https://github.iu.edu
@@ -104,18 +137,20 @@ We will also set two defaults: push and credential save
 
     You should now see the repo on your GitHub page.
 
-3. Clone the repo onto your local machine using the command line (terminal)
+3. Clone the repo onto your local machine using the command line (terminal or GitBash).
+Replace [User_Name] and [Repo] with your IU Username and QB Repository.
 
     ```sh
     cd ~/(Path to GitHub Folders, e.g. ~/GitHub/)
-    git clone https://github.iu.edu/[User Name]/[Repo]
+    git clone https://github.iu.edu/[User_Name]/[Repo]
     cd ./[Repo]
     git status
     ```
 
     The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
 
-4. Check and update remote repo
+4. Check and update remote repo.
+The following commands will at your upstream remote repository (located on the QB Course GitHub)
 
     ```sh
     git remote -v
