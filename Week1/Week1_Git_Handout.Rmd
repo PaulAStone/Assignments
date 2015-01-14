@@ -8,16 +8,22 @@ output: pdf_document
 geometry: margin=2.54cm
 ---
 
-## Git
-Git is a software system designed to allow collaborators to simultaneously work on text documents, project data, and computing code for websites and for analyzing data and conducting scientific analyses. Git is a form of *version control*.
-
 ## Version control 
-Version control is an approach to developing text, data, and code that allows users the ability to examine, comment on, and revert back to any changes within the life of a document. 
+One of the riskiest things you can do with your data, manuscripts, and computing code is to lose track of various versions. While naming your files  "Dissertation-v43-partA-AdvisorsComments-Rejected.txt, ProjectChangeTheWorld-v23.csv, or Project-Change-The-World-v23.csv". 
+
+Version control is an approach to writing text, managing data, and developing computer code that allows users the ability to examine, comment on, and revert back to changes within the entire life of a document.
+
+
 In short, version control works when one make changes to a *local* version of a project (code, data, or text), and then *pushing* those changes to one's personal online version. 
 Having one's own online version keeps your project (or your version of a group's project) safe from loss or damage.
 If working with collaborators, one can then submit a *pull request* for others to check and *pull* the changes into the group's project. 
 
 In short, Git is a version control system allows multiple people in remote locations to work on the same code, data, and text without irretrievably deleting or writing over others' work.
+
+
+## Git
+Git is a software system designed to allow collaborators to simultaneously work on text documents, project data, and computing code for websites and for analyzing data and conducting scientific analyses. Git is a form of *version control*.
+
 
 ## GitHub
 GitHub is a web-based service for hosting projects that use the Git version control system. GitHub provides a graphical interface for viewing and managing a project's code, data, and text files, whether in collaboration with others or working individually.
