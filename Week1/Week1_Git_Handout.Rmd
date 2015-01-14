@@ -4,19 +4,26 @@ author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 header-includes:
    - \usepackage{graphicx}
+   - \usepackage{array}
 output: pdf_document
 geometry: margin=2.54cm
 ---
 
-## Version control 
+## Goals
++ Learn about Version Control, Git, and GitHub
++ Install and configure Git on your local computer
++ Create an GitHub account using IU's GitHub Enterprise
++ Learn what repositories (aka repos) are and how they will be used during Quantitative Biodiversity
+
+## Version Control 
 One of the riskiest things to do with your data, manuscripts, and computing code is to lose track of various versions.
 This is easily done when renaming and emailing files, when storing files on drives that get lost or computers that get damaged, and when working in collaborative groups.
-Naming your files "Dissertation-v43-partA-AdvisorsComments-Rejected.txt and emailing them between collaborators and committee members is madness!
-Beyond personal risk, funding agencies and many journals require authors to manage and provide their data, and can call upon authors to provide proof of reproducibility.
+Naming your files "Dissertation-v43-partA-AdvisorsComments-Rejected.txt" and emailing them between collaborators and committee members is madness!
+Beyond personal risk, funding agencies and many journals require authors to manage and provide all data, and can call upon authors to provide proof of reproducibility.
 Consequently, an increasing number of scientists, including those at CERN: https://github.com/cernops and NCBI: https://github.com/ncbi, are using an approach that has been used by tech companies for years, i.e., version control.
 
 Version control is an approach to writing text, managing data, and developing computer code that allows users the ability to examine, comment on, and revert back to changes within the entire life of a document, and without being tied to any single computer.
-Multiple people in remote locations can collaborate on the same text, code, and data without emailing copies back-and-forth and without losing or overwriting any changes.
+In addition, multiple people in remote locations can collaborate on the same text, code, and data without emailing copies back-and-forth and without losing or overwriting any changes.
 Likewise, a single graduate student can now step out of the stone age and professionally, cleanly, and safely manage all of their projects, while promoting their own research.
 Yay for version control!
 
@@ -30,24 +37,64 @@ All this pushing, pulling, and deciding how different versions from different co
 In this class, we will use the most popular and powerful version control software and services out there, i.e. Git and GitHub!
 
 ## Git and GitHub
-**Git** is a free and open source version control system designed to handle everything from small to very large projects with speed and efficiency. Users install Git onto their local machines (e.g. laptop) and Git is basically the software that does the heavy lifting for you. 
-If you have a Mac, Git might already be installed.
-Unlike many pieces of software you might be used to, such as internet browers, email software, scientific software, and iTUnes, Git does not necessarily have a graphical user interface (GUI).
+**Git** is a free and open source version control system designed to handle everything from small to very large projects with speed and efficiency. 
+Users install Git onto their local machines (e.g. laptop) and Git is basically the software that does the heavy lifting for you. 
+Unlike many pieces of software you might be used to, such as internet browers, email software, scientific software, and iTunes, Git does not necessarily have a graphical user interface (GUI).
 In this class, we will work with Git directly through your computer's terminal window.
 
 **GitHub** is a web-based service for hosting projects that use the Git version control system.
 GitHub provides an attractive user interface for viewing and managing a project's code, data, and text files, whether in collaboration with others or working individually.
 If your project is visible to others (public), then GitHub also serves as a way to let the world know about the awesome science you're doing (or even that you did it first) and even how to join in and share tools.
-While many companies, agencies, large laboratries, and governments use GitHub (https://government.github.com/), GitHub is alse a great central location for your own personal projects.
-
-##GitHub at Indiana University
-IU has an Enterprise GitHub system. That is, a version of GitHub restricted to IU faculty, staff, and students.
-IU's Enterprise version GitHub is only visible to members of the IU community.
+While many companies, agencies, large laboratries, and governments use GitHub (https://government.github.com/), GitHub is also a great central location for your own personal projects.
+IU has an Enterprise GitHub system (https://github.iu.edu). 
+That is, a version of GitHub restricted to IU faculty, staff, and students.
+During this class, we will primarily be using this version of GitHub.
 
 ### Very basic Git and GitHub Glossary:
 Like many technical and scientific tools, Git and GitHub have their own vocabulary. Some of the following terms are literally commands that you will type into the terminal window.
 
-**upstream**: The central repository. For this class, 'upstream' is the version managed by your instructors.
+\begin{center}
+\begin{tabular}{ m{3cm} m{12cm} }
+  \textbf{Term} & \textbf{Meaning} \\
+  \hline \hline \\ [-1.5ex]
+  \textbf{\emph{Upstream}} & 
+  The central repository. For this class, 'upstream' is the version managed by your instructors. \\
+  \\ [-1.5ex]
+  \textbf{\emph{Origin}} & 
+  Your own IU-GitHub version of a repository. Any versions on your local machine will \emph{origin}ate from the origin. \\
+  \\ [-1.5ex]  
+   \textbf{\emph{Fork}} & 
+  Create a personal copy (or version) of a repository in one's own GitHub account. \\
+  \\ [-1.5ex]   
+    \textbf{\emph{Clone}} & 
+  Create a local copy of a respository on your computer. This is the version you will directly edit and make various changes to. \\
+  \\ [-1.5ex]  
+    \textbf{\emph{Fetch}} & 
+  Download changes that have been made to an online repository: 'fetch' brings in new changes but it doesn't merge them with your local copy. \\
+  \\ [-1.5ex]  
+    \textbf{\emph{Merge}} & 
+  Merge changes to the online version with your own local version. \\
+  \\ [-1.5ex]  
+    \textbf{\emph{Pull}} & 
+  = 'fetch' + 'merge'. 'pull' accomlishes both 'fetch' and 'merge' but give less freedom of control over either. \\
+  \\ [-1.5ex]  
+    \textbf{\emph{Staging Area}} & 
+  A file contained in your local repository. Git uses the file to store information about what you are changing in what files. \\
+  \\ [-1.5ex]  
+    \textbf{\emph{Add}} & 
+  After making changes to data, text, or code, and then saving the file as normal, you must 'add' your changes to the staging area. \\
+  \\ [-1.5ex]  
+    \textbf{\emph{Commit}} & 
+  Aftering 'add'ing changes, we need to commit them. This will saves a picture of what your files looked like at that moment. \\
+  \\ [-1.5ex]  
+    \textbf{\emph{Push}} & 
+  Having 'committed', this command will update your on-line version. \\
+  \\ [-1.5ex] 
+  \hline
+  \end{tabular}
+  \end{center}
+
+**upstream**: The central repository. For this class, 'upstream' is the version managed by your instructors. 
 
 **origin**: Your own IU-GitHub version of a repository. Any versions on your local machine will **origin**ate from the origin.
 
@@ -69,13 +116,7 @@ Like many technical and scientific tools, Git and GitHub have their own vocabula
 
 **push**: Having 'committed', this command will update your on-line version.
 
-
-## Goals
-+ Install and configure Git on your local computer
-+ Create an GitHub account using IU's GitHub Enterprise
-+ Learn what repositories (aka repos) are and how they will be used during Quantitative Biodiversity
-
-### Git Installation
+## Git Installation
 If you do not have a current Git installation (already installed in the computer lab), please do the following: ***how will they know? first step: check and see if Git is currently insalled***
 
 1. Open a web browser and naviate to git-scm.com/download/
@@ -112,7 +153,7 @@ On your personal computer: **Mac** you can search for terminal with spotlight [C
     git --version
     ```
 
-### Git User Setup
+## Git User Configuration
 1. **Organization:** We recommend that you create a folder in your user directory (> cd ~) called '*GitHub*' to make this and future assignments easier to manage. (**Mac** Users: Do this from Terminal; **Windows** Users: Do this from GitBash)
 
     ```sh
@@ -155,7 +196,7 @@ We recommend that you configure this behavior in order to prevent any future iss
     
 **You are now ready to** ***Git !!!***
 
-### Create User with IU's Enterprise GitHub Service
+## Create User with IU's Enterprise GitHub Service
 1. Navigate to https://github.iu.edu
 2. Sign in with your IU Username and Passphrase
 3. On the top right of your screen, click on your Username
@@ -163,7 +204,7 @@ We recommend that you configure this behavior in order to prevent any future iss
 
     \includegraphics[scale=0.50]{images/github_edit_btn.png}
 
-### Fork and Clone a Repo
+## Fork and Clone a Repo
 1. Navigate to and click on your student repository (repo) on https://github.iu.edu/2015-QuantitativeBiodiversity
 2. Fork your repo by clicking on the Fork Icon in the top right of your screen<br>
 
