@@ -9,42 +9,71 @@ geometry: margin=2.54cm
 ---
 
 ## Version control 
-One of the riskiest things you can do with your data, manuscripts, and computing code is to lose track of various versions. While naming your files  "Dissertation-v43-partA-AdvisorsComments-Rejected.txt, ProjectChangeTheWorld-v23.csv, or Project-Change-The-World-v23.csv". 
+One of the riskiest things to do with your data, manuscripts, and computing code is to lose track of various versions.
+This is easily done when renaming and emailing files, when storing files on drives that get lost or computers that get damaged, and when working in collaborative groups.
+Naming your files "Dissertation-v43-partA-AdvisorsComments-Rejected.txt and emailing them between collaborators and committee members is madness!
+Beyond personal risk, funding agencies and many journals require authors to manage and provide their data, and can call upon authors to provide proof of reproducibility.
+Consequently, an increasing number of scientists, including those at CERN: https://github.com/cernops and NCBI: https://github.com/ncbi, are using an approach that has been used by tech companies for years, i.e., version control.
 
-Version control is an approach to writing text, managing data, and developing computer code that allows users the ability to examine, comment on, and revert back to changes within the entire life of a document.
+Version control is an approach to writing text, managing data, and developing computer code that allows users the ability to examine, comment on, and revert back to changes within the entire life of a document, and without being tied to any single computer.
+Multiple people in remote locations can collaborate on the same text, code, and data without emailing copies back-and-forth and without losing or overwriting any changes.
+Likewise, a single graduate student can now step out of the stone age and professionally, cleanly, and safely manage all of their projects, while promoting their own research.
+Yay for version control!
 
-In short, version control works when one make changes to a *local* version of a project (code, data, or text), and then *pushing* those changes to one's personal online version. 
-Having one's own online version keeps your project (or your version of a group's project) safe from loss or damage.
-If working with collaborators, one can then submit a *pull request* for others to check and *pull* the changes into the group's project. 
+### How it works, in a nutshell
+In short, version control works by centralizing a project in a repository located on a server (e.g. a computer connected to the internet). 
+The individual user never directly edits any code, data, or text in this online repository (aka repo).
+Instead, the user makes changes to a local version of the project (e.g. on your laptop) and then pushes those changes to the online version.
+All history of the online version is tracked and so, the entire history of a project is protected.
+Likewise, if the online version is directly changed or updated, e.g. by collaborators, then all the user has to do is pull the changes in from the online version.
+All this pushing, pulling, and deciding how different versions from different computers get merged together, is done by version control software.
+In this class, we will use the most popular and powerful version control software and services out there, i.e. Git and GitHub!
 
-In short, Git is a version control system allows multiple people in remote locations to work on the same code, data, and text without irretrievably deleting or writing over others' work.
+## Git and GitHub
+**Git** is a free and open source version control system designed to handle everything from small to very large projects with speed and efficiency. Users install Git onto their local machines (e.g. laptop) and Git is basically the software that does the heavy lifting for you. 
+If you have a Mac, Git might already be installed.
+Unlike many pieces of software you might be used to, such as internet browers, email software, scientific software, and iTUnes, Git does not necessarily have a graphical user interface (GUI).
+In this class, we will work with Git directly through your computer's terminal window.
 
-
-## Git
-Git is a software system designed to allow collaborators to simultaneously work on text documents, project data, and computing code for websites and for analyzing data and conducting scientific analyses. Git is a form of *version control*.
-
-
-## GitHub
-GitHub is a web-based service for hosting projects that use the Git version control system. 
-GitHub provides a graphical interface for viewing and managing a project's code, data, and text files, whether in collaboration with others or working individually.
-
-###--> Perhaps the conceptus of forking can be explained  little more clearly
-GitHub allows users to *fork* a personal version of a project.
-Nowadays (***???***), downloading new open-source software is often done by forking a GitHub repository. ***is this sentence necessary?***
-Forking immediately creates a copy of a project on your personal GitHub page [(or other GitHub page that you have permissions ***necessary***)].
-It is important to note, however, that forking does not create a copy of a project on your local machine.
-Therefore, after forking a project, you need to **clone** the repository onto your personal computer ***first time "repository" is used -- should we define or at least not introduce parenthetically?***
-Cloning a repository can be done via GitHub (web-interface) or by working with Git directly on your local computer using **Linux** commands, which is what we will be doing in Quantitative Biodiversity this semester. 
+**GitHub** is a web-based service for hosting projects that use the Git version control system.
+GitHub provides an attractive user interface for viewing and managing a project's code, data, and text files, whether in collaboration with others or working individually.
+If your project is visible to others (public), then GitHub also serves as a way to let the world know about the awesome science you're doing (or even that you did it first) and even how to join in and share tools.
+While many companies, agencies, large laboratries, and governments use GitHub (https://government.github.com/), GitHub is alse a great central location for your own personal projects.
 
 ##GitHub at Indiana University
-IU has an Enterprise GitHub system that is a university managed version of GitHub available to IU faculty, staff, and students.
-[So, IU basically has basically forked a restricted version of the GitHub project.***necessary, informative? jargony?***
-IU's Enterprise version GitHub is only visible to members of the IU community. 
+IU has an Enterprise GitHub system. That is, a version of GitHub restricted to IU faculty, staff, and students.
+IU's Enterprise version GitHub is only visible to members of the IU community.
+
+### Very basic Git and GitHub Glossary:
+Like many technical and scientific tools, Git and GitHub have their own vocabulary. Some of the following terms are literally commands that you will type into the terminal window.
+
+**upstream**: The central repository. For this class, 'upstream' is the version managed by your instructors.
+
+**origin**: Your own IU-GitHub version of a repository. Any versions on your local machine will **origin**ate from the origin.
+
+**fork**: create a personal copy (or version) of a repository in one's own GitHub account.
+
+**clone**: create a local copy of a respository on your computer. This is the version you will directly edit and make various changes to.
+
+**fetch**: download changes that have been made to an online repository. 'fetch' brings in new changes but it doesn't merge them with your local copy.
+
+**merge**: Merge changes to the online version with your own local version.
+
+**pull**: = fetch + merge. 'pull' accomlishes both 'fetch' and 'merge' but give less freedom of control over either.
+
+**staging area**: A file contained in your local repository. Git uses the file to store information about what you're changing in what files.
+
+**add**: After making changes to data, text, or code, and then saving the file as normal, you must 'add' your changes to the staging area.
+
+**commit**: Aftering 'add'ing changes, we need to commit them. This will saves a picture of what your files looked like at that moment. 
+
+**push**: Having 'committed', this command will update your on-line version.
+
 
 ## Goals
-+ Install and Configure **capitalize "Configure"?** Git on your local computer
++ Install and configure Git on your local computer
 + Create an GitHub account using IU's GitHub Enterprise
-+ Learn what repositories are and they will be used during Quantitative Biodiversity [***seems like repos should be defined above, even if loosely]
++ Learn what repositories (aka repos) are and how they will be used during Quantitative Biodiversity
 
 ### Git Installation
 If you do not have a current Git installation (already installed in the computer lab), please do the following: ***how will they know? first step: check and see if Git is currently insalled***
