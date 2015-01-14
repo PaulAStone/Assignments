@@ -149,7 +149,7 @@ We will also set two defaults: push and credential save
 6. Now push the changes to GitHub
 
     ```sh
-    git push master
+    git push origin
     ```
 
     You should now see the repo on your GitHub page.
