@@ -6,20 +6,14 @@ output: pdf_document
 geometry: margin=2.54cm
 ---
 
-During this course, you will be using R, RStudio and Git at home to complete assighments.
 The goal of this short assignment to to make sure that your personal computing environment is functioning as needed for the course.
-In this short assignment, we will learn how to print a statement in R. 
-In addition, the second half of this assignment will tell us about your computer, R, and Git environments.
-In your `Week1` folder, you will find a template of this handout (`R_test.Rmd`).
-This is an RMarkdown file which you were first introducted to in class on Friday.
-Just as a reminder, RMarkdown files allow you to integrate formatted text and R code/output into one file.
-When you are done with this assignment, you can **Knit** the text and code into a PDF file.
-You will submit this as your first assignment.
-It is due on **January 20^th^, 2015 at Noon**
+From the RMarkdown file (`R_test.Rmd`), you will print a simple statement and then retrieve information about the operating system and versions of software on your computer.
+You will then  **Knit** the text and code into a PDF file.
+Last, you will submit this as your first assignment, which is due on **January 20^th^, 2015 at 12:00 PM**
 
 1. Edit your name in the *author* line above (line 3)
 
-2. Print a message in the R terminal using the `print` command:
+2. Print a message in the R terminal (***do you mean the "Console Pane?") using the `print` command:
 
     Ex. Print "*Hello, World!*"
 ```{r}
@@ -32,8 +26,9 @@ print("Hello, World!")
 
 ```
 
-3. Tell us about your system. Basically, just leave this part alone and it will do magic. 
-As an example of what this code does, here is the output from Mario's computer:
+3. Now we'll run the code below to retrieve information about your local computing system. 
+You do not need to make any changes to the code. 
+The output below is what was returned from Mario's computer:
 
 ```{r}
 info <- unname(c(Sys.info()[6],
