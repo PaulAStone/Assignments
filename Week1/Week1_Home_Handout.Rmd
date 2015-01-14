@@ -3,6 +3,7 @@ title: "Week 1 Exercise: R Test"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 output: pdf_document
+geometry: margin=2.54cm
 ---
 
 During this course, you will be using R, RStudio and Git at home to complete assighments.
@@ -10,8 +11,8 @@ The goal of this short assignment to to make sure that your personal computing e
 In this short assignment, we will learn how to print a statement in R. 
 In addition, the second half of this assignment will tell us about your computer, R, and Git environments.
 In your `Week1` folder, you will find a template of this handout (`R_test.Rmd`).
-This is an RMarkdown file.
-It will allow you to integrate text and R code into one file.
+This is an RMarkdown file which you were first introducted to in class on Friday.
+Just as a reminder, RMarkdown files allow you to integrate formatted text and R code/output into one file.
 When you are done with this assignment, you can **Knit** the text and code into a PDF file.
 You will submit this as your first assignment.
 It is due on **January 20^th^, 2015 at Noon**
@@ -32,7 +33,7 @@ print("Hello, World!")
 ```
 
 3. Tell us about your system. Basically, just leave this part alone and it will do magic. 
-As an example, here is the output from Mario's computer:
+As an example of what this code does, here is the output from Mario's computer:
 
 ```{r}
 info <- unname(c(Sys.info()[6],
