@@ -1,5 +1,5 @@
 ---
-title: "Week 1 Exercise: Computer Test"
+title: "Week 1: Computer Test"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 output: pdf_document
@@ -9,7 +9,7 @@ geometry: margin=2.54cm
 The goal of this short assignment to to make sure that your personal computing environment is functioning as needed for the course.
 From the RMarkdown file (`Week1_CompTest.Rmd`), you will print a simple statement and then retrieve information about the operating system and versions of software on your computer.
 You will then  **Knit** the text and code into a PDF file.
-Last, you will submit this as your first assignment, which is due on **January 20^th^, 2015 at 12:00 PM**.
+Last, you will submit this as your first assignment, which is due on **January 20^th^, 2015 at 12:00 PM (noon)**.
 
 1. Open `Week1_CompTest.Rmd` in RStudio (see week 1 folder)
 

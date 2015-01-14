@@ -14,14 +14,14 @@ In addition to using R's base package, we will also use contributed packages, wh
 
 ## 1) HOW WE WILL BE USING R AND OTHER TOOLS
 
-During the course, we will useRStudio (http://www.rstudio.com/), which is a user-friendly integrated developement environment (IDE) that allows R to interface with other tools. 
-For example, the document you are reading was generated in R Markdown (<http://rmarkdown.rstudio.com>). 
+During the course, we will use RStudio (http://www.rstudio.com/), which is a user-friendly integrated developement environment (IDE) that allows R to interface with other tools. 
+For example, the document you are reading was generated in RMarkdown (<http://rmarkdown.rstudio.com>). 
 Markdown is a simple formatting syntax for authoring HTML, PDF, and other documents. 
 
 We will also use a tool called knitr (http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. 
-For example, when you click the **Knit PDF** button in the scripting window of Rstudio, a document will be generated that includes LaTeX (http://www.latex-project.org/) typesetting as well as the output of any embedded R code. 
+For example, when you click the **Knit PDF** button in the scripting window of RStudio, a document will be generated that includes LaTeX (http://www.latex-project.org/) typesetting as well as the output of any embedded R code. 
 
-However, if there are errors in the Rcode contained in your markdown document, you will not be able to knit a PDF file. 
+However, if there are errors in the Rcode contained in your Markdown document, you will not be able to knit a PDF file. 
 Assignments in this class will require that you successfully create a Markdown-generated PDF using knitr; you will then **push** this document to the course **respository** hosted on IU's GitHub (<https://github.iu.edu>) and generate a **pull request**.
 
 ## 2) SETTING YOUR WORKING DIRECTORY
@@ -381,7 +381,7 @@ require("psych")
 ```
 
 Now, let's look at the correlations among variables and assess whether they are signficant:
-```{r}
+```{r, results = 'hide'}
 cor2 <- corr.test(meso.num, method = "pearson", adjust = "BH")
 print(cor2, digits = 3)
 ```
@@ -399,7 +399,7 @@ With the Pearson's method, is thre evidence for false discovery rate due to mult
 
 Now, let's load another package that will let us visualize the sign and strength of the correlations:
 ```{r}
-require("corrplot")||install.packages("corrplot");require("corrplot")
+require("corrplot")
 corrplot(cor1, method = "ellipse")
 ```
 
@@ -519,8 +519,9 @@ plot(fitanova)
 ```
 
 ##HOMEWORK
-1) Complete the entire exercise in the Week1_R.Rmd
+1) Complete the entire exercise in the Week1_Exercise.Rmd (in week 1 folder)
 
 2) In addition, redo the section on linear regression (including summary statistics, plotting, and diagnostics) using log10-transformed zooplankton biomas data. Does the transformation help meet assumption of linear regression or change the interpretation of the analysis in anyway? Describe.
 
-3) Use knitr to create a pdf of your completed Weed1_R.rmd document, push it to GitHub, and create a pull request.
+3) Use Knitr to create a pdf of your completed Week1_Exercise.Rmd document, push it to GitHub, and create a pull request.
+This assignment is due on **January 21^st^, 2015 at 12:00 PM (noon)**.
