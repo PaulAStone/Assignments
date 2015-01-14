@@ -13,7 +13,6 @@ One of the riskiest things you can do with your data, manuscripts, and computing
 
 Version control is an approach to writing text, managing data, and developing computer code that allows users the ability to examine, comment on, and revert back to changes within the entire life of a document.
 
-
 In short, version control works when one make changes to a *local* version of a project (code, data, or text), and then *pushing* those changes to one's personal online version. 
 Having one's own online version keeps your project (or your version of a group's project) safe from loss or damage.
 If working with collaborators, one can then submit a *pull request* for others to check and *pull* the changes into the group's project. 
@@ -26,37 +25,38 @@ Git is a software system designed to allow collaborators to simultaneously work 
 
 
 ## GitHub
-GitHub is a web-based service for hosting projects that use the Git version control system. GitHub provides a graphical interface for viewing and managing a project's code, data, and text files, whether in collaboration with others or working individually.
+GitHub is a web-based service for hosting projects that use the Git version control system. 
+GitHub provides a graphical interface for viewing and managing a project's code, data, and text files, whether in collaboration with others or working individually.
 
+###--> Perhaps the conceptus of forking can be explained  little more clearly
 GitHub allows users to *fork* a personal version of a project.
-Nowadays, downloading new open-source software is often done by forking a GitHub repository.
-Forking immediately creates a copy of a project on your personal GitHub page or other GitHub page that you have permissions.
-But, forking does not create a local copy of a project on your local machine.
-
-To create local copies, say, on your laptop, you would need to *clone* the repository.
-Cloning a repository can be done via GitHub (the graphical web-interface) or by working with Git directly on your local machine.
+Nowadays (***???***), downloading new open-source software is often done by forking a GitHub repository. ***is this sentence necessary?***
+Forking immediately creates a copy of a project on your personal GitHub page [(or other GitHub page that you have permissions ***necessary***)].
+It is important to note, however, that forking does not create a copy of a project on your local machine.
+Therefore, after forking a project, you need to **clone** the repository onto your personal computer ***first time "repository" is used -- should we define or at least not introduce parenthetically?***
+Cloning a repository can be done via GitHub (web-interface) or by working with Git directly on your local computer using **Linux** commands, which is what we will be doing in Quantitative Biodiversity this semester. 
 
 ##GitHub at Indiana University
 IU has an Enterprise GitHub system that is a university managed version of GitHub available to IU faculty, staff, and students.
-So, IU basically has basically forked a restricted version of the GitHub project.
+[So, IU basically has basically forked a restricted version of the GitHub project.***necessary, informative? jargony?***
 IU's Enterprise version GitHub is only visible to members of the IU community. 
 
 ## Goals
-+ Install and Configure Git
++ Install and Configure **capitalize "Configure"?** Git on your local computer
 + Create an GitHub account using IU's GitHub Enterprise
-+ Learn what repositories are and they will be used during Quantitative Biodiversity
++ Learn what repositories are and they will be used during Quantitative Biodiversity [***seems like repos should be defined above, even if loosely]
 
 ### Git Installation
-If you do not have a current Git installation (already installed in computer lab), please do the following:
+If you do not have a current Git installation (already installed in the computer lab), please do the following: ***how will they know? first step: check and see if Git is currently insalled***
 
-1. Naviate to git-scm.com/download/
+1. Open a web browser and naviate to git-scm.com/download/
 2. Select the appropriate operating system
 3. The download should start automatically
 4. Open the installer and follow the onscreen directions
 
   **On Mac**: You will need to make sure you have Xcode Command Line Tools installed.  
   **On Windows**: This process will install Git Bash (msysGit). 
-  During installation, you will be asekd to adjust your PATH environment.
+  During installation, you will be asked to adjust your **PATH environment**.
   We recommend that you select the option to "Use Git from the Windows Command Prompt".
   This will give you the most flexibility with Git.
   In addition, we recommend that during installation you select "Use OpenSSH" for your secure shell client with GitBash.
@@ -67,11 +67,11 @@ If you do not have a current Git installation (already installed in computer lab
 
 ### Git Test
 Before we get started with Git, we first need to test our current installation to make sure there aren't any issues.
-The easiest way to do this is to look up the Git version currently installed.
-We will use terminal (GitBash on Windows) to accomplish this.
+The easiest way to do this is to determine what Git version is currently installed.
+We will use **terminal** (GitBash on Windows) to accomplish this.
 
 The first thing we need to do is find and start terminal.
-On the lab computers, you can find terminal in the **Utilities Folder**.
+On the lab computers, you can find terminal in the **Utilities Folder** in the **Dock** at the bottom of your screen.
 On your personal computer: **Mac** you can search for terminal with spotlight [Cmd+Space]; **Windows** you can find GitBash in the Start Menu.
 
 1. Find terminal (or GitBash) and open a new window
@@ -152,11 +152,11 @@ Replace "User_Name" with your IU Username and "Repo" with your QB Repository.
     git status
     ```
 
-    The repo should have downloaded onto your local machine and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
+The repo should have downloaded onto your local computer and the status should stay "all up to date". You should also see that the only thing in your repo is a file named README.md
 
 4. Check and update remote repo.
-The following commands will at your upstream remote repository (located on the QB Course GitHub). 
-Replace "Repo" with your QB Repository
+The following commands will at your **upstream remote repository**, which is located on the QB Course GitHub. 
+Replace "Repo" with your QB Repository ***clarify?***
 
     ```sh
     git remote -v
