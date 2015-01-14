@@ -15,7 +15,6 @@ geometry: margin=2.54cm
 + Install and configure Git on your computer
 + Create an IU-GitHub account
 
-
 ## Version Control 
 Mismanaging changes to data, manuscripts, and computer code is one of the most dangerous things you can do as a scientist.
 Yet, this is easily done when renaming and emailing files, when storing files in folders that get forgotten about or on drives that get lost or damaged, and when working in collaboration.
@@ -31,7 +30,7 @@ Yay for version control!
 ### How version control works, in a nutshell
 In short, version control works by centralizing a project in a repository located on a server (e.g. a computer connected to the internet). 
 The individual user never directly edits the code, data, or text in this online repository (aka repo).
-Instead, the user makes changes to a local version of the project (e.g. on your laptop) and then pushes those changes to the online version.
+Instead, the user makes changes to a local version of the project (e.g. on your laptop) and pushes those changes to the online version.
 The history of the online version is tracked so the entire history of a project is protected.
 Likewise, if the online version is directly changed or updated, e.g. by collaborators, then the user merely pulls in the changes from the online version.
 All this pushing, pulling, and deciding how different versions from different computers get merged together is done by version control software.
@@ -103,9 +102,6 @@ All are defined with respect to how we will be using Git and GitHub in this clas
   \end{center}
 
 ## Git Installation
-If you are working on a Mac, Git may already be installed. You can check this by entering the folowing in your terminal window: 
-git --version 
-
 If you do not have a current Git installation, please do the following:
 
 1. Open a web browser and naviate to git-scm.com/download/
