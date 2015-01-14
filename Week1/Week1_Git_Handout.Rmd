@@ -1,5 +1,5 @@
 ---
-title: "Week 1 Exercise: Git and GitHub"
+title: "Week 1: Git and GitHub"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 header-includes:
