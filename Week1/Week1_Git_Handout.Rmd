@@ -138,7 +138,7 @@ We recommend that you configure this behavior in order to prevent any future iss
     You should now see the repo on your GitHub page.
 
 3. Clone the repo onto your local machine using the command line (terminal or GitBash).
-Replace [User_Name] and [Repo] with your IU Username and QB Repository.
+Replace "User_Name" and [Repo] with your IU Username and QB Repository.
 
     ```sh
     cd ~/(Path to GitHub Folders, e.g. ~/GitHub/)
