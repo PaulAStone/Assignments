@@ -8,41 +8,39 @@ geometry: margin=2.54cm
 
 ## OVERVIEW
 
-This exercise introduces some of the basic features of the R (http://www.r-project.org/) computing environment. 
-We will briefly cover operators, data types, and simple commands that will be useful for you during the course and beyond. 
-In addition to using R's base package, we will also use contributed packages, which together will allow us to visualize data and peform relatively simple statistics (e.g., linear regression and ANOVA).
+This exercise introduces some of the basic features of the R computing environment (http://www.r-project.org).
+This exercise is to be used along side your Week 1 Handout. 
+You will not be able to complete this if you do not have your handout.
 
 ## Directions:
-Change **Student Name** above (line 3) with your name.
-You are working in an RMarkdown file.
-It will allow you to integrate text and R code into one file.
-There are two major feature to this document: 1) Markdown formatted text 2) R code chunks.
-Anything in an R code chunk will be intrepreted by R when you *Knit* the document.
-Please complete as much of this as possible during class; what you do not complete in class will need to be done on your own outside of class.
-Use the handout (hardcopy) as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise.
-Be sure to answer the questions in the handout in this document.
-Space for your answer is provided and indicated by the ">" character.
+1. Change **Student Name** above (line 3) with your name.
+2. Please complete as much of this as possible during class; what you do not complete in class will need to be done on your own outside of class.
+3. Use the handout as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise.
+4. Be sure to answer the questions in the handout in this document.
+Space for your answer is provided in this document and indicated by the ">" character.
 If you need a second paragraph be sure to start the first line with ">".
-You should notice that the answer is all highlighted by RStudio in green.
-Before you leave the classroom today, it is *imperative* that you push this file to your GitHub repo.
-For homework, follow the directions at the bottom of this file. 
-When you are done, **Knit** the text and code into a PDF file.
-Basically, just press the `Knit` button in the scripting panel above.
-After Knitting, please submit by creating a **pull request** via GitHub. 
+You should notice that the answer is highlighted green by RStudio. 
+5. Before you leave the classroom today, it is *imperative* that you push this file to your GitHub repo.
+6. For homework, follow the directions at the bottom of this file. 
+7. When you are done, **Knit** the text and code into a PDF file.
+Basically, just press the `Knit` button above the scripting panel.
+8. After Knitting, please submit by creating a **pull request** via GitHub. 
 (Review your inclass Git assignment if needed.)
 The completed exercise is due on **January 21^st^, 2015 before 12:00 PM (noon)**.
 
 ## 1) HOW WE WILL BE USING R AND OTHER TOOLS
 
-During the course, we will use RStudio (http://www.rstudio.com/), which is a user-friendly integrated developement environment (IDE) that allows R to interface with other tools. 
-For example, the document you are reading was generated in RMarkdown (<http://rmarkdown.rstudio.com>). 
-Markdown is a simple formatting syntax for authoring HTML, PDF, and other documents. 
+You are working in an RMarkdown file.
+It will allow you to integrate text and R code into one file.
+There are two major feature to this document: 1) Markdown formatted text 2) R code chunks.
+Anything in an R code chunk will be intrepreted by R when you *Knit* the document.
 
-We will also use a tool called knitr (http://yihui.name/knitr/), which is a package that generates reports from R script and Markdown text. 
-For example, when you click the **Knit PDF** button in the scripting window of RStudio, a document will be generated that includes LaTeX (http://www.latex-project.org/) typesetting as well as the output of any embedded R code. 
+For testing purposes, you can run lines of code found in R code chunks by using the "Run" button above the scripting panel or by using the appropriate keyboard shortcut [Ctrl + Enter].
 
-However, if there are errors in the Rcode contained in your Markdown document, you will not be able to knit a PDF file. 
-Assignments in this class will require that you successfully create a Markdown-generated PDF using knitr; you will then **push** this document to the course **respository** hosted on IU's GitHub (<https://github.iu.edu>) and generate a **pull request**.
+When you are done, you can *knit* your document together.
+However, if there are errors in the R code contained in your Markdown document, you will not be able to knit a PDF file. 
+If this happens, you will need to review all of your code to make sure you do not have any errors.
+Even if you are able to knit without issue, please me sure to review your PDF before submitting.
 
 ## 2) SETTING YOUR WORKING DIRECTORY
 
@@ -86,7 +84,7 @@ In the R code chunk below, do the following:
 2) Create a second object "b" and set it equal to 2 x "a".
 3) Show the value of "b".
 4) Next, reassign to a different number to "a".
-5) Finally, show "b"" again to demonstrate that R did not update "b" when "a" was changed (i.e., is not a symbolic programming language).
+5) Finally, show "b"" again to demonstrate that R did not update "b" when "a" was changed (i.e., R is not a symbolic programming language).
 6) When you are done, clear your R working environment using the `rm()` function.
 
 ```{r}
@@ -148,7 +146,7 @@ v <- c(16.4, 16.0, 10.1, 16.8, 20.5, NA, 20.2, 13.1, 24.8, 20.2, 25.0, 20.5, 30.
 ## 5) WORKING WITH MATRICES
 
 In the R code chunk below, do the following:
-Using a mixture of Approach 1 and 2, create a matrix with two columns and 5 rows.
+Using a mixture of Approach 1 and 2, create a matrix, "n", with two columns and 5 rows.
 Both columns should consist of random numbers.
 Make the mean of the first 8 and the mean of the second 25.
 In addition, adjust for the first column set sd = 2 and for the second column set sd = 10.
@@ -186,8 +184,8 @@ In the R code chunk below, do the following:
 ###Indexing a Matrix
 
 In the R code chunk below, do the following:
-1) Index matrix m selecting all but the third column
-2) Remove the last row of matrix m
+1) Index matrix "m"" selecting all but the third column
+2) Remove the last row of matrix "m"
 
 ```{r}
 
@@ -216,7 +214,7 @@ In the R code chunk below, do the following:
 In the R code chunk below, do the following:
 1) Create a matrix with the numerical data in the 'meso' dataframe.
 2) Visualize the pairwise **bi-plots** of the 6 numerical variables.
-3) Conduct a simple **Pearson's correlation** analysis
+3) Conduct a simple **Pearson's correlation** analysis.
 
 ```{r}
 
@@ -232,7 +230,7 @@ In the R code chunk below, do the following:
 In the R code chunk below, do the following:
 1) Redo the correlation analysis using the `corr.test()` function in the "psych" package with the following options: method = "pearson", adjust = "BH".
 2) Now, redo this correlation analysis using a non-parametric method.
-3) Use the print command from the handout to see the results of each.
+3) Use the print command from the handout to see the results of each correlation analysis.
 
 ```{r}
 
@@ -244,7 +242,8 @@ In the R code chunk below, do the following:
 Specifically, are the results sensitive to whether you use parametric (i.e., Pearson's) or non-parametric methods?
 With the Pearson's method, is there evidence for false discovery rate due to multiple comparisons?
 
-> ***Answer 5***:
+> ***Answer 5***: 
+
 
 In the R code chunk below, use the `corrplot` function in the "corrplot" package to produce the ellipse correlatoin plot seen in the handout.
 
@@ -258,7 +257,7 @@ In the R code chunk below, use the `corrplot` function in the "corrplot" package
 In the R code chunk below, do the following:
 1) Conduct a linear regression analysis to test the relationship between total nitrogen (TN) and zooplankton biomass (ZP)
 2) Examine the output of the regression analaysis
-3) Produce a plot of this regression analysis including the following: categorically labeled points, the predicted regressionline with 95% confidence intervals, and the appropriate axis labels.
+3) Produce a plot of this regression analysis including the following: categorically labeled points, the predicted regression line with 95% confidence intervals, and the appropriate axis labels.
 
 ```{r}
 
@@ -294,9 +293,9 @@ Using the R code chunk below, use the code provided in the handout to determine 
 ### ANALYSIS OF VARIANCE (ANOVA)
 
 Using the R code chunk below, do the following:
-1) Order the nutrient treatments from low to high
+1) Order the nutrient treatments from low to high (see handout)
 2) Produce a barplot to visualize zooplankton biomass in each nutrient treatment
-3) Be sure to include error bars on your plot and label the axis appropriately.
+3) Include error bars on your plot and label the axis appropriately.
 4) Use a one-way analysis of variance to determine if the treatments differed with respond to zooplankton biomass
 5) Use Tukey's HSD to conduct a post-hoc comparision
 
@@ -325,9 +324,20 @@ Using the R code chunk below, use the code provided in the handout to determine 
 ## HOMEWORK
 
 1) Complete the R code chunks above.
-1) Complete this entire exercise (Week1_Exercise.Rm, in week 1 folder)
 
-2) In addition, redo the section on linear regression (including summary statistics, plotting, and diagnostics) using log10-transformed zooplankton biomas data. Does the transformation help meet assumption of linear regression or change the interpretation of the analysis in anyway? Describe.
+2) In addition, redo the section on linear regression (including summary statistics, plotting, and diagnostics) using log10-transformed zooplankton biomas. Provide the code in the following code block:
+
+```{r}
+
+
+
+
+```
+
+***Homework Question***: Does the transformation help meet assumption of linear regression or change the interpretation of the analysis in anyway? Describe.
+
+> ***Answer***: 
+
 
 3) Use Knitr to create a pdf of your completed Week1_Exercise.Rmd document, push it to GitHub, and create a pull request.
 This assignment is due on **January 21^st^, 2015 at 12:00 PM (noon)**.
