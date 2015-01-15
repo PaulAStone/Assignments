@@ -1,6 +1,6 @@
 ---
-title: "Week 1 Exercise - Handout: Basic R"
-author: "Student Name, Z620: Quantitative Biodiversity, Indiana University"
+title: "Week 1 Exercise: Basic R"
+author: "Student Name; Z620: Quantitative Biodiversity, Indiana University"
 date: "January 16, 2015"
 output: pdf_document
 geometry: margin=2.54cm
@@ -16,6 +16,8 @@ In addition to using R's base package, we will also use contributed packages, wh
 Change **Student Name** above (line 3) with your name.
 You are working in an RMarkdown file.
 It will allow you to integrate text and R code into one file.
+There are two major feature to this document: 1) Markdown formatted text 2) R code chunks.
+Anything in an R code chunk will be intrepreted by R when you *Knit* the document.
 Please complete as much of this as possible during class; what you do not complete in class will need to be done on your own outside of class.
 Use the handout (hardcopy) as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise. 
 Before you leave the classroom today, it is *imperative* that you push this file to your GitHub repo.
@@ -40,26 +42,33 @@ Assignments in this class will require that you successfully create a Markdown-g
 
 ## 2) SETTING YOUR WORKING DIRECTORY
 
-A good first step when you sit down to work in R is to clear your working directory of any variables from your workspace:
+In the R code chunk below, please provide the code to: 1) clear your R environment, 2) print your current working directory, and 3) set your working directory to your Week1 folder:
 ```{r}
 
-```
 
-Now we want to set the working directory. 
-This is where your R script and output will be saved. 
-It's also a logical place to put data files that you plan to import into R. 
-The following command will return your current working directory:
-```{r}
-
-```
-
-Use the following command to change your directory (but note that you will need to modify to reflect _your_ actual directory):
-```{r}
 
 ```
 
 ## 3) USING R AS A CALCULATOR
 
+***Here is my example (take it or leave it) - MEM***
+
+In the R code chunk below, please provide examples of each: addition, subtraction, multiplication, and division:
+```{r}
+
+
+
+
+```
+
+In the R code chunk below, please calculate the following: the volumn of a cube with length, l, = 5, the area of a circle with radius,r, = 2 ($area = \pi * r^2$), the length of the opposite side of a right-triangle given that the angle = \pi/4 (radians, AKA 45°) and with hypotenuse lenght sqrt(2) (remember: $sin(\theta) = opposite/hypotenuse$), and the log (base e) of your favorite number:
+
+```{r}
+
+
+
+
+```
 R is capable of performing various calcuations using simple operators and built-in **functions**
 
 ***Addition***:
@@ -94,6 +103,19 @@ R is capable of performing various calcuations using simple operators and built-
 ```
 
 ## 4) ASSIGNING VARIABLES
+
+In the R code chunk below, assign any value to the object "a".
+
+***I can't really think of how to make this clever - MEM***
+
+When you are, clear your R working environment using the `rm()` function.
+
+
+```{r}
+
+
+
+```
 
 You will often find it useful and necessary to assign values to a **variable**, also known as an **object** in R. 
 Generally speaking, in R, it's best to use `<-` rather than `=` as an assignment operator.
@@ -138,6 +160,54 @@ You can now clear all of the stored variables from R's memory using two function
 
 
 ## 5) WORKING WITH VECTORS
+
+###Basic Features Of Vectors
+
+In the R code chunk below, do the following: 
+1) Assign 5 user defined values to the vector x.
+2) Create a vector w that is 5 times x.
+3) Add x and w and devide by 6
+
+```{r}
+
+
+
+```
+
+Now, in the R code chunk below, do the following: 
+1) Create another vector (k) that is the same length as w.
+2) Multiply k by x
+3) Combine w and k into a third vector that consists of three elements from w and four elements of k
+
+```{r}
+
+
+
+```
+
+
+###Summary Statictics of Vectors
+In the R code chunk below, calcualte the summary statistics (maximum, minimum, sum, mean, median, variance, standard deviation, and standard error of the mean) for the vector (v) provided.
+
+```{r}
+v <- c(16.4, 16.0, 10.1, 16.8, 20.5, NA, 20.2, 13.1, 24.8, 20.2, 25.0, 20.5, 30.5, 31.4, 27.1)
+
+
+
+
+
+
+```
+
+
+**Question 1:*** What did we do in the second `sem` function provided in the handout? Use `help()` if necessary.
+> **Answer 1:*** 
+
+
+###################### I'm going to stop here for now to see what you think. 
+######################   Yes, I imagine this changing a bit below as we get into some actual data (part 6)
+
+
 ###Basic Features Of Vectors
 
 **Vectors** are the fundamental data type in R. 
@@ -229,10 +299,13 @@ sem <- function(x){
  
 Now run `sem` on the vector containing the missing value. 
 
-```
-**Question 1:*** What did we do in the second `sem` function? Use `help()` if necessary.
-**Answer 1:*** 
-```
+
+**Question 1:*** What did we do in the second `sem` function provided in the handout? Use `help()` if necessary.
+> **Answer 1:*** 
+
+
+
+
 
 ## 5) WORKING WITH MATRICES
 
