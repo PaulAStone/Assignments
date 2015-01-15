@@ -19,7 +19,11 @@ It will allow you to integrate text and R code into one file.
 There are two major feature to this document: 1) Markdown formatted text 2) R code chunks.
 Anything in an R code chunk will be intrepreted by R when you *Knit* the document.
 Please complete as much of this as possible during class; what you do not complete in class will need to be done on your own outside of class.
-Use the handout (hardcopy) as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise. 
+Use the handout (hardcopy) as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise.
+Be sure to answer the questions in the handout in this document.
+Space for your answer is provided and indicated by the ">" character.
+If you need a second paragraph be sure to start the first line with ">".
+You should notice that the answer is all highlighted by RStudio in green.
 Before you leave the classroom today, it is *imperative* that you push this file to your GitHub repo.
 For homework, follow the directions at the bottom of this file. 
 When you are done, **Knit** the text and code into a PDF file.
@@ -42,7 +46,10 @@ Assignments in this class will require that you successfully create a Markdown-g
 
 ## 2) SETTING YOUR WORKING DIRECTORY
 
-In the R code chunk below, please provide the code to: 1) clear your R environment, 2) print your current working directory, and 3) set your working directory to your Week1 folder:
+In the R code chunk below, please provide the code to: 
+1) clear your R environment, 
+2) print your current working directory, and 
+3) set your working directory to your Week1 folder.
 ```{r}
 
 
@@ -51,9 +58,7 @@ In the R code chunk below, please provide the code to: 1) clear your R environme
 
 ## 3) USING R AS A CALCULATOR
 
-***Here is my example (take it or leave it) - MEM***
-
-In the R code chunk below, please provide examples of each: addition, subtraction, multiplication, and division:
+In the R code chunk below, please provide examples of each: addition, subtraction, multiplication, and division.
 ```{r}
 
 
@@ -61,112 +66,46 @@ In the R code chunk below, please provide examples of each: addition, subtractio
 
 ```
 
-In the R code chunk below, please calculate the following: the volumn of a cube with length, l, = 5, the area of a circle with radius,r, = 2 ($area = \pi * r^2$), the length of the opposite side of a right-triangle given that the angle = \pi/4 (radians, AKA 45°) and with hypotenuse lenght sqrt(2) (remember: $sin(\theta) = opposite/hypotenuse$), and the log (base e) of your favorite number:
+In the R code chunk below, please calculate the following: 
+1) the volumn of a cube with length, l, = 5, 
+2) the area of a circle with radius,r, = 2 (area = pi * r^2),  
+3) the length of the opposite side of a right-triangle given that the angle, theta, = pi/4 (radians, AKA 45°) and with hypotenuse lenght sqrt(2) (remember: sin(theta) = opposite/hypotenuse), 
+4) the log (base e) of your favorite number.
 
 ```{r}
 
 
-
-
-```
-R is capable of performing various calcuations using simple operators and built-in **functions**
-
-***Addition***:
-```{r}
-
-```
-
-***Subtraction***:
-```{r}
-
-```
-
-***Multiplication*** (with an exponent):
-```{r}
-
-```
-
-***Division*** (using a built-in constant; pi):
-```{r}
-
-```
-
-***Trigonometry*** with a simple built-in function (i.e., *sin*) that takes an **argument** (i.e., '4'):
-```{r}
-
-```
-
-***Logarithms*** (another example of functions and arguments)
-```{r}
 
 
 ```
 
 ## 4) ASSIGNING VARIABLES
 
-In the R code chunk below, assign any value to the object "a".
-
-***I can't really think of how to make this clever - MEM***
-
-When you are, clear your R working environment using the `rm()` function.
-
+In the R code chunk below, do the following:
+1) Create an object "a" and assign any number to it.
+2) Create a second object "b" and set it equal to 2 x "a".
+3) Show the value of "b".
+4) Next, reassign to a different number to "a".
+5) Finally, show "b"" again to demonstrate that R did not update "b" when "a" was changed (i.e., is not a symbolic programming language).
+6) When you are done, clear your R working environment using the `rm()` function.
 
 ```{r}
 
 
 
-```
 
-You will often find it useful and necessary to assign values to a **variable**, also known as an **object** in R. 
-Generally speaking, in R, it's best to use `<-` rather than `=` as an assignment operator.
-```{r}
-a <- 10
-b <- a + 20
-```
 
-What is the value of `b`? 
-
-Now let's reassign a new value to `a`:
-```{r}
-a <- 200
-```
-
-Now, what is the value of `b`? 
-What's going on? 
-R held onto the original value of `a` that was used when assigning values to `b`. 
-You can correct this using the `rm` function, which removes objects from your R **environment**. 
-```{r}
 
 ```
-
-What happens if we reassign `b` now?
-```{r}
-
-```
-
-Sometimes it's good practice to clear all variables from your R environment (e.g., you've been working on multiple projects during the day). 
-This can be done in a couple of ways. 
-For example, you can just click `clear` in the **Environment/History pane** window of R Studio. 
-The same procedure can be performed at the **command line** in the Rstudio **Console pane** or **Script Editor pane**.
-To do this, you can use the `ls` function to view a list of all the objects in the R environment:
-```{r}
-
-```
-
-You can now clear all of the stored variables from R's memory using two functions: `rm` and `ls`. (Note: we did this above prior to setting our working directory).
-```{r}
-
-```
-
 
 ## 5) WORKING WITH VECTORS
 
-###Basic Features Of Vectors
+### Basic Features Of Vectors
 
 In the R code chunk below, do the following: 
-1) Assign 5 user defined values to the vector x.
+1) Create a vector x consisting of any 5 numbers.
 2) Create a vector w that is 5 times x.
-3) Add x and w and devide by 6
+3) Add x and w and divide by 6
 
 ```{r}
 
@@ -176,8 +115,8 @@ In the R code chunk below, do the following:
 
 Now, in the R code chunk below, do the following: 
 1) Create another vector (k) that is the same length as w.
-2) Multiply k by x
-3) Combine w and k into a third vector that consists of three elements from w and four elements of k
+2) Multiply k by x (do not use matrix multiplication).
+3) Combine w and k into a third vector that consists of any three elements from w and any four elements of k.
 
 ```{r}
 
@@ -185,8 +124,8 @@ Now, in the R code chunk below, do the following:
 
 ```
 
+### Summary Statictics of Vectors
 
-###Summary Statictics of Vectors
 In the R code chunk below, calcualte the summary statistics (maximum, minimum, sum, mean, median, variance, standard deviation, and standard error of the mean) for the vector (v) provided.
 
 ```{r}
@@ -197,380 +136,152 @@ v <- c(16.4, 16.0, 10.1, 16.8, 20.5, NA, 20.2, 13.1, 24.8, 20.2, 25.0, 20.5, 30.
 
 
 
-```
 
 
-**Question 1:*** What did we do in the second `sem` function provided in the handout? Use `help()` if necessary.
-> **Answer 1:*** 
 
 
-###################### I'm going to stop here for now to see what you think. 
-######################   Yes, I imagine this changing a bit below as we get into some actual data (part 6)
 
 
-###Basic Features Of Vectors
-
-**Vectors** are the fundamental data type in R. 
-Often, vectors are just a collection of data of a similar type, either numeric (e.g., 17.5), integer (e.g., 2), or character (e.g., "low"). 
-The simplest type of vector is a single value, sometimes referred to as a **scalar** in other programming languages.
-Assign a numeric value to the variable `w`:
-```{r}
 
 ```
-
-Now we are going to create a longer one-dimensional vector in R using the `c()` function. 
-But before we do this, we are going to use the `help`() function to learn more about `c()`
-In the console pane (lower left of RStudio), type `help(c)' at the command prompt. 
-Scan the description of `c()` in the Help tab in the lower right pane of RStudio.
-Now make a vector with seven (7) numeric values (i.e., **elements**) using the `c()` function. 
-Make one of the seven elements `w`.  
-
-```{r}
-
-```
-
-Multiply a vector by a "scalar".
-```{r}
-
-```
-
-Multiply two vectors of the same length.
-```{r}
-
-```
-
-You may need to reference a specific **element** in a vector. We will do this using the square brackets. 
-In this case, the number inside of the square brackets tells R that we want call the *i*th element of vector `z`.
-Reference a single element in one of the vectors you created above
-```{r}
-
-```
-
-You can also reference **multiple elements** in a vector using the square brackets. 
-The first value in the square brackets references the first elment in the range of a vector, while the second value after the colon references that last element of the vector you are wanting to retrieve.
-Use the square brackets and colon to retrieve elements 2 through 5 of one of your vectors above. 
-```{r}
-
-```
-
-In some instances, you may want to change the value of an element in a vector. 
-You can substitute a new value for the ith element of `z` by reassigning it (see section 4 above)
-```{r}
-
-```
-
-###Summary Statictics of Vectors
-
-It's pretty easy to perform summary statistics on a vector using the built-in fuctions of R. In the following R **"chunk"**, find the maximum, minimum, sum, mean, median, variance, and standard deviation for one of the vectors you created above
-```{r}
-
-```
-
-In the Console pane below, take the standard error of the mean (`sem`) of a vector? 
-
-The standard error of the mean is defined as the standard deviation divided by the square root of the sample size (i.e. vector length) 
-This function does not exist in the base package of R. 
-Therefore, you need to write your own function. 
-Let's give it a try:
-
-```{r}
-sem <- function(x){
-  sd(x)/sqrt(length(x))
-  }
-```
-
-There are number of functions inside of `sem`. 
-Take a moment to think about and describe what is going on here. 
-Now, use the `sem` function you just created on one of the vectors from above
-
-Often, datasets have missing values (designated as 'NA' in R). 
-Create a new vector with a missing value. 
-```{r}
-
-```
-
-In the Console panel below, apply your `sem` function to the new vector containing the `NA`. This is a problem!
-
-```{r}
-sem <- function(x){
-  sd(na.omit(x))/sqrt(length(na.omit(x))) 
-  }
-```
- 
-Now run `sem` on the vector containing the missing value. 
-
-
-**Question 1:*** What did we do in the second `sem` function provided in the handout? Use `help()` if necessary.
-> **Answer 1:*** 
-
-
-
-
 
 ## 5) WORKING WITH MATRICES
 
-**Matrices** are another data type in R. 
-They are just two-dimensional vectors containing data of the same type (e.g., numeric, integer, character). 
-Thereofore, much of what we just discussed about vectors translates directly into dealing with matrices. 
-
-### Making A Matrix
-
-There are three common ways to create a matrix in R. 
-
-**Approach 1** is to combine (or **concatenate**) two or more vectors. 
-Let's start by creating a one-dimensional vector using a new function `rnorm` based on information contained in one of your vectors from above.
-Again, use `help()` to learn about `rnorm`. 
-The first **argument** that `rnorm` takes is `n`, or the number of observations to pull from the distribution.
-The second argument is the **mean** value of the observations that you pull from the distribution.
-Refer to the handout if you want to see an example of how to create a new vector that is equal in legnth to one of the vectors you created above. 
+In the R code chunk below, do the following:
+Using a mixture of Approach 1 and 2, create a matrix with two columns and 5 rows.
+Both columns should consist of random numbers.
+Make the mean of the first 8 and the mean of the second 25.
+In addition, adjust for the first column set sd = 2 and for the second column set sd = 10.
 
 ```{r}
 
+
+
+
+
 ```
 
-Now we will use the function `cbind` to create a matrix from the two one-dimensional vectors:
+***Question 1***: What does the rnorm function do? What are the arguments specifying?
+
+> Answer 1:
+
+
+In the R code chunk below, do the following: 
+1) Load `matrix.txt` from the Week1 data folder as matrix "m"
+2) Transpose this matrix
+3) Determine the dimensions of the tranposed matrix
+
 ```{r}
 
-```
 
-Use the `help` function to learn about `cbind`.
-In the following R chunk, use the `dim` function to describe the matrix you just created. 
-
-```{r}
 
 ```
 
-**Approach 2** to making a matrix is to use the `matrix` function along with arguments that specify the number of rows (`nrow`) and columns (`ncol`). 
-Use the `help` function to learn more about to use the `matrix` function. 
-Also, refer to the handout to see and example. 
 
-```{r}
+***Question 2***: What are the dimensions of the matrix you just transposed?
 
-```
+> Answer 2:
 
-**Approach 3** to making a matrix is to import or **load a dataset** from your working directory:
-
-```{r}
-m <- as.matrix(read.table("data/matrix.txt", sep = "\t", header = FALSE))
-```
-
-In this case, we're reading in a tab-delimited file. 
-The name of your file must be in quotes, and you need to specify that it is a tab-delimited file type using the `sep` argument. 
-The `header` argument tells R whether or not the names of the variables are contained in the first line; in the current example, they are not. 
-
-Often, when handling datasets, we want to be able to **transpose** a matrix. This is an easy operation in R that uses the `t` function. 
-Tranpose a matrix `m` in the following R chunk: 
-```{r}
-
-```
-
-```
-**Question 2:** What are the dimensions of the matrix you just transposed?
-**Answer 2:**
-```
 
 ###Indexing a Matrix
 
-Frequently, you will need to **index** or retrieve a certain portion of a matrix. 
-As with the vector example above, we will use the square brackets to return data from a matrix. 
-Inside the square brackets, there are now *two subscripts* corresponding to the rows and columns, respectively, of the matrix. 
+In the R code chunk below, do the following:
+1) Index matrix m selecting all but the third column
+2) Remove the last row of matrix m
 
-Create a new matrix (`n`) based on the first three *rows* of matrix (`m`):
 ```{r}
 
-```
-
-Now create a matrix based on the first two *columns* of matrix (`m`):
-```{r}
 
 ```
 
-It is also possible to retrieve non-sequential columns of a matrix. 
-See the handout for an example and then create your own version of a matrix based on this approach:
-```{r}
+***Question 3***: Describe what we just did in the last indexing operation in the handout
 
-```
+> ***Answer 3***:
 
-```
-**Question 3:** Describe what we just did in the last indexing operation
-**Answer 3:***
-```
 
 ## 6) BASIC DATA VISUALIZATION AND STATISTICAL ANALYSIS
 ### Load Zooplankton Dataset
 
-In the following exercise, we will use a dataset from Lennon et al. (2003) (http://goo.gl/JplHwd), which looked at zooplankton communities along an experimental nutrient gradient in aquatic mesocosms. 
-Inorganic nitrogen and phosphorus were added to mesocosms for six weeks at three different levels (low, medium, and high), but we also direcly measured nutrient concentrations of water samples. 
-So we have **categorical** and **continuous** predictors that we're going to use to help explain variaiton in zooplankton biomass.  
+In the R code chunk below, do the following:
+1) Load the zooplankton dataset from the Week1 data folder.
+2) Display the structure of this data set.
 
-The first thing we're going to do is load the data. 
-Reference the handout for the code. 
 ```{r}
 
-```
-
-Let's use the `str` function to look at the structure of the `meso` data. 
-```{r}
 
 ```
-
-How does this dataset differ from the `m` dataset above? 
-The answer is, we're now dealing with a new type of **data structure**. 
-Specifically, the `meso` dataset is a **data frame** since it has a combination of numeric and character data (i.e., note the `Factor`, `int`, and `num` data types generated from `str` function). 
-(Remember, **matrices** and **vectors** are only comprised of a _single_ data type.)
-
-Here is a description of the column headers:
-
-  + TANK = unique mesocosm identifier
-
-  + NUTS = categorical nutrient treament: "L" = low, "M" = medium, "H" = high
-  
-  + TP = total phosphorus concentration (µg/L)
-  
-  + TN = total nitrogen concentration (µg/L)
-  
-  + SRP = soluble reactive phosphorus concentration (µg/L)
-  
-  + TIN = total inorganic nutrient concentration (µg/L)
-  
-  + CHLA = chlorophyll *a* concentration (proxy for algal biomass; µg/L)
-  
-  + ZP = zooplankton biomass (mg/L)
 
 ### Correlation
 
-A common step in data exploration is to look at correlations among variables. 
-Before we do this, let's **index** our numerical (continuous) data in the 'meso' dataframe. 
-(Correlations typiclly don't work well on categorical data.)
-```{r}
-
-```
-
-We can conveniently visualize pairwise **bi-plots** of the data using the `pairs` command:
-```{r}
-
-```
-
-Now let's conduct a simple **Pearson's correlation** analysis with the `cor()` function. 
-```{r}
-
-```
-
-```
-**Question 4:** Describe some of the general features based on the visualization and 
-correlation anaylysis above?
-**Answer 4:***
-```
-
-### Loading Contributed Packages
-The base pakcage in R won't always meet all of our needs. 
-This is why there are > 6,000 **contributed packages** that have been developed for R. 
-This may seem overwhelming, but it also means that there are tools (and web support) for just about any problem you can think of.  
-
-When using one of the contributed packages, the first thing we need to do is **install** them along with their dependencies (other required packages). 
-We're going to start out by using the [_psych_ package](http://cran.r-project.org/web/packages/psych/vignettes/overview.pdf). 
-The _psych_ package has many features, but we're going to use it specifically for the `corr.test` function.
-This function generates **p-values** for each pairwise correlation. 
-(For whatever reason, the `cor` function in the `base` package of R does not generate p-values.)
-
-You can load an R package and its dependencies using the `require()` function: 
-```{r}
-
-```
-
-If the package is not found, you will need to install it first and then load dependencies:
-```{r}
-
-```
-
-Now, let's look at the correlations among variables and assess whether they are signficant using the `corr.test` function. 
-This function has two arguments that we are going to use: `method` and `adjust`. 
-That's right...use `help()` to learn about the **usage** and **arguments** of `corr.test` (or check out the handout).
-
-_Notes on corr.test_: 
-
-a) for rank-based correlations (i.e., non-parametric), use method = "kendall" or "spearman". Give it a try!
-
-b) the adjust = "BH" statement supplies the Benjamini & Hochberg-corrected p-values in the upper right diagonal of the square matrix; the uncorrected p-values are below the diagonal. 
-This process corrects for **false discovery rate**, which arises whe making multiple comparisons. 
+In the R code chunk below, do the following:
+1) Create a matrix with the numerical data in the 'meso' dataframe.
+2) Visualize the pairwise **bi-plots** of the 6 numerical variables.
+3) Conduct a simple **Pearson's correlation** analysis
 
 ```{r}
 
-```
 
 ```
-**Question 5:** Describe what you learned from corr.test. 
-Specifically, are the results sensitive to whether you use parametric (i.e., Pearson's) 
-or non-parametric methods?
-With the Pearson's method, is thre evidence for false discovery rate due to multiple 
-comparisons?
 
-**Answer 5:**
-```
 
-Now, let's load another package -- `corrplot`` -- that will let us visualize the sign and strength of the correlations. 
-Hing: the visualziation will depend on how you specify the `method` argument. 
+***Question 4***: Describe some of the general features based on the visualization and correlation anaylysis above?
+
+> Answer 4:
+
+
+In the R code chunk below, do the following:
+1) Redo the correlation analysis using the `corr.test()` function in the "psych" package with the following options: method = "pearson", adjust = "BH".
+2) Now, redo this correlation analysis using a non-parametric method.
+3) Use the print command from the handout to see the results of each.
 
 ```{r}
+
+
+
+```
+
+***Question 5***: Describe what you learned from corr.test. 
+Specifically, are the results sensitive to whether you use parametric (i.e., Pearson's) or non-parametric methods?
+With the Pearson's method, is there evidence for false discovery rate due to multiple comparisons?
+
+> ***Answer 5***:
+
+In the R code chunk below, use the `corrplot` function in the "corrplot" package to produce the ellipse correlatoin plot seen in the handout.
+
+```{r}
+
 
 ```
 
 ### Linear Regression
-It seems that total nitrogen (TN) is a fairly good predictor of zooplankton biomass (ZP) and this is something that we directly manipulated. 
-This gives us license to conduct a linear regression analysis. 
-We can do this in R using the `lm` function. 
-See handout for details.
+
+In the R code chunk below, do the following:
+1) Conduct a linear regression analysis to test the relationship between total nitrogen (TN) and zooplankton biomass (ZP)
+2) Examine the output of the regression analaysis
+3) Produce a plot of this regression analysis including the following: categorically labeled points, the predicted regressionline with 95% confidence intervals, and the appropriate axis labels.
+
 ```{r}
 
-```
 
-Let's examine the output of the regression model using the `summary()` function:
-```{r}
 
-```
 
-```
-**Question 6:** Interpret the results from the regression model
-**Answer 6:***
-```
 
-Now, let's create a plot of the data used in the regression analysis.
-Plotting can be challenging when being introduced to R. 
-Therefore, we recommend you pay close attention to the handout for this part of the exercise
 
-```{r reglayer1, eval = TRUE} 
 
 ```
 
-We can add some text to the plot to visualize the categorical nutrient treatments.
-Again, see the handout.
-```{r reglayer2, echo=-1}
-<<reglayer1>>
+*** Question 6***: Interpret the results from the regression model
 
-```
+> ***Answer 6***:
 
-To add the regression line, the first thing we need to do is identify a range of x-values and then generate the corresponding **predicted values** from our regression model. See handout.
-```{r reglayer3, echo = -1}
-<<reglayer2>>
 
-```
 
-Now let's create and plot the **95% confidence intervals** using the same procedure as above, that is, use 'newTN' to generate corresponding confidence intervals from our regression model. 
-See handout.
-```{r reglayer4, echo = -1}
-<<reglayer3>>
+*** Question 7***: Explain what the `predict()` function
 
-```
+> ***Answer 7***:
 
-```
-**Question 7:** Explain what you were just using the `predict()` function for.
-**Answer 7:**
-```
+Using the R code chunk below, use the code provided in the handout to determine if our data meet the assumptions of the linear regression analysis. 
 
-We should also look at the residuals (i.e., observed values - predicted values) to see if our data meet the assumptions of linear regression. 
-Specifically, we want to make sure that the residuals are normally distributed and that they are homoskedastic (i.e., equal variance). 
-We can look for patterns in our residuals using diagnostics that are fairly easy to generate.
-See handout for details on plotting diagnostics
 ```{r}
 
 ```
@@ -582,59 +293,39 @@ See handout for details on plotting diagnostics
 
 ### ANALYSIS OF VARIANCE (ANOVA)
 
-We also have the option of looking at the relationship between zooplankton and nutrients where the manipulation is treated categorically (low, medium, high). First, let's order the categorical nutrient treatments from low to high (R's default is to order alphabetically). 
-See handout for details.
-```{r}
-
-```
-
-Before plotting, we need to calcualte the means and standard errors for zooplankton biomass in our nutrient treatments. We are goint to use an important function called `tapply`. 
-This allows us to apply a function (e.g., mean) to a vector (e.g., ZP) based on information in another column (e.g., nutrient treatment). 
+Using the R code chunk below, do the following:
+1) Order the nutrient treatments from low to high
+2) Produce a barplot to visualize zooplankton biomass in each nutrient treatment
+3) Be sure to include error bars on your plot and label the axis appropriately.
+4) Use a one-way analysis of variance to determine if the treatments differed with respond to zooplankton biomass
+5) Use Tukey's HSD to conduct a post-hoc comparision
 
 ```{r}
 
-```
 
-Now let's make the barplot using example code from the handout
-```{r boxlayer1, eval = TRUE}
 
-```
 
-We need to add the error bars (+/- sem) "manually" as described in the handout:
-```{r boxlayer2, echo = -1}
-<<boxlayer1>>
+
+
 
 ```
 
-Last, we can conduct a one-way analysis of variance (ANOVA) using the `aov` function:
-```{r}
-
-```
-
-Let's look at the output in more detail (just as we did with regression) using the `summary` function:
-```{r}
-
-```
-
-Finally, we can conduct a post-hoc comparison of treatments using Tukey's HSD (Honest Significant Differences). 
-This will tell us whether or not there are differences (alpha = 0.05) among pairs of the three nutrient treatments. 
-```{r}
-
-```
-
-```
-**Question 8** How do you interpret the ANOVA results relative to the regression results?
+***Question 8***: How do you interpret the ANOVA results relative to the regression results?
 Do you have any concerns about this analysis?
-***Answer 8***
-```
 
-Just like the regression analysis above, it's good to look at the residuals:
+> ***Answer 8***:
+
+
+Using the R code chunk below, use the code provided in the handout to determine if our data meet the assumptions of the analysis of variance. 
+
 ```{r}
 
 ```
 
-##HOMEWORK
-1) Complete the entire exercise in the Week1_Exercise.Rmd (in week 1 folder)
+## HOMEWORK
+
+1) Complete the R code chunks above.
+1) Complete this entire exercise (Week1_Exercise.Rm, in week 1 folder)
 
 2) In addition, redo the section on linear regression (including summary statistics, plotting, and diagnostics) using log10-transformed zooplankton biomas data. Does the transformation help meet assumption of linear regression or change the interpretation of the analysis in anyway? Describe.
 
