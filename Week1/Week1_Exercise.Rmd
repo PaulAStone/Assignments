@@ -24,9 +24,9 @@ You should notice that the answer is highlighted in green by RStudio.
 6. For homework, follow the directions at the bottom of this file. 
 7. When you are done, **Knit** the text and code into a PDF file.
 Basically, just press the `Knit` button in scripting panel.
-8. After Knitting, please submit the completed exercise by creating a **pull request** via GitHub. 
-
-***What files do they need to submit a pull request for? The Rmd and knitted PDF? We should be clear!***
+This will save the PDF output in your Week1 folder.
+8. After Knitting, please submit the completed exercise by creating a **pull request** via GitHub.
+Your pull request should include this file (*Week1_Exercise.Rmd*; with all code blocks filled out and questions answered) and the PDF output of `Knitr` (*Week1_Exercise.pdf*).
 
 The completed exercise is due on **January 21^st^, 2015 before 12:00 PM (noon)**.
 
@@ -34,7 +34,7 @@ The completed exercise is due on **January 21^st^, 2015 before 12:00 PM (noon)**
 
 You are working in an RMarkdown file.
 It allows you to integrate text and R code into a single file.
-There are two major feature to this document: 1) Markdown formatted text 2) "chunks" of R code.
+There are two major feature to this document: 1) Markdown formatted text; 2) "chunks" of R code.
 Anything in an R code chunk will be intrepreted by R when you *Knit* the document.
 
 For testing purposes, you can run lines of code found in R code chunks by using the "Run" button above the scripting panel or by using the appropriate keyboard shortcut [Ctrl + Enter]. 
@@ -46,11 +46,12 @@ If this happens, you will need to review all of your code to make sure you do no
 Even if you are able to knit without issue, it is good practice to review your PDF before submitting.
 
 ## 2) SETTING YOUR WORKING DIRECTORY
-***Can the following bullets be formatted like "Directions" above, when printed, just text wrapping***
+
 In the R code chunk below, please provide the code to: 
-1. clear your R environment, 
-2. print your current working directory, and 
-3. set your working directory to your Week1 folder.
+1) clear your R environment,
+2) print your current working directory, and
+3) set your working directory to your Week1 folder. 
+
 ```{r}
 
 
@@ -60,19 +61,19 @@ In the R code chunk below, please provide the code to:
 ## 3) USING R AS A CALCULATOR
 
 In the R code chunk below, please provide examples of each: addition, subtraction, multiplication, and division.
+
 ```{r}
 
 
 
 
 ```
-***Can the following bullets be formatted like "Directions", when printed, just text wrapping***
-***Not sure about the trig-twister in 3 below***
+
 In the R code chunk below, please calculate the following: 
-1. the volumn of a cube with length, l, = 5.
-2. the area of a circle with radius,r, = 2 (area = pi * r^2).  
-3, the length of the opposite side of a right-triangle given that the angle, theta, = pi/4. (radians, AKA 45°) and with hypotenuse length sqrt(2) (remember: sin(theta) = opposite/hypotenuse).
-4. the log (base e) of your favorite number.
+1) the volumn of a cube with length, l, = 5.
+2) the area of a circle with radius,r, = 2 (area = pi * r^2). 
+3) the length of the opposite side of a right-triangle given that the angle, theta, = pi/4. (radians, AKA 45°) and with hypotenuse length sqrt(2) (remember: sin(theta) = opposite/hypotenuse).
+4) the log (base e) of your favorite number.
 
 ```{r}
 
@@ -107,8 +108,8 @@ Note that the value of `b` did not change (this is because R is not a symbolic p
 
 In the R code chunk below, do the following: 
 1) Create a vector `x` consisting of any five numbers.
-2) Create a new vector `w` by multiplying `x` by 12 (i.e., "scalar").
-3) Add `x` and `w` and divide by 6
+2) Create a new vector `w` by multiplying `x` by 14 (i.e., "scalar").
+3) Add `x` and `w` and divide by 15
 
 ```{r}
 
@@ -342,8 +343,7 @@ Using the R code chunk below, use the code provided in the handout to determine 
 > ***Answer***: 
 
 
-3) Use Knitr to create a pdf of your completed Week1_Exercise.Rmd document, push it to GitHub, and create a pull request.
+3) Use Knitr to create a PDF of your completed Week1_Exercise.Rmd document, push the repo to GitHub, and create a pull request.
+Please make sure your updated repo include both the PDF and RMarkdown files.
+
 This assignment is due on **January 21^st^, 2015 at 12:00 PM (noon)**.
-
-
-**What about the knitted PDF?!?!**
