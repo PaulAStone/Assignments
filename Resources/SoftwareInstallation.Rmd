@@ -5,7 +5,7 @@ output: pdf_document
 geometry: margin=2.54cm
 ---
 
-Quantitative Biodiveristy required that you install certain software on your personal computers, including R, RStudio, Git, and LaTeX.
+Quantitative Biodiveristy requires that you install certain software on your personal computers, including R, RStudio, Git, and LaTeX.
 This guide describes the software and how to install it.
 
 ## R
