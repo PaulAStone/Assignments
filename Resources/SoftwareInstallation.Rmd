@@ -5,85 +5,81 @@ output: pdf_document
 geometry: margin=2.54cm
 ---
 
-In order for this course to run smoothly, we all need certain software installed on our computers.
-This includes basic things such as R and Git, but also other tools we are using such as RStudio and LaTeX.
-
-This guide will explain what each software package is being used for and how to install.
+Quantitative Biodiveristy required that you install certain software on your personal computers, including R, RStudio, Git, and LaTeX.
+This guide describes the software and how to install it.
 
 ## R
 
-During Quantitative Biodiversity, we will be conducting computer analyses (calculations and statistics) and plotting in the R computer environment. 
+We will use R to manipulate, visualize, and statistically analyze data.
+We will install the latest version of R (v 3.1.2; "Pumpkin Helmet"") using the following insructions:
 
-We will be using the latest version of R (v 3.1.2; Pumpkin Helmet).
-You can download R from the IU CRAN mirror: http://ftp.ussg.iu.edu/CRAN/
-
-1. Open a web browser and naviate to http://ftp.ussg.iu.edu/CRAN/
+1. Open a web browser and naviate to the IU CRAN mirror: http://ftp.ussg.iu.edu/CRAN/
 2. Please select your operating system (Mac, Windows, Linux)
-    For Windows Users: install the base package
-    For Mac Users: install the package for your current version of OS X (if you are unsure, please ask for assistance)
+    For Windows Users: install the `base package`
+    For Mac Users: install the package for your current version of OS X. You can find out what version is installed by going to the Apple menu and choosing "About This Mac". The version number of OS X you are using appears directly below the words "OS X."
 3. The default installation options are recommended for most users
 
-**Mac uses please read**:
-    The latest version of R no longer comes packaged with an X11 graphics device (you need this). 
-    Instead, it relies on the program XQuarts for things such as plotting.
-    If you do not have XQuarts installed, please install.
-    YOu can find XQuarts v2.7.7 here http://xquartz.macosforge.org/landing/
+**Mac users please read**:
+    The most recent versions of R no longer come packaged with an X11 graphics device.
+    Instead, it relies on the program XQuartz for generating plots, etc.
+    If you do not already have XQuarts installed, you will need to do this.
+    You can download XQuartz v2.7.7 from the following site:http://xquartz.macosforge.org/landing/
     
 ## Git
 
-During Quantitative Biodiversity, we will be using version control to manage our text and code documents.
-This is a key component of the reproducible research component of the course.
-The version control software we will be using is Git.
+We will be using Git as the version control software to manage our text and code.
 If you do not have a current Git installation, please do the following:
 
+***should we specify what a "current version" means? most up-to-date/***
+
 1. Open a web browser and naviate to git-scm.com/download/
-2. Select the appropriate operating system
-3. The download should start automatically
-4. Open the installer and follow the onscreen directions
+2. Select the appropriate operating system.
+3. The download should start automatically.
+4. Open the installer and follow the onscreen directions.
 
   **On Mac**: You will need to make sure you have Xcode Command Line Tools installed.  
-  **On Windows**: This process will install Git Bash (msysGit). 
+  ###Will this be inutitive? How should student confirm? If not, how do they install?###
+  **On Windows**: This process ### what proces???## will install Git Bash (msysGit). 
   During installation, you will be asked to adjust your **PATH environment**.
-  We recommend that you select the option to "Use Git from the Windows Command Prompt".
-  This will give you the most flexibility with Git.
+  To provide you with the most flexibility, we recommend that you select the option to "Use Git from the Windows Command Prompt".
   In addition, we recommend that during installation you select "Use OpenSSH" for your secure shell client with GitBash.
   
-  During installation, you will be asked how to configure the line ending conversions
+  ###Some of the Windows stuff is unclear for me. ###
+  
+  During installation, you will be asked how to configure the line-ending conversions
   **On Mac**: We recommend "Checkout as-is, commit Unix-style line endings"
   **On Windows**: We recommend "Checkout Windows-style, commit Unix-style line endings"
 
 ## RStudio
 
-During Quantitative Biodiversity, we will be using the RStudio for two purposes: 
-it will be the development environment we use along side R, 
-and we will use RStudio to edit and create markdown files.
-If you do not currently have RStudio (v 0.98 +) installed please do the following:
+We will be using RStudio as the development environment to conduct exercises in R. 
+We will also use RStudio to edit and create markdown files. 
+If you do not have a current RStudio version installed on your computer (v 0.98 +), please do the following:
 
 1. Open a web browser and naviate to http://www.rstudio.com/products/rstudio/download/
-2. Please select and download the appropriate installer for your operating system (Windows, Mac, Linux)
+2. Select and download the appropriate installer for your operating system (Windows, Mac, Linux)
 3. Open the installer and follow the onscreen directions
 4. The default installation options are recommended for most users
     
-    
 ## LaTex
 
-During Quantitative Biodiversity, we will be using LaTeX behind the scenes.
-LaTeX will be used by RStudio and the R package `Knitr` to turn our RMarkdown files (.Rmd) into professional quality PDF files. 
-This will happen each time we use the "Knit" button.
-But this means that we will need to have LaTeX installed, and we will also need a few packages. 
-If you do not have LaTeX please do the following: 
+Behind the scences, we will be using the typsettings systems LaTeX.
+LaTeX will be used by RStudio and the R package `Knitr` to convert our RMarkdown files (.Rmd) into professional-quality PDF files. 
+This will happen each time we use the "Knit" button in RStudio.
+This means that we need to have LaTeX installed, along with a few other packages. 
+If you do not have LaTeX installed on your computer, please do the following: 
 
 **On a Mac**:
 
 1. Install Basic Tex: https://tug.org/mactex/morepackages.html
-2. Note: this will require you to run the commands below (to install framed and titling)
+2. Note: this will require you to run the commands below (to install `framed` and `titling`).
 
 **On a PC**:
 
-1. Install Basic MiKTeX: http://miktex.org/download
-2. Note: you need to use the MiKTeX package manager to download required style guides 
+1. Install Basic MiKTeX: http://miktex.org/download.
+2. Note: you need to use the MiKTeX package manager to download required style guides. 
 
-By default, RStudio uses style guides for format our PDF documents. 
+By default, RStudio uses style guides to format our PDF documents. 
 These style guides include framed.sty and titling.sty.
 We have found that not all LaTeX installations include these style guides.
 If you do not have them, you will get an error message when you "Knit".
