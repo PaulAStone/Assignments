@@ -38,13 +38,11 @@ If you do not have a current Git installation, please do the following:
 4. Open the installer and follow the onscreen directions.
 
   **On Mac**: You will need to make sure you have Xcode Command Line Tools installed.  
-  ###Will this be inutitive? How should student confirm? If not, how do they install?###
-  **On Windows**: This process ### what proces???## will install Git Bash (msysGit). 
+  **On Windows**: This process will install Git Bash (msysGit). 
   During installation, you will be asked to adjust your **PATH environment**.
   To provide you with the most flexibility, we recommend that you select the option to "Use Git from the Windows Command Prompt".
   In addition, we recommend that during installation you select "Use OpenSSH" for your secure shell client with GitBash.
-  
-  ###Some of the Windows stuff is unclear for me. ###
+
   
   During installation, you will be asked how to configure the line-ending conversions
   **On Mac**: We recommend "Checkout as-is, commit Unix-style line endings"
