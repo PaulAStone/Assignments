@@ -83,7 +83,7 @@ On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at a
 
 ***Question 1***:  Makes some additional observations about the occurrence and abundance of species in the samples you've indexed.
 
-> ***Answer 5***: 
+> ***Answer 1***: 
 
 
 ## 4) Species Richness
@@ -174,13 +174,18 @@ soilbac1 <- soilbac[2,] # row 1 is a sample taken from an agricultural site
 soilbac1
 ```
 
-###Questions:
-3.  How many sequences did we recover from the sample `soilbac1`, i.e. the row total? 
-4.  What is the observed richeness of `soilbac1`?
-5.  How does coverage compare between the BCI sample (`site1`) and the KBS sample (`soilbac1`)?
+***Question 5***: a.) How many sequences did we recover from the sample `soilbac1`, i.e. the row total? b.) What is the observed richeness of `soilbac1`? c.) How does coverage compare between the BCI sample (`site1`) and the KBS sample (`soilbac1`)?
 
-There are number of techniques that have been developed by ecologists to estimate species richness based on the coverge of species in a sample (e.g., Hughes et al. 2001  -- http://aem.asm.org/content/67/10/4399).
-Here, we will hightlight one of these, which is a non-parametric diversity estimator called **Chao1**.
+> ***Answer 5a***:  
+> ***Answer 5b***:  
+> ***Answer 5c***:  
+
+
+There are number of statistical techniques developed to estimate richness based on the coverge of species in a sample (e.g., Hughes et al. 2001  -- http://aem.asm.org/content/67/10/4399).
+Here, we will highlight two of the most common richness estimators (i.e. Chao1 and Chao2) and reveal how richness can be estimated from species abundances within a single sample (i.e. via Chao1) or from species occurrences across multiple samples (i.e. via Chao2).
+These richness estimators are named after Anne Chao, 
+
+which is a non-parametric diversity estimator called **Chao1**.
 By non-parametric we that it isn't based on an underlying distribution (e.g. Normal distribution, Student's t-distribution) and makes few, if any, statistical assumptions about the underlying nature of the true 'population'.
 
 Chao1 is calculated using observed richness (`S.obs`) and the number of **singletons** (species with an observed abundance of 1) and **doubletons** (species with observed abundance of 2). 
