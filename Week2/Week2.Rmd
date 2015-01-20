@@ -11,7 +11,7 @@ In this exercise, we will explore aspects of local or site-specific diversity, a
 After introducting one of the primary ecological data structures -- the **site-by-species matrix** -- we will quantify two of the fundamental components of ($\alpha$) diversity: **richness** and **evenness**. 
 From there, we will then discusss ways to integrate richness and evenness, which will include univariate metrics of "diversity" along with an investigation of **species abundance distributions (SAD)**.
 
-## 1) Setup
+## 1.) Setup
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
@@ -32,7 +32,7 @@ Let's install the `vegan` package and its dependencies:
 require("vegan") # otherwise, use this command 
 ```
 
-## 2) Loading Data
+## 2.) Loading Data
 
 We will start by using the tropical forest dataset from **Barro-Colorado Island (BCI)**.
 BCI is a 1,560-hectare island in the center of the Panama Canal that is administered by the Smithsonian Tropical Research Institution (http://www.stri.si.edu/english/research/facilities/terrestrial/barro_colorado/). 
@@ -46,9 +46,18 @@ Let's load the BCI data using the `data` function:
 data(BCI)
 ```
 
-## 3) Exploring The Site-By-Species Matrix
+## 3.) Exploring The Site-By-Species Matrix
 
 The **site-by-species matrix** is a primary ecological data structure that contains abundances, relative abundances, or the presence of species (or other taxonomic units) observed at different sampling sites.
+
+## I'm thinking we need a toy example as follows, but with Mario's LaTeX bad-assery -Ken
+
+        Species1  Species2  Species3  Species4 ...
+Site1     90        76          1         0  
+Site2     86        47          0         123  
+Site3     23        89          0         46  
+...
+
 Each site corresponds to a row in the site-by-species matrix, while each species corresponds to a column.
 Throughout the course, we will draw inferences about aspects of diversity from the site-by-species matrix. 
 
@@ -72,24 +81,23 @@ BCI[1:8, 14:17]	# print abundances for sites (rows) 1 to 8 and for species (colu
 Here, we can see that Cabbage Bark (*Andira inermis*) is absent from six of the eight sites and is only found as a single individual in two sites (sites 5 and 6). 
 On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at all eight sites and is relatively much more abundant than any of the other three species that we indexed in the data frame.
 
-###Question 1. Makes some additional observations about the occurrence and abundance of species in the samples you've indexed and print them on the lines provided. Do this by surrounding your answer in single or double quotes. 
+***Question 1***:  Makes some additional observations about the occurrence and abundance of species in the samples you've indexed.
 
-```{r}
+> ***Answer 5***: 
 
 
-```
+## 4) Species Richness
 
-## 4) Species Richness (S)
-
-**Species richness** is the most basic aspect of diversity. 
+**Species richness (S)** is simply the number of species in a system or the number of species observed in a sample.
+Species richness is the most basic aspect of diversity. 
 In fact, it is usually what most people are referring to when they talk about $\alpha$-diversity.
 Calculating species richness for a sample is often straightforward, i.e., count the number of species present in a sample.
-However, estimating species richness for a community from an incomplete sample requires assumptions to be made about the nature of the sampling effort (e.g. biases, coverage).
-Estimating richness is an area of intensive research and there are a few things to consider and pitfalls that we should avoid. 
+However, estimating species richness for a community from an incomplete sample requires assumptions about the nature of the sampling effort (e.g. biases, coverage).
+Consequently, estimating richness is an area of active research and, as you'll see, there are several ways to estimate richness that attempt to account for the number of species that were not detected.
 
 ### Observed Richness
 
-The simplest way to calcuate species richness is to just add up the number of species that have non-zero abundances in a site.
+The simplest way to calcuate species richness is to just add up the number of species that were detected in a sample of a site.
 Let's calculate species richness using this approach for one of the BCI sites. 
 Using some of the R basics from last week, let's:
 1. assign the first row to a variable called "site1", and 
@@ -100,9 +108,9 @@ site1 <- BCI[1,] # assign the first row (site) to the variable site1
 dim(site1) # print the dimensions of site1 to the screen 
 ```
 
-The site could contain up to 225 species (columns). 
-It is important to note, however, that site-by-species matrices also account for absences (i.e., zero occurences). 
-Let's write a function that estimates observed species richness of a site:
+While there are 225 species in the BCI dataset, and hence, 225 columns in the BCI site-by-species matrix, each of the 225 species was not likely present at each site.
+Consequently, it is important to note that site-by-species matrices account for absences (i.e., zero occurences). 
+Let's write a function that calculates observed species richness of a site, i.e. a row in the site-by-species matrix, but ignore the 0's, i.e. absences.
 
 ```{r}
 S.obs <- function(x){
@@ -110,26 +118,30 @@ S.obs <- function(x){
   }
 ```
 
-
 The writing and use of functions is central to programming.
 The basic concept behind functions is to define a piece of code that operates on one or more variables.
 So, instead of repeatedly rewriting code to calculate richness, we define a function called `S.obs` that calculates richness of a given vector (i.e., `x`).
 We can then call the function by typing `S.obs()` and placing our vector within the parentheses. 
 There is also a function in the `vegan` package called `specnumber` that also calculate observed richness. 
 
-### Question 2: Does `vegan` return the same value for observed richness of `site1` as our function `S.obs `?
-```{r}
+***Question 2***: Does `vegan` return the same value for observed richness of `site1` as our function `S.obs `?
 
-
-```
+> ***Answer 2***:
 
 ### But How Well Did You Sample Your Site?
 
 Accurate estimates of richness are influenced by sampling effort and biases.
 Even when the sampling effort is un-biased, the more individuals that are censused, the more likely you are to encounter new species.
-One index that provides an estimate of how well a site is sampled is known as **Good's Coverage (C)**, which is defined as ... 
-This is expressed as $1 - \frac{n_{1}}{N}$
-, where **$n_{1}$** is the number of singleton species, i.e., for which only one individual was sampled, and **$N$** is the total number of individuals in a sample.
+One index that provides an estimate of how well a site is sampled is known as **Good's Coverage (C)**: C = $1 - \frac{n_{1}}{N}$
+Here, **$n_{1}$** is the number of singleton species (species only detected once) and **$N$** is the total number of individuals in the sample.
+Examining the equation for Good's C reveals that the fraction is simply the portion of **$N$** represented by singleton species.
+Subtracting this from 1 give the portion of **$N$** belonging to species sampled more than once.
+By this formulation, Good's C assumes that no species in the sampled environment can actually be represented by a single individual, i.e., singletons reflect a sampling artifact and Good's C reveals the magnitude of the sampling artifact.
+
+***Question 3***: What would we conclude if **$n_{1}$** equaled **$N$**?
+
+> ***Answer 3***:
+
 Let's write a function and estimate Good's Coverage for site1 of BCI:
 
 ```{r}
@@ -137,14 +149,14 @@ C <- function(x){
   1 - (sum(x==1)/rowSums(x))
   }
 ```
-### Questions About Good's Coverage (C) and BCI
-1.) Have the researchers at BCI done a good job of sampling `site1`? 2.) What is the range of values that can be generated by Good's Coverage? 3.) What portion of taxa in `site1` were represented as singletons?
+  
+***Question 4***: a.) Have the researchers at BCI done a good job of sampling `site1`? b.) What is the range of values that can be generated by Good's Coverage? c.) What portion of taxa in `site1` were represented as singletons?
 
-```{r}
-"1. Sure maybe? 2. from negative sideways 8 to positive sideways 8? 3. 100% of those with only one individual. "
-```
+> ***Answer 4a***:  
+> ***Answer 4b***:  
+> ***Answer 4c***:  
 
-### Richness Estimators
+### Estimating Richness
 
 There are few systems on earth that have been better surveyed than the trees at BCI.
 For most ecological systems, sample size is much smaller than **N** and many taxa can easily go undetected. 
@@ -199,10 +211,10 @@ Let's looks at the richness of soil bacteria for all 11 of the KBS sites, where 
 ```{r}
 soilbac.S <- S.obs(soilbac)           # observed richness
 min.N <- min(rowSums(soilbac))        # sample with fewest sequences
-S.rarefy <- rarefy(soilbac, min.N, se = TRUE)    # richness when rarefied to sample with fewest sequences
-rarecurve(soilbac, step = 20, sample = min.N, col = "blue", cex = 0.6, las=1) # vertical line = min.N; horizontal lines S at min.N
-abline(0, 1, col = 'red')             # 1:1 line for reference
-text(1500, 1500, "1:1", pos = 2, col = 'red')
+#S.rarefy <- rarefy(soilbac, min.N, se = TRUE)    # richness when rarefied to sample with fewest sequences
+#rarecurve(soilbac, step = 20, sample = min.N, col = "blue", cex = 0.6, las=1) # vertical line = min.N; horizontal lines S at min.N
+#abline(0, 1, col = 'red')             # 1:1 line for reference
+#text(1500, 1500, "1:1", pos = 2, col = 'red')
 ```
 
 ### Question 5 (or possibly homework): how would our interpretation of diversity in different land uses be affected if we used observed vs. rarefied richness? 
