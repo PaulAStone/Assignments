@@ -2,6 +2,8 @@
 title: "Week 2 Exercise: Local Diversity"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 23, 2015"
+header-includes:
+   - \usepackage{array}
 output: pdf_document
 ---
 
@@ -50,13 +52,19 @@ data(BCI)
 
 The **site-by-species matrix** is a primary ecological data structure that contains abundances, relative abundances, or the presence of species (or other taxonomic units) observed at different sampling sites.
 
-## I'm thinking we need a toy example as follows, but with Mario's LaTeX bad-assery -Ken
+\begin{center}
+\begin{tabular}{ l | c c c c c}
+    &  \textbf{Species1} & \textbf{Species2} & \textbf{Species3} & \textbf{Species4} & ... \\
+  \hline \\ [-1.5ex]
+  Site1 & 90 & 76 & 1 & 0   & \\
+  \\ [-1.5ex]
+  Site3 & 86 & 47 & 0 & 123 & \\
+  \\ [-1.5ex]  
+  Site3 & 23 & 89 & 0 & 46  & \\
+  ...   &    &    &   &     & \\
+  \end{tabular}
+  \end{center}
 
-        Species1  Species2  Species3  Species4 ...
-Site1     90        76          1         0  
-Site2     86        47          0         123  
-Site3     23        89          0         46  
-...
 
 Each site corresponds to a row in the site-by-species matrix, while each species corresponds to a column.
 Throughout the course, we will draw inferences about aspects of diversity from the site-by-species matrix. 
