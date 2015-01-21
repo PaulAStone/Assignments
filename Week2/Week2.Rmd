@@ -30,7 +30,7 @@ Jari Oksanen has created an excellent tutorial that provides an overview of the 
 
 Let's install the `vegan` package and its dependencies. 
 If you are running `vegan` for the first time, you will need to install it with the `install.packages` function. 
-Otherwise, we recommend you just use the `require` function to install dependencies.
+Otherwise, we recommend you just use the `require` function to load `vegan` and its dependencies.
 
 ```{r, results = 'hide'}
 #install.packages("vegan") 
@@ -166,6 +166,7 @@ d.  What would we conclude from Good's Coverage if **$n_{1}$** equaled **$N$**?
 > ***Answer 4a***:  
 > ***Answer 4b***:  
 > ***Answer 4c***:  
+> ***Answer 4d***:  
 
 ### Estimating Richness
 
@@ -178,10 +179,9 @@ Even though we obtained a fair number of sequences from each sample, soil bacter
 In the following R chun, we load this microbial dataset as a matrix and identify a sample (i.e., site) for subsequent analysis.
 
 ```{r}
-soilbac <- read.table("data/soilbac.txt", sep = "\t", header = TRUE)
-soilbac <- as.matrix(t(soilbac), mode='numeric')
-soilbac <- matrix(soilbac, ncol= ncol(soilbac), nrow=nrow(soilbac), dimnames = NULL)
-soilbac1 <- soilbac[2,]
+soilbac <- read.table("data/soilbac.txt", sep = "\t", header = TRUE, row.names = 1)
+soilbac <- as.data.frame(t(soilbac))
+soilbac1 <- soilbac[1,]
 ```
 
 ***Question 5***: Answer the following questions about the soil bacterial dataset. 
@@ -205,29 +205,28 @@ Chao1 tends to be used for analysis of samples with low-abundance taxa.
 Becasue it requires singleton and doubleton data to calculate, Chao1 cannot be used on with a site x species matrix where abundances have been relativized. 
 
 Let's write a function for Chao1:
-### MARIO: should we use which() and length() here?
+
 ```{r}
-S.chao <- function(x){
+S.chao1 <- function(x){
   S.obs(x) + (sum(x==1)^2)/(2*sum(x==2))
   }
 ```
 
-In contrast, **Chao2** is *incidence-based estimator* that uses presence-absence data for examining richness across multiple sites.  
-Chao2 is calculated using observed richness (`S.obs`). 
+In contrast, **Chao2** is *incidence-based estimator* that uses presence-absence data for examining richness across multiple sites.
+Chao2 is calculated using observed richness (`S.obs`).
 However, in Chao2, **singletons** and **doubletons** refer to species observed once and twice, respectively, across sites or samples.
 Because it is an incidence-based estimator, Chao2 is commonly used when estimating richness with clonal organisms and/or percent cover data (e.g., corals)
 
-Let's write a function for Chao2:
-### MARIO: I haven't spent much time on this. What goes into the fucntion for "community"?
+Let's write a function for Chao2 where the first argument is site as either row number or row title (e.g., 1 or "T1_1") and the second argument is the site x species matrix (e.g., soilbac):
+
 ```{r}
-S.chao2 <- function(site = " ", community = " "){
-  site.obs = community[site, ] 
-  x = site.obs[site.obs > 0]
-  S.obs = length(x)
-  community.pa <- (community>0)*1
-  Q1 = length(which(colSums(community.pa) == 1))
-  Q2 = length(which(colSums(community.pa) == 2))
-  S.chao2 = S.obs + (Q1^2)/(2*Q2)
+S.chao2 <- function(site = " ", SbyS = " "){
+  SbyS = as.data.frame(SbyS)
+  x = SbyS[site, ] 
+  SbyS.pa <- (SbyS>0)*1
+  Q1 = sum(colSums(SbyS.pa) == 1)
+  Q2 = sum(colSums(SbyS.pa) == 2)
+  S.chao2 = S.obs(x) + (Q1^2)/(2*Q2)
   return(S.chao2)
   }
 ```
@@ -252,10 +251,12 @@ Last we will use commands from `vegan` to construct rarefaction curves for the d
 soilbac.S <- S.obs(soilbac)     
 min.N <- min(rowSums(soilbac))    
 S.rarefy <- rarefy(soilbac, min.N, se = TRUE)   
-rarecurve(soilbac, step = 20, sample = min.N, col = "blue", cex = 0.6, las=1) #
+rarecurve(soilbac, step = 20, col = "blue", cex = 0.6, las=1) #
 abline(0, 1, col = 'red')             
 text(1500, 1500, "1:1", pos = 2, col = 'red')
+rarefy(soilbac, sample = min.N, se = TRUE)
 ```
+### Make barplot with richness =/- 95% CIs????
 
 ##5) Species evenness
 There is more to ($\alpha$) diversity than just the number of species in a sample.
@@ -263,7 +264,7 @@ Specifically, it is important to consider how abundance varies among species, th
 Many important biodiversity issues such as species coexistence, community stability, the detection of rare taxa, and biological invasions relate to how abundances vary among taxa. 
 
 ### Visualizing Evenness: The Rank Abundance Curve (RAC)
-One of the most common ways to visualize evenness is in a **rank-abundance curve (RAC)** (sometime referred to as a rank-abundance distribution or Whittaker plot).
+One of the most common ways to visualize evenness is in a **rank-abundance curve** (sometime referred to as a rank-abundance distribution or Whittaker plot).
 An RAC can be constructed by ranking species from the most abundant to the least abundant without respect to species labels (and hence no worries about 'ties' in abundance). 
 
 Let's write a function to construct an RAC.
@@ -272,21 +273,24 @@ Then, we will order the vector from greatest (most abundant) to least (least abu
 
 ```{r}
 RAC <- function(x){
-  x.ab <- x[x > 0]
-  x.ab.ranked <- x.ab[order(x.ab, decreasing = TRUE)]
+  x = as.vector(x)
+  x.ab = x[x > 0]
+  x.ab.ranked = x.ab[order(x.ab, decreasing = TRUE)]
+  return(x.ab.ranked)
   }
 ```
 
 Now, let's examine the RAC for `site1` of the BCI data set.
-We will do this by creating a sequence of ranks and plotting the RAC with natural log-transformed abundances.
+We will do this by creating a sequence of ranks and plotting the RAC with natural-log transformed abundances.
 
 ```{r}
-rac = RAC(site1)
+rac <- RAC(site1)
 ranks <- as.vector(seq(1, length(rac)))
-plot(ranks, log(rac), type = 'p', las = 1, xlab = "Rank in abundance", ylab = "log(abundance)")
+plot(ranks, log(rac), type = 'p', las = 1, 
+     xlab = "Rank in abundance", ylab = "log(abundance)")
 ```
 
-***Question 8***: What effect does log-transforming the abundance data have on how we interpret evennes in an RAC?
+***Question 8***: What effect does log-transforming the abundance data have on how we interpret evenness in an RAC?
 
 > ***Answer 8***:
 
@@ -310,12 +314,12 @@ The `vegan` package does not have a function for Simpson's evenness.
 But we can derive Simpson's evenness from Simpson's diversity, which estimates the probability that the next sampled individual belongs to a different species. 
 In the following R chunk we will estimate Simpsons diversity (D) using the `diversity` function in `vegan` and observed richness.
 
-### Mario: it would be good stick with our `S.obs` funciton, but it doesn't seem to work below. Transpose vector?##
 ```{r}
 SimpE <- function(x){
-  D <- diversity(x, "simp") # Simpson's diversity (D) via `vegan`
-  S <- specnumber(x) 
-  E <- (1/D)/S # Simpson's evenness (E)
+  x = as.data.frame(x)
+  D <- diversity(x, "inv")
+  S <- S.obs(x) 
+  E <- (D)/S 
   return(E)
   }
 ```
@@ -323,12 +327,12 @@ SimpE <- function(x){
 Now, let's calculate Simpson's evenness using our previous RAC from `site 1` in the BCI site-by-species matrix.
 
 ```{r}
-SimpE(rac)
+SimpE(site1)
 ```
 
-We can see that Simpson's evenness for `site1` is quite low (~0.01). 
+We can see that Simpson's evenness for `site1` is moderately even (~`r round(SimpE(site1), 2)`). 
 However, Simpson's evenness has been criticized for being biased towards the most abundant taxa.
-The value of the metric is sensitive to differences in the few most abundant species.
+The value of the metric is suppodely sensitive to differences in the few most abundant species.
 Let's examine the value of evenness for `site1` using a different evenness metric that is less biased in this way, i.e., $E_{var}$.
 
 ### Smith and Wilson's evenness index ($E_{var}$)
@@ -347,6 +351,7 @@ In the end, an $E_{var}$ function can be written as follows:
 
 ```{r}
 Evar <- function(x){
+  x <- as.vector(x[x > 0])
   1 - (2/pi)*atan(var(log(x)))
   }
 ```
@@ -357,9 +362,8 @@ Now let's use the $E_{var}$ function to estimate evenness for `site1` of the BCI
 Evar(rac)
 ```
 
-***Question 9***: Compare estimates of evenness for `site` of BCI using $E_{1/D}$ and $E_{var}$.
+***Question 9***: Compare estimates of evenness for `site1` of BCI using $E_{1/D}$ and $E_{var}$.
 Do they agree?
-If not, why?
 
 > ***Answer 9***:
 
@@ -375,12 +379,14 @@ Shannon's diversity metric is derived from Shannon's information entropy, and is
 This metric is used across the natural sciences and is calculated as ${H' = -}  \sum p_i ln(p_i)$.
 Let's calculate Shannon's diversity for the RAC of `site1` in the BCI site-by-species matrix and then compare it to the `vegan` estimate:
 
-###MARIO: here we're introducing loops, perhaps for the first time. Should we use `apply` to follow on week1. Important
 ```{r}
-H <- 0
-for (sp in rac){
-  p = sp / sum(rac)
-  H = H - p*log(p) 
+H <- function(x = ""){
+  H = 0
+  for (n_i in x){
+    p = n_i / sum(x)
+    H = H - p*log(p) 
+  }
+  return(H)
 }
 ```
 
@@ -390,66 +396,34 @@ Now we will use `vegan` to estimate Shannon's index:
 diversity(rac, index="shannon")
 ```
 
-
 ### Simpson's diversity (or dominance)
-### Is there a typo? "often expressed as 1/*D*... so that diversity naturally increases with 1/*D*."???
 Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
-Simpson's index is often expressed as 1/*D* or 1-*D*, so that diversity naturally increases with 1/*D*.
+Simpson's index is often expressed as 1/*D* (or 1-*D*), so that index naturally increases with diversity.
 Let's calculate Simpson's diversity for `site1` and then compare it to the `vegan` estimate:
 
-###Again, loop###
 ```{r}
-D <- 0.0
-N <- sum(rac)
-for (ni in rac){
-  D = D + (ni*ni)/(N*N)
+D <- function(x = ""){
+  D = 0
+  N = sum(x)
+  for (n_i in x){
+    D = D + (n_i^2)/(N^2)
+  }
+  return(D)
 }
 ```
 
-And now let's express Simpsons's diversity as 1/*D*
+And now let's express Simpsons's diversity as 1/*D* (invD) and 1-*D*:
 ```{r}
-invD <- 1/D 
+D.inv <- 1/D(rac) 
+D.min <- 1-D(rac)
 ```
 
 Finally, we can use `vegan` to estimate Simpsons's index:
 
-```{r}
-
+```{r, results="hide"}
+diversity(rac, "simp")
+diversity(rac, "inv")
 ```
-
-
-invD <- diversity(rac, "inv") # using vegan's calculation for the inverse of Simpson's diversity
-invD
-
-D <- 1 - D # using the 1 - D variation
-D
-
-D <- diversity(rac, "simp") # using vegan
-D
-```
-
-Now we will use `vegan` to estimate Simpsons's index:
-
-
-
-### Fisher's $\boldsymbol\alpha$
-R.A. Fisher (1943) derived one of the first and most successful models for how abundance varies among species, i.e., the log-series distribution.
-This model has only a single fitted parameter, i.e., $\alpha$, 
-Because $\alpha$ is a fitted parameter, it is less straightforward to estimate and we will not attempt to code a function for it, here.
-Fisher's $\alpha$ has often been used as a diversity metric and is the root of $\alpha$-diversity and, according to the authors of the vegan package, it is asymptotically similar to inverse Simpson's.
-Let's do this comparison using the RAC from site 1 of the BCI site-by-species matrix.
-
-```{r}
-invD <- diversity(rac, "inv")
-invD
-Fisher <- fisher.alpha(rac)
-Fisher
-```
-
-As we can see, the two measurements are somewhat similar. 
-They would converge if our community was much greater in total abundance and richness. 
-However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. 
-The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
 ##7) Integrating richness and evenness: Species Abundance Distributions (SAD)
 
