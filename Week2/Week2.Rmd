@@ -67,12 +67,12 @@ The **site-by-species matrix** is a primary ecological data structure that conta
 
 
 Each site corresponds to a row in the site-by-species matrix, while each species corresponds to a column.
-Throughout the course, we will draw inferences about aspects of diversity from the site-by-species matrix. 
+Throughout the course, we will draw inferences about aspects of diversity from the site-by-species matrix.
 
-The version of the BCI site-by-species matrix provided in `vegan` contains the abundances of 225 tree species (i.e. 225 columns) for each of 50 sites (i.e. 50 rows). 
+The version of the BCI site-by-species matrix provided in `vegan` contains the abundances of 225 tree species (i.e. 225 columns) for each of 50 sites (i.e. 50 rows).
 While it is conventional to refer to a matrix or table by its rows and then by its columns, each row could just as easily be a species and each column could be a site, i.e., a species by site matrix.
 Some programs that you encounter will prefer data to be in one format or the other. 
-Recall that that transpose function (`t()`) can be used to easily modify the the site-by-species matrix for you.
+In such case, you can use the transpose function (`t()`) to modify the site-by-species matrix.
 
 Let's verify the structure of the BCI site-by-species matrix using the `dim` function, which was introduced last week:
 
@@ -179,7 +179,6 @@ soilbac <- read.table("data/soilbac.txt", sep = "\t", header = TRUE) # read in t
 soilbac <- as.matrix(t(soilbac), mode='numeric') # transform the data to a matrix and transpose, using t(soilbac)
 soilbac <- matrix(soilbac, ncol= ncol(soilbac), nrow=nrow(soilbac), dimnames = NULL) # remove row and column names
 soilbac1 <- soilbac[2,] # row 1 is a sample taken from an agricultural site
-soilbac1
 ```
 
 ***Question 5***: a.) How many sequences did we recover from the sample `soilbac1`, i.e. the row total? b.) What is the observed richeness of `soilbac1`? c.) How does coverage compare between the BCI sample (`site1`) and the KBS sample (`soilbac1`)?
@@ -190,14 +189,13 @@ soilbac1
 
 
 There are number of statistical techniques developed to estimate richness based on the coverge of species in a sample (e.g., Hughes et al. 2001  -- http://aem.asm.org/content/67/10/4399).
-Here, we will highlight two of the most common richness estimators (i.e. Chao1 and Chao2) and reveal how richness can be estimated from species abundances within a single sample (i.e. via Chao1) or from species occurrences across multiple samples (i.e. via Chao2).
-These richness estimators are named after Anne Chao, 
+Here, we will highlight two of the most common richness estimators (i.e. Chao1 and Chao2) and reveal how richness can be estimated from species abundances within a single sample (i.e. via Chao1) or from species occurrences (or incidence or presence/absence) across multiple samples (i.e. via Chao2).
+These richness estimators are named after the person who derived them, i.e. Professor Anne Chao, and both are non-parametric.
+By non-parametric we mean they are not based on an underlying distribution (e.g. Normal distribution, Student's t-distribution) and hence, make few statistical assumptions about the underlying nature of the true 'population'.
 
-which is a non-parametric diversity estimator called **Chao1**.
-By non-parametric we that it isn't based on an underlying distribution (e.g. Normal distribution, Student's t-distribution) and makes few, if any, statistical assumptions about the underlying nature of the true 'population'.
-
-Chao1 is calculated using observed richness (`S.obs`) and the number of **singletons** (species with an observed abundance of 1) and **doubletons** (species with observed abundance of 2). 
-This estimator cannot be used on relative abundance and tends to be used in communities with many low-abundance taxa.
+**Chao1** is abundance-based and useful for examining richness of a single site.
+It is calculated using observed richness (`S.obs`), the observed number of **singletons** (species with an observed abundance of 1), and the observed number of **doubletons** (species with observed abundance of 2).
+Consequently, this estimator cannot be used on relative abundance and tends to be used in communities with many low-abundance taxa.
 Let's write a function for Chao1:
 
 ```{r}
@@ -206,11 +204,32 @@ S.chao <- function(x){
   }
 ```
 
-Note that estimated richness must be greater than observed richness.
+Note, estimated richness by definition must be greater than observed richness.
+
+**Chao2** is incidence-based and useful for examining richness across multiple sites.
+Like Chao1, Chao2 is calculated using observed richness (`S.obs`). However, in Chao2, **singletons** and **doubletons** refer to species observed once and twice, respectively, across sites or samples.
+
+While Chao2 estimator does not account for species abundances (only incidence, i.e., presence/absence) but it does preserve some of the spatial nature of the data by recognizing that species could have been present at different sites.
+Let's write a function for Chao2:
+
+# Mario, would you quickly code-up Chao2?
+
+```{r}
+S.chao <- function(x){
+  S.obs(x) + (sum(x==1)^2)/(2*sum(x==2)) ### should we use which() and length() here?
+  }
+```
+
+Note, estimated richness by definition must be greater than observed richness.
+
+***Question 6***: TENTATIVE QUESTIONS: How do estimates from Chao1 and Chao2 differ for BCI?
+
+> ***Answer 6***: 
+
 
 ## Rarefaction
 
-Often researchers want to compare the richness of two or more samples.
+Often researchers want to compare the richness of two or more samples, as opposed to Chao2 which predicts a single richness value for a set of samples.
 Ideally, we would sample all of our sites with equal effort, all sites would have equal densities, and all individuals would have equal probability of detection.
 However, these conditions are often not met in real systems and in most studies.
 Likewise, sites with greater abundance generally have greater species richness, which means that differences in richness may largely be due to differences in sample size.
@@ -219,7 +238,7 @@ A common way to reduce the bias associated with different **$N$** and to compare
 For example, if there are 2 sites, one with **$N$**=100 and one with **$N$**=50, we could randomly sample (without replacement) 50 individuals from the site with greater **$N$**.
 Generating many random samples (each of 50 individuals) from the larger site will allow us to calculate the mean (i.e. expected **$S$**) and standard error. Likewise, we'll be able to tell whether the **$S$** of the smaller sample falls within the confidence-intervals for expected **$S$** of the larger sample and hence, whether the difference in **$S$** between the two sites is simply due to difference in **$N$**.
 
-Let's looks at the richness of soil bacteria for all 11 of the KBS sites, where T1 = agriculture, T7 = grassland, DF = deciduous forest, and CF = coniferous forest. 
+Let's look at the richness of soil bacteria for all 11 of the KBS sites, where T1=agriculture, T7=grassland, DF=deciduous forest, and CF=coniferous forest.
 
 ```{r}
 soilbac.S <- S.obs(soilbac)           # observed richness
@@ -230,55 +249,60 @@ min.N <- min(rowSums(soilbac))        # sample with fewest sequences
 #text(1500, 1500, "1:1", pos = 2, col = 'red')
 ```
 
-### Question 5 (or possibly homework): how would our interpretation of diversity in different land uses be affected if we used observed vs. rarefied richness? 
+***Question 6***: How would our interpretation of diversity be affected if we used observed vs. estimated richness in our rarefaction analysis?
 
-### how about species accumulation curves using specaccum()? -Jay(?) 
-### Redundant with rarefy? -Jay(?)
-### Not really: Species accumulation curves show the rate at which new species are found within a community and can be extrapolated to provide an estimate of species richness. -Ken
-### [Clarification](http://www.vsni.co.uk/software/genstat/htmlhelp/ecology/AccumulationCurve.htm); A big literature on SACs and collector's curve. -Ken
-### We disccused this briefly in office; question is whether we _need_ to introduce given time contrainsts and other things we want to get across.
+> ***Answer 6***:
 
 
 ##5) Species evenness
-There is more to ($\alpha$) diversity than just the number of species in a plot. 
+There is more to ($\alpha$) diversity than just the number of species, whether observed or estimated.
 Specifically, it is important to consider how abundance varies among species, that is, **species evenness**.
-Many important biodiversity issues -- species coexistence, community stability, the detection of rare taxa, the observation of compositional change and turnover due to disturbance, invasion, and random population fluctuations -- relate to variation in the abundance of taxa. 
+Many important biodiversity issues such as species coexistence, community stability, the detection of rare taxa, the observation of compositional change and turnover due to disturbance, invasion, and random population fluctuations relate to abundances vary among taxa. 
+In fact, the foreword of the "Biological Diversity: frontiers in measurement and assessment" as well as Chapter 1 and several other chapters are often concerned with quantifying how abundance varies among taxa.
+
+***Question 7***: a.) In regards to any system your prefer, how would you interpret a highly even distribution of abundance (high evenness) versus a highly uneven one (low evenness)? b.) How might this relate to your ability to adequately sample the system?
+
+> ***Answer 7a***:
+> ***Answer 7b***:
 
 ### Visualizing Evenness: The Rank Abundance Curve (RAC)
-One of the most common ways to visualize evenness is to rank the species from most abundant to least abundant without respect to species labels (and hence no worries about 'ties' in abundance). This **rank-abundance curve (RAC)** is also referred to as a rank-abundance distribution and as a Whittaker plot. 
+One of the most common ways to visualize evenness is to rank the species from most abundant to least abundant without respect to species labels (and hence no worries about 'ties' in abundance). This **rank-abundance curve (RAC)** is also referred to as a rank-abundance distribution and also as a Whittaker plot. 
 
-Let's construct an RAC using `site1` of the BCI data set. 
-First, we will remove species that had zero occurences in `site1`. 
-
+Let's code a function to construct an RAC.  
+First, we will remove species that have zero abundances. 
+Then, we order the vector from greatest (most abundant) to least (least abundant).
 ```{r}
-site1.ab <- site1[site1>0] # Remove all zeros from Site1 and reassign the new vector
+RAC <- function(x){
+  x.ab <- x[x > 0] # Remove all zeros from Site1 and reassign the new vector
+  x.ab.ranked <- x.ab[order(x.ab, decreasing = TRUE)]  # Use `order` function and "decreasing" argument to rank
+  }
 ```
 
-Now we will order the species according to their abundance, create a rank vector, and then create a RAC plot. 
+Let's examine the RAC for `site1` of the BCI data set.
+
 ```{r}
-site1.ab.ranked <- site1.ab[order(site1.ab, decreasing = TRUE)]  # Use `order` function and "decreasing" argument to rank
-ranks <- as.vector(seq(1, length(site1.ab)))                     # Create a sequence of S ranks
-plot(ranks, log(site1.ab.ranked), type = 'p', las = 1,           # Plot the RAC
-     xlab = "Rank", ylab = "log(abundance)")                     # "type = 'p'" = points; "las = 1" horizont labels
+  rac = RAC(site1)
+  ranks <- as.vector(seq(1, length(rac)))         # Create a sequence of S ranks
+  plot(ranks, log(rac), type = 'p', las = 1,     # Transform abundances using the natural logarithm and plot the RAC
+  xlab = "Rank in abundance", ylab = "log(abundance)")       # "type = 'p'" = points; "las = 1" horizont labels
 ```
 
-It is clear from looking at the RAC for `site1` that abundance among species is unequally distributed. 
+***Question 8***: What effect does log-transforming the abundance data have on how we examine differences among species?
+
+> ***Answer 8***:
+
+It is clear from looking at the RAC for `site1` that abundance among species is unequally distributed, even when log-transformed.
 This is true even when abundances are log-transformed (note the plotting options above), which deemphasizes the influence of the few most abundant species.
 This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations [McGill et al. 2007](http://www.ncbi.nlm.nih.gov/pubmed/17845298).
 
 ### Species Evenness
-Now that we have visualized unevennes, it is now time to quantify it.  
-There are important features that evenness measures should strive for:
-
-1. We want to be able to intuit the values of our metric. 
-2. We want our metric to be bounded between a minimum evenness (i.e. 0.0) and a maximum evenness (i.e. 1.0). 
-3. We also want intermediate values of our metric (e.g. 0.5) to represent an intuitive intermediate evenness.## as  stand alone statement, not sure I really get this##
-4. We want evennes to be independent of *S*
-5. Adding a singleton species should decrease the value of evenness. ## again, maybe I'm reading into this too much, but this seems either really obvious or a very nuanced point##
-
-### aren't the really key points above 2 and 4? 
-
-Here, we will introduce two metrics of evenness that meet the above criteria: Simpson's evenness and Smith and Wilson's evenness index 
+Now that we have visualized unevennes, it is time to quantify it.  
+This leads us to the desired features of evenness metrics.
+While there are at least 10, we will concentrate on a few of the most important.
+First, we want to be able to intuit the values of our metric; the reason why is intuitive. 
+Second, we want our metric to be bound between a minimum evenness (i.e. 0.0) and a maximum evenness (i.e. 1.0).
+Third, we want evenness to be independent of *S* because we don't want evenness to simply be a reflection of richness. 
+Here, we will introduce two metrics of evenness that meet the above criteria: Simpson's evenness and Smith and Wilson's evenness index
 
 ### Simpson's evenness, $E_{1/D}$
 
@@ -288,24 +312,36 @@ The `vegan` package has no function for Simpson's evenness.
 But we can derive Simpson's evenness from Simpson's diversity, i.e., the probability that the next sampled individual belongs to a different species:
 
 ```{r}
-D <- diversity(site1.ab, "simp") # Simpson's diversity (D) via `vegan`
-S <- specnumber(site1.ab) ## would like to stick with our S.obs funciton, but doesn't seem to work..strange. transpose vector?##
-E <- (1/D)/S # Simpson's evenness (E)
+SimpE <- function(x){
+  D <- diversity(x, "simp") # Simpson's diversity (D) via `vegan`
+  S <- specnumber(x) ## would like to stick with our S.obs funciton, but doesn't seem to work..strange. transpose vector?##
+  E <- (1/D)/S # Simpson's evenness (E)
+  }
 ```
 
-Returning to the BCI tropical forest dataset, we can see that Simpson's evenness reveals that species evenness for site1 is quite low, i.e., < 0.1. However, Simpson's evenness has been criticized for being biased towards the most abundant taxa, i.e., revealing differences in abundances among the first few ranks and is less influenced by the many similarly abundant but rarer species.
+Let's calculate Simpson's evenness using our previous RAC from site 1 in the BCI site-by-species matrix.
+
+```{r}
+SimpE(rac)
+```
+
+We can see that Simpson's evenness reveals that species evenness for site1 is quite low, i.e., < 0.1. 
+However, Simpson's evenness has been criticized for being biased towards the most abundant taxa, i.e., the value of the metric can easily be driven by differences in the few most abundant species.
 Let's examine the value of evenness for `site1` using a different evenness metric that is less biased in this way, i.e., $E_{var}$.
 
 ### Smith and Wilson's evenness index, $E_{var}$
 
-After reviewing existing metrics, Smith and Wilson (1996) attempted to derive a more robust measure of evenness, which they called ($E_{var}$). 
-This metric is a measure of the sample variance of logarithmic abundances, standardized to take values between 0 (no evenness) and 1 (perfect evenness).
+After reviewing existing metrics, Smith and Wilson (1996) derived a more robust measure of evenness, which they called ($E_{var}$). 
+This metric is standardized to take values between 0 (no evenness) and 1 (perfect evenness).
 Abundances are transformed to their natural logarithms to decrease bias towards the most abundant species, that is, the potential for a metric's value to be influenced more by large numbers than small ones.
 $E_{var}$, like all desireable measures of evennness, is independent of richness *S*.
 The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi \cdot \arctan( \sum\limits_{i=1}^{i=S} ln(n_i) - \sum\limits_{j=1}^{j=S} ln(n_j)/S)}$.
 
-While seemingly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the log-transformed species abundances and then standardizing it to take values between 0 and 1 by using elementary trigonometry.
-
+While seemingly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the log-transformed abundances and then standardizing it to take values between 0 and 1 by using elementary trigonometry.
+$E_{var}$ uses the arctangent, which varies between -$\pi$/2 and $\pi$/2 without being periodic like sine waves.
+Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1.
+Subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. 
+We can confirm all this with a very short and simply R chunk:
 
 ```{r}
 Evar <- function(x){
@@ -313,33 +349,18 @@ Evar <- function(x){
   }
 ```
 
-*Notes on ${E_{var}}$*: 
+Let's calculate $E_{var}$ for site 1 of the BCI site-by-species matrix.
 
-$E_{var}$ uses the arctangent, which varies between -$\pi$/2 and $\pi$/2 and without being periodic like waves of the sine and cosine functions. Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1. 
-Finally, subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. 
-We can confirm this with a more explicit R chunk:
-
-### I'm not sure the chunk below is necessary; perhaps we should include in the Supplementary file?
 ```{r}
-P <- log(log(site1.ab)) # log-tranform the abundances of the RAC and assign them to a vector P
-AvgAb <- mean(P) # find the average of the log abundances
-X <- 0 # assign zero to variable X
-Evar <- 0 # declare a scalar varible Evar
-
-for (x in P) { # making use of a 'for' loop. for loops are an elementary control structure in all programming languages.
-  X = X + (x - AvgAb)^2 / (S - 1)
-}
-
-Evar = 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
-Evar # print Evar for Site1
+Evar(rac)
 ```
 
-As you can see, the value of $E_{var}$ suggests an intermediate value of species evenness. 
+As you can see, the value of $E_{var}$ suggests an intermediate value of species evenness for site1.
 Likewise, you can see that different evenness metrics, even when bound between 0 and 1 still return very different values. 
 This is not because each is inaccurate but because each metric emphasizes different aspects of the RAC. 
 Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ gives nearly equal weight to dominant, intermediately abundant, and rare species.
 
-### How about asking them to compare the two evennes metrics and explain???###
+### How about asking them to compare the two evennes metrics and explain???### FEEL FREE, JAY
 
 ##6) Integrating richness and evenness: "diversity metrics"
 Metrics developed from information theory. Commonly used. Rarely understood.
@@ -367,7 +388,7 @@ This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$.
 Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
 
 ```{r}
-RAC <- site1.ab.ranked
+RAC <- rac
 H <- 0
 for (sp in RAC){
   p = sp / sum(RAC)
