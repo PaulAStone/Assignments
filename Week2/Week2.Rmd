@@ -524,25 +524,25 @@ A Normal deviate is simply the number of standard deviations a score is from the
 The log-normal model was introduced into ecology by Frank Preston in 1948 and is one of the most widely successful species abundance models.
 
 #### Zipf:
-The Zipf model is based on Zipfs Law, i.e. the ubiquitous observation that many types of data can be fit by a simple scaling law (aka power law).
-In short, the abundance of a species in the RAC is inversely proportional to its rank. 
-The expected abundance (a) of species at rank r is: a(r) = N * $p1$ * $r^\gamma$, where $p1$ is the fitted proportion of the most abundant species, and $\gamma$ is a decay coefficient. 
+The Zipf model is based on Zipfs Law, an well-known observation that many types of ranked data are fit by a simple scaling law (aka power law).
+In short, the abundance of a species in the RAC is inversely proportional to its rank.
+The expected abundance (a) of species at rank r is: a(r) = N * $p1$ * $r^\gamma$, where $p1$ is the fitted proportion of the most abundant species, and $\gamma$ is a decay coefficient.
 
 #### Mandelbrot:
-Shortened name for the Zipf – Mandelbrot model. This model adds one parameter to the Zipf model. 
-
-```{r}
-#a[r] = J*c*(r+beta)^gamma after which p1 of the Zipf model changes into a meaningless scaling constant c. 
-```
-
-which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$.
+Shortened name for the Zipf–Mandelbrot model, a generalization of the Zipf model made by the mathematician and father of fractal geometry, Benoit Mandelbrot.
+This model adds one parameter ($\beta$) to the Zipf model. 
+The expected abundance of a species (a) at rank r is a(r) = N * c * (r + $\beta$) ^ $\gamma$. 
+Here, the p1 parameter of the Zipf model changes into a meaningless scaling constant c.
 
 ## Homework
 
-1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's D really only applies to communities of infinite size. #For anything but an infinitely large community, Simpson's index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
-Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for Site1.
+1) As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's Diversity only applies to communities of infinite size. For anything but an infinitely large community, Simpson's Diversity index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
+Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for site 1 of the BCI site-by-species matrix.
 
-2) ...
+2) Along with the rank-abundance curve (or rank-abundance distribution), another way to visualize the distribution of abundance among species is with a histogram (aka frequency distribution) that shows that frequency of different abundance classes.
+For example, in a given sample, there may be ten species represented by a single individual, 8 species with two individuals, 4 species with three individuals, and so on.
+In fact, the rank-abundance curve and the frequency distribution are the two most common ways to visualize the species abundance distribution (SAD) and to test species abundance models and biodiversity theories.
+To address this homework question, use the R function **hist()** to plot the frequency distribution for site 1 of the BCI site-by-species matrix, and describe the general pattern you see.
 
 3) use knitr to create a pdf, push it to GitHub, and create a pull request
 
