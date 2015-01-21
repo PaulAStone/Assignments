@@ -295,7 +295,6 @@ It is clear from looking at the RAC for `site1` that abundance among species is 
 This is true even when abundances are log-transformed (note the plotting options above), which deemphasizes the influence of the few most abundant species.
 This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations [McGill et al. 2007](http://www.ncbi.nlm.nih.gov/pubmed/17845298).
 
-### Species Evenness
 Now that we have visualized unevennes, it is time to quantify it.  
 This leads us to the desired features of evenness metrics.
 While there are at least 10, we will concentrate on a few of the most important.
@@ -363,24 +362,12 @@ Likewise, you can see that different evenness metrics, even when bound between 0
 > ***Answer 9***:
 
 ##6) Integrating richness and evenness: "diversity metrics"
-Metrics developed from information theory. Commonly used. Rarely understood.
 
-##7) Integrating richness and evenness: Species Abundance Distributions (SAD)
-
-### Be careful not to confuse "diversity metrics" with the SAD as so-called 'integrations' of richness and evenness. -Ken
-### I guess I'm trying to convey that diversity metrics and the SAD are looking at richness and evennes at the same time, but in different ways. Again, there's a thread or theme that I would like to try and get across: alpha diversity consists of richness and evenness. Looking at one vs. the other doesn't give a complete picture of alpha diversity. Diversity metric attempt to do this, but have some limitations. The SAD is perhaps a better and more "integrative" way of handling the data that you get from a sample. 
-
----> JTL stopped here. 
-
-## Species Diversity
-You saw in the derivation of Simpson's evenness that we called the R diversity function, and then specified "simp". 
-In effect, in estimating Simpson's evenness we first estimated Simpson's diversity (*D*). Species diversity is commonly defined as a relationship between species richness and species evenness, often of a form similar to ${Diversity = } \frac{Evenness} {Richness}$.
-Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates. 
-
-### For the purpose of..." is the learning objective to just check vegan to make sure it's right? -Jay
-### No. The purpose is to instruct students in the ways of understanding that packages like vegan don't do anything special. -Ken
-### Not only is there no magic, but even us normal folk can code up the functions we see in papers, books, and usually leave to super-geeks to develop. -Ken 
-### It's about being empowered and non-phobic through comprehending. -Ken
+So far, we have introduced two primary aspects of diversity, i.e., richness and evenness.
+While we often examine each of these independently, e.g., estimating $E_{var}$ or conducting rarefaction, the interaction of richness and evenness is also important. 
+In fact, richness and evenness are the two primary components of metrics of diversity, which are commonly derived as a relationship of a form similar to ${Evenness = } \frac{Diversity} {Richness}$.
+For example, in estimating Simpson's evenness we first estimated Simpson's diversity (*D*) but then divided  
+Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates.
 
 ### Shannon's diversity (or entropy)
 Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. 
@@ -449,7 +436,12 @@ They would converge if our community was much greater in total abundance and ric
 However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. 
 The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
 
+##7) Integrating richness and evenness: Species Abundance Distributions (SAD)
+
+Just as alpha-diversity consists of more than just the number of species, it also con and evenness. Looking at one vs. the other doesn't give a complete picture of alpha diversity. Diversity metric attempt to do this, but have some limitations. The SAD is perhaps a better and more "integrative" way of handling the data that you get from a sample.
+
 ## Species abundance models
+
 Recall that the species rank-abundance curve RAC is simply the abundance of species ranked from most-to-least abundant.
 The RAC is a simple data structure that is both a vector of abundances and a row in the site-by-species matrix (minus the zeros, i.e., absences). 
 Despite it's simplicity the RAC contains a lot of information.
