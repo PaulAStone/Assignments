@@ -496,19 +496,31 @@ Visual inspection confirms our statistical results, i.e., the Mandelbrot model a
 ### Interpreting vegan's RAC models:
 
 #### Null:
-a brokenstick model where the expected abundance of species at rank r is a[r] = J/S sum(from x=r to S) 1/x (Pielou 1975), where J is the total number of individuals (site total) and S is the total number of species in the community. This gives a Null model where the individuals are randomly distributed among observed species, and there are no fitted parameters. 
+A brokenstick model where the expected abundance of species at rank r is a[r] = J/S sum(from x=r to S) 1/x (Pielou 1975), where J is the total number of individuals (site total) and S is the total number of species in the community. This gives a Null model where the individuals are randomly distributed among observed species, and there are no fitted parameters. 
 
 #### Preemption:
-Function rad.preempt fits the niche preemption model, a.k.a. geometric series or Motomura model, where the expected abundance a of species at rank r is a[r] = J*alpha*(1-alpha)^(r-1). The only estimated parameter is the preemption coefficient α which gives the decay rate of abundance per rank. The niche preemption model is a straight line in a RAD plot.
+The niche preemption model, a.k.a. geometric series or Motomura model. The only estimated parameter is the preemption coefficient α which gives the decay rate of abundance per rank. The niche preemption model is a straight line in a RAD plot. 
+
+```{r}
+#The expected abundance a of species at rank r is a[r] = J*alpha*(1-alpha)^(r-1). 
+```
 
 #### Lognormal:
-Function rad.lognormal fits a log-Normal model which assumes that the logarithmic abundances are distributed Normally, or a[r] = exp(log(mu) + log(sigma) * N), where N is a Normal deviate.
+The log-Normal model assumes that the logarithmic abundances are distributed Normally, or a[r] = exp(log(mu) + log(sigma) * N), where N is a Normal deviate.
 
 #### Zipf:
-Function rad.zipf fits the Zipf model a[r] = J*p1*r^gamma where p1 is the fitted proportion of the most abundant species, and gamma is a decay coefficient. 
+The Zipf model where p1 is the fitted proportion of the most abundant species, and gamma is a decay coefficient. 
+
+```{r}
+#a[r] = J*p1*r^gamma
+```
 
 #### Mandelbrot:
-The Zipf – Mandelbrot model (rad.zipfbrot) adds one parameter: a[r] = J*c*(r+beta)^gamma after which p1 of the Zipf model changes into a meaningless scaling constant c. 
+Shortened name for the Zipf – Mandelbrot model. This model adds one parameter to the Zipf model. 
+
+```{r}
+#a[r] = J*c*(r+beta)^gamma after which p1 of the Zipf model changes into a meaningless scaling constant c. 
+```
 
 
 which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$.
