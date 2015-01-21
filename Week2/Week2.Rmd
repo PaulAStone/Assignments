@@ -371,7 +371,7 @@ Do they agree?
 
 So far, we have introduced two primary aspects of diversity, i.e., richness and evenness.
 While we often examine each of these independently, the interaction between richness and evenness is important. 
-Here, we will estimate popular indices of diversity, which explicitly inorporate richness and evenness. 
+Here, we will estimate popular indices of diversity, which explicitly incorporate richness and evenness. 
 We will write our own diversity functions and compare them agains the functions in `vegan`. 
 
 ### Shannon's diversity (a.k.a Shannon's entropy)
@@ -425,9 +425,9 @@ diversity(rac, "simp")
 diversity(rac, "inv")
 ```
 
-##7) Integrating richness and evenness: Species Abundance Distributions (SAD)
+##7) Moving beyond univariate metrics of $\alpha$ diversity
 
-Just as $\alpha$-diversity consists of more than just the number of species, it also con and evenness. Looking at one vs. the other doesn't give a complete picture of $\alpha$-diversity. Diversity metric attempt to do this, but have some limitations. The SAD is perhaps a better and more "integrative" way of handling the data that you get from a sample.
+Just as $\alpha$-diversity consists of more than just the number of species, it also consists of  and evenness. Looking at one vs. the other doesn't give a complete picture of $\alpha$-diversity. Diversity metric attempt to do this, but have some limitations. The SAD is perhaps a better and more "integrative" way of handling the data that you get from a sample.
 
 ## Species abundance models
 
