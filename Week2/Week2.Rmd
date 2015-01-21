@@ -445,10 +445,13 @@ Just as alpha-diversity consists of more than just the number of species, it als
 
 Recall that the species rank-abundance curve RAC is simply the abundance of species ranked from most-to-least abundant.
 The RAC is a simple data structure that is both a vector of abundances and a row in the site-by-species matrix (minus the zeros, i.e., absences). 
-Despite it's simplicity the RAC contains a lot of information.
-For example, the sum of the abundances in the RAC is commonly referred to as the observed **total abundance** and denoted as **N** while the length of the RAC (the number of ranks) is simply the observed **species richness**, denoted as **S**. 
-The RAC also contains the information needed to estimate richness and calculate evenness and diversity.
-Moreoever, the uneven shape of the RAC is one of the most intensively studied patterns in ecology, and underpins all or most ecological theories of biodiversity. 
+Despite it's simplicity the RAC contains a lot of information, including the sum of the abundances (*N*), the observed species richness (*S*), as well as the information needed to estimate richness and to calculate evenness and diversity.
+
+***Question 10***: What might the shape of a rank-abundance distribution tell us about the forces, processes, and/or mechanisms influencing the structure of our system, e.g., an ecological community?
+
+> ***Answer 10***:
+
+The uneven shape of the RAC is one of the most intensively studied patterns in ecology, and underpins all or most ecological theories of biodiversity. 
 Predicting the form of the RAC is the first test that any biodiversity theory must pass and there are no less than 20 models that have attempted to explain the uneven form of the RAC across ecological systems.
 These models attempt to predict the form of the RAC according to mechanisms and processes that are believed to be important to the assembly and structure of ecological systems.
 
@@ -458,30 +461,66 @@ RACresults <- radfit(rac)
 RACresults
 ```
 
-As you can see, vegan fits five models (Null, Preemption, Lognormal, Zipf, and Mandelbrot) using the rank-abundance curve, which vegan refers to as the rank-abundance distribution.
-Next to "RAD models" we see "family poisson", which tells us that by default, vegan assumes Poisson distributed error terms.
-Below this, we see that vegan returns the number of species and the number of individuals in the empirical RAC.
-And, below this, we see a table of information, the first columns of which are par1, par2, and par3.
-These columns pertain to model parameters and reveal that the different models use different numbers of parameters; the null model uses none at all.
-Next, we see a column for the Deviance, which is a quality of fit statistic based on residual sum of squares.
+As you can see, vegan fits five models (Null, Preemption, Lognormal, Zipf, and Mandelbrot) using the rank-abundance curve, which vegan refers to as the rank-abundance distribution (RAD).
+Before explaining what these models represent, let's run through vegan's output.  
+
+Next to "RAD models", we see "family poisson", which tells us that by default, vegan assumes Poisson distributed error terms.
+Below this, we see that vegan returns the number of species and the number of individuals for the empirical RAC.
+Next, we see a table of information, the first columns of which are par1, par2, and par3.
+These columns pertain to model parameters and reveal that the different models use different numbers of parameters; the null model uses none.
+Next, we see a column for Deviance, which is a quality of fit statistic based on the idea of residual sum of squares.
 After Deviance, we see columns for AIC and BIC, which are the estimated Akaike Information Criterion and the Bayesian Information Criterion, respectively.
 The AIC and BIC values both relate to the relative quality of a statistical model for a given set of data.
-That is, given a collection of models for the data, AIC and BIC estimate the quality of each model, relative to the other models.
-AIC and BIC are known as "penalized likelihood criteria" because they penalize models for the number of parameters they use.
+That is, AIC and BIC estimate the quality of each model, relative to the other models.
+AIC and BIC are known as "penalized likelihood criteria" because they also penalize models for the number of parameters the models use.  
 
-*** Question 10**: Why is it important to account for the number of parameters a model uses when judging how well it explains a given set of data?
+***Question 11***: Why is it important to account for the number of parameters a model uses when judging how well it explains a given set of data?
 
-> ***Answer 10***:
+> ***Answer 11***:
 
+Whether using the AIC or BIC value, we interpret a lower value as a better quality model.
 Whether looking at the AIC or BIC values, we can see that the Mandelbrot distribution seems to provide the best fit to our empirical RAC.
-But what should we conclude from this curve fitting exercise, other than that 
+We can also see that the Zipf distribution appears to provide the worst fit.
+This result is also supported by the Deviance values, which are highest for the Zipf and lowest for the Mandelbrot.
+
+Let's visualize our results by plotting the empirical RAC and the predicted RAC for each model:
 
 ```{r}
 plot(RACresults, las=1)
 ```
 
-Each is plotted as a rank-abundance curve (RAC) along with the empirical species abundance data and you can visually detect that some models probably do better than others at fitting the observed data.
-Likewise, visual inspection confirms Vegan's output 
+Visual inspection confirms our statistical results, i.e., the Mandelbrot model appears more like the empirical data (black circles) than the other models, while the Zipf under predict abundant species (i.e. rank) and over predicts the rare species.
+
+**But, what should we conclude from this curve fitting exercise? That is, what do these models represent?**
+
+### Interpreting vegan's RAC models:
+
+#### Null:
+A brokenstick model where the expected abundance of species at rank r is a[r] = J/S sum(from x=r to S) 1/x (Pielou 1975), where J is the total number of individuals (site total) and S is the total number of species in the community. This gives a Null model where the individuals are randomly distributed among observed species, and there are no fitted parameters. 
+
+#### Preemption:
+The niche preemption model, a.k.a. geometric series or Motomura model. The only estimated parameter is the preemption coefficient α which gives the decay rate of abundance per rank. The niche preemption model is a straight line in a RAD plot. 
+
+```{r}
+#The expected abundance a of species at rank r is a[r] = J*alpha*(1-alpha)^(r-1). 
+```
+
+#### Lognormal:
+The log-Normal model assumes that the logarithmic abundances are distributed Normally, or a[r] = exp(log(mu) + log(sigma) * N), where N is a Normal deviate.
+
+#### Zipf:
+The Zipf model where p1 is the fitted proportion of the most abundant species, and gamma is a decay coefficient. 
+
+```{r}
+#a[r] = J*p1*r^gamma
+```
+
+#### Mandelbrot:
+Shortened name for the Zipf – Mandelbrot model. This model adds one parameter to the Zipf model. 
+
+```{r}
+#a[r] = J*c*(r+beta)^gamma after which p1 of the Zipf model changes into a meaningless scaling constant c. 
+```
 
 
 which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$.
