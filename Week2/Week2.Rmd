@@ -287,10 +287,10 @@ RAC <- function(x){
 Let's examine the RAC for `site1` of the BCI data set.
 
 ```{r}
-  rac = RAC(site1)
-  ranks <- as.vector(seq(1, length(rac)))         # Create a sequence of S ranks
-  plot(ranks, log(rac), type = 'p', las = 1,     # Transform abundances using the natural logarithm and plot the RAC
-  xlab = "Rank in abundance", ylab = "log(abundance)")       # "type = 'p'" = points; "las = 1" horizont labels
+rac = RAC(site1)
+ranks <- as.vector(seq(1, length(rac)))         # Create a sequence of S ranks
+plot(ranks, log(rac), type = 'p', las = 1,     # Transform abundances using the natural logarithm and plot the RAC
+xlab = "Rank in abundance", ylab = "log(abundance)")       # "type = 'p'" = points; "las = 1" horizont labels
 ```
 
 ***Question 8***: What effect does log-transforming the abundance data have on how we examine differences among species?
@@ -372,29 +372,25 @@ Likewise, you can see that different evenness metrics, even when bound between 0
 So far, we have introduced two primary aspects of diversity, i.e., richness and evenness.
 While we often examine each of these independently, e.g., estimating $E_{var}$ or conducting rarefaction, the interaction of richness and evenness is also important. 
 In fact, richness and evenness are the two primary components of metrics of diversity, which are commonly derived as a relationship of a form similar to ${Evenness = } \frac{Diversity} {Richness}$.
-For example, in estimating Simpson's evenness we first estimated Simpson's diversity (*D*) but then divided  
+For example, in estimating Simpson's evenness we first estimated Simpson's diversity (D), which is usually of the form 1-D or 1/D so that lower values have lower diversity.
+We then divided 1/D by S, i.e. richness, to obtain a measure of evenness.
 Here, we will estimate popular indices of diversity using our own derivation and then check this against vegan's estimates.
 
 ### Shannon's diversity (or entropy)
 Shannon's diversity metric is really just Shannon's information entropy, a measure of uncertainty. 
-This metric is calculated as ${H' = -}  \sum p_i ln(p_i)$.
-Let's calculate Shannon's diversity for Site1 and then compare it to vegan's estimate:
+This metric is used across the natural sciences and is calculated as ${H' = -}  \sum p_i ln(p_i)$.
+Let's calculate Shannon's diversity for the RAC of site 1 in the BCI site-by-species matrix and then compare it to vegan's estimate:
 
 ```{r}
-RAC <- rac
 H <- 0
-for (sp in RAC){
-  p = sp / sum(RAC)
+for (sp in rac){
+  p = sp / sum(rac)
   H = H - p*log(p) 
 }
 H
 
-diversity(RAC, index="shannon")
+diversity(rac, index="shannon")
 ```
-
-### Are they the same? -Mario
-### Unless you have a Ph.D. in Statistical physics or Information theory and can actually geek out on various forms of entropy, Yes. -Ken
-### [Claude Shannon's original paper](http://cm.bell-labs.com/cm/ms/what/shannonday/shannon1948.pdf) -Ken
 
 ### Simpson's diversity (or dominance)
 Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
@@ -403,37 +399,35 @@ Let's calculate Simpson's diversity for Site1 and then compare it to vegan's est
 
 ```{r}
 D <- 0.0
-N <- sum(RAC)
-for (ni in RAC){
+N <- sum(rac)
+for (ni in rac){
   D = D + (ni*ni)/(N*N)
 }
 
 invD <- 1/D # using the 1/D variation
 invD
 
-invD <- diversity(RAC, "inv") # using vegan
+invD <- diversity(rac, "inv") # using vegan's calculation for the inverse of Simpson's diversity
 invD
 
 D <- 1 - D # using the 1 - D variation
 D
 
-D <- diversity(RAC, "simp") # using vegan
+D <- diversity(rac, "simp") # using vegan
 D
 ```
 
 ### Fisher's $\boldsymbol\alpha$
-R.A. Fisher (1943) derived one of the first and most successful models for how abundance varies among species, i.e., the log-series distribution. 
-This model has only a single fitted parameter, i.e., $\alpha$, which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$. 
-However, this does not tell us exactly how to estimate $\alpha$, and this is because $\alpha$ is a fitted parameter. 
-Later, we will explore the log-series. 
-For now, let's concentrate on the Fisher's $\alpha$, which has often been used as a diversity metric and is the root of 'alpha' diversity. 
-Fisher's $\alpha$, according to the authors of the vegan package is asymptotically similar to inverse Simpson's. 
-Let's compare using Site1.
+R.A. Fisher (1943) derived one of the first and most successful models for how abundance varies among species, i.e., the log-series distribution.
+This model has only a single fitted parameter, i.e., $\alpha$, 
+Because $\alpha$ is a fitted parameter, it is less straightforward to estimate and we will not attempt to code a function for it, here.
+Fisher's $\alpha$ has often been used as a diversity metric and is the root of 'alpha' diversity and, according to the authors of the vegan package, it is asymptotically similar to inverse Simpson's.
+Let's do this comparison using the RAC from site 1 of the BCI site-by-species matrix.
 
 ```{r}
-invD <- diversity(RAC, "inv")
+invD <- diversity(rac, "inv")
 invD
-Fisher <- fisher.alpha(BCI)
+Fisher <- fisher.alpha(rac)
 Fisher
 ```
 
@@ -458,11 +452,13 @@ Species abundance models attempt to predict the form of the SAD (e.g. as an RAC)
 
 Let's use the radfit() function in the vegan package to fit the predictions of various species abundance models to the RAC of site1 in BCI 
 ```{r}
-RACresults <- radfit(RAC)
+RACresults <- radfit(rac)
 RACresults
 ```
 
 ___
+
+which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$.
 
 ## Homework
 
