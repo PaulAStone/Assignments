@@ -522,7 +522,6 @@ Shortened name for the Zipf – Mandelbrot model. This model adds one parameter 
 #a[r] = J*c*(r+beta)^gamma after which p1 of the Zipf model changes into a meaningless scaling constant c. 
 ```
 
-
 which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$.
 
 ## Homework
