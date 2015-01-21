@@ -357,10 +357,10 @@ Evar(rac)
 
 As you can see, the value of $E_{var}$ suggests an intermediate value of species evenness for site1.
 Likewise, you can see that different evenness metrics, even when bound between 0 and 1 still return very different values. 
-This is not because each is inaccurate but because each metric emphasizes different aspects of the RAC. 
-Where Simpson's evenness focuses more greatly on dominant species, $E_{var}$ gives nearly equal weight to dominant, intermediately abundant, and rare species.
 
-### How about asking them to compare the two evennes metrics and explain???### FEEL FREE, JAY
+***Question 9***: Does this disagreement reveal that each metric is inaccurate, or something else? Explain.
+
+> ***Answer 9***:
 
 ##6) Integrating richness and evenness: "diversity metrics"
 Metrics developed from information theory. Commonly used. Rarely understood.
