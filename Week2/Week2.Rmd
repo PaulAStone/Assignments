@@ -321,6 +321,7 @@ SimpE <- function(x){
   D <- diversity(x, "simp") # Simpson's diversity (D) via `vegan`
   S <- specnumber(x) ## would like to stick with our S.obs funciton, but doesn't seem to work..strange. transpose vector?##
   E <- (1/D)/S # Simpson's evenness (E)
+  return(E)
   }
 ```
 
@@ -454,6 +455,7 @@ Let's use the radfit() function in the vegan package to fit the predictions of v
 ```{r}
 RACresults <- radfit(rac)
 RACresults
+plot(RACresults, las=1)
 ```
 
 ___
