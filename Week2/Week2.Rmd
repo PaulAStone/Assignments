@@ -489,31 +489,44 @@ Let's visualize our results by plotting the empirical RAC and the predicted RAC 
 plot(RACresults, las=1)
 ```
 
-Visual inspection confirms our statistical results, i.e., the Mandelbrot model appears more like the empirical data (black circles) than the other models, while the Zipf under predict abundant species (i.e. rank) and over predicts the rare species.
+Visual inspection confirms our statistical results, i.e., the Mandelbrot model appears more like the empirical data (black circles) than the other models, while the Zipf under predict abundant species (i.e. rank) and over predicts the rare species.  
+
 
 **But, what should we conclude from this curve fitting exercise? That is, what do these models represent?**
 
 ### Interpreting vegan's RAC models:
 
 #### Null:
-A brokenstick model where the expected abundance of species at rank r is a[r] = J/S sum(from x=r to S) 1/x (Pielou 1975), where J is the total number of individuals (site total) and S is the total number of species in the community. This gives a Null model where the individuals are randomly distributed among observed species, and there are no fitted parameters. 
+A **broken stick model** (Pielou 1975) where the expected abundance of a species at rank r is a(r) = N/S * sum(from x=r to S) * 1/x.
+Where N is the total number of individuals and S is the total number of species.
+This gives a constraint-based Null model where the N individuals are randomly distributed among S species, and there are no fitted parameters.
+Null models often reveal that realistic patterns can be expected from random sampling, and have been extremely useful in ecology and evolution.
 
 #### Preemption:
-The niche preemption model, a.k.a. geometric series or Motomura model. The only estimated parameter is the preemption coefficient α which gives the decay rate of abundance per rank. The niche preemption model is a straight line in a RAD plot. 
+The **niche preemption model**, a.k.a. geometric series or Motomura model. 
+Envisioned an environment occupied by a single species. 
+Now, envision that a second species colonizes the environment and takes some portion of resources equal to $\alpha$. 
+Then, envision that a third species colonizes the environment and takes a portion of resources equal to $\alpha$ away from the second species.
+Imagine this process continuing until N is zero.
+The only estimated parameter is the preemption coefficient $\alpha$ which gives the decay rate of abundance per rank. 
+The expected abundance (a) of species at rank r is a(r) = N * $\alpha$ * (1- $\alpha$) ^ (r-1). 
 
-```{r}
-#The expected abundance a of species at rank r is a[r] = J*alpha*(1-alpha)^(r-1). 
-```
+***Question 12***: a.) What does the preemption model assume about the relationship between total abundance (N) and total resources that can be preempted? b.) Why does the niche preemption model look like a straight line in the RAD plot?
+
+> ***Answer 12a***:  
+> ***Answer 12b***:
 
 #### Lognormal:
-The log-Normal model assumes that the logarithmic abundances are distributed Normally, or a[r] = exp(log(mu) + log(sigma) * N), where N is a Normal deviate.
+Many statistical models assume that the distribution of values (e.g. abundances) are normally distributed, e.g., they conform to the shape of a symmetrical bell curve, more precisely known as the Gaussian distribution.
+In contrast, the log-Normal model assumes that the logarithmic abundances are normally distributed.
+The expected abundance of a species at rank r is then: a[r] = exp(log(mu) + log(sigma) * N), where N is a Normal deviate. 
+A Normal deviate is simply the number of standard deviations a score is from the mean of its population.
+The log-normal model was introduced into ecology by Frank Preston in 1948 and is one of the most widely successful species abundance models.
 
 #### Zipf:
-The Zipf model where p1 is the fitted proportion of the most abundant species, and gamma is a decay coefficient. 
-
-```{r}
-#a[r] = J*p1*r^gamma
-```
+The Zipf model is based on Zipfs Law, i.e. the ubiquitous observation that many types of data can be fit by a simple scaling law (aka power law).
+In short, the abundance of a species in the RAC is inversely proportional to its rank. 
+The expected abundance (a) of species at rank r is: a(r) = N * $p1$ * $r^\gamma$, where $p1$ is the fitted proportion of the most abundant species, and $\gamma$ is a decay coefficient. 
 
 #### Mandelbrot:
 Shortened name for the Zipf – Mandelbrot model. This model adds one parameter to the Zipf model. 
