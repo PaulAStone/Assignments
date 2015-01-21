@@ -5,6 +5,7 @@ date: "January 23, 2015"
 header-includes:
    - \usepackage{array}
 output: pdf_document
+geometry: margin=2.54cm
 ---
 
 ## Overview 
@@ -212,11 +213,16 @@ Like Chao1, Chao2 is calculated using observed richness (`S.obs`). However, in C
 While Chao2 estimator does not account for species abundances (only incidence, i.e., presence/absence) but it does preserve some of the spatial nature of the data by recognizing that species could have been present at different sites.
 Let's write a function for Chao2:
 
-# Mario, would you quickly code-up Chao2?
-
 ```{r}
-S.chao <- function(x){
-  S.obs(x) + (sum(x==1)^2)/(2*sum(x==2)) ### should we use which() and length() here?
+S.chao2 <- function(site = " ", community = " "){
+  site.obs = community[site, ] 
+  x = site.obs[site.obs > 0]
+  S.obs = length(x)
+  community.pa <- (community>0)*1
+  Q1 = length(which(colSums(community.pa) == 1))
+  Q2 = length(which(colSums(community.pa) == 2))
+  S.chao2 = S.obs + (Q1^2)/(2*Q2)
+  return(S.chao2)
   }
 ```
 
