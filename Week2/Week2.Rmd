@@ -459,30 +459,36 @@ RACresults
 ```
 
 As you can see, vegan fits five models (Null, Preemption, Lognormal, Zipf, and Mandelbrot) using the rank-abundance curve, which vegan refers to as the rank-abundance distribution.
-Next to "RAD models" we see "family poisson", which tells us that by default, vegan assumes Poisson distributed error terms.
-Below this, we see that vegan returns the number of species and the number of individuals in the empirical RAC.
-And, below this, we see a table of information, the first columns of which are par1, par2, and par3.
+Before explaining what these models represent, let's run through vegan's output.
+First, and next to "RAD models", we see "family poisson".
+This tells us that by default, vegan assumes Poisson distributed error terms.
+Below this, we see that vegan returns the number of species and the number of individuals for the empirical RAC.
+Next, we see a table of information, the first columns of which are par1, par2, and par3.
 These columns pertain to model parameters and reveal that the different models use different numbers of parameters; the null model uses none at all.
 Next, we see a column for the Deviance, which is a quality of fit statistic based on residual sum of squares.
 After Deviance, we see columns for AIC and BIC, which are the estimated Akaike Information Criterion and the Bayesian Information Criterion, respectively.
 The AIC and BIC values both relate to the relative quality of a statistical model for a given set of data.
-That is, given a collection of models for the data, AIC and BIC estimate the quality of each model, relative to the other models.
-AIC and BIC are known as "penalized likelihood criteria" because they penalize models for the number of parameters they use.
+That is, AIC and BIC estimate the quality of each model, relative to the other models.
+AIC and BIC are known as "penalized likelihood criteria" because they also penalize models for the number of parameters the models use.
 
 *** Question 10**: Why is it important to account for the number of parameters a model uses when judging how well it explains a given set of data?
 
 > ***Answer 10***:
 
+Whether using the AIC or BIC value, we interpret a lower value as a better quality model.
 Whether looking at the AIC or BIC values, we can see that the Mandelbrot distribution seems to provide the best fit to our empirical RAC.
-But what should we conclude from this curve fitting exercise, other than that 
+We can also see that the Zipf distribution appears to provide the worst fit.
+This result is also supported by the Deviance values, which are highest for the Zipf and lowest for the Mandelbrot.
+
+Now, let's visualize our results by plotting the empirical RAC and the predicted RAC for each model:
 
 ```{r}
 plot(RACresults, las=1)
 ```
 
-Each is plotted as a rank-abundance curve (RAC) along with the empirical species abundance data and you can visually detect that some models probably do better than others at fitting the observed data.
-Likewise, visual inspection confirms Vegan's output 
+Visual inspection confirms our statistical results, i.e., the Mandelbrot model appears more like the empirical data (black circles) than the other models, while the Zipf under predict abundant species (i.e. rank) and over predicts the rare species.
 
+**But, what should we conclude from this curve fitting exercise?**
 
 which is implicitly defined by the log-series model: ${S =} \alpha * ln(1 + n/\alpha)$.
 
