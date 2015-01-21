@@ -56,3 +56,24 @@ for (x in P) { # making use of a 'for' loop. for loops are an elementary control
 Evar = 1 - (2/pi)*atan(X) # these operations make the value of Evar range between 0 and 1
 Evar # print Evar for Site1
 ```
+
+
+
+### Fisher's $\boldsymbol\alpha$
+R.A. Fisher (1943) derived one of the first and most successful models for how abundance varies among species, i.e., the log-series distribution.
+This model has only a single fitted parameter, i.e., $\alpha$, 
+Because $\alpha$ is a fitted parameter, it is less straightforward to estimate and we will not attempt to code a function for it, here.
+Fisher's $\alpha$ has often been used as a diversity metric and is the root of $\alpha$-diversity and, according to the authors of the vegan package, it is asymptotically similar to inverse Simpson's.
+Let's do this comparison using the RAC from site 1 of the BCI site-by-species matrix.
+
+```{r}
+invD <- diversity(rac, "inv")
+invD
+Fisher <- fisher.alpha(rac)
+Fisher
+```
+
+As we can see, the two measurements are somewhat similar. 
+They would converge if our community was much greater in total abundance and richness. 
+However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. 
+The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
