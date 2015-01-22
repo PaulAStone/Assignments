@@ -8,13 +8,13 @@ output: pdf_document
 geometry: margin=2.54cm
 ---
 
-## Overview 
+## OVERVIEW
 
 In this exercise, we will explore aspects of local or site-specific diversity, also known as alpha ($\alpha$) diversity. 
 After introducting one of the primary ecological data structures -- the **site-by-species matrix** -- we will quantify two of the fundamental components of $\alpha$-diversity: **richness** and **evenness**.
 From there, we will discusss ways to integrate richness and evenness, which will include univariate metrics of diversity along with an investigation of **species abundance distributions (SAD)**.
 
-## 1.) Setup
+## 1) SETUP
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
@@ -37,7 +37,7 @@ Otherwise, we recommend you just use the `require` function to load `vegan` and 
 require("vegan") 
 ```
 
-## 2.) Loading Data
+## 2) LOADING DATA
 
 We will start by using the tropical forest dataset from Barro-Colorado Island (BCI).
 BCI is a 1,560-hectare island in the center of the Panama Canal that is administered by the Smithsonian Tropical Research Institution (http://www.stri.si.edu/english/research/facilities/terrestrial/barro_colorado/). 
@@ -51,7 +51,7 @@ Let's load the BCI data using the `data` function:
 data(BCI)
 ```
 
-## 3.) Exploring The Site-By-Species Matrix
+## 3) EXPLORING THE SITE-BY-SPECIES MATRIX
 
 The **site-by-species matrix** is a primary ecological data structure that contains abundances, relative abundances, or the presence of species (or other taxonomic units) observed at different sampling sites.
 
@@ -97,7 +97,7 @@ On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at a
 > ***Answer 1***: 
 
 
-## 4) Species Richness
+## 4) SPECIES RICHNESS
 
 **Species richness (S)** is simply the number of species in a system or the number of species observed in a sample.
 Species richness is the most basic aspect of diversity. 
@@ -287,7 +287,7 @@ Notice that we did a few things differently here.
 Why did we have to plot the y-axis label manually?
 What did the `par(mar=c())` function do?
 
-##5) Species evenness
+##5) SPECIES EVENNESS
 There is more to $\alpha$-diversity than just the number of species in a sample.
 Specifically, it is important to consider how abundance varies among species, that is, **species evenness**.
 Many important biodiversity issues such as species coexistence, community stability, the detection of rare taxa, and biological invasions relate to how abundances vary among taxa. 
@@ -341,7 +341,7 @@ As such, useful metrics are often bound betwen a minimum evenness value of 0.0 a
 Another important feature is that evenness values should independent of *S*; we don't want evenness to simply be a reflection of richness. 
 Here, we will introduce two metrics of evenness that meet the above criteria: Simpson's evenness ($E_{1/D}$) and Smith and Wilson's evenness index ($E_{var}$).
 
-### Simpson's evenness ($E_{1/D}$)
+### Simpson's Evenness ($E_{1/D}$)
 
 Simpson's evenness metric essentially reflects the sample variance of the rank abundance curve, and is calculated as ${E_{1/D} = } \frac{1}{S} \sum \frac{N(N-1)} {n_i(n_i-1)}$, where *S* is species richness, *N* is total abundance, *i* is the *i*th species. 
 
@@ -370,7 +370,7 @@ However, Simpson's evenness has been criticized for being biased towards the mos
 The value of the metric is reportedly sensitive to differences in the few most abundant species.
 Let's examine the value of evenness for `site1` using a different evenness metric that is supposedly less biased in this way, i.e., $E_{var}$.
 
-### Smith and Wilson's evenness index ($E_{var}$)
+### Smith and Wilson's Evenness Index ($E_{var}$)
 
 After reviewing existing metrics, Smith and Wilson (1996) derived a more robust measure of evenness, which they called ($E_{var}$). 
 This metric is standardized to take values between 0 (no evenness) and 1 (perfect evenness).
@@ -403,14 +403,14 @@ What can you infer from the results?
 
 > ***Answer 9***:
 
-##6) Integrating richness and evenness: "diversity" metrics
+##6) INTEGRATING RICHNESS AND EVENNESS: "DIVERSITY" METRICS
 
 So far, we have introduced two primary aspects of diversity, i.e., richness and evenness.
 While we often examine each of these independently, the interaction between richness and evenness is important. 
 Here, we will estimate popular indices of diversity, which explicitly incorporate richness and evenness. 
 We will write our own diversity functions and compare them against the functions in `vegan`. 
 
-### Shannon's diversity (a.k.a Shannon's entropy)
+### Shannon's Diversity (a.k.a Shannon's Entropy)
 Shannon's diversity metric is derived from Shannon's information entropy, and is essentially a measure of uncertainty. 
 This metric is used across the natural sciences and is calculated as ${H' = -}  \sum p_i ln(p_i)$.
 Let's calculate Shannon's diversity for the RAC of `site1` in the BCI site-by-species matrix and then compare it to the `vegan` estimate:
@@ -432,7 +432,7 @@ Now we will use `vegan` to estimate Shannon's index:
 diversity(rac, index = "shannon")
 ```
 
-### Simpson's diversity (or dominance)
+### Simpson's Diversity (or Dominance)
 Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
 Simpson's index is commonly expressed as 1/*D* so that index values naturally increase with diversity.
 Let's calculate Simpson's diversity for `site1` and then compare it to the `vegan` estimate:
@@ -460,35 +460,25 @@ diversity(rac, "simp")
 diversity(rac, "inv")
 ```
 
-##7) Moving beyond univariate metrics of $\alpha$-diversity
+##7) MOVING BEYOND UNIVARIATE METRICS OF $\alpha$-DIVERSIY 
 
-The diversity metrics that we just learne about attempt to integrate richness and evenness into a single, univariate metric.
-Although useful, information is lost in the process. 
-
-Going back to the rank abundance curves, we can gain a lot of information, including the sum of the abundances (*N*), the observed species richness (*S*), as well as the information needed to estimate richness and to calculate evenness and diversity.
-In contrast, by looking at the species abundance distributions (SAD), we can learn more about 
-
-## Species abundance models
-
-Recall that the species rank-abundance curve RAC is simply the abundance of species ranked from most-to-least abundant.
-The RAC is a simple data structure that is both a vector of abundances and a row in the site-by-species matrix (minus the zeros, i.e., absences). 
-Despite it's simplicity the RAC contains a lot of information, including the sum of the abundances (*N*), the observed species richness (*S*), as well as the information needed to estimate richness and to calculate evenness and diversity.
-
-***Question 10***: What might the shape of a rank-abundance distribution tell us about the forces, processes, and/or mechanisms influencing the structure of our system, e.g., an ecological community?
-
-> ***Answer 10***:
+The diversity metrics that we just learned about attempt to integrate richness and evenness into a single, univariate metric.
+Although useful, information is invariably lost in this process. 
+If we go back to the rank abundance curve, we can retrieve additional information, including the forces, processes, and/or mechanisms influencing the structure of our ecologicl system.
 
 The uneven shape of the RAC is one of the most intensively studied patterns in ecology, and underpins all or most ecological theories of biodiversity. 
 Predicting the form of the RAC is the first test that any biodiversity theory must pass and there are no less than 20 models that have attempted to explain the uneven form of the RAC across ecological systems.
 These models attempt to predict the form of the RAC according to mechanisms and processes that are believed to be important to the assembly and structure of ecological systems.
 
-Let's use the `radfit()` function in the `vegan` package to fit the predictions of various species abundance models to the RAC of site1 in BCI 
+Again, we are going to make use of `vegan`.
+Specifically, we are going to use the `radfit()` function to fit the predictions of various species abundance models to the RAC of site1 in BCI 
+
 ```{r}
 RACresults <- radfit(rac)
-RACresults
 ```
 
-As you can see, `vegan` fits five models (*Null*, *Preemption*, *Lognormal*, *Zipf*, and *Mandelbrot*) using the rank-abundance curve, which `vegan` refers to as the rank-abundance distribution (RAD).
+From the output, you can see that `vegan` fits five models (*Null*, *Preemption*, *Lognormal*, *Zipf*, and *Mandelbrot*) using the rank-abundance curve.
+(`vegan` refers to it as a rank-abundance distribution (RAD)).
 Before explaining what these models represent, let's run through the `vegan` output.  
 
 Next to "RAD models", we see "family poisson", which tells us that by default, `vegan` assumes Poisson distributed error terms.
@@ -497,14 +487,19 @@ Next, we see a table of information, the first columns of which are par1, par2, 
 These columns pertain to model parameters and reveal that the different models use different numbers of parameters; the null model uses none.
 Next, we see a column for Deviance, which is a quality of fit statistic based on the idea of residual sums of squares.
 After Deviance, we see columns for AIC and BIC, which are the estimated **Akaike Information Criterion** and the **Bayesian Information Criterion**, respectively.
-The AIC and BIC values both relate to the relative quality of a statistical model for a given set of data.
-AIC and BIC are known as "penalized likelihood criteria" because they also penalize models for the number of parameters the models use.  
+AIC and BIC can be used for comparing multiple model testing. 
+In other words, which model is best supported by my data? 
+Obviously, the more parameters a model has, the better it will fit a data set.
+However, it's not necessarily desirable to have an over-parameterized model. 
+So, AIC and BIC asssign penalties that correspond with the number of parameters that a model uses. 
+In the end, the "best" model has the lowest AIC or BIC value. 
+
 
 ***Question 11***: Why is it important to account for the number of parameters a model uses when judging how well it explains a given set of data?
 
 > ***Answer 11***:
+### Not sure about the question above; how about incorporating information below into question.
 
-Whether using the AIC or BIC value, we interpret a lower value as a better quality model.
 Whether looking at the AIC or BIC values, we can see that the Mandelbrot distribution seems to provide the best fit to our empirical RAC.
 We can also see that the Zipf distribution appears to provide the worst fit.
 This result is also supported by the Deviance values, which are highest for the Zipf and lowest for the Mandelbrot.
@@ -518,9 +513,9 @@ plot(RACresults, las=1, cex.lab = 1.4, cex.axis = 1.25)
 Visual inspection confirms our statistical results, i.e., the Mandelbrot model appears more like the empirical data (black circles) than the other models, while the Zipf under predict abundant species (i.e. rank) and over predicts the rare species.  
 
 
-**But, what should we conclude from this curve fitting exercise? That is, what do these models represent?**
+**But, what should we conclude from this curve fitting exercise? That is, what do these models represent?** ##----> Turn this into a question or delte##
 
-### Interpreting vegan's RAC models:
+### Interpreting the RAC models in `vegan`:
 
 #### Null:
 A **broken stick model** (Pielou 1975) where the expected abundance of a species at rank *r* is *a*(*r*) = *N*/*S* * sum(from x=r to *S*) * 1/x.
@@ -530,14 +525,14 @@ Null models often reveal that realistic patterns can be expected from random sam
 
 #### Preemption:
 The **niche preemption model**, a.k.a. geometric series or Motomura model. 
-Let's envision an environment occupied by a single species. 
-Now, let's envision that a second species colonizes the environment and takes some portion of resources equal to $\alpha$. 
+Envision an environment occupied by a single species. 
+Now, envision that a second species colonizes the environment and takes some portion of resources equal to $\alpha$. 
 Then, envision that a third species colonizes the environment and takes a portion of resources equal to $\alpha$ away from the second species.
 Imagine this process continuing until *N* is zero.
 The only estimated parameter is the preemption coefficient $\alpha$, which gives the decay rate of abundance per rank. 
 The expected abundance (*a*) of species at rank *r* is $a(r) = *N* * \alpha * (1 - \alpha) ^ (*r*-1)$. 
 
-***Question 12***: Answer the following questions about the preemption model:
+***Question 12***: Answer the following questions about the preemption model: ##--> perhaps move below?##
 
 a.  What does the preemption model assume about the relationship between total abundance (*N*) and total resources that can be preempted?
 b.  Why does the niche preemption model look like a straight line in the RAD plot?
@@ -553,7 +548,7 @@ A Normal deviate is simply the number of standard deviations a score is from the
 The log-normal model was introduced into ecology by Frank Preston in 1948 and is one of the most widely successful species abundance models.
 
 #### Zipf:
-The Zipf model is based on Zipfs Law, an well-known observation that many types of ranked data are fit by a simple scaling law (aka power law).
+The Zipf model is based on Zipfs Law, an well-known observation that many types of ranked data are fit by a simple scaling law (a.k.a., power law).
 In short, the abundance of a species in the RAC is inversely proportional to its rank.
 The expected abundance (a) of species at rank r is: $a(r) = N * p1 * r^\gamma$, where $p1$ is the fitted proportion of the most abundant species, and $\gamma$ is a decay coefficient.
 
@@ -561,14 +556,14 @@ The expected abundance (a) of species at rank r is: $a(r) = N * p1 * r^\gamma$, 
 Shortened name for the Zipf–Mandelbrot model, a generalization of the Zipf model made by the mathematician and father of fractal geometry, Benoit Mandelbrot.
 This model adds one parameter ($\beta$) to the Zipf model. 
 The expected abundance of a species (a) at rank r is $a(r) = N * c * (r + \beta) ^ \gamma$. 
-Here, the p1 parameter of the Zipf model changes into a meaningless scaling constant c.
+Here, the p1 parameter of the Zipf model changes into a meaningless scaling constant *c*.
 
 ## Homework
 
 1.  As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's Diversity only applies to communities of infinite size. For anything but an infinitely large community, Simpson's Diversity index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
-Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for site 1 of the BCI site-by-species matrix.
+Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for site 1 of the BCI site-by-species matrix. ###I don't understand the question###
 
-2.  Along with the rank-abundance curve (or rank-abundance distribution), another way to visualize the distribution of abundance among species is with a histogram (aka frequency distribution) that shows that frequency of different abundance classes.
+2.  Along with the rank-abundance curve (or rank-abundance distribution), another way to visualize the distribution of abundance among species is with a histogram (a.k.a., frequency distribution) that shows the frequency of different abundance classes.
 For example, in a given sample, there may be ten species represented by a single individual, 8 species with two individuals, 4 species with three individuals, and so on.
 In fact, the rank-abundance curve and the frequency distribution are the two most common ways to visualize the species abundance distribution (SAD) and to test species abundance models and biodiversity theories.
 To address this homework question, use the R function **hist()** to plot the frequency distribution for site 1 of the BCI site-by-species matrix, and describe the general pattern you see.
