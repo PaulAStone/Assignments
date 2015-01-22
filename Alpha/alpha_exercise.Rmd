@@ -112,16 +112,13 @@ This has been an example of how we can write our own functions that accomplish t
 ### But How Well Did You Sample Your Site?
 
 Accurate estimates of richness are influenced by sampling effort and biases.
-Even when the sampling effort is un-biased, the more individuals that are censused, the more likely you are to encounter new species.
 One index that provides an estimate of how well a site is sampled is known as **Good's Coverage (C) where C = $1 - \frac{n_{1}}{N}$, **$n_{1}$** is the number of **singleton species** (species only detected once), and **$N$** is the total number of individuals in the sample.
-Examining the equation for Good's C reveals that the fraction is simply the portion of **$N$** represented by singleton species.
-Subtracting this from 1 give the portion of **$N$** belonging to species sampled more than once.
 
-Let's write a function and estimate Good's Coverage for site1 of BCI:
+Unscramble the following code to produce a function that will estimate Good's Coverage:
 
 ```{r}
-C <- function(x){
-  1 - (sum(x==1)/rowSums(x))
+? <- AThingToDoSomething(?){
+  100 - (add(?==1)/SumsRows(?))
   }
 ```
   
