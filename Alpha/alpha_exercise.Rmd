@@ -1,5 +1,5 @@
 ---
-title: "Week 2 Exercise: Local Diversity"
+title: "Week 2 Exercise: Local ($\alpha$) Diversity"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 23, 2015"
 header-includes:
@@ -17,10 +17,8 @@ From there, we will then discusss ways to integrate richness and evenness, which
 ## 1.) Setup
 ### Retrieve and Set Your Working Directory
 
-```{r, results = 'hide'}
-rm(list=ls()) 
-getwd() 
-setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2") 
+```{r}
+
 ```
 
 ### Install Packages
@@ -28,71 +26,46 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2")
 In this excercise, we will rely heavily on a **contributed R package** called `vegan`, which contains tools commonly used in ecological research, including analyses of $\alpha$-diversity. 
 Jari Oksanen has created an excellent tutorial that provides an overview of the `vegan` package: http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf
 
-Let's install the `vegan` package and its dependencies. 
 If you are running `vegan` for the first time, you will need to install it with the `install.packages` function. 
 Otherwise, we recommend you just use the `require` function to load `vegan` and its dependencies.
 
-```{r, results = 'hide'}
-#install.packages("vegan") 
-require("vegan") 
+```{r}
+
 ```
 
 ## 2.) Loading Data
 
 We will start by using the tropical forest dataset from **Barro-Colorado Island (BCI)**.
-BCI is a 1,560-hectare island in the center of the Panama Canal that is administered by the Smithsonian Tropical Research Institution (http://www.stri.si.edu/english/research/facilities/terrestrial/barro_colorado/). 
-Conveniently, the `vegan` library contains a version of the BCI dataset. 
-The dataset is a census of all trees of at least 10cm in diameter at breast height (DBH) that occur in 50 one-hectare plots.
-More information on the BCI forest dataset can be found elswhere (http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/).
-You can also learn more about the BCI dataset associated with the 'vegan' package by typing `help(BCI)` in the command line.
-Let's load the BCI data using the `data` function:
+Conveniently, the `vegan` library contains a version of the BCI dataset.
+You can learn more about the BCI dataset associated with the 'vegan' package by typing `help(BCI)` in the command line.
+
+Let's load the BCI data using the `data` function. Remember, functions have parentheses, e.g. help():
 
 ```{r}
-data(BCI)
+
 ```
 
 ## 3.) Exploring The Site-By-Species Matrix
 
 The **site-by-species matrix** is a primary ecological data structure that contains abundances, relative abundances, or the presence of species (or other taxonomic units) observed at different sampling sites.
-
-\begin{center}
-\begin{tabular}{ l | c c c c c}
-    &  \textbf{Species1} & \textbf{Species2} & \textbf{Species3} & \textbf{Species4} & ... \\
-  \hline \\ [-1.5ex]
-  Site1 & 90 & 76 & 1 & 0   & \\
-  \\ [-1.5ex]
-  Site3 & 86 & 47 & 0 & 123 & \\
-  \\ [-1.5ex]  
-  Site3 & 23 & 89 & 0 & 46  & \\
-  ...   &    &    &   &     & \\
-  \end{tabular}
-  \end{center}
-
-
 Each site corresponds to a row in the site-by-species matrix, while each species corresponds to a column.
 Throughout the course, we will draw inferences about aspects of diversity from the site-by-species matrix.
 
 The version of the BCI site-by-species matrix provided in `vegan` contains the abundances of 225 tree species (i.e. 225 columns) for each of 50 sites (i.e. 50 rows).
-While it is conventional to refer to a matrix or table by its rows and then by its columns, each row could just as easily be a species and each column could be a site, i.e., a species by site matrix.
-Some programs that you encounter will prefer data to be in one format or the other. 
-In such case, you can use the transpose function (`t()`) to modify the site-by-species matrix.
 
 Let's verify the structure of the BCI site-by-species matrix using the `dim` function, which was introduced last week:
 
 ```{r}
-dim(BCI)
+
 ```
 
 With the BCI site-by-species matrix now loaded, let's print the abundances of four species found in the first eight sites using the indexing tools that were introduced last week.
 
 ```{r, results = 'hide'}
-BCI[1:8, 14:17]
+BCI[?:?, ?:?] # replace the ? with the appropriate inputs
 ```
 
-Here, we can see that Cabbage Bark (*Andira inermis*) is absent from six of the eight sites and is only found as a single individual in two sites (sites 5 and 6). 
-On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at all eight sites and is more abundant than any of the other three species that we indexed in the data frame.
-
-***Question 1***:  Makes some additional observations about the occurrence and abundance of species in the samples you've indexed.
+***Question 1***:  Makes some observations about the occurrence and abundance of species in the samples you've indexed.
 
 > ***Answer 1***: 
 
@@ -101,67 +74,60 @@ On ther other hand, *Apeiba aspera* (locally known as Monkey Comb) is found at a
 
 **Species richness (S)** is simply the number of species in a system or the number of species observed in a sample.
 Species richness is the most basic aspect of diversity. 
-In fact, it is usually what most people are referring to when they talk about $\alpha$-diversity.
-Calculating species richness for a sample is often straightforward, i.e., count the number of species present in a sample.
-However, estimating species richness for a community from an incomplete sample requires assumptions about the nature of the sampling effort (e.g. biases, coverage).
-In this part of the exercise, you will see that there are several ways to estimate richness, which attempt to account for the number of species that were not detected.
 
 ### Observed Richness
 
 The simplest way to calcuate species richness is to just add up the number of species that were detected in a sample of a site.
-Let's calculate species richness using this approach for one of the BCI sites. 
+Let's calculate species richness for one of the BCI sites. 
 Using some of the R basics from last week, let's:
 
 1.  assign the first row to a variable called "site1", and 
 2.  check the dimensions of this new vector
 
 ```{r}
-site1 <- BCI[1,]
-dim(site1)
+
 ```
 
-While there are 225 species in the BCI dataset, and hence, 225 columns in the BCI site-by-species matrix, each of the 225 species was not likely present at each site.
-Consequently, it is important to note that site-by-species matrices account for absences (i.e., zero occurences). 
-Let's write a function that calculates observed species richness of a site.
+It is important to note that site-by-species matrices can account for absences (i.e., zero abundance at a site).
+Let's write a function called "S.obs" that calculates observed species richness of a site, ignoring the zeros.
+You will see below that we have provided the structure of the function.
+Your task is to replace the question marks (?) with the correct inputs. 
 
 ```{r}
-S.obs <- function(x){
-  rowSums(x>0)*1
+S.obs <- function(?){
+  rowSums(?>?)*?
   }
 ```
 
-The writing and use of functions is central to programming.
-The basic concept behind functions is to define a piece of code that operates on one or more variables.
-So, instead of repeatedly rewriting code to calculate richness, we define a function called `S.obs` that calculates richness of a given vector (i.e., `x`).
-We can then call the function by typing `S.obs()` and placing our vector within the parentheses. 
-There is also a function in the `vegan` package called `specnumber` also calculates observed richness. 
+We can now call the S.obs function by typing `S.obs( )` and placing our vector of abundances within the parentheses. 
+There is also a function in the `vegan` package called `specnumber` that also calculates observed richness. 
 
 ***Question 2***: Does `vegan` return the same value for observed richness of `site1` as our function `S.obs `?
 
 > ***Answer 2***:
 
+Writing functions is central to using computational tools and is generally valuable to understanding how models and metrics of biodiversity are calculated and encoded via a programming language.
+This has been an example of how we can write our own functions that accomplish the same tasks as software packages such as vegan.
+
 ### But How Well Did You Sample Your Site?
 
 Accurate estimates of richness are influenced by sampling effort and biases.
-Even when the sampling effort is un-biased, the more individuals that are censused, the more likely you are to encounter new species.
 One index that provides an estimate of how well a site is sampled is known as **Good's Coverage (C) where C = $1 - \frac{n_{1}}{N}$, **$n_{1}$** is the number of **singleton species** (species only detected once), and **$N$** is the total number of individuals in the sample.
-Examining the equation for Good's C reveals that the fraction is simply the portion of **$N$** represented by singleton species.
-Subtracting this from 1 give the portion of **$N$** belonging to species sampled more than once.
 
-Let's write a function and estimate Good's Coverage for site1 of BCI:
+De-bug the following code to produce a function that will estimate Good's Coverage (C):
 
 ```{r}
-C <- function(x){
-  1 - (sum(x==1)/rowSums(x))
+? <- AThingToDoSomething(?){
+  100 - (add(?==1)/SumsRows(?))
   }
 ```
   
 ***Question 4***: Answer the following questions about the coverage:
 
 a.  Have the researchers at BCI done a good job of sampling `site1`? 
-b.  What is the range of values that can be generated by Good's Coverage?
-c.  What portion of taxa in `site1` were represented as singletons? 
-d.  What would we conclude from Good's Coverage if **$n_{1}$** equaled **$N$**?
+b.  Is there an assumption of Good's Coverage that could be violated by some systems? If so, what?
+c.  What portion of taxa in `site1` were **NOT** represented as singletons?
+d.  What would we conclude if Good's Coverage equaled 1.0?
 
 > ***Answer 4a***:  
 > ***Answer 4b***:  
@@ -170,18 +136,18 @@ d.  What would we conclude from Good's Coverage if **$n_{1}$** equaled **$N$**?
 
 ### Estimating Richness
 
-There are few systems on earth that have been better surveyed than the trees at BCI.
-For most ecological systems, sample size is much smaller than **N** and many taxa can easily go undetected. 
+For most ecological systems, sample size is much smaller than the true total abundance, and many taxa can easily go undetected. 
 To address this question, we are going to introduce a new data set.
 This dataset is derived from bacterial 16S rRNA gene sequences, which were collected from multiple plots at the KBS Long-Term Ecological Site(http://lter.kbs.msu.edu/).
 Even though we obtained a fair number of sequences from each sample, soil bacteria are abundant and thought to be some of the most divese communities on earth. 
 
-In the following R chun, we load this microbial dataset as a matrix and identify a sample (i.e., site) for subsequent analysis.
+In the following R chunk, we want to load this microbial dataset as a matrix and then identify a sample (i.e., site) for subsequent analysis.
+However, we need your expertise to De-bug the code to get it working properly.
 
 ```{r}
-soilbac <- read.table("data/soilbac.txt", sep = "\t", header = TRUE, row.names = 1)
+soilbac <- reed.table("data/soilbac.csv", sep = "\t", header = FALSE, row.names = -1)
 soilbac <- as.data.frame(t(soilbac))
-soilbac1 <- soilbac[1,]
+soilbac1 <- soilbac[1,1]
 ```
 
 ***Question 5***: Answer the following questions about the soil bacterial dataset. 
