@@ -1,5 +1,5 @@
 ---
-title: "Week 2 Exercise: Local Diversity"
+title: "Week 2 Exercise: Local ($\alpha$) Diversity"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "January 23, 2015"
 header-includes:
@@ -18,9 +18,7 @@ From there, we will then discusss ways to integrate richness and evenness, which
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
-rm(list=ls()) 
-getwd() 
-setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2") 
+
 ```
 
 ### Install Packages
@@ -28,47 +26,29 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week2")
 In this excercise, we will rely heavily on a **contributed R package** called `vegan`, which contains tools commonly used in ecological research, including analyses of $\alpha$-diversity. 
 Jari Oksanen has created an excellent tutorial that provides an overview of the `vegan` package: http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf
 
-Let's install the `vegan` package and its dependencies. 
 If you are running `vegan` for the first time, you will need to install it with the `install.packages` function. 
 Otherwise, we recommend you just use the `require` function to load `vegan` and its dependencies.
 
 ```{r, results = 'hide'}
-#install.packages("vegan") 
-require("vegan") 
+
 ```
 
 ## 2.) Loading Data
 
 We will start by using the tropical forest dataset from **Barro-Colorado Island (BCI)**.
-BCI is a 1,560-hectare island in the center of the Panama Canal that is administered by the Smithsonian Tropical Research Institution (http://www.stri.si.edu/english/research/facilities/terrestrial/barro_colorado/). 
-Conveniently, the `vegan` library contains a version of the BCI dataset. 
-The dataset is a census of all trees of at least 10cm in diameter at breast height (DBH) that occur in 50 one-hectare plots.
-More information on the BCI forest dataset can be found elswhere (http://ctfs.arnarb.harvard.edu/webatlas/datasets/bci/).
-You can also learn more about the BCI dataset associated with the 'vegan' package by typing `help(BCI)` in the command line.
-Let's load the BCI data using the `data` function:
+Conveniently, the `vegan` library contains a version of the BCI dataset.
+You can learn more about the BCI dataset associated with the 'vegan' package by typing `help(BCI)` in the command line.
+
+Let's load the BCI data using the `data` function. Remember, functions have parentheses, e.g. help():
 
 ```{r}
-data(BCI)
+
+
 ```
 
 ## 3.) Exploring The Site-By-Species Matrix
 
 The **site-by-species matrix** is a primary ecological data structure that contains abundances, relative abundances, or the presence of species (or other taxonomic units) observed at different sampling sites.
-
-\begin{center}
-\begin{tabular}{ l | c c c c c}
-    &  \textbf{Species1} & \textbf{Species2} & \textbf{Species3} & \textbf{Species4} & ... \\
-  \hline \\ [-1.5ex]
-  Site1 & 90 & 76 & 1 & 0   & \\
-  \\ [-1.5ex]
-  Site3 & 86 & 47 & 0 & 123 & \\
-  \\ [-1.5ex]  
-  Site3 & 23 & 89 & 0 & 46  & \\
-  ...   &    &    &   &     & \\
-  \end{tabular}
-  \end{center}
-
-
 Each site corresponds to a row in the site-by-species matrix, while each species corresponds to a column.
 Throughout the course, we will draw inferences about aspects of diversity from the site-by-species matrix.
 
