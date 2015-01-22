@@ -381,7 +381,7 @@ The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi \cdot \arctan( \sum
 
 While seemingly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the natural-log transformed abundances and then standardizing it to take values between 0 and 1 using elementary trigonometry.
 Specifically, $E_{var}$ uses the arctangent, which varies between $- \pi / 2$ and $\pi / 2$ without being periodic like sine waves.
-Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1.
+Dividing 2 by $\pi$ times the arctangent forces the result to take values between 0 and 1.
 Subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. 
 In the end, an $E_{var}$ function can be written as follows:
 
@@ -513,9 +513,6 @@ plot(RACresults, las=1, cex.lab = 1.4, cex.axis = 1.25)
 
 Visual inspection confirms our statistical results, i.e., the Mandelbrot model appears more like the empirical data (black circles) than the other models, while the Zipf under predict abundant species (i.e. rank) and over predicts the rare species.  
 
-
-**But, what should we conclude from this curve fitting exercise? That is, what do these models represent?** ##----> Turn this into a question or delte##
-
 ### Interpreting the RAC models in `vegan`:
 
 #### Null:
@@ -533,7 +530,7 @@ Imagine this process continuing until *N* is zero.
 The only estimated parameter is the preemption coefficient $\alpha$, which gives the decay rate of abundance per rank. 
 The expected abundance (*a*) of species at rank *r* is $a_r = N \cdot \alpha \cdot (1 - \alpha)^{(r - 1)}$. 
 
-***Question 12***: Answer the following questions about the preemption model: ##--> perhaps move below?##
+***Question 12***: Answer the following questions about the preemption model:
 
 a.  What does the preemption model assume about the relationship between total abundance (*N*) and total resources that can be preempted?
 b.  Why does the niche preemption model look like a straight line in the RAD plot?
@@ -556,20 +553,16 @@ The expected abundance (a) of species at rank r is: $a_r = N \cdot p_1 \cdot r^{
 #### Mandelbrot:
 Shortened name for the Zipf–Mandelbrot model, a generalization of the Zipf model made by the mathematician and father of fractal geometry, Benoit Mandelbrot.
 This model adds one parameter ($\beta$) to the Zipf model. 
-<<<<<<< HEAD
-The expected abundance of a species (a) at rank r is $a(r) = N * c * (r + \beta) ^ \gamma$. 
-Here, the p1 parameter of the Zipf model changes into a meaningless scaling constant *c*.
-=======
+
 The expected abundance of a species (a) at rank r is $a_r = N \cdot c \cdot (r + \beta)^{\gamma}$. 
 Here, the $\it{p_1}$ parameter of the Zipf model changes into a meaningless scaling constant *c*.
->>>>>>> upstream/master
 
-## Homework
+## HOMEWORK
 
 1.  As stated by Magurran (2004) the  ${D = } \sum p_i^2$ derivation of Simpson's Diversity only applies to communities of infinite size. For anything but an infinitely large community, Simpson's Diversity index is calculated as ${D = } \sum \frac{n_i(n_i -1)} {N(N-1)}$. 
-Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for site 1 of the BCI site-by-species matrix. ###I don't understand the question###
+Calculate Simpson's D, 1 - D, and Simpson's inverse (i.e. 1/D) for site 1 of the BCI site-by-species matrix. 
 
-2.  Along with the rank-abundance curve (or rank-abundance distribution), another way to visualize the distribution of abundance among species is with a histogram (a.k.a., frequency distribution) that shows the frequency of different abundance classes.
+2.  Along with the rank-abundance curve, another way to visualize the distribution of abundance among species is with a histogram (a.k.a., frequency distribution) that shows the frequency of different abundance classes.
 For example, in a given sample, there may be ten species represented by a single individual, 8 species with two individuals, 4 species with three individuals, and so on.
 In fact, the rank-abundance curve and the frequency distribution are the two most common ways to visualize the species abundance distribution (SAD) and to test species abundance models and biodiversity theories.
 To address this homework question, use the R function **hist()** to plot the frequency distribution for site 1 of the BCI site-by-species matrix, and describe the general pattern you see.
