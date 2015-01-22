@@ -77,3 +77,25 @@ As we can see, the two measurements are somewhat similar.
 They would converge if our community was much greater in total abundance and richness. 
 However, discussion of Fisher's $\alpha$ introduces a new concept, that is, of estimating diversity instead of just calculating a diversity metric. 
 The difference being that an estimate of diversity implicitly or explicitly accounts for samplign error, that is, the fact that when samplign most ecological communities that we are not observing every single individual.
+
+
+We can use the information from the `rarefy` function to create a barplot that compares each site.
+Remember, we can calculate 95% confidence intervals using $95\% CI = \bar{x} \pm SEM \times 1.96$.
+
+```{r, warning=FALSE}
+opar <- par(no.readonly = TRUE)
+par(mar=c(5.1, 6.1, 4.1, 2.1))
+S.plot <- barplot(S.rarefy[1, ], xlab = "Treatment", ylab = NULL, 
+                  ylim =c(0, round(max(soilbac.S), digits = 0)), 
+                  pch = 15, las = 1, cex = 1, cex.lab = 1.4, cex.axis = 1.25)
+arrows(x0 = S.plot, y0 = S.rarefy[1, ], y1 = S.rarefy[1, ] - (S.rarefy[2, ] * 1.96), 
+       angle = 90, length=0.1, lwd = 1)
+arrows(x0 = S.plot, y0 = S.rarefy[1, ], y1 = S.rarefy[1, ] + (S.rarefy[2, ] * 1.96), 
+       angle = 90, length=0.1, lwd = 1)
+title(ylab = "Richness (S)", line = 4, cex.lab = 1.4)
+par(opar)
+```
+
+Notice that we did a few things differently here.
+Why did we have to plot the y-axis label manually?
+What did the `par(mar=c())` function do?
