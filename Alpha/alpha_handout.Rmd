@@ -86,7 +86,7 @@ dim(BCI)
 
 With the BCI site-by-species matrix now loaded, let's print the abundances of four species found in the first eight sites using the indexing tools that were introduced last week.
 
-```{r, results = 'hide'}
+```{r}
 BCI[1:8, 14:17]
 ```
 
