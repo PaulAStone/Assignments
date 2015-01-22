@@ -25,7 +25,8 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Alpha")
 
 ### Install Packages
 
-In this excercise, we will rely heavily on a contributed R package called `vegan`. This package contains tools commonly used in ecological research, including analyses of $\alpha$-diversity.
+In this excercise, we will rely heavily on a contributed R package called `vegan`. 
+This package contains tools commonly used in ecological research, including analyses of $\alpha$-diversity.
 Jari Oksanen has created an excellent tutorial that provides an overview of the `vegan` package: http://cc.oulu.fi/~jarioksa/opetus/metodi/vegantutor.pdf
 
 Let's install the `vegan` package and its dependencies. 
@@ -225,7 +226,7 @@ Let's write a function for Chao2.
 In this function, the first argument is site, supplied either as row number or row title (e.g., 1 or "T1_1") and the second argument is the name of the site-by-species matrix (e.g., soilbac):
 
 ```{r}
-S.chao2 <- function(site = " ", SbyS = " "){
+S.chao2 <- function(site = "", SbyS = ""){
   SbyS = as.data.frame(SbyS)
   x = SbyS[site, ] 
   SbyS.pa <- (SbyS > 0) * 1
@@ -387,7 +388,7 @@ In the end, an $E_{var}$ function can be written as follows:
 ```{r}
 Evar <- function(x = ""){
   x <- as.vector(x[x > 0])
-  1 - (2/pi)*atan(var(log(x)))
+  1 - (2/(pi*atan(var(log(x)))))
   }
 ```
 
@@ -523,7 +524,7 @@ Visual inspection confirms our statistical results, i.e., the Mandelbrot model a
 ### Interpreting vegan's RAC models:
 
 #### Null:
-A **broken stick model** (Pielou 1975) where the expected abundance of a species at rank *r* is *a*(*r*) = *N*/*S* * sum(from x=r to *S*) * 1/x.
+A **broken stick model** (Pielou 1975) where the expected abundance of a species at rank *r* is $a_r = \frac{N}{S} \cdot \sum\limits_{x=r}^{S}\frac{1}{x}$.
 Where *N* is the total number of individuals and *S* is the total number of species.
 This gives a constraint-based Null model where the *N* individuals are randomly distributed among *S* species, and there are no fitted parameters.
 Null models often reveal that realistic patterns can be expected from random sampling, and have been extremely useful in ecology and evolution.
@@ -535,7 +536,7 @@ Now, let's envision that a second species colonizes the environment and takes so
 Then, envision that a third species colonizes the environment and takes a portion of resources equal to $\alpha$ away from the second species.
 Imagine this process continuing until *N* is zero.
 The only estimated parameter is the preemption coefficient $\alpha$, which gives the decay rate of abundance per rank. 
-The expected abundance (*a*) of species at rank *r* is $a(r) = *N* * \alpha * (1 - \alpha) ^ (*r*-1)$. 
+The expected abundance (*a*) of species at rank *r* is $a_r = N \cdot \alpha \cdot (1 - \alpha)^{(r - 1)}$. 
 
 ***Question 12***: Answer the following questions about the preemption model:
 
@@ -548,20 +549,20 @@ b.  Why does the niche preemption model look like a straight line in the RAD plo
 #### Lognormal:
 Many statistical models assume that the distribution of values (e.g. abundances) are normally distributed, e.g., they conform to the shape of a symmetrical bell curve, more precisely known as the Gaussian distribution.
 In contrast, the log-Normal model assumes that the logarithmic abundances are normally distributed.
-The expected abundance of a species at rank *r* is then: a[r] = exp(log(mu) + log(sigma) * *N*), where *N* is a Normal deviate. 
+The expected abundance of a species at rank *r* is then: $a_r = e^{log(\mu) + log(\sigma) \cdot Z }$, where *Z* is the Normal deviate. 
 A Normal deviate is simply the number of standard deviations a score is from the mean of its population.
 The log-normal model was introduced into ecology by Frank Preston in 1948 and is one of the most widely successful species abundance models.
 
 #### Zipf:
 The Zipf model is based on Zipfs Law, an well-known observation that many types of ranked data are fit by a simple scaling law (aka power law).
 In short, the abundance of a species in the RAC is inversely proportional to its rank.
-The expected abundance (a) of species at rank r is: $a(r) = N * p1 * r^\gamma$, where $p1$ is the fitted proportion of the most abundant species, and $\gamma$ is a decay coefficient.
+The expected abundance (a) of species at rank r is: $a_r = N \cdot p_1 \cdot r^{\gamma}$, where $\it{p_1}$ is the fitted proportion of the most abundant species, and $\gamma$ is a decay coefficient.
 
 #### Mandelbrot:
 Shortened name for the Zipf–Mandelbrot model, a generalization of the Zipf model made by the mathematician and father of fractal geometry, Benoit Mandelbrot.
 This model adds one parameter ($\beta$) to the Zipf model. 
-The expected abundance of a species (a) at rank r is $a(r) = N * c * (r + \beta) ^ \gamma$. 
-Here, the p1 parameter of the Zipf model changes into a meaningless scaling constant c.
+The expected abundance of a species (a) at rank r is $a_r = N \cdot c \cdot (r + \beta)^{\gamma}$. 
+Here, the $\it{p_1}$ parameter of the Zipf model changes into a meaningless scaling constant *c*.
 
 ## Homework
 
