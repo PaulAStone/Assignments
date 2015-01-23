@@ -10,23 +10,20 @@ geometry: margin=2.54cm
 
 In this exercise, we will explore aspects of local or site-specific diversity, also known as alpha ($\alpha$) diversity. 
 After introducting one of the primary ecological data structures -- the **site-by-species matrix** -- we will quantify two of the fundamental components of ($\alpha$) diversity: **richness** and **evenness**.
-From there, we will then discusss ways to integrate richness and evenness, which will include univariate metrics of "diversity" along with an investigation of **species abundance distributions (SAD)**.
+From there, we will then discusss ways to integrate richness and evenness, which will include univariate metrics of "diversity" along with an investigation of the **species abundance distribution (SAD)**.
 
 ## Directions:
 1. Change "Student Name" on line 3 (above) with your name.
 2. Complete as much of the exercise as possible during class; what you do not complete in class will need to be done on your own outside of class.
 3. Use the handout as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise.
-4. Be sure to **answer the questions** in this exercise document (they also correspond to the handout).
+4. Be sure to **answer the questions** in this exercise document; they also correspond to the handout.
 Space for your answer is provided in this document and indicated by the ">" character.
 If you need a second paragraph be sure to start the first line with ">".
-You should notice that the answer is highlighted in green by RStudio. 
-5. Before you leave the classroom today, it is *imperative* that you **push** this file to your GitHub repo.
+5. Before you leave the classroom, **push** this file to your GitHub repo.
 6. For homework, follow the directions at the bottom of this file. 
 7. When you are done, **Knit** the text and code into a PDF file.
-Basically, just press the `Knit` button in scripting panel.
-This will save the PDF output in your Week1 folder.
 8. After Knitting, please submit the completed exercise by creating a **pull request** via GitHub.
-Your pull request should include this file (*alpha_exercise.Rmd*; with all code blocks filled out and questions answered) and the PDF output of `Knitr` (*alpha_exercise.pdf*).
+Your pull request should include this file *alpha_exercise.Rmd* and the PDF output of `Knitr` (*alpha_exercise.pdf*).
 
 The completed exercise is due on **February 5^th^, 2015 before 12:00 PM (noon)**.
 
@@ -86,7 +83,7 @@ Species richness is the most basic aspect of diversity.
 The simplest way to calcuate species richness is to just add up the number of species that were detected in a sample of a site.
 Let's calculate species richness for one of the BCI sites. 
 In the R code chunk below, do the following:
-1. assign the first row to a variable called `site1`, 
+1. assign the first row of the BCI site-by-species matrix to a variable called `site1`, 
 2. check the dimensions of this new vector,
 3. using the template provided, write the function to calculate observed richness when 0s are present in the data,
 4. use your function to determine the number of species in `site1`, and
@@ -129,16 +126,17 @@ c.  What portion of taxa in `site1` were **NOT** represented as singletons?
 d.  What would we conclude if Good's Coverage equaled 1.0?
 
 > ***Answer 4a***:  
+
 > ***Answer 4b***:  
+
 > ***Answer 4c***:  
+
 > ***Answer 4d***:  
 
 ### Estimating Richness
 
 For most ecological systems, sample size is much smaller than the true total abundance, and many taxa can easily go undetected. 
-To address this question, we are going to introduce a new data set.
-This dataset is derived from bacterial 16S rRNA gene sequences, which were collected from multiple plots at the KBS Long-Term Ecological Site(http://lter.kbs.msu.edu/).
-Even though we obtained a fair number of sequences from each sample, soil bacteria are abundant and thought to be some of the most divese communities on earth. 
+To address this question, we are going to introduce a new data set derived from bacterial 16S rRNA gene sequences, which were collected from multiple plots at the KBS Long-Term Ecological Site(http://lter.kbs.msu.edu/).
 
 In the R code chunk below, do the following:
 1. load the microbial dataset (located in the Alpha/data folder),
@@ -160,15 +158,17 @@ b.  What is the observed richness of `soilbac1`?
 c.  How does coverage compare between the BCI sample (`site1`) and the KBS sample (`soilbac1`)?
 
 > ***Answer 5a***:  
-> ***Answer 5b***:  
+
+> ***Answer 5b***: 
+
 > ***Answer 5c***:  
 
 ### Richness Estimators
 
 In the R code chunk below, do the following:
-1. write the function to calculate **Chao1**,
-2. write the function to calculate **Chao2**, and
-2. use these function to estimate richness at both `site1` and `soilbac1`. 
+1. write a function to calculate **Chao1**,
+2. write a function to calculate **Chao2**,
+3. use these functions to estimate richness at both `site1` and `soilbac1`. 
 
 ```{r}
 
@@ -186,8 +186,9 @@ In the R code chunk below, do the following:
 ## Rarefaction
 
 In the R code chunk below, please do the following:
-1. calculate observed richness for all samples in soilbac (your function will work with the site-by-species matrix.
-2. determine the size of the smallest sampling effor
+1. calculate observed richness for all samples in soilbac
+Your function will work with the site-by-species matrix.
+2. determine the size of the smallest sample.
 3. use the `rarefy` function to rarefy each sample to this level
 4. plot the rarefaction results
 5. add and label the 1:1 line.
@@ -200,52 +201,45 @@ In the R code chunk below, please do the following:
 
 
 ```
-### Make barplot with richness =/- 95% CIs????
 
 ##5) Species evenness
-There is more to ($\alpha$) diversity than just the number of species in a sample.
-Specifically, it is important to consider how abundance varies among species, that is, **species evenness**.
-Many important biodiversity issues such as species coexistence, community stability, the detection of rare taxa, and biological invasions relate to how abundances vary among taxa. 
+Here, we consider how abundance varies among species, that is, **species evenness**.
 
 ### Visualizing Evenness: The Rank Abundance Curve (RAC)
 One of the most common ways to visualize evenness is in a **rank-abundance curve** (sometime referred to as a rank-abundance distribution or Whittaker plot).
 An RAC can be constructed by ranking species from the most abundant to the least abundant without respect to species labels (and hence no worries about 'ties' in abundance). 
 
-Let's write a function to construct an RAC.
-First, we will remove species that have zero abundances.
-Then, we will order the vector from greatest (most abundant) to least (least abundant).
+In the R code chunk below, please do the following:
+1. Write a function to construct an RAC.
+2. Be sure to remove species that have zero abundances.
+3. Order the vector from greatest (most abundant) to least (least abundant).
+4. Return the ranked vector
 
 ```{r}
-RAC <- function(x){
-  x = as.vector(x)
-  x.ab = x[x > 0]
-  x.ab.ranked = x.ab[order(x.ab, decreasing = TRUE)]
-  return(x.ab.ranked)
-  }
+
+
+
+
+
 ```
 
 Now, let's examine the RAC for `site1` of the BCI data set.
-We will do this by creating a sequence of ranks and plotting the RAC with natural-log transformed abundances.
 
+In the R code chunk below, please do the following:
+1. Create a sequence of ranks and plot the RAC with natural-log-transformed abundances.
+2. label the x-axis "Rank in abundance" and the y-axis "log(abundance)"
 ```{r}
-rac <- RAC(site1)
-ranks <- as.vector(seq(1, length(rac)))
-plot(ranks, log(rac), type = 'p', las = 1, 
-     xlab = "Rank in abundance", ylab = "log(abundance)")
+
+
+
 ```
 
 ***Question 8***: What effect does log-transforming the abundance data have on how we interpret evenness in an RAC?
 
 > ***Answer 8***:
 
-It is clear from looking at the RAC for `site1` that the abundance among species is unequally distributed.
-This sort of uneven distribution of abundance among species is one of the most ubiquitous patterns in ecology and has provoked a long history of study, theories, and explanations McGill et al. (2007) (http://www.ncbi.nlm.nih.gov/pubmed/17845298).
 
 Now that we have visualized unevennes, it is time to quantify it.
-Based on decades work, researchers have identified desirable features of an evenness metric. 
-One of these features is that the values generated by the metric should be relatively easy to inuit. 
-As such, useful metrics are often bound betwen a minimum evenness value of 0.0 and a maximum evenness value of 1.0.
-Another important feature is that evenness values should independent of *S*; we don't want evenness to simply be a reflection of richness. 
 Here, we will introduce two metrics of evenness that meet the above criteria: Simpson's evenness ($E_{1/D}$) and Smith and Wilson's evenness index ($E_{var}$).
 
 ### Simpson's evenness ($E_{1/D}$)
@@ -282,15 +276,14 @@ In the R code chunk below, please do the following:
 ```
 
 ***Question 9***: Compare estimates of evenness for `site1` of BCI using $E_{1/D}$ and $E_{var}$.
-Do they agree?
+Do they agree? If so, why? If not, why not?
 
 > ***Answer 9***:
+
 
 ##6) INTEGRATING RICHNESS AND EVENNESS: DIVERSITY METRICS
 
 So far, we have introduced two primary aspects of diversity, i.e., richness and evenness.
-While we often examine each of these independently, the interaction between richness and evenness is important. 
-Here, we will estimate popular indices of diversity, which explicitly incorporate richness and evenness. 
 We will write our own diversity functions and compare them agains the functions in `vegan`. 
 
 ### Shannon's diversity (a.k.a Shannon's entropy)
@@ -340,96 +333,56 @@ Just as $\alpha$-diversity consists of more than just the number of species, it 
 
 ## Species abundance models
 
-Recall that the species rank-abundance curve RAC is simply the abundance of species ranked from most-to-least abundant.
 The RAC is a simple data structure that is both a vector of abundances and a row in the site-by-species matrix (minus the zeros, i.e., absences). 
-Despite it's simplicity the RAC contains a lot of information, including the sum of the abundances (*N*), the observed species richness (*S*), as well as the information needed to estimate richness and to calculate evenness and diversity.
 
 ***Question 10***: What might the shape of a rank-abundance distribution tell us about the forces, processes, and/or mechanisms influencing the structure of our system, e.g., an ecological community?
 
 > ***Answer 10***:
 
-The uneven shape of the RAC is one of the most intensively studied patterns in ecology, and underpins all or most ecological theories of biodiversity. 
 Predicting the form of the RAC is the first test that any biodiversity theory must pass and there are no less than 20 models that have attempted to explain the uneven form of the RAC across ecological systems.
-These models attempt to predict the form of the RAC according to mechanisms and processes that are believed to be important to the assembly and structure of ecological systems.
 
 Let's use the radfit() function in the vegan package to fit the predictions of various species abundance models to the RAC of site1 in BCI 
 ```{r}
-RACresults <- radfit(rac)
-RACresults
+
+
 ```
 
-As you can see, vegan fits five models (Null, Preemption, Lognormal, Zipf, and Mandelbrot) using the rank-abundance curve, which vegan refers to as the rank-abundance distribution (RAD).
-Before explaining what these models represent, let's run through vegan's output.  
+Next, Let's visualize our results by plotting the empirical RAC and the predicted RAC for each model:
 
-Next to "RAD models", we see "family poisson", which tells us that by default, vegan assumes Poisson distributed error terms.
-Below this, we see that vegan returns the number of species and the number of individuals for the empirical RAC.
-Next, we see a table of information, the first columns of which are par1, par2, and par3.
-These columns pertain to model parameters and reveal that the different models use different numbers of parameters; the null model uses none.
-Next, we see a column for Deviance, which is a quality of fit statistic based on the idea of residual sum of squares.
-After Deviance, we see columns for AIC and BIC, which are the estimated Akaike Information Criterion and the Bayesian Information Criterion, respectively.
-The AIC and BIC values both relate to the relative quality of a statistical model for a given set of data.
-That is, AIC and BIC estimate the quality of each model, relative to the other models.
-AIC and BIC are known as "penalized likelihood criteria" because they also penalize models for the number of parameters the models use.  
+```{r}
 
-***Question 11***: Why is it important to account for the number of parameters a model uses when judging how well it explains a given set of data?
+```
+
+
+***Question 11***: Below, write a short paragraph summarizing vegan's output/results in your own words.  
 
 > ***Answer 11***:
 
-Whether using the AIC or BIC value, we interpret a lower value as a better quality model.
-Whether looking at the AIC or BIC values, we can see that the Mandelbrot distribution seems to provide the best fit to our empirical RAC.
-We can also see that the Zipf distribution appears to provide the worst fit.
-This result is also supported by the Deviance values, which are highest for the Zipf and lowest for the Mandelbrot.
-
-Let's visualize our results by plotting the empirical RAC and the predicted RAC for each model:
-
-```{r}
-plot(RACresults, las=1)
-```
-
-Visual inspection confirms our statistical results, i.e., the Mandelbrot model appears more like the empirical data (black circles) than the other models, while the Zipf under predict abundant species (i.e. rank) and over predicts the rare species.  
 
 
-**But, what should we conclude from this curve fitting exercise? That is, what do these models represent?**
 
-### Interpreting vegan's RAC models:
 
-#### Null:
-A **broken stick model** (Pielou 1975) where the expected abundance of a species at rank r is a(r) = N/S * sum(from x=r to S) * 1/x.
-Where N is the total number of individuals and S is the total number of species.
-This gives a constraint-based Null model where the N individuals are randomly distributed among S species, and there are no fitted parameters.
-Null models often reveal that realistic patterns can be expected from random sampling, and have been extremely useful in ecology and evolution.
+***Question 12***: Why is it important to account for the number of parameters a model uses when judging how well it explains a given set of data?
 
-#### Preemption:
-The **niche preemption model**, a.k.a. geometric series or Motomura model. 
-Envisioned an environment occupied by a single species. 
-Now, envision that a second species colonizes the environment and takes some portion of resources equal to $\alpha$. 
-Then, envision that a third species colonizes the environment and takes a portion of resources equal to $\alpha$ away from the second species.
-Imagine this process continuing until N is zero.
-The only estimated parameter is the preemption coefficient $\alpha$ which gives the decay rate of abundance per rank. 
-The expected abundance (a) of species at rank r is a(r) = N * $\alpha$ * (1- $\alpha$) ^ (r-1). 
+> ***Answer 12***:
 
-***Question 12***: a.) What does the preemption model assume about the relationship between total abundance (N) and total resources that can be preempted? b.) Why does the niche preemption model look like a straight line in the RAD plot?
 
-> ***Answer 12a***:  
-> ***Answer 12b***:
 
-#### Lognormal:
-Many statistical models assume that the distribution of values (e.g. abundances) are normally distributed, e.g., they conform to the shape of a symmetrical bell curve, more precisely known as the Gaussian distribution.
-In contrast, the log-Normal model assumes that the logarithmic abundances are normally distributed.
-The expected abundance of a species at rank r is then: a[r] = exp(log(mu) + log(sigma) * N), where N is a Normal deviate. 
-A Normal deviate is simply the number of standard deviations a score is from the mean of its population.
-The log-normal model was introduced into ecology by Frank Preston in 1948 and is one of the most widely successful species abundance models.
+***Question 13***: a.) What does the preemption model assume about the relationship between total abundance (N) and total resources that can be preempted? b.) Why does the niche preemption model look like a straight line in the RAD plot?
 
-#### Zipf:
-The Zipf model is based on Zipfs Law, an well-known observation that many types of ranked data are fit by a simple scaling law (aka power law).
-In short, the abundance of a species in the RAC is inversely proportional to its rank.
-The expected abundance (a) of species at rank r is: a(r) = N * $p1$ * $r^\gamma$, where $p1$ is the fitted proportion of the most abundant species, and $\gamma$ is a decay coefficient.
+> ***Answer 13a***:  
+> ***Answer 13b***:
 
-#### Mandelbrot:
-Shortened name for the Zipf–Mandelbrot model, a generalization of the Zipf model made by the mathematician and father of fractal geometry, Benoit Mandelbrot.
-This model adds one parameter ($\beta$) to the Zipf model. 
-The expected abundance of a species (a) at rank r is a(r) = N * c * (r + $\beta$) ^ $\gamma$. 
-Here, the p1 parameter of the Zipf model changes into a meaningless scaling constant c.
+
+***Question 14***: What is your favorite diversity or evenness metric covered so far, and why? What was the most confusing?
+
+> ***Answer 14***:
+
+
+***Question 15***: What is your favorite species abundance model and why?
+
+> ***Answer 15***:
+
 
 ## Homework
 
@@ -442,4 +395,3 @@ In fact, the rank-abundance curve and the frequency distribution are the two mos
 To address this homework question, use the R function **hist()** to plot the frequency distribution for site 1 of the BCI site-by-species matrix, and describe the general pattern you see.
 
 3) use knitr to create a pdf, push it to GitHub, and create a pull request
-
