@@ -286,7 +286,7 @@ Do they agree?
 
 > ***Answer 9***:
 
-##6) Integrating richness and evenness: "diversity metrics"
+##6) INTEGRATING RICHNESS AND EVENNESS: DIVERSITY METRICS
 
 So far, we have introduced two primary aspects of diversity, i.e., richness and evenness.
 While we often examine each of these independently, the interaction between richness and evenness is important. 
@@ -294,54 +294,44 @@ Here, we will estimate popular indices of diversity, which explicitly incorporat
 We will write our own diversity functions and compare them agains the functions in `vegan`. 
 
 ### Shannon's diversity (a.k.a Shannon's entropy)
-Shannon's diversity metric is derived from Shannon's information entropy, and is essentially a measure of uncertainty. 
-This metric is used across the natural sciences and is calculated as ${H' = -}  \sum p_i ln(p_i)$.
-Let's calculate Shannon's diversity for the RAC of `site1` in the BCI site-by-species matrix and then compare it to the `vegan` estimate:
+
+In the R code chunk below, please do the following:
+1. provide the code for calculating H' (Shannon's diversty),
+2. compare this estimate with the output of `vegan's` diversity funciton.
 
 ```{r}
-H <- function(x = ""){
-  H = 0
-  for (n_i in x){
-    p = n_i / sum(x)
-    H = H - p*log(p) 
-  }
-  return(H)
-}
-```
 
-Now we will use `vegan` to estimate Shannon's index:
 
-```{r}
-diversity(rac, index="shannon")
+
+
+
+
+
+
+
 ```
 
 ### Simpson's diversity (or dominance)
-Simpsons diversity is a straightforward metric and is calculated as ${D = } \sum p_i^2$ where $p_i$ is the proportion of individuals found in the *i*th species. 
-Simpson's index is often expressed as 1/*D* (or 1-*D*), so that index naturally increases with diversity.
-Let's calculate Simpson's diversity for `site1` and then compare it to the `vegan` estimate:
+
+In the R code chunk below, please do the following:
+1. provide the code for calculating D (Simpson's diversty),
+2. calculate boht the inverse (1/D) and 1 - D,
+2. compare this estimate with the output of `vegan's` diversity funciton.
 
 ```{r}
-D <- function(x = ""){
-  D = 0
-  N = sum(x)
-  for (n_i in x){
-    D = D + (n_i^2)/(N^2)
-  }
-  return(D)
-}
-```
 
-And now let's express Simpsons's diversity as 1/*D* (invD) and 1-*D*:
-```{r}
-D.inv <- 1/D(rac) 
-D.min <- 1-D(rac)
-```
 
-Finally, we can use `vegan` to estimate Simpsons's index:
 
-```{r, results="hide"}
-diversity(rac, "simp")
-diversity(rac, "inv")
+
+
+
+
+
+
+
+
+
+
 ```
 
 ##7) Moving beyond univariate metrics of $\alpha$ diversity
