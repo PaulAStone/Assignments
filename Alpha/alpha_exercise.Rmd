@@ -140,13 +140,17 @@ To address this question, we are going to introduce a new data set.
 This dataset is derived from bacterial 16S rRNA gene sequences, which were collected from multiple plots at the KBS Long-Term Ecological Site(http://lter.kbs.msu.edu/).
 Even though we obtained a fair number of sequences from each sample, soil bacteria are abundant and thought to be some of the most divese communities on earth. 
 
-In the following R chunk, we want to load this microbial dataset as a matrix and then identify a sample (i.e., site) for subsequent analysis.
-However, we need your expertise to De-bug the code to get it working properly.
+In the R code chunk below, do the following:
+1. load the microbial dataset (located in the Alpha/data folder),
+2. transform and transpose the data as needed (see handout),
+3. create a vector (soilbac1) with the bacterial OTU abundances at any site in the dataset,
+4. calculate the observed richness at that particular site, and 
+5. calculate the coverage at that particular site
 
 ```{r}
-soilbac <- reed.table("data/soilbac.csv", sep = "\t", header = FALSE, row.names = -1)
-soilbac <- as.data.frame(t(soilbac))
-soilbac1 <- soilbac[1,1]
+
+
+
 ```
 
 ***Question 5***: Answer the following questions about the soil bacterial dataset. 
@@ -159,67 +163,42 @@ c.  How does coverage compare between the BCI sample (`site1`) and the KBS sampl
 > ***Answer 5b***:  
 > ***Answer 5c***:  
 
+### Richness Estimators
 
-There are number of statistical techniques developed to estimate richness based on the coverge of species in a sample (e.g., Hughes et al. 2001  -- http://aem.asm.org/content/67/10/4399).
-Here, we will highlight two commonly used richness estimators that were developed by Anne Chao. 
-Both estimators fall into the category of being non-parametric, which means that they are not based on an underlying distribution (e.g. Normal distribution, Student's t-distribution) and hence, make few statistical assumptions.
-
-**Chao1** is an *abundance-based estimator* and is useful for examining richness of a single site.
-It is calculated using observed richness (`S.obs`), the observed number of **singletons** (species with an observed abundance of 1), and the observed number of **doubletons** (species with observed abundance of 2).
-Chao1 tends to be used for analysis of samples with low-abundance taxa. 
-Becasue it requires singleton and doubleton data to calculate, Chao1 cannot be used on with a site x species matrix where abundances have been relativized. 
-
-Let's write a function for Chao1:
+In the R code chunk below, do the following:
+1. write the function to calculate **Chao1**,
+2. write the function to calculate **Chao2**, and
+2. use these function to estimate richness at both `site1` and `soilbac1`. 
 
 ```{r}
-S.chao1 <- function(x){
-  S.obs(x) + (sum(x==1)^2)/(2*sum(x==2))
-  }
-```
 
-In contrast, **Chao2** is *incidence-based estimator* that uses presence-absence data for examining richness across multiple sites.
-Chao2 is calculated using observed richness (`S.obs`).
-However, in Chao2, **singletons** and **doubletons** refer to species observed once and twice, respectively, across sites or samples.
-Because it is an incidence-based estimator, Chao2 is commonly used when estimating richness with clonal organisms and/or percent cover data (e.g., corals)
 
-Let's write a function for Chao2 where the first argument is site as either row number or row title (e.g., 1 or "T1_1") and the second argument is the site x species matrix (e.g., soilbac):
 
-```{r}
-S.chao2 <- function(site = " ", SbyS = " "){
-  SbyS = as.data.frame(SbyS)
-  x = SbyS[site, ] 
-  SbyS.pa <- (SbyS>0)*1
-  Q1 = sum(colSums(SbyS.pa) == 1)
-  Q2 = sum(colSums(SbyS.pa) == 2)
-  S.chao2 = S.obs(x) + (Q1^2)/(2*Q2)
-  return(S.chao2)
-  }
+
+
+
+
+
+
+
 ```
 
 ## Rarefaction
 
-Often researchers want to compare the richness of two or more samples.
-Ideally, we would sample all of our sites with equal effort, all sites would have equal densities, and all individuals would have equal probability of detection.
-However, these conditions are rarely met.
-Likewise, sites with greater abundance generally have greater species richness, which means that differences in richness may largely be due to differences in sample size.
-
-A common way to reduce the bias associated with different **$N$** and to compare sites with both different **$N$** and different **$S$**, is to **rarify** samples down to a "lowest common denominator".
-For example, if there are 2 sites, one with **$N$**=100 and one with **$N$**=50, we could randomly sample (without replacement) 50 individuals from the site with greater **$N$**.
-Generating many random samples (each of 50 individuals) from the larger site will allow us to calculate the mean (i.e. expected **$S$**) and standard error. Likewise, we'll be able to tell whether the **$S$** of the smaller sample falls within the confidence-intervals for expected **$S$** of the larger sample and hence, whether the difference in **$S$** between the two sites is simply due to difference in **$N$**.
-
-In the following section, we will calculate observed richness for soil bacteria collected from 11 of the KBS sites, where T1 = agriculture, T7 = grassland, DF = deciduous forest, and CF = coniferous forest.
-Then, we will identify the sample with the fewest sequences (i.e., *N*) and use `vegan` to rarefy to that sampling effort. 
-Last we will use commands from `vegan` to construct rarefaction curves for the different samples. 
+In the R code chunk below, please do the following:
+1. calculate observed richness for all samples in soilbac (your function will work with the site-by-species matrix.
+2. determine the size of the smallest sampling effor
+3. use the `rarefy` function to rarefy each sample to this level
+4. plot the rarefaction results
+5. add and label the 1:1 line.
 
 
 ```{r}
-soilbac.S <- S.obs(soilbac)     
-min.N <- min(rowSums(soilbac))    
-S.rarefy <- rarefy(soilbac, min.N, se = TRUE)   
-rarecurve(soilbac, step = 20, col = "blue", cex = 0.6, las=1) #
-abline(0, 1, col = 'red')             
-text(1500, 1500, "1:1", pos = 2, col = 'red')
-rarefy(soilbac, sample = min.N, se = TRUE)
+
+
+
+
+
 ```
 ### Make barplot with richness =/- 95% CIs????
 
@@ -271,60 +250,35 @@ Here, we will introduce two metrics of evenness that meet the above criteria: Si
 
 ### Simpson's evenness ($E_{1/D}$)
 
-### Not sure how to handle here, but we haven't defined the SAD yet, so this explanation is not very useful; some revising probably needed###
-
-Simpson's evenness metric essentially reflects the sample variance of the SAD, and is calculated as ${E_{1/D} = } \frac{1}{S} \sum \frac{N(N-1)} {n_i(n_i-1)}$, where *S* is species richness, *N* is total abundance, *i* is the *i*th species. 
-
-The `vegan` package does not have a function for Simpson's evenness. 
-But we can derive Simpson's evenness from Simpson's diversity, which estimates the probability that the next sampled individual belongs to a different species. 
-In the following R chunk we will estimate Simpsons diversity (D) using the `diversity` function in `vegan` and observed richness.
+In the R code chunk below, do the following:
+1. write the function to calculate $E_{1/D}$,
+2. calculate $E_{1/D}$ for `site1`,
 
 ```{r}
-SimpE <- function(x){
-  x = as.data.frame(x)
-  D <- diversity(x, "inv")
-  S <- S.obs(x) 
-  E <- (D)/S 
-  return(E)
-  }
+
+
+
+
+
+
+
+
 ```
-
-Now, let's calculate Simpson's evenness using our previous RAC from `site 1` in the BCI site-by-species matrix.
-
-```{r}
-SimpE(site1)
-```
-
-We can see that Simpson's evenness for `site1` is moderately even (~`r round(SimpE(site1), 2)`). 
-However, Simpson's evenness has been criticized for being biased towards the most abundant taxa.
-The value of the metric is suppodely sensitive to differences in the few most abundant species.
-Let's examine the value of evenness for `site1` using a different evenness metric that is less biased in this way, i.e., $E_{var}$.
 
 ### Smith and Wilson's evenness index ($E_{var}$)
 
-After reviewing existing metrics, Smith and Wilson (1996) derived a more robust measure of evenness, which they called ($E_{var}$). 
-This metric is standardized to take values between 0 (no evenness) and 1 (perfect evenness).
-Abundances are transformed to their natural logarithms to decrease bias towards the most abundant species, that is, the potential for a metric's value to be influenced more by large numbers than small ones.
-$E_{var}$, like all desireable measures of evennness, is independent of richness *S*.
-The metric is calculated as: ${E_{var} = 1 - } \frac{2} {\pi \cdot \arctan( \sum\limits_{i=1}^{i=S} ln(n_i) - \sum\limits_{j=1}^{j=S} ln(n_j)/S)}$.
-
-While seemingly more involved to calcualte, $E_{var}$ simply reduces to finding the sample variance of the log-transformed abundances and then standardizing it to take values between 0 and 1 using elementary trigonometry.
-Specifically, $E_{var}$ uses the arctangent, which varies between -$\pi$/2 and $\pi$/2 without being periodic like sine waves.
-Multiplying the arctangent by 2/pi forces the result to take values between 0 and 1.
-Subtracting this from one allows low evenness to be associated with values near 0 and high evenness to be associated with values near 1. 
-In the end, an $E_{var}$ function can be written as follows:
+In the R code chunk below, please do the following:
+1. write the function to calculate $E_{var}$,
+2. calculate $E_{var}$ for `site1`,
+3. compare $E_{1/D}$ and $E_{var}$.
 
 ```{r}
-Evar <- function(x){
-  x <- as.vector(x[x > 0])
-  1 - (2/pi)*atan(var(log(x)))
-  }
-```
 
-Now let's use the $E_{var}$ function to estimate evenness for `site1` of the BCI site-by-species matrix.
 
-```{r}
-Evar(rac)
+
+
+
+
 ```
 
 ***Question 9***: Compare estimates of evenness for `site1` of BCI using $E_{1/D}$ and $E_{var}$.
