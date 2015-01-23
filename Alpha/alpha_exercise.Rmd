@@ -63,30 +63,12 @@ In the R code chunk below, do the following:
 ## 3.) Exploring The Site-By-Species Matrix
 
 In the R code chunk below, do the following:
-1) determine the size of the BCI site-by-species matrix,
+1) determine the size (dimensions) of the BCI site-by-species matrix,
 2) print the abundances of four species found in the first eight sites using the indexing tools that were introduced last week
 
-
 ```{r}
 
-```
 
-The **site-by-species matrix** is a primary ecological data structure that contains abundances, relative abundances, or the presence of species (or other taxonomic units) observed at different sampling sites.
-Each site corresponds to a row in the site-by-species matrix, while each species corresponds to a column.
-Throughout the course, we will draw inferences about aspects of diversity from the site-by-species matrix.
-
-The version of the BCI site-by-species matrix provided in `vegan` contains the abundances of 225 tree species (i.e. 225 columns) for each of 50 sites (i.e. 50 rows).
-
-Let's verify the structure of the BCI site-by-species matrix using the `dim` function, which was introduced last week:
-
-```{r}
-
-```
-
-With the BCI site-by-species matrix now loaded, let's print the abundances of four species found in the first eight sites using the indexing tools that were introduced last week.
-
-```{r, results = 'hide'}
-BCI[?:?, ?:?] # replace the ? with the appropriate inputs
 ```
 
 ***Question 1***:  Makes some observations about the occurrence and abundance of species in the samples you've indexed.
@@ -103,47 +85,40 @@ Species richness is the most basic aspect of diversity.
 
 The simplest way to calcuate species richness is to just add up the number of species that were detected in a sample of a site.
 Let's calculate species richness for one of the BCI sites. 
-Using some of the R basics from last week, let's:
-
-1.  assign the first row to a variable called "site1", and 
-2.  check the dimensions of this new vector
-
-```{r}
-
-```
-
-It is important to note that site-by-species matrices can account for absences (i.e., zero abundance at a site).
-Let's write a function called "S.obs" that calculates observed species richness of a site, ignoring the zeros.
-You will see below that we have provided the structure of the function.
-Your task is to replace the question marks (?) with the correct inputs. 
+In the R code chunk below, do the following:
+1. assign the first row to a variable called `site1`, 
+2. check the dimensions of this new vector,
+3. using the template provided, write the function to calculate observed richness when 0s are present in the data,
+4. use your function to determine the number of species in `site1`, and
+5. compare the output of your function to the `specnumber()` function in vegan
 
 ```{r}
-S.obs <- function(?){
-  rowSums(?>?)*?
+
+
+S.obs <- function(   ){
+  rowSums(     ) * 
   }
-```
 
-We can now call the S.obs function by typing `S.obs( )` and placing our vector of abundances within the parentheses. 
-There is also a function in the `vegan` package called `specnumber` that also calculates observed richness. 
+
+
+```
 
 ***Question 2***: Does `vegan` return the same value for observed richness of `site1` as our function `S.obs `?
 
 > ***Answer 2***:
 
 Writing functions is central to using computational tools and is generally valuable to understanding how models and metrics of biodiversity are calculated and encoded via a programming language.
-This has been an example of how we can write our own functions that accomplish the same tasks as software packages such as vegan.
+This has been an example of how we can write our own functions that accomplish the same tasks as software packages such as `vegan`.
 
 ### But How Well Did You Sample Your Site?
 
-Accurate estimates of richness are influenced by sampling effort and biases.
-One index that provides an estimate of how well a site is sampled is known as **Good's Coverage (C) where C = $1 - \frac{n_{1}}{N}$, **$n_{1}$** is the number of **singleton species** (species only detected once), and **$N$** is the total number of individuals in the sample.
-
-De-bug the following code to produce a function that will estimate Good's Coverage (C):
+In the R code chunk below, do the following:
+1. write a function to calculate Good's Coverage,
+2. use that function to calculate coverage in `site1`
 
 ```{r}
-? <- AThingToDoSomething(?){
-  100 - (add(?==1)/SumsRows(?))
-  }
+
+
 ```
   
 ***Question 4***: Answer the following questions about the coverage:
