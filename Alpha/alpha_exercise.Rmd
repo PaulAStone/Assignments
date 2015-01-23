@@ -64,7 +64,7 @@ In the R code chunk below, do the following:
 
 In the R code chunk below, do the following:
 1) determine the size of the BCI site-by-species matrix,
-2) print the abundances of four species found in the first eight sites using the indexing tools that were introduced last week
+2) print the abundances of the four species found in the first eight sites using the indexing tools that were introduced last week
 
 
 ```{r}
