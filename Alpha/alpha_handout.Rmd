@@ -35,6 +35,7 @@ Otherwise, we recommend you just use the `require` function to load `vegan` and 
 
 ```{r, results = 'hide', message=FALSE}
 #install.packages("vegan") 
+#instead, use try("vegan")
 require("vegan") 
 ```
 
