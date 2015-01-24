@@ -376,7 +376,7 @@ require("psych")
 
 If the package is not found, you will need to install it first and then load dependencies:
 ```{r, eval = FALSE}
-install.packages("psych")
+install("psych")
 require("psych")
 ```
 
@@ -401,6 +401,7 @@ Now, let's load another package that will let us visualize the sign and strength
 ```{r}
 require("corrplot")
 corrplot(cor1, method = "ellipse")
+dev.off()
 ```
 
 ### Linear Regression
