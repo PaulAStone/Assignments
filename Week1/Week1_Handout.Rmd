@@ -401,6 +401,7 @@ Now, let's load another package that will let us visualize the sign and strength
 ```{r}
 require("corrplot")
 corrplot(cor1, method = "ellipse")
+dev.off()
 ```
 
 ### Linear Regression
