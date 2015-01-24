@@ -376,7 +376,7 @@ require("psych")
 
 If the package is not found, you will need to install it first and then load dependencies:
 ```{r, eval = FALSE}
-install("psych")
+install.packages("psych")
 require("psych")
 ```
 
