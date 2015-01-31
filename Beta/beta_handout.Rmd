@@ -518,7 +518,7 @@ rect.hclust(spe.chwo, k=4)
 
 
 
-### Visualization using Ordination
+### Visualization using Ordination (Jay will work on this)
 Various techniques
 | Method | Distance Preserved | Variables | 
 | Princiapl component analysis (PCA) | Euclidean distance | Quantiative data, linear relationships |
