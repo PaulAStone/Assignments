@@ -1,40 +1,41 @@
 ---
-title: "Week 3 Exercise: Between Site Diversity"
+title: "Among Site (Beta) Diversity"
 author: "Z620: Quantitative Biodiversity, Indiana University"
-date: "January 30, 2015"
+date: "February 6, 2015"
 header-includes:
    - \usepackage{array}
 output: pdf_document
+geometry: margin=2.54cm
 ---
 
-## Overview
+## OVERVIEW
 In this exercise, you will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
-First, you will learn how to formally quantify ($\beta$) diversity.
-Second, you will learn how to visualize ($\beta$) diversity using cluster analysis, ordination, and heatmaps. 
-Finally, you will be introduced to some multivariate techniques to test hypotheses about beta ($\beta$) diversity. 
+First, you will learn how to formally quantify $\beta$-diversity.
+Second, you will learn how to visualize $\beta$-diversity using cluster analysis, ordination, and heatmaps. 
+Last, you will be introduced to some multivariate techniques to test hypotheses about $\beta$-diversity. 
 
-## 1) Setup
+## 1) SETUP
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
-rm(list=ls())                                                # removes all variables from your workspace
-getwd()                                                      # prints the working directory
-setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Week3") #sets working directory
+rm(list=ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Beta")
 ```
 
 ### Load Packages 
 
 From last week's exercises, you should now be familiar with some of the features in the R package `vegan`.
-We will again be using this pacakge and can load it now.
+We will be using this pacakge again; please load it now.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("vegan")
 ```
 
-## 2) Loading Data
+## 2) LOADING DATA
 We will again be using the BCI data set contained in `vegan` for part of this week's exercise. 
 In addition, we will be using environmental data for the BCI plots. 
-Your Weeek3 folder has soil data for each of the BCI plots (bci.soil.txt).
+Your Beta folder has soil data for each of the BCI plots (bci.soil.txt).
 Let's go ahead and import all of these data now.
 
 ```{r}
@@ -42,13 +43,13 @@ data(BCI)                                   # BCI Tree Abundance (vegan)
 BCI.soil <- read.delim("./bci.soil.txt")    # BCI Soil Data (your working directory)
 ```
 
-## 3) Exploring Beta ($\Beta$) Diversity
-Last week, we learned about alpha ($\alpha$) diversity, where we calculated things like species richness and evenness. 
+## 3) Exploring $\beta$-Diversity
+Last week, we learned about $\alpha$-diversity, where we calculated things like species richness and evenness. 
 These metrics are great for assessing the diversity of a single sample, but overlook spatial and temporal heterogeneity.
-Beta ($\Beta$) diversity is a measure of between-habitat diversity, or the difference in species composition between two or more samples. 
+$\beta$-diversity is a measure of between-habitat diversity, or the difference in species composition between two or more samples. 
 
 ### BCI Species Richness
-To illustrate the importance of ($\beta$) diversity, let's go back to the BCI dataset and examine tree richness among all sites. 
+To illustrate the importance of $\beta$-diversity, let's go back to the BCI dataset and examine tree richness among all sites. 
 First, let's calculate richness for the BCI sites:
 
 ```{r}
@@ -166,7 +167,7 @@ We will use the `str()` function to see what information is in the dataset.
 ```{r}
 require(ade4)
 data(doubs)
-str(doubs, max.level = 1)                 # max.level limits the str output
+str(doubs, max.level = 1)                 
 ```
 
 Notice that the doubs data set is actully a list with 4 components (elements).
@@ -187,10 +188,10 @@ These plots show richness of fish at all sites in the Doubs River.
 
 ```{r, fig.width=5, fig.height=4.5, echo=TRUE}
 # Stream Fish
-par(mar = c(4, 4, 3, 5) + 0.1, xpd = TRUE)    # Define Plot Parameters
-spa.S <- specnumber(doubs$fish)               # Calculate Richness
-spa.S.color <- rev(terrain.colors(31))        # Define Richness Color Pallette
-spa.N.color <- rev(terrain.colors(7))         # Define Abundance Color Pallette
+par(mar = c(4, 4, 3, 5) + 0.1, xpd = TRUE)    
+spa.S <- specnumber(doubs$fish)               
+spa.S.color <- rev(terrain.colors(31))    # Define Richness Color Pallette
+spa.N.color <- rev(terrain.colors(7))     # Define Abundance Color Pallette
 
 # Stream Fish Richness
 plot(doubs$xy, asp = 1, type = 'l', col = "light blue", lwd = 10, las = 1, 
@@ -208,7 +209,7 @@ Notice that the code we used here is almost identical to that we used with the B
 Though creating a single figure in R may seem like a lot of work, it is beneficial when making multiple plots because you can recycle code easily.
 However, sometimes there are slight variations (e.g., the blue line in the stream plot).
 
-Below are the plots for two invidicual fish species in the Doubs River.
+Below are the plots for two individual fish species in the Doubs River.
 You should be able to code this with ease using the Stream Fish Richness plot code and the BCI abundance plot code. 
 You can try this on your own time, but here we are just going to provide the plots for you.
 
@@ -260,12 +261,12 @@ H. What about other $\alpha$-diversity measures?
 This week we are going to compare the diversity of communities across sites. 
 We will start by comparing diversity across sites. 
 
-## 4) Quantifying Beta ($\Beta$) Diversity
+## 4) Quantifying $\beta$-Diversity
 The previous section was intended to visually demonstrate that aggregate measures of biodiversity -- like richness -- do not always capture meaningful differences in species composition among sites. 
-In this section, we will introduce some of the ways in which beta ($\Beta$) diversity is directly quantified. 
+In this section, we will introduce some of the ways in which $\beta$-diversity is directly quantified. 
 
-### Turnover
-One way to think about  beta ($\beta$) diversity is the change in communities over time or space. 
+### a) Turnover
+One way to think about $\beta$-diversity is the change in communities over time or space. 
 This concept is generally refered to as *turnover*.
 Turnover is defined as the rate or magnitude of change in species composition in time or along a predefined spatial or environmental gradient. 
 
@@ -295,7 +296,7 @@ turnover(doubs$fish[1,], doubs$fish[2,])
 turnover(BCI[1,], BCI[2,])
 ```
 
-### ß-Diversity
+### b) $\beta$-Diversity
 Another classic measures of $\beta$-diversity was developed by Whittaker (1960):
 $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$ 
 where S = the total number of species recorded in a system and $\bar{\alpha}$ is the average sample richness.
@@ -315,7 +316,7 @@ beta.w <- function(site1 = "", site2 = ""){
 }
 ```
 
-$\beta_{w}$ ranges from 0 (minimum $\beta$ diversity) to 1 (maximum $\beta$ diverstity).
+$\beta_{w}$ ranges from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diverstity).
 
 Using our new R function, we can now calculate $\beta_{w}$ between two sites:
 ```{r}
@@ -326,7 +327,7 @@ beta.w(BCI[1,], BCI[2,])
 These measures of $\beta$-diversity are useful when comparing two sites.
 However, we often want to compare multiple sites at the same time. 
 
-### Measures of Compositional Similarity
+### c) Measures of Compositional Similarity
 When comparing multiple communities, measures of resemblance (similarity) are the most appropriate way to compare communities. 
 This is because we can use our site-by-species matrix to generate another ecological data structure: the **Resemblance Matrix**.
 The resemblance matrix is a diagonal matrix comprised of all pair-wise similarities between a group of objects. 
@@ -334,7 +335,7 @@ In ecology, these similarity measures can either be based on incidence (presence
 Here, we will use common notations when refering to these measures.
 For reference, all notations will follow that of Legendre & Legendre 2012. 
 
-### 1. Incidence-Based
+### i.  Incidence-Based
 
 \begin{center}
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
@@ -366,7 +367,7 @@ Also, it should be noted that these equations calculate similarity, but can be c
 In `vegan`, distances are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
 See Table 7.2 in Legendre & Legendre 2012 for more information.
 
-### 2. Abundance-Based
+### ii.  Abundance-Based
 
 \begin{center}
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
@@ -397,7 +398,7 @@ Where $y_{1j}$ is the abundance of each species (1:p) in community 1 and $y_{2j}
 It should be noted that many of these distances are not Euclidean. 
 See Table 7.3 in Legendre & Legendre 2012 for more information.
 
-### 3. Other Measures (may not be appropriate for species abundaces)
+### iii.  Other Measures (may not be appropriate for species abundaces)
 
 Euclidean Distance: 
 $D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
@@ -405,8 +406,8 @@ $D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
 Manhattan Metric: 
 $D_{7} = \sum\limits_{j = 1}^{p} \left| y_{ij} - y_{2j} \right|$
   
-### Calculate Sample Resemblance
-Though given enought time we could code functions for all of these measures, many of the similarity metrics are included in the vegan `vegdist()` function.
+### iv.  Calculate Sample Resemblance
+Though given enough time we could code functions for all of these measures, many of the similarity metrics are included in the vegan `vegdist()` function.
 Here, we will use a few metrics to measure resemblance in each of the fish communities in the Doubs River.
 However, remember from our plots above that site 8 had no observations.
 We will need to remove that site from the data set.
@@ -506,6 +507,7 @@ spe.ch.ward$height <- sqrt(spe.ch.ward$height)
 plot(spe.ch.ward)
 
 # Groups
+#install.packages("gclus")
 require(gclus)
 spe.chwo <- reorder.hclust(spe.ch.ward, spe.ch)
 plot(spe.chwo, hang=-1, xlab="4 Groups", sub="", ylab="Height", main="Chord - Ward", labels=cutree(spe.chwo, k=4))
@@ -605,9 +607,11 @@ evplot(spe.b.pcoa$eig)
 As mentioned above, clustering is not a hypothesis testing approach.
 
 ```{r}
-spe.ch.mvpart <- mvpart(data.matrix(spe.norm) ~ ., env, margin = 0.08, cp = 0, xv = "min", xval = nrow(spe), xvmult = 100, which = 4)
-summary(spe.ch.mvpart)
-printcp(spe.ch.mvpart)
+
+# Apparently, the package mvpart is not available for R v 3.1.2
+#spe.ch.mvpart <- mvpart(data.matrix(spe.norm) ~ ., env, margin = 0.08, cp = 0, xv = "min", xval = nrow(spe), xvmult = 100, which = 4)
+#summary(spe.ch.mvpart)
+#printcp(spe.ch.mvpart)
 
 
 
@@ -629,7 +633,7 @@ coef(spe.rda)
 
 spechem.physio <- rda(spe.hel, envchem, envtopo)
 
-# Permutatoin Test
+# PermutationTest
 anova.cca(spe.rda, step=1000)
 ```
 

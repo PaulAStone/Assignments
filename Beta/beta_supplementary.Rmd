@@ -1,0 +1,48 @@
+---
+title: "Among Site (Beta) Diversity - Supplementary"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "February 6, 2015"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+## OVERVIEW
+In this exercise, you will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
+First, you will learn how to formally quantify $\beta$-diversity.
+Second, you will learn how to visualize $\beta$-diversity using cluster analysis, ordination, and heatmaps. 
+Last, you will be introduced to some multivariate techniques to test hypotheses about $\beta$-diversity. 
+
+## 1) SETUP
+### Retrieve and Set Your Working Directory
+
+```{r, results = 'hide'}
+rm(list=ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Beta")
+```
+
+### Load Packages 
+
+From last week's exercises, you should now be familiar with some of the features in the R package `vegan`.
+We will be using this pacakge again; please load it now.
+
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
+require("vegan")
+```
+
+## 2) LOADING DATA
+We will again be using the BCI data set contained in `vegan` for part of this week's exercise. 
+In addition, we will be using environmental data for the BCI plots. 
+Your Beta folder has soil data for each of the BCI plots (bci.soil.txt).
+Let's go ahead and import all of these data now.
+
+```{r}
+data(BCI)                                   # BCI Tree Abundance (vegan)
+BCI.soil <- read.delim("./bci.soil.txt")    # BCI Soil Data (your working directory)
+```
+
+## 3) Exploring $\beta$-Diversity
+Last week, we learned about $\alpha$-diversity, where we calculated things like species richness and evenness. 
+These metrics are great for assessing the diversity of a single sample, but overlook spatial and temporal heterogeneity.
+Beta $\beta$-diversity is a measure of between-habitat diversity, or the difference in species composition between two or more samples. 
