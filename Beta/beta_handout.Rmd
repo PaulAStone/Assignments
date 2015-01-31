@@ -549,7 +549,7 @@ Then we will use the `cmdscale` function from the 'stats' packag in R, which per
 
 ```{r}
 soilbac.bray <- vegdist(soilbac, method="bray")
-soilbac.pcoa <- cmdscale(soilbac.bray, eig=TRUE)
+soilbac.pcoa <- cmdscale(soilbac.bray, eig=TRUE) 
 
 ordiplot(scores(soilbac.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
 abline(h=0, lty=3)
