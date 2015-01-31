@@ -39,8 +39,8 @@ Your Beta folder has soil data for each of the BCI plots (bci.soil.txt).
 Let's go ahead and import all of these data now.
 
 ```{r}
-data(BCI)                                   # BCI Tree Abundance (vegan)
-BCI.soil <- read.delim("./bci.soil.txt")    # BCI Soil Data (your working directory)
+data(BCI)                                   
+BCI.soil <- read.delim("./data/bci.soil.txt")    
 ```
 
 ## 3) Exploring $\beta$-Diversity
@@ -76,7 +76,7 @@ But how do we know how these sites are arranged?
 Well lucky for us, the BCI soil dataset includes standardized XY-coordinates for each plot:
 
 ```{r}
-head(BCI.soil, n = 2L)    # What does n = 2L do?
+head(BCI.soil, n = 2L)
 ```
 
 Here we are going to plot sites in a standardized XY-coordinate space and use our heatmap color to display tree species richness for each of the 50 sites.
@@ -518,41 +518,44 @@ rect.hclust(spe.chwo, k=4)
 
 
 
-### Visualization using Ordination (Jay will work on this)
-Various techniques
-| Method | Distance Preserved | Variables | 
-| Princiapl component analysis (PCA) | Euclidean distance | Quantiative data, linear relationships |
-| Correspondence analysis (CA) | $\chi^{2}$ distance | Non-negative, dimensionally homogeneous quantita6tive or binary data; species frequencies or presence/absence data |
-| Principal coordinate analysis (PCoA), metric (multidimensional) scalling, classical scaling | Any distance measure | Quantitative, semiquantitative, qualitative, or mixed |
-|Nonmetric multidimensional scalling (nMDS) |  Any distance measure | Quantitative, semiquantitative, qualitative, or mixed |
+### Ordination
+Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
+When objects are plotted (usually in two or three diemnsions or "axes"), ordination can be useful for determining similarity among objects. 
+Using a biodiversity example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are futher apart in ordination space.  
 
-(REF: L&L , Table 9.1)
+There are various orditnation techniqeus that can be applied to multivariate biodiversity data. 
+Carefuly consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled. 
 
-How does ordination work?
- 
-### NMDS
+In this exercise, we focus on one commonly used ordination technique: **Principal Coordainates Analysis (PCoA)**, which is sometimes referred to as metric (multidimensional) scalling. 
+PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from your site-by-species matrix. 
+In the next step, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
+After centering **`A`**, PCoA is solved through eigenanlaysis, which generates eigenvectors corresponding to each ordination axis and an associated eigenvalue. 
+
+*Notes on PCoA* A nice feature of PCoA is that it can accept many different types of resemblance matrices. 
+This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
+When one uses a Eucldean distance matrix with PCoA, the results will be identical to that of Principal Components Analysis (PCA).
+
+We are going to revisit the soil bacteria data set that we introduced in the $\alpha$-diversity excercise. 
+
+```{r}                                 
+soilbac.total <- read.table("./data/soilbacfull.txt", sep = "\t", header = TRUE, row.names = 1)
+soilbac.tax <- (t(soilbac.total[,1:5]))
+soilbac <- as.data.frame(t(soilbac.total[,6:ncol(soilbac.total)]))
+```
+
+Let's conduct a PCoA on this slightly expanded dataset. 
+First, we will create a Bray-Curtis dissimilarity matrix from the site-by-species matrix we just loaded.
+Then we will use the `cmdscale` function from the 'stats' packag in R, which performs "classical metric multidimensional scaling"
+
 ```{r}
+soilbac.bray <- vegdist(soilbac, method="bray")
+soilbac.pcoa <- cmdscale(soilbac.bray, eig=TRUE)
 
-
-spe.nmds <- metaMDS(spe, distance="bray")
-spe.nmds
-spe.nmds$stress
-plot(spe.nmds, type="t", main=paste("nMDS/Bray - Stress =", round(spe.nmds$stress, 3)))
+ordiplot(scores(soilbac.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
 abline(h=0, lty=3)
 abline(v=0, lty=3)
 ```
 
-What is the nMDS stress? How is this used to judge the quality of the ordination
-
-
-### Classic Multidemensional Scalling (PCoA)
-```{r}
-spe.bray <- vegdist(spe, method="bray")
-spe.b.pcoa <- cmdscale(spe.bray, eig=TRUE)
-
-ordiplot(scores(spe.b.pcoa)[,c(1,2)], type='t', main="PCoA with species")
-abline(h=0, lty=3)
-abline(v=0, lty=3)
 
 # Add Species
 spe.wa <- wascores(spe.b.pcoa$points[,1:2], spe)
