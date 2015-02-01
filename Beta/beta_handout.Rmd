@@ -1,0 +1,445 @@
+---
+title: "Among Site (Beta) Diversity"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "February 6, 2015"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+In this exercise, you will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
+During this processs you will learn how to:
+1.  formally quantify $\beta$-diversity
+2.  visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
+3.  test hypotheses about $\beta$-diversity using multivariate statistics
+
+## 1) SETUP
+### Retrieve and Set Your Working Directory
+
+```{r, results = 'hide'}
+rm(list=ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Beta")
+```
+
+### Load Packages 
+
+We will be using the `vegan` package again; let's load it now. 
+
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
+require("vegan")
+```
+
+## 2) LOADING DATA
+In addition to the BCI and soil bacteria data that we used for $\alpha$-diversity, we will be using a fish data set in the `ade4` package.
+This data set has fish abundances, environmental variables, and spatial cooridinates for 30 sites in the Doubs River, which runs near the France-Switzerland boarder in the Jura Mountains. 
+Let's load the `ade` package and the `doubs` data set. 
+
+```{r}
+require(ade4)
+data(doubs)
+```
+
+_Note on `doubs`_ While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
+Now, we are working with yet another data structure: a **list**. 
+In R, a list is an object that contains a collection of other objects of similar or different types.
+
+
+***Question 1***:  Use the `str` function to describe some of the attributes of `doubs`. 
+Also, you can use the dollar sign (`$`) between the list name (`doubs`) and objects within the list (`env`).
+a.  How many objects are in `doubs` list?
+b.  What are the units of nitrate ("nit") in the stream water?
+c.  How many fish species are there in the `doubs` list?
+
+> ***Answer 1a***:  
+> ***Answer 1b***:  
+> ***Answer 1c***:  
+
+## 4) QUANTIFYING BETA-DIVERSITY
+In the first part of this section we will introduce two relatively simple indices: **Turnover** and **Whittaker's $\beta$-Diversity**.
+These indices allow us to estimate $\beta$-diversity for two samples. 
+Because we often want to compare the diversity of more than a pair of samples, we will learn about procedures needed to measure $\beta$-diversity for multiple samples. 
+During this process, you will learn how to generate similarity and dissimilarity matrices for different data sets that will be needed for visualizing and quantifying $\beta$-diversity. 
+
+### a) Turnover
+Turnover is defined as the rate or magnitude of change in species composition in space or time. 
+
+We can calculate turnover with the following equation:
+$turnover = \frac{b + c}{S_1 + S_2}$
+where b = the number of species only present in the first sample; c = the number of species only present in the second sample; $S_1$ = the total number of species in the first sample; and $S_2$ = the number of species in the second sample. 
+
+In R, we can write this as a function as follows:
+
+```{r}
+turnover <- function(site1 = " ", site2 = " "){
+  site1 = subset(site1, select = site1 > 0)               # Removes absences
+  site2 = subset(site2, select = site2 > 0)               # Removes absences
+  b  = length(setdiff(colnames(site1), colnames(site2)))  # Number of unique in 1st
+  c  = length(setdiff(colnames(site2), colnames(site1)))  # Number of unique in 2nd
+  s1 = length(site1)                                      # Number of species in 1st 
+  s2 = length(site2)                                      # Number of species in 2nd 
+  t  = round((b + c)/(s1 + s2), 3)                        # Calculats turnover to three decimals
+  return(t)                                               # Returns turnover
+}
+```
+
+***Question 2***: Using the `turnover` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set?
+
+> ***Answer 2***:  
+
+### b) Whittaker's $\beta$-Diversity
+Another classic measures of $\beta$-diversity was developed by Robert Whittaker (1960):
+$\beta_{W} = \frac{S}{\bar{\alpha}} - 1$ 
+where S = the total number of species recorded in a system and $\bar{\alpha}$ is the average sample richness.
+Subtracting 1 scales $\beta_{w}$ from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diversity).
+
+Again, we can write this as a function in R:
+
+```{r}
+beta.w <- function(site1 = "", site2 = ""){
+  site1 = subset(site1, select = site1 > 0)               # Removes absences
+  site2 = subset(site2, select = site2 > 0)               # Removes absences
+  gamma = union(colnames(site1), colnames(site2))         # Gamma species pool
+  s     = length(gamma)
+  a.bar = mean(c(specnumber(site1), specnumber(site2)))
+  b.w   = round(s/a.bar - 1, 3)
+  return(b.w)
+}
+```
+
+***Question 3***: Using the `beta.w` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set?
+
+> ***Answer 3***:  
+
+### c) Measures of Compositional Similarity
+To move beyond indices that calculate $\beta$-diversity for two samples, we are now going to introduce another primary ecological data structure: the the **Resemblance Matrix**. 
+In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise similarity or dissimiliarity for all samples in a site-by-species matrix. 
+The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
+Here, we will use common notations when referring to these measures (Legendre & Legendre 2012).
+
+### i.  Incidence-Based
+
+\begin{center}
+\begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
+  \textbf{Index} & \textbf{Equation} & \textbf{Properties} \\
+  \hline \hline \\ [-1.5ex]
+  Jaccard & 
+  $S_7 = \frac{a}{a+b+c}$ & 
+  Compares the number of shared species to the number of species in the combined assemblages  (global view ) \\
+  \\ [-1.5ex]
+  Sørensen & 
+  $S_8 = \frac{2a}{(2a+b+c)}$ & 
+  Compares the number of shared speces to the mean number of species in a single assemblage (local view) \\
+  \\ [-1.5ex]
+  \hline
+  \end{tabular}
+  \end{center}
+
+Where a = the number of shared speces, b = the number of unique species in the first assemblage, and c = the number of unique species in the second assemblage.
+
+***Question 4***: What are the differences between these two measures? When might you use one instead of the other?
+
+> ***Answer 4***:  
+
+_Notes on incidence-based similarity_: See table 6.1 in Magurran & McGill 2011 and table 7.2 in Legendre & Legendre 2012 for other measures including Ochiai and Kulczynski-Cody. 
+Also, it is important to note that these equations calculate similarity, but can (and in many cases should) be converted to dissimilarity (D), or distance.
+In `vegan`, distances are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
+See Table 7.2 in Legendre & Legendre 2012 for more discussion on this topic.
+
+### ii.  Abundance-Based
+
+\begin{center}
+\begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
+  \textbf{Index} & \textbf{Equation} & \textbf{Properties} \\ 
+  \hline \hline \\ [-1.5ex]
+  \raggedright Bray-Curtis Dissimilarity &
+  $D_{14} = \frac{\sum\limits_{j=1}^{p} \left|{y_{1j} - y_{2j}} \right|}{\sum\limits_{j = 1}^{p}\left(y_{1j} + y_{2j}\right)}$  &
+  A quantitative version of the Sørensen index. Semimetrix. Generally used as an overall similarity measure. Also known as the percentage difference \\
+  \\ [-1.5ex]
+  \raggedright Morisita-Horn &
+  $S_{MH} = \frac{2 \sum\limits_{j=1}^{p} y_{1j}y_{2j}}{\left(\sum\limits_{j=1}^{p}y_{1j}^{2} + \sum\limits_{j=1}^{p} y_{2j}^{2}\right)}$ &
+  Dominated by the most abundant species in each site. Resistant to undersampling (no equivalent in Legendre and Legendre) \\
+  \\ [-1.5ex]
+  Chord Distance & 
+  $D_3 = \sqrt{2\left(1 - \frac{\sum\limits_{j=1}^{p}y_{1j} \cdot  y_{2j}}{\sum\limits_{j=1}^{p}y_{1j}^{2} \cdot \sum\limits_{j=1}^{p} y_{2j}^{2}}\right)}$ &
+  Range: 0 to $\sqrt{2}$ (two sites share the same species in the same proportions to no species in common) \\
+  \\ [-1.5ex]
+  \raggedright Chi-Squared Distance & 
+  $D_{16} = \sqrt{\sum\limits_{j = 1}^{p} \frac{1}{y_{+j}/y_{++}} \left( \frac{y_{1j}}{y_{1+}} - \frac{y_{2j}}{y_{2+}} \right)^2}$ &
+  Used to compute the association between the rows and columns of a frequency table. Preserved in correspondence analysis.  \\
+  \\ [-1.5ex]
+  \hline
+  \end{tabular}
+  \end{center}
+
+Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2, $y_{1+}$ is the sum of abundances in site 1 and $y_{2+}$ in site 2, $y_{++}$ is the sum of all abuncances at all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across sites, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
+
+Again, it should be noted that many of these distances are not Euclidean. 
+See Table 7.3 in Legendre & Legendre 2012 for more discussion on this topic.
+
+### iii.  Other Measures (may not be appropriate for species abundances)
+
+Euclidean Distance: 
+$D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
+
+Manhattan Metric: 
+$D_{7} = \sum\limits_{j = 1}^{p} \left| y_{ij} - y_{2j} \right|$
+  
+### iv.  Calculate Sample Resemblance
+Conveniently, `vegan` will generate many of the similarity metrics using the function `vegdist()`.
+Let's apply `vegdist` to the fish assemblages in the Doubs River (`doubs`) with the exception of site 8, which had no observations.
+
+```{r}
+fish <- doubs$fish 
+
+# It is always good to check your sites
+rowSums(fish)    # Notice site 8 is empty
+fish <- fish[-8, ]
+
+# Calculate Jaccard 
+fish.dj <- vegdist(fish, method="jaccard", binary=TRUE)
+
+# Calculate Bray-Curtis 
+fish.db <- vegdist(fish, method="bray")
+```
+
+Now that a resemblance matrix has been created, it would be nice to be able to visualize the fish assemblages of the Doubs River. 
+As a start, we can print the resemblance matrix:
+
+```{r, results='hide'}
+fish.db
+```
+
+If you run this command in your console, you will see a large diagonal matrix. 
+Resemblance matrices usually just show either the upper or lower triangle of values.
+This is because the two triangles will have the same information.
+However, if you wanted a square resemblance matrix, you could use the following commands:
+
+```{r}
+fish.db <- vegdist(fish, method="bray", upper=TRUE, diag=TRUE)
+```
+
+***Question 5***: Does the resemblance matrix (`fish.db`) represent similarity or distance? How do you know?
+
+> ***Answer 5***: 
+
+## D. Visualizaton
+
+### Heatmaps
+One way to visualize $\beta$-diversity is to plot the data in our resemblance matrix using a heatmap.
+R has various heatmap functions.
+Here we are going to use the `levelplot()` function.
+In addtion, we will define our own color palette, and custom order our matrix so that our ploat looks like a resemblance matrix. 
+
+```{r}
+jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
+order <- rev(attr(spe.db, "Labels"))
+levelplot(as.matrix(spe.db)[, order], aspect = "iso", col.regions = jet.colors, xlab="Doubs Site", ylab = "Doubs Site", main = "Bray-Curtis Distance")
+```
+
+### Cluster Analysis
+Another common way to visualize $\beta$-diversity is to use a clusering.
+Clustering is technique used to put objects or descriptors into groups.
+
+There are numerous methods for clustering.
+Here we are going to talk about hierarchical methods for clustering
+
+Here we we introduce 4 clustering methods
+
+
+Hierarchical Clusering Methods:
+Single Linkage Clustering - groups objects based on shortest pairwise distance, tends to produce chain like groupings that are hard to interpret in tmrs of partitions but easily show gradients.; hclust( method = "single")
+Complete Linkage - furtherst neighbor sorting, groups objects at the distance corresponding to the furthest distance between objects being grouped; tends to produce many small seperated groups; useful for identifying discontinuities in data
+Intermediate Linkage
+Unweighted Arithmetic Average Clustering (UPGMA)
+Weighted Arithmetic Average Clusetering (WPGMA)
+Unweighted Centroid Clustering (UPGMC)
+Weighted Centroid Clustering (WPGMC)
+Ward's Minimum Variance
+Flexible
+
+Each of these methods has pros and cons. 
+For example, the linkage clustering methods are good at maintaining pairwise relationships between objects while the average clustering methods do not. 
+
+Here we 
+
+Clustering, however, is a visualization technique and does not test any underlying statistical hypotheses. 
+Clustering simply reveals various features of the data to be tested elsewhere.
+Therefore, the method of clustering can influence the conclusions made and should be considered prior to generating any hypotheses. 
+
+### Hierarchical Clustering (Ward Clustering)
+```{r}
+spe.db <- vegdist(spe, method="bray")
+spe.norm <- decostand(spe, "normalize")
+spe.ch <- vegdist(spe.norm, "euc")
+spe.ch.ward <- hclust(spe.ch, method="ward.D")
+spe.ch.ward$height <- sqrt(spe.ch.ward$height)
+plot(spe.ch.ward)
+
+# Groups
+#install.packages("gclus")
+require(gclus)
+spe.chwo <- reorder.hclust(spe.ch.ward, spe.ch)
+plot(spe.chwo, hang=-1, xlab="4 Groups", sub="", ylab="Height", main="Chord - Ward", labels=cutree(spe.chwo, k=4))
+rect.hclust(spe.chwo, k=4)
+```
+
+
+
+
+
+### Ordination
+Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
+When objects are plotted (usually in two or three diemnsions or "axes"), ordination can be useful for determining similarity among objects. 
+Using a biodiversity example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are futher apart in ordination space.  
+
+There are various orditnation techniqeus that can be applied to multivariate biodiversity data. 
+Carefuly consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled. 
+
+In this exercise, we focus on one commonly used ordination technique: **Principal Coordainates Analysis (PCoA)**, which is sometimes referred to as metric (multidimensional) scalling. 
+PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from your site-by-species matrix. 
+In the next step, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
+After centering **`A`**, PCoA is solved through eigenanlaysis, which generates eigenvectors corresponding to each ordination axis and an associated eigenvalue. 
+
+*Notes on PCoA* A nice feature of PCoA is that it can accept many different types of resemblance matrices. 
+This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
+When one uses a Eucldean distance matrix with PCoA, the results will be identical to that of Principal Components Analysis (PCA).
+
+We are going to revisit the soil bacteria data set that we introduced in the $\alpha$-diversity excercise. 
+
+```{r}                                 
+soilbac.total <- read.table("./data/soilbacfull.txt", sep = "\t", header = TRUE, row.names = 1)
+soilbac.tax <- (t(soilbac.total[,1:5]))
+soilbac <- as.data.frame(t(soilbac.total[,6:ncol(soilbac.total)]))
+```
+
+Let's conduct a PCoA on this slightly expanded dataset. 
+First, we will create a Bray-Curtis dissimilarity matrix from the site-by-species matrix we just loaded.
+Then we will use the `cmdscale` function from the 'stats' packag in R, which performs "classical metric multidimensional scaling"
+
+```{r}
+soilbac.bray <- vegdist(soilbac, method="bray")
+soilbac.pcoa <- cmdscale(soilbac.bray, eig=TRUE) 
+
+ordiplot(scores(soilbac.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
+abline(h=0, lty=3)
+abline(v=0, lty=3)
+```
+
+
+# Add Species
+spe.wa <- wascores(spe.b.pcoa$points[,1:2], spe)
+text(spe.wa, rownames(spe.wa), cex=0.7, col="red")
+
+```
+
+```{r}
+evplot <- function(ev)
+{
+  # Broken stick model (MacArthur 1957)
+	n <- length(ev)
+	bsm <- data.frame(j=seq(1:n), p=0)
+	bsm$p[1] <- 1/n
+	for (i in 2:n) bsm$p[i] <- bsm$p[i-1] + (1/(n + 1 - i))
+	bsm$p <- 100*bsm$p/n
+	# Plot eigenvalues and % of variation for each axis
+	par(mfrow=c(2,1))
+	barplot(ev, main="Eigenvalues", col="bisque", las=2)
+	abline(h=mean(ev), col="red")
+	legend("topright", "Average eigenvalue", lwd=1, col=2, bty="n")
+	barplot(t(cbind(100*ev/sum(ev), bsm$p[n:1])), beside=TRUE, 
+		main="% variation", col=c("bisque",2), las=2)
+	legend("topright", c("% eigenvalue", "Broken stick model"), 
+		pch=15, col=c("bisque",2), bty="n")
+}
+
+evplot(spe.b.pcoa$eig)
+
+
+env <- doubs$env
+env <- env[-8, ]
+spe.pcoa.env <- envfit(spe.b.pcoa, env)
+evplot(spe.b.pcoa$eig)
+```
+
+
+### Why not PCA?
+
+
+
+
+```{r}
+
+
+```
+
+
+## E. Hypothesis Testing
+
+### Multivariate Regression Trees
+As mentioned above, clustering is not a hypothesis testing approach.
+
+```{r}
+
+# Apparently, the package mvpart is not available for R v 3.1.2
+#spe.ch.mvpart <- mvpart(data.matrix(spe.norm) ~ ., env, margin = 0.08, cp = 0, xv = "min", xval = nrow(spe), xvmult = 100, which = 4)
+#summary(spe.ch.mvpart)
+#printcp(spe.ch.mvpart)
+
+
+
+
+### Constrained Ordination
+
+```{r}
+# subset explanatory varaibles
+
+
+
+envdas <- env[,1]
+envtopo <- env[,c(2:4)]
+envchem <- env[,c(5:11)]
+spe.hel <- decostand(spe, method="hellinger")
+
+spe.rda <- rda(spe.hel ~ ., envchem)
+coef(spe.rda)
+
+spechem.physio <- rda(spe.hel, envchem, envtopo)
+
+# PermutationTest
+anova.cca(spe.rda, step=1000)
+```
+
+
+### Variance Partitioning
+```{r}
+spe.part.all <- varpart(spe.hel, envchem, envtopo)
+
+
+```
+
+### Multivariate Models
+Mantel Test
+
+PERMANOVA
+
+
+
+
+## Homework
+Microbes in an Agricultural System
+
+History of the system
+Define hypotheses
+
+Richness (rarefied) for each treatment (barplot, box-n-whisker plot)
+Bray Curtis
+PCoA
+PERMANOVA
+Indicator groups
+
+BCI Data - which physical property underlies variation in Tree Composition
+
+
