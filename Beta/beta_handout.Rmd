@@ -36,6 +36,7 @@ require("vegan")
 In addition to the BCI and soil bacteria data that we used for $\alpha$-diversity, we will be using a fish data set in the `ade4` package.
 This data set has fish abundances, environmental variables, and spatial cooridinates for 30 sites in the Doubs River, which runs near the France-Switzerland boarder in the Jura Mountains. 
 ***At one point I had more info about the data here (similar to what we have for BCI). Do we want to not have that kinda stuff in the handouts?***
+***I looked over the content that was deleted. A lot of what describing the data structure (see beta_supplementary.Rmd). I thought it might be useful to have them descirbe the `doubs` data, and incorporate that into the questions. But feel free to add information back -- JTL***
 Let's load the `ade` package and the `doubs` data set. 
 
 ```{r}
@@ -43,7 +44,7 @@ require(ade4)
 data(doubs)
 ```
 
-_Note on `doubs`_ While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
+*Note on `doubs`* While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
 Now, we are working with yet another data structure: a **list**. 
 In R, a list is an object that contains a collection of other objects of similar or different types.
 
@@ -59,13 +60,15 @@ d.  How many fish species are there in the `doubs` list?
 > ***Answer 1c***: 
 > ***Answer 1d***:
 
-## 4) QUANTIFYING BETA-DIVERSITY
-In the first part of this section we will introduce two relatively simple indices: **Turnover** and **Whittaker's $\beta$-Diversity**.
+## 4) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
+In this section we introduce two relatively simple indices: **Turnover** and **Whittaker's $\beta$-Diversity**.
 These indices allow us to estimate $\beta$-diversity between two samples. 
-Because we often want to compare the diversity of more than a pair of samples, we will learn about procedures needed to measure $\beta$-diversity for multiple samples. 
-During this process, you will learn how to generate similarity and dissimilarity matrices for different data sets that will be needed for visualizing and quantifying $\beta$-diversity. 
+
 
 ***I'm thinking more about this section. The classical measure is probably just Whittaker's. The Turnover calculation (though the underlying principal is the same) is used to compare turnover in time. So maybe just Whittakers to keep it simple***
+***I need to look at the equations a bit more closely, but it appears that they 
+
+
 ### a) Turnover
 Turnover is defined as the rate or magnitude of change in species composition in space or time. 
 
@@ -93,6 +96,9 @@ turnover <- function(site1 = " ", site2 = " "){
 > ***Answer 2***:  
 
 ### b) Whittaker's $\beta$-Diversity
+
+***I think maybe we can do a better job os describing this metric. For example, S is actually gamma diversity -- a concept we can explicitly address. Also, "sample richness" could be described as the mean richness (i.e., alpha diversity) of two samples. It seems sort of suprising that Whittaker's and beta give the same exact answer, no? -- JTL***
+
 Another classic measures of $\beta$-diversity was developed by Robert Whittaker (1960):
 $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$ 
 where S = the total number of species recorded in a system and $\bar{\alpha}$ is the average sample richness.
@@ -116,13 +122,18 @@ beta.w <- function(site1 = "", site2 = ""){
 
 > ***Answer 3***:  
 
-### c) Measures of Compositional Similarity
-To move beyond indices that calculate $\beta$-diversity for two samples, we will introduce another primary ecological data structure: the **Resemblance Matrix**. 
-In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise similarity or dissimiliarity for all samples in a site-by-species matrix. 
-The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
-Here, we will use common notations when referring to these measures (Legendre & Legendre 2012).
+## 5) QUANTIFYING BETA-DIVERSITY FOR TWO OR MORE SAMPLES
+Often, we often want to compare the diversity of more than just a pair of samples. 
+In this section we will estimate $\beta$-diversity for multiple samples. 
+During this process, you will learn how to generate similarity and dissimilarity matrices for different data sets that will be needed for visualizing and quantifying $\beta$-diversity. 
 
-### i.  Incidence-Based
+### Resemblance Matrix
+Here, introduce another primary ecological data structure: the **Resemblance Matrix**. 
+In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix. 
+The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
+In the sections below, we describe some of the common similarity and dissimilarity metrics used for constructing a resemblance matrix using notations of Legendre & Legendre (2012). 
+
+### a.  Incidence-Based Measures of Similarity and Dissimilarity
 
 \begin{center}
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
@@ -142,20 +153,23 @@ Here, we will use common notations when referring to these measures (Legendre & 
 
 Where *a* = the number of shared speces, *b* = the number of unique species in the first assemblage, and *c* = the number of unique species in the second assemblage.
 
-***Question 4***: What are the differences between these two measures? When might you use one instead of the other?
+***Question 4***: What are the differences between Jaccard and Sørensen metrics? When might you use one instead of the other?
 
 > ***Answer 4***:  
 
 ***I think another important question is to consider the utility of these measures (or when do they fall apart). For example, both would consider a maple forest with a few oaks and an Oak forest with 2 maples as the same. Just something to consider.***
+***Perhpas take a stab at integrating into question 4? -- JTL***
 
-_Notes on incidence-based similarity_: See table 6.1 in Magurran & McGill 2011 and table 7.2 in Legendre & Legendre 2012 for other measures including Ochiai and Kulczynski-Cody. 
+*Notes on incidence-based similarity*: See table 6.1 in Magurran & McGill 2011 and table 7.2 in Legendre & Legendre 2012 for other measures including Ochiai and Kulczynski-Cody. 
 Also, it is important to note that these equations calculate similarity, but can (and in many cases should) be converted to dissimilarity (D), or distance.
 In `vegan`, distances are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
 See Table 7.2 in Legendre & Legendre 2012 for more discussion on this topic.
+***I feel like students could be a bit confused by distance vs. dissimilarity. Not sure referrring them to Legendre and Legendre is sufficient -- JTL***
 
-### ii.  Abundance-Based
+### b.  Abundance-Based Measures of Similarity and Dissimilarity
 
 ***Will you read over this to make sure everything looks good***
+***Can we look at this together? -- JTL***
 
 \begin{center}
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
@@ -186,7 +200,9 @@ Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in 
 Again, it should be noted that many of these distances are not Euclidean. 
 See Table 7.3 in Legendre & Legendre 2012 for more discussion on this topic.
 
-### iii.  Other Measures (may not be appropriate for species abundances)
+### c.  Other Measures Measures of Similarity and Dissimilarity 
+
+*Note*: some of the metrics below may not be appropriate for species abundances
 
 Euclidean Distance: 
 $D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
@@ -198,17 +214,14 @@ These metric distance measures have been developed for and widely used to compar
 However, in general, they should not be used for abundance based data.
 This is because they lead to the *Species Abundance Paradox*: the distance between two sites that have no species in common is smaller than the distance between sites with shared species. 
   
-### iv.  Calculate Sample Resemblance
-Conveniently, `vegan` will generate many of the similarity metrics using the function `vegdist()`.
+### d.  Constructing the Resemblance Matrix
+Conveniently, `vegan` has many of the similarity metrics used to construct a resemblance matrix using the function `vegdist()`.
 Let's apply `vegdist` to the fish assemblages in the Doubs River (`doubs`) with the exception of site 8, which had no observations.
-
-***We cannot take out the part were site 8 is removed. The functions don't work without this***
 
 ```{r}
 fish <- doubs$fish 
 
-# It is always good to check your sites
-rowSums(fish)    # Notice site 8 is empty
+rowSums(fish)    
 fish <- fish[-8, ]
 
 # Calculate Jaccard 
@@ -218,7 +231,7 @@ fish.dj <- vegdist(fish, method="jaccard", binary=TRUE)
 fish.db <- vegdist(fish, method="bray")
 ```
 
-Now that a resemblance matrix has been created, it would be nice to be able to visualize the fish assemblages of the Doubs River. 
+Now that you created a resemblance matrix, it would be nice to visualize the fish assemblages of the Doubs River. 
 As a start, we can print the resemblance matrix:
 
 ```{r, results='hide'}
@@ -226,14 +239,15 @@ fish.db
 ```
 
 If you run this command in your console, you will see a large diagonal matrix. 
-Resemblance matrices usually just show either the upper or lower triangle of values.
+Typically, resemblance matrices usually just show the upper or lower triangle of values.
 This is because the two triangles will have the same information.
-However, if you wanted a square resemblance matrix, you could use the following commands:
+However, you can generate a square resemblance matrix with the following command:
 
 ```{r}
 fish.db <- vegdist(fish, method="bray", upper=TRUE, diag=TRUE)
 ```
 
+*** Wording of this question raises questions abou the distinction between distance and dissimilarity -- JTL**
 ***Question 5***: Does the resemblance matrix (`fish.db`) represent similarity or distance? How do you know?
 
 > ***Answer 5***: 
