@@ -202,6 +202,8 @@ This is because they lead to the *Species Abundance Paradox*: the distance betwe
 Conveniently, `vegan` will generate many of the similarity metrics using the function `vegdist()`.
 Let's apply `vegdist` to the fish assemblages in the Doubs River (`doubs`) with the exception of site 8, which had no observations.
 
+***We cannot take out the part were site 8 is removed. The functions don't work without this***
+
 ```{r}
 fish <- doubs$fish 
 
@@ -246,7 +248,7 @@ In addtion, we will define our own color palette, and custom order our matrix so
 
 ```{r}
 jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
-order <- rev(attr(spe.db, "Labels"))
+order <- rev(attr(spe.db, "Labels"))          # Allows us to flip the heatmap to look like RM
 levelplot(as.matrix(spe.db)[, order], aspect = "iso", col.regions = jet.colors, xlab="Doubs Site", ylab = "Doubs Site", main = "Bray-Curtis Distance")
 ```
 
@@ -255,26 +257,10 @@ Another common way to visualize $\beta$-diversity is to use a clusering.
 Clustering is technique used to put objects or descriptors into groups.
 
 There are numerous methods for clustering.
-Here we are going to talk about hierarchical methods for clustering
+Legendre & Legendre 2012 has an indept description of clustering methods in Chapter 8.
+If you want to explore the details of other clustering methods, reference this chapter.
+Here we are going to talk about hierarchical clustering, and specifically Ward Clustering
 
-Here we we introduce 4 clustering methods
-
-
-Hierarchical Clusering Methods:
-Single Linkage Clustering - groups objects based on shortest pairwise distance, tends to produce chain like groupings that are hard to interpret in tmrs of partitions but easily show gradients.; hclust( method = "single")
-Complete Linkage - furtherst neighbor sorting, groups objects at the distance corresponding to the furthest distance between objects being grouped; tends to produce many small seperated groups; useful for identifying discontinuities in data
-Intermediate Linkage
-Unweighted Arithmetic Average Clustering (UPGMA)
-Weighted Arithmetic Average Clusetering (WPGMA)
-Unweighted Centroid Clustering (UPGMC)
-Weighted Centroid Clustering (WPGMC)
-Ward's Minimum Variance
-Flexible
-
-Each of these methods has pros and cons. 
-For example, the linkage clustering methods are good at maintaining pairwise relationships between objects while the average clustering methods do not. 
-
-Here we 
 
 Clustering, however, is a visualization technique and does not test any underlying statistical hypotheses. 
 Clustering simply reveals various features of the data to be tested elsewhere.
@@ -282,23 +268,17 @@ Therefore, the method of clustering can influence the conclusions made and shoul
 
 ### Hierarchical Clustering (Ward Clustering)
 ```{r}
-spe.db <- vegdist(spe, method="bray")
-spe.norm <- decostand(spe, "normalize")
+spe.norm <- decostand(spe, "normalize")         # Two step process to calculate chord distances
 spe.ch <- vegdist(spe.norm, "euc")
 spe.ch.ward <- hclust(spe.ch, method="ward.D")
-spe.ch.ward$height <- sqrt(spe.ch.ward$height)
+spe.ch.ward$height <- sqrt(spe.ch.ward$height)  # Square Root Transformation of Branch Lengths for Visualization
 plot(spe.ch.ward)
-
-# Groups
-#install.packages("gclus")
-require(gclus)
-spe.chwo <- reorder.hclust(spe.ch.ward, spe.ch)
-plot(spe.chwo, hang=-1, xlab="4 Groups", sub="", ylab="Height", main="Chord - Ward", labels=cutree(spe.chwo, k=4))
-rect.hclust(spe.chwo, k=4)
 ```
 
 
+***Question 6***: Based on this clustering analysis, what hypotheses could be addressed with these data?
 
+> ***Answer 6***: 
 
 
 ### Ordination
