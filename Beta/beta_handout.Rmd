@@ -415,16 +415,34 @@ soil.adonis <-adonis(soilbac ~ land + time + land*time, factors, permutations = 
 ### B.  Mutivariate procedures for continuous designs
 
 ### i.  Mantel test
+A **Mantel test** is essentially a multivariate correlation analysis. 
+It produces an *r* value that is analagous to the Pearson's correlation coefficient. 
+The p-value from the Mantel test is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices. 
+
+In the following section, we will peform a Mantel test using the `mantel` function in `vegan`. 
+This requires that we first create a distance matrix for each of our raw matrices. 
+After creating the distance matrices, we will test the hypotheses that 1) fish assemblages are correlated with stream environmental variables, and 2) fish assemblages are correlated with geographic location.
+
 ```{r}
-fish.dist <- vegdist(doubs$fish[-8, ])
-env.dist <- vegdist(scale(doubs$env[-8,]),"euclid")
+fish.dist <- vegdist(doubs$fish[-8, ], method = "bray")
+env.dist <- vegdist(scale(doubs$env[-8,]),method = "euclid")
+geo.dist <- vegdist(doubs$xy[-8,], method = "euclid")
 mantel(fish.dist,env.dist)
+mantel(fish.dist,geo.dist)
 ```
 
+The results from our Mantel tests suggest that fish diversity is correlated with stream environmental conditions *and* geographic location. 
+We can try to tease this relationship apart by conducting a **partial Mantel test**. 
+In this type of an analysis, we can look for a correlation between two matrices while "controlling" for a third matix. 
+For our example, we will look for correlations between fish assemblage and the stream environment, while holding geography constant. 
 
-### ii. 
+```{r}
+mantel.partial(fish.dist, env.dist, geo.dist, method = "pearson", permutations = 999)
+```
 
+***Question 9***: What conclusions can you draw about the effects of geography and environmental conditions on the $\beta$-diversity of fish in the Doubs River based on the results of the Mantel tests above?
 
+> ***Answer 9***: 
 
 ***Not sure what we want to do with the following section  -- JTL***
 ### Constrained Ordination
