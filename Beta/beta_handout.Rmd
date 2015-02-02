@@ -431,6 +431,36 @@ mantel.partial(fish.dist, env.dist, geo.dist, method = "pearson", permutations =
 
 > ***Answer 9***: 
 
+## 7) HOMEWORK
+
+1.  We are going to revsit the soil bacteria data set from the $\alpha$-diversity exercise. 
+You may recall that 16S rRNA sequences were generated from replicate sites from four different land-use treatments (T1 = agriculture, T7 = grassland, DF = deciduous forest, and CF = coniferous forest). 
+On top of this, we characterized bacteria from the above soils under dry vs. wet condtions. 
+Thus, we have a 2 x 2 full factorial design (with the exception of a missing sample from the DF land-use treatment). 
+More background on this study can be found in Aanderud et al. 2015 (http://goo.gl/TRgISq)
+
+Two files are available to you in the "~/Assignments/Beta/data"" directory:
+
+a.  Site-by-species matrix ("soilbacfull.txt")
+b.  Factors file describing the treatments ("soil.factors.txt")
+
+Use a combination of visualization and hypothesis-testing techniques described above, interpret the results from the exepriment in a $\beta$-diversity framework. 
+
+2.  Use Knitr to create a pdf of your completed alpha_exercise.Rmd document, push it to GitHub, and create a pull request.
+The due date for this assignment will be announced in class and/or canvas.
+
+
+
+
+
+
+
+
+
+
+
+
+
 ***Not sure what we want to do with the following section  -- JTL***
 ### Constrained Ordination
 
@@ -453,9 +483,6 @@ mantel.partial(fish.dist, env.dist, geo.dist, method = "pearson", permutations =
 # anova.cca(spe.rda, step=1000)
 ```
 
-
-
-
 ### Multivariate Models
 Mantel Test --> could be useful
 
@@ -466,18 +493,6 @@ CCA --> could be done on Doubs or introduce BCI/BCIsoils
 
 
 
-## Homework
-Microbes in an Agricultural System
 
-History of the system
-Define hypotheses
-
-Richness (rarefied) for each treatment (barplot, box-n-whisker plot)
-Bray Curtis
-PCoA
-PERMANOVA
-Indicator groups
-
-BCI Data - which physical property underlies variation in Tree Composition
 
 
