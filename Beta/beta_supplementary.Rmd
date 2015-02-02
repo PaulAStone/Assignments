@@ -236,6 +236,15 @@ abline(v=0, lty=3)
 
 What is the nMDS stress? How is this used to judge the quality of the ordination
 
+### Multivariate Regression Trees
+As mentioned above, clustering is not a hypothesis testing approach.
+
+```{r}
+
+# Apparently, the package mvpart is not available for R v 3.1.2
+#spe.ch.mvpart <- mvpart(data.matrix(spe.norm) ~ ., env, margin = 0.08, cp = 0, xv = "min", xval = nrow(spe), xvmult = 100, which = 4)
+#summary(spe.ch.mvpart)
+#printcp(spe.ch.mvpart)
 
 
 
