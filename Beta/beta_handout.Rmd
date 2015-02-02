@@ -291,29 +291,27 @@ fish.ch.ward$height <- sqrt(fish.ch.ward$height)  # Square Root Transformation o
 plot(fish.ch.ward)
 ```
 
-
 ***Question 6***: Based on this clustering analysis, what hypotheses could be addressed with these data?
 ***Hard to say. Maybe some of the intuition of the data was lost by cutting out first part of visualization. Need to know something about the numbers of the sites, presumably low are upstream and higher number are downstream? -- JTL***
 
 > ***Answer 6***: 
 
-
-### Ordination
+### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
 When objects are plotted (usually in two or three diemnsions or "axes"), ordination can be useful for determining similarity among objects. 
-Using a biodiversity example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are futher apart in ordination space.  
+Using a biodiversity example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
 
 There are various orditnation techniqeus that can be applied to multivariate biodiversity data. 
 Carefuly consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled. 
 
 In this exercise, we focus on one commonly used ordination technique: **Principal Coordainates Analysis (PCoA)**, which is sometimes referred to as metric (multidimensional) scalling. 
-PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from your site-by-species matrix. 
-In the next step, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
+PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from a site-by-species matrix. 
+Next, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
 After centering **`A`**, PCoA is solved through eigenanlaysis, which generates eigenvectors corresponding to each ordination axis and an associated eigenvalue. 
 
 *Notes on PCoA* A nice feature of PCoA is that it can accept many different types of resemblance matrices. 
 This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
-When one uses a Eucldean distance matrix with PCoA, the results will be identical to that of Principal Components Analysis (PCA).
+When one uses a Eucldean distance matrix with PCoA, the results are identical to that of Principal Components Analysis (PCA).
 
 We are going to revisit the soil bacteria data set that we introduced in the $\alpha$-diversity excercise. 
 
@@ -323,63 +321,108 @@ soilbac.tax <- (t(soilbac.total[,1:5]))
 soilbac <- as.data.frame(t(soilbac.total[,6:ncol(soilbac.total)]))
 ```
 
-Let's conduct a PCoA on this slightly expanded dataset. 
-First, we will create a Bray-Curtis dissimilarity matrix from the site-by-species matrix we just loaded.
-Then we will use the `cmdscale` function from the 'stats' packag in R, which performs "classical metric multidimensional scaling"
+To conduct a PCoA, first we will create a Bray-Curtis dissimilarity matrix from the site-by-species matrix (`soilbac`).
+Then we will use the `cmdscale` function from the `stats` package in R, which performs "classical metric multidimensional scaling"
 
 ```{r}
 soilbac.bray <- vegdist(soilbac, method="bray")
 soilbac.pcoa <- cmdscale(soilbac.bray, eig=TRUE) 
+```
 
+Now we will use some of the plotting packages in `vegan` to visualize the ordination. 
+
+```{r}
 ordiplot(scores(soilbac.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
 abline(h=0, lty=3)
 abline(v=0, lty=3)
 ```
 
+***Question 7***: As you will recall, soil bacteria were sampled from four different replicated land-use treatments (T1 = agriculture, T7 = grassland, DF = deciduous fores, and CF = conifersou forest). 
+Based on the PCoA ordination, describe the effects of land-use on soil bacterial $\beta$-diversity? 
 
-***Maybe we should walk though calculating percent variance explained***
-***I also have code for estimating influential species based on correlations***
-*** need to mess with code below to add species on top. If we think necessary with this larger data se***
-*** Will try to figure other stuff out below***
-***"Broken stick model"...confused***
+> ***Answer 7***: 
 
-# Add Species
-spe.wa <- wascores(spe.b.pcoa$points[,1:2], spe)
-text(spe.wa, rownames(spe.wa), cex=0.7, col="red")
-
-```
+In PCoA, we can quantify the amount of variation that is explained by each orthogonal axis.
+It can give us an overall sense of how much "singal" is our data set if for example we sampled along some predetermined enviornmental gradient. 
+This is not something that can be done in all ordination methods. 
+We can estimate variance explained by dividing the eigenvalue of each axis by the sum of all eigenvalues. 
+*Note*: in PCoA and other ordination techniques, the first axis explains the most variation, follwed by the second, third, etc.
 
 ```{r}
-evplot <- function(ev)
-{
-  # Broken stick model (MacArthur 1957)
-	n <- length(ev)
-	bsm <- data.frame(j=seq(1:n), p=0)
-	bsm$p[1] <- 1/n
-	for (i in 2:n) bsm$p[i] <- bsm$p[i-1] + (1/(n + 1 - i))
-	bsm$p <- 100*bsm$p/n
-	# Plot eigenvalues and % of variation for each axis
-	par(mfrow=c(2,1))
-	barplot(ev, main="Eigenvalues", col="bisque", las=2)
-	abline(h=mean(ev), col="red")
-	legend("topright", "Average eigenvalue", lwd=1, col=2, bty="n")
-	barplot(t(cbind(100*ev/sum(ev), bsm$p[n:1])), beside=TRUE, 
-		main="% variation", col=c("bisque",2), las=2)
-	legend("topright", c("% eigenvalue", "Broken stick model"), 
-		pch=15, col=c("bisque",2), bty="n")
-}
-
-evplot(spe.b.pcoa$eig)
-
-
-env <- doubs$env
-env <- env[-8, ]
-spe.pcoa.env <- envfit(spe.b.pcoa, env)
-evplot(spe.b.pcoa$eig)
+explainvar1 <- soilbac.pcoa$eig[1]/sum(soilbac.pcoa$eig)
+explainvar2 <- soilbac.pcoa$eig[2]/sum(soilbac.pcoa$eig)
 ```
 
-## E. Hypothesis Testing
+In the PCoA plot that you just created, we are looking at the relationship of samples in species space. 
+Differences in species abundances are contributing the separation of samples along each PCoA axis. 
+We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species vectors. 
+We will obtain this information using the `add.spec.scores` function in the R `BiodiversityR` package, which we will now load. 
 
+```{r}
+require(BiodiversityR)
+soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
+corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
+corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
+colnames(cor_spp)[6]<-"Corr1"
+colnames(cor_spp)[7]<-"Corr2"
+corrcut <- 0.7
+imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
+imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
+```
+
+***Question 7***: Using the `add.spec.scores` function, can you generate any hypotheses about what soil bacterial taxa are potential indicators of land-use variation? 
+
+> ***Answer 7***: 
+
+## 6) HYPOTHESIS TESTING
+
+Some of the visualization tools that we just learned about are powerful for exploring data sets and generating hypotheses, but  can fall short of providing robust tests of *a priori* hypotheses and predictions. 
+Here, we wil introduce a few techniques that are appropriate for testing hypotheses that you might have when using multivariate data and are interested in questions related to $\beta$-diversity. 
+
+### A.  Multivariate procedures for categorical designs
+
+PERMANOVA stands for permutational multivariate analysis of variance. 
+It is a multivariate analog to univariate ANOVA and has less restrictions than parametric multivariate analysis of variance (MANOVA). 
+As the name suggests, it evaluates differences according to your specified model by randomly permuting the data.
+PERMANOVA can easily handle simple designs, but also accomodates nested and higher-order studies. 
+It can handle missing observations and supplies output such as F ratios, pseudo P-values, and R^{2} values.
+We will implement PERMANOVA with the `adonis` function in the `vegan` package. 
+
+To run `adonis`, you need to import a "factors" table, which specifies your treatments and replicates. 
+There are actually two treatments associated with the `soilbac` data set. 
+The first is the land-use factor, which has already been introduced. 
+The other factor is watering treatment. 
+Half the soil samples were characterized when they were very dry, and the other half were characterized three days after being watered.
+So, in the end, we have a two-by-two full factorial design (with the exception of one missing sample from the DF land-use treatment)
+
+Let's import our factors table associated with `soilbac`. 
+
+```{r}
+factors <- read.table("./data/soil.factors.txt" , sep = "\t", header=TRUE) 
+```
+
+Now, we can run `adonis` on the `soilbac` site-by-species matrix, but we also need to specify the model, the number of permutations, and the dissimilarity metric that we want to use to create a resemblance matrix. 
+
+```{r}
+soil.adonis <-adonis(soilbac ~ land + time + land*time, factors, permutations = 999, method = "bray") 
+```
+
+***Question 8***: Using the output of the PERMANOVA model, interpret the resuls of the experiment that generated the `soilbac` data set. 
+
+> ***Answer 8***: 
+
+
+### B.  Mutivariate procedures for continuous designs
+
+### i.  Mantel test
+```{r}
+fish.dist <- vegdist(doubs$fish[-8, ])
+env.dist <- vegdist(scale(doubs$env[-8,]),"euclid")
+mantel(fish.dist,env.dist)
+```
+
+
+### ii. 
 
 
 
