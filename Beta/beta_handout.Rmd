@@ -11,9 +11,10 @@ geometry: margin=2.54cm
 ## OVERVIEW
 In this exercise, you will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
 During this processs you will learn how to:
-1.  formally quantify $\beta$-diversity
-2.  visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
-3.  test hypotheses about $\beta$-diversity using multivariate statistics
+
+1. formally quantify $\beta$-diversity
+2. visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
+3. test hypotheses about $\beta$-diversity using multivariate statistics
 
 ## 1) SETUP
 ### Retrieve and Set Your Working Directory
@@ -57,11 +58,11 @@ d.  How many fish species are there in the `doubs` list?
 
 > ***Answer 1a***:  
 > ***Answer 1b***:  
-> ***Answer 1c***: 
-> ***Answer 1d***:
+> ***Answer 1c***:  
+> ***Answer 1d***:  
 
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
-In this section we introduce two relatively simple indices: **Turnover** and **Whittaker's $\beta$-Diversity**.
+In this section we introduce two relatively simple indices: **Turnover** and **Whittaker's $\textbf\beta$-Diversity**.
 These indices allow us to estimate $\beta$-diversity between two samples. 
 
 
@@ -360,14 +361,14 @@ We will obtain this information using the `add.spec.scores` function in the R `B
 
 ```{r}
 require(BiodiversityR)
-soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
-corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
-corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
-colnames(cor_spp)[6]<-"Corr1"
-colnames(cor_spp)[7]<-"Corr2"
-corrcut <- 0.7
-imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
-imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
+# soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
+# corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
+# corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
+# colnames(cor_spp)[6]<-"Corr1"
+# colnames(cor_spp)[7]<-"Corr2"
+# corrcut <- 0.7
+# imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
+# imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
 ```
 
 ***Question 7***: Using the `add.spec.scores` function, can you generate any hypotheses about what soil bacterial taxa are potential indicators of land-use variation? 
@@ -433,19 +434,19 @@ mantel(fish.dist,env.dist)
 # subset explanatory varaibles
 
 
-
-envdas <- env[,1]
-envtopo <- env[,c(2:4)]
-envchem <- env[,c(5:11)]
-spe.hel <- decostand(spe, method="hellinger")
-
-spe.rda <- rda(spe.hel ~ ., envchem)
-coef(spe.rda)
-
-spechem.physio <- rda(spe.hel, envchem, envtopo)
-
-# PermutationTest
-anova.cca(spe.rda, step=1000)
+# 
+# envdas <- env[,1]
+# envtopo <- env[,c(2:4)]
+# envchem <- env[,c(5:11)]
+# spe.hel <- decostand(spe, method="hellinger")
+# 
+# spe.rda <- rda(spe.hel ~ ., envchem)
+# coef(spe.rda)
+# 
+# spechem.physio <- rda(spe.hel, envchem, envtopo)
+# 
+# # PermutationTest
+# anova.cca(spe.rda, step=1000)
 ```
 
 
