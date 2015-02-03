@@ -38,7 +38,7 @@ require("vegan")
 
 ## 2) LOADING DATA
 
-To date, we have analyzed biodiversity data sets for freshwater zooplankton, tropical forest trees, and soil bacteria.
+To date, we have analyzed biodiversity data sets for freshwater zooplankton, tropical trees, and soil bacteria.
 In this exercise, we introduce a new dataset containing information on stream fish assemblages from the Doubs river, which runs near the France-Switzerland boarder in the Jura Mountains.
 The data set (`doubs`) includes fish abundances, environmental variables, and spatial cooridinates for 30 sites. 
 The data set has previously been used to demonstrate that fish communities can be a good indicator of ecological zones in rivers and streams. 
@@ -50,22 +50,24 @@ require(ade4)
 data(doubs)
 ```
 
-*Note on `doubs`*: While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
-Now, we are working with yet another data structure: a **list**. 
+### Introduction to a new data structure: Lists
+While working in R this semester, we have learned about vectors, matrices, and data frames. 
+Here we introduce another data structure: a **list**. 
 In R, a list is an object that contains a collection of other objects of similar or different types.
 
-We can use the `str()` function to describe some of the attributes of `doubs`.
-Because this dataset is complex, we can pass the "max.level = 1" arguement to minimize the output of `str()`
+We can use the `str()` function to describe some of the attributes of `doubs`, which is a list.
+Because this dataset is somewhat complex, we can pass the "max.level = 1" arguement to minimize the output of `str()`. 
+Also, you can use the the dollar sign (`$`) between the list name (`doubs`) and objects within the list (e.g., `env`) to explore the data set. 
+Last, recall that you can use `help()` to learn more about a data set that is contained in a package. 
 
 ```{r, results='hide'}
 str(doubs, max.level = 1)
 ```
 
 ***Question 1***:  Describe some of the attributes of the `doubs` dataset. 
-Also, you can use the dollar sign (`$`) between the list name (`doubs`) and objects within the list (`env`).
-In addition, always remember that you can find additional information using the `help()` function.
-a.  How many objects are in `doubs` list?
-b.  What types of data structures are used in the `doubs` list?
+
+a.  How many objects are in the list `doubs`?
+b.  What types of data structures are contained in the `doubs` list?
 c.  What are the units of nitrate ("nit") in the stream water?
 d.  How many fish species are there in the `doubs` list?
 
@@ -74,11 +76,10 @@ d.  How many fish species are there in the `doubs` list?
 > ***Answer 1c***:  
 > ***Answer 1d***:  
 
-Because we have a wealth of information about this dataset, we can use that information for various purposes.
-We might use the environmental or spatial data to test a hypothesis.
-However, we can also use the spatial data for graphical representations. 
-For example, below we have provided a two plots of the doubs fish data. 
-The first plot shows richness at each site in the stream.
+There is a wealth of information in the `doubs` dataset that can be used to address various issues related to $\beta$-diversity.
+For example, we might use the environmental or spatial data to develop or test a hypothesis.
+Below we have generated two plots of the doubs fish data. 
+The first plot shows fish richness at each site in the stream.
 The second plot shows the abundance of a particular fish species at each site in the stream.
 
 ```{r, fig.width=8, fig.height=3.75, echo=FALSE}
@@ -113,17 +114,20 @@ legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
        title = "N", legend = seq(0, 6, 2), pt.bg = spa.N.color[seq(1, 7, 2)])
 ```
 
-In the last exercise, we used species abundance data and the *site-by-species* matrix to measure the diversity within a particular site (e.g., richness). 
-However, these measurs are not always adequate for compariing communities across site.
-For example, in the figure above you can see that there is a stretch of the Doubs River where observed richness is constant at 6 species.
-However, if you look at just Brown Trout abundance you can see large changes in the abundance of this particular species in the same stretch of the river. 
-Therefore, to properly make comparisions between sites, we will need to make sure that we are comparing communities based on compositional similarities and differences. 
+***Question 2***: Answer the following questions based on the spatial patterns of richness (i.e., $\alpha$-diversity) and Brown Trout (*Salmo trutta*) abundance in the Doubs River. 
+
+a.  How does fish richness vary along the Doubs River?
+b.  How does Brown Trout (*Salmo trutta*) abundance vary along the Doubs River?
+c.  What does this say about the limitations of richness when trying to understand patterns of biodiversity?
+
+> ***Answer 2a***:  
+> ***Answer 2b***:  
+> ***Answer 2c***:  
 
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
-
-In this section we introduce a relatively simple measure of $\beta$-diversity: **Whittaker's** $\pmb\beta$-**Diversity**.
-This index allow us to estimate $\beta$-diversity between samples. 
-Whittaker's $\beta$ is a classic measure of $\beta$-diversity and was developed by Robert Whittaker (1960). 
+There are various ways to quantify $\beta$-diversity. 
+Perhaps one of the simplest metrics is $\pmb\beta$-**Diversity**, which was developed by Robert Whittaker (1960). 
+This classic index is useful for comparing $\beta$-diversity between two samples. 
 The equation for Whittaker's $\beta$ is as follows:
 $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$ 
 where *S* = the total number of species recorded in a system (i.e., $\gamma$-diversity) and $\bar{\alpha}$ which is the mean sample richness (i.e., $\alpha$ diversity).
@@ -146,10 +150,12 @@ fish <- doubs$fish
 b <- beta.w(fish[1,], fish[2, ])
 ```
 
-***Question 2***: Using the `beta.w` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set? Based on the formula for $\beta_{w}$, what does this value represent?
+***Question 3***: Using the `beta.w` function above, answer the following questions
+a.  What is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set? 
+b.  Based on the formula for $\beta_{w}$, what does this value represent?
 
-> ***Answer 2a***: 
-> ***Answer 2b***: 
+> ***Answer 3a***: 
+> ***Answer 3b***: 
 
 ## 4) QUANTIFYING BETA-DIVERSITY FOR TWO OR MORE SAMPLES
 
@@ -158,11 +164,11 @@ In this section we will estimate $\beta$-diversity for multiple samples.
 During this process, you will learn how to generate similarity and dissimilarity matrices for different data sets that will be needed for visualizing and quantifying $\beta$-diversity. 
 
 ### Resemblance Matrix
-Here, we introduce our second primary ecological data structure: the **Resemblance Matrix**. 
+In order to quantify $\beta$-diversity for more than two samples, we need to introduce our second primary ecological data structure: the **Resemblance Matrix**. 
 In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix. 
 The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
 In the sections below, we describe some of the common similarity and dissimilarity metrics used for constructing a resemblance matrix.
-Through out this handout, we will use common notations in accordance with Legendre & Legendre (2012). 
+Throughout this handout, we will use common notations in accordance with Legendre & Legendre (2012), which is a recommended book that can be electronically accessed via the IU library (see the course syllabus [http://goo.gl/y4oK7c]). 
 
 ### A.  Incidence-Based Measures of Similarity and Dissimilarity
 
