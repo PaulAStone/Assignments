@@ -221,6 +221,40 @@ We will start by comparing diversity across sites.
 
 
 
+
+### A.  Turnover
+Turnover is defined as the rate or magnitude of change in species composition in space or time. 
+
+We can calculate turnover with the following equation:
+$turnover = \frac{b + c}{S_1 + S_2}$
+where b = the number of species only present in the first sample; c = the number of species only present in the second sample; $S_1$ = the total number of species in the first sample; and $S_2$ = the number of species in the second sample. 
+
+In R, we can write this as a function as follows:
+
+```{r}
+turnover <- function(site1 = " ", site2 = " "){
+  site1 = subset(site1, select = site1 > 0)               # Removes absences
+  site2 = subset(site2, select = site2 > 0)               # Removes absences
+  b  = length(setdiff(colnames(site1), colnames(site2)))  # Number of unique in 1st
+  c  = length(setdiff(colnames(site2), colnames(site1)))  # Number of unique in 2nd
+  s1 = length(site1)                                      # Number of species in 1st 
+  s2 = length(site2)                                      # Number of species in 2nd 
+  t  = round((b + c)/(s1 + s2), 3)                        # Calculats turnover to three decimals
+  return(t)                                               # Returns turnover
+}
+```
+
+***Question 2***: Using the `turnover` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set?
+
+> ***Answer 2***:  
+
+
+
+
+
+
+
+
 # Add Species to PCoA ordination -- cool but takes a long time and looks messy with lots of species
 soil.pcoa.spp <- wascores(soilbac.pcoa$points[,1:2], soilbac)
 text(soil.pcoa.spp, rownames(soil.pcoa.spp), cex=0.7, col="red")

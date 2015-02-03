@@ -9,11 +9,17 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-In this exercise, you will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
+In the last exercise, we explored within-site or $\alpha$-diversity of a community.
+However, community ecologists are often interested in the spatial or temporal variation in community composition. 
+To understand this variation, we will partition regional diversity (aka $\gamma$-diversity) into within- ($\alpha$) and between- ($\beta$) site diversity. 
+As such, $\beta$-diversity represents the compositional similarity and differentiation between sites. 
+
+In this exercise, we will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
 During this processs you will learn how to:
-1.  formally quantify $\beta$-diversity
-2.  visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
-3.  test hypotheses about $\beta$-diversity using multivariate statistics
+
+1. formally quantify $\beta$-diversity
+2. visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
+3. test hypotheses about $\beta$-diversity using multivariate statistics
 
 ## 1) SETUP
 ### Retrieve and Set Your Working Directory
@@ -33,10 +39,13 @@ require("vegan")
 ```
 
 ## 2) LOADING DATA
-In addition to the BCI and soil bacteria data that we used for $\alpha$-diversity, we will be using a fish data set in the `ade4` package.
-This data set has fish abundances, environmental variables, and spatial cooridinates for 30 sites in the Doubs River, which runs near the France-Switzerland boarder in the Jura Mountains. 
-***At one point I had more info about the data here (similar to what we have for BCI). Do we want to not have that kinda stuff in the handouts?***
-***I looked over the content that was deleted. A lot of what describing the data structure (see beta_supplementary.Rmd). I thought it might be useful to have them descirbe the `doubs` data, and incorporate that into the questions. But feel free to add information back -- JTL***
+
+So far we have explored data related to zooplankton biomass, tree abundances at Barro-Colorado Island (BCI), and soil bacteria from plots in the KBS Long-Term Ecological Site (http://lter.kbs.msu.edu/).
+This week we will be a new dataset; however, we will use the soil bacteria data that we used for $\alpha$-diversity for homework.
+This week we will primarily be using a fish data set from the `ade4` package for our exercise.
+This data set (`doubs`) includes fish abundances, environmental variables, and spatial cooridinates for 30 sites in the Doubs River.
+The Doubs River runs near the France-Switzerland boarder in the Jura Mountains.
+This data set has been used to show that fish communities can be a good indicator of ecological zones in rivers and streams. 
 Let's load the `ade` package and the `doubs` data set. 
 
 ```{r}
@@ -44,12 +53,20 @@ require(ade4)
 data(doubs)
 ```
 
-*Note on `doubs`* While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
+*Note on `doubs`*: While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
 Now, we are working with yet another data structure: a **list**. 
 In R, a list is an object that contains a collection of other objects of similar or different types.
 
-***Question 1***:  Use the `str` function to describe some of the attributes of `doubs`. 
+We can use the `str()` function to describe some of the attributes of `doubs`.
+Because this dataset is complex, we can pass the "max.level = 1" arguement to minimize the output of `str()`
+
+```{r, results='hide'}
+str(doubs, max.level = 1)
+```
+
+***Question 1***:  Describe some of the attributes of the `doubs` dataset. 
 Also, you can use the dollar sign (`$`) between the list name (`doubs`) and objects within the list (`env`).
+In addition, always remember that you can find additional information using the `help()` function.
 a.  How many objects are in `doubs` list?
 b.  What types of data structures are used in the `doubs` list?
 c.  What are the units of nitrate ("nit") in the stream water?
@@ -57,54 +74,20 @@ d.  How many fish species are there in the `doubs` list?
 
 > ***Answer 1a***:  
 > ***Answer 1b***:  
-> ***Answer 1c***: 
-> ***Answer 1d***:
+> ***Answer 1c***:  
+> ***Answer 1d***:  
 
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
-In this section we introduce two relatively simple indices: **Turnover** and **Whittaker's $\beta$-Diversity**.
-These indices allow us to estimate $\beta$-diversity between two samples. 
 
-
-***I'm thinking more about this section. The classical measure is probably just Whittaker's. The Turnover calculation (though the underlying principal is the same) is used to compare turnover in time. So maybe just Whittakers to keep it simple***
-***I need to look at the equations a bit more closely, but it appears that they 
-
-
-### A.  Turnover
-Turnover is defined as the rate or magnitude of change in species composition in space or time. 
-
-We can calculate turnover with the following equation:
-$turnover = \frac{b + c}{S_1 + S_2}$
-where b = the number of species only present in the first sample; c = the number of species only present in the second sample; $S_1$ = the total number of species in the first sample; and $S_2$ = the number of species in the second sample. 
-
-In R, we can write this as a function as follows:
-
-```{r}
-turnover <- function(site1 = " ", site2 = " "){
-  site1 = subset(site1, select = site1 > 0)               # Removes absences
-  site2 = subset(site2, select = site2 > 0)               # Removes absences
-  b  = length(setdiff(colnames(site1), colnames(site2)))  # Number of unique in 1st
-  c  = length(setdiff(colnames(site2), colnames(site1)))  # Number of unique in 2nd
-  s1 = length(site1)                                      # Number of species in 1st 
-  s2 = length(site2)                                      # Number of species in 2nd 
-  t  = round((b + c)/(s1 + s2), 3)                        # Calculats turnover to three decimals
-  return(t)                                               # Returns turnover
-}
-```
-
-***Question 2***: Using the `turnover` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set?
-
-> ***Answer 2***:  
-
-### B.  Whittaker's $\beta$-Diversity
-
-***I think maybe we can do a better job os describing this metric. For example, S is actually gamma diversity -- a concept we can explicitly address. Also, "sample richness" could be described as the mean richness (i.e., alpha diversity) of two samples. It seems sort of suprising that Whittaker's and beta give the same exact answer, no? -- JTL***
-
-Another classic measures of $\beta$-diversity was developed by Robert Whittaker (1960):
+In this section we introduce a relatively simple measure of $\beta$-diversity: **Whittaker's** $\pmb\beta$-**Diversity**.
+This index allow us to estimate $\beta$-diversity between samples. 
+Whittaker's $\beta$ is a classic measure of $\beta$-diversity and was developed by Robert Whittaker (1960). 
+The equation for Whittaker's $\beta$ is as follows:
 $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$ 
-where S = the total number of species recorded in a system and $\bar{\alpha}$ is the average sample richness.
+where *S* = the total number of species recorded in a system (i.e., $\gamma$-diversity) and $\bar{\alpha}$ which is the mean sample richness (i.e., $\alpha$ diversity).
 Subtracting 1 scales $\beta_{w}$ from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diversity).
 
-Again, we can write this as a function in R:
+We can write this as a function in R:
 
 ```{r}
 beta.w <- function(site1 = "", site2 = ""){
@@ -116,11 +99,15 @@ beta.w <- function(site1 = "", site2 = ""){
   b.w   = round(s/a.bar - 1, 3)
   return(b.w)
 }
+
+fish <- doubs$fish
+b <- beta.w(fish[1,], fish[2, ])
 ```
 
-***Question 3***: Using the `beta.w` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set?
+***Question 2***: Using the `beta.w` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set? Based on the formula for $\beta_{w}$, what does this value represent?
 
-> ***Answer 3***:  
+> ***Answer 2a***: 
+> ***Answer 2b***: 
 
 ## 4) QUANTIFYING BETA-DIVERSITY FOR TWO OR MORE SAMPLES
 Often, we often want to compare the diversity of more than just a pair of samples. 
@@ -360,14 +347,14 @@ We will obtain this information using the `add.spec.scores` function in the R `B
 
 ```{r}
 require(BiodiversityR)
-soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
-corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
-corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
-colnames(cor_spp)[6]<-"Corr1"
-colnames(cor_spp)[7]<-"Corr2"
-corrcut <- 0.7
-imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
-imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
+# soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
+# corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
+# corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
+# colnames(cor_spp)[6]<-"Corr1"
+# colnames(cor_spp)[7]<-"Corr2"
+# corrcut <- 0.7
+# imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
+# imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
 ```
 
 ***Question 7***: Using the `add.spec.scores` function, can you generate any hypotheses about what soil bacterial taxa are potential indicators of land-use variation? 
@@ -481,19 +468,19 @@ The due date for this assignment will be announced in class and/or canvas.
 # subset explanatory varaibles
 
 
-
-envdas <- env[,1]
-envtopo <- env[,c(2:4)]
-envchem <- env[,c(5:11)]
-spe.hel <- decostand(spe, method="hellinger")
-
-spe.rda <- rda(spe.hel ~ ., envchem)
-coef(spe.rda)
-
-spechem.physio <- rda(spe.hel, envchem, envtopo)
-
-# PermutationTest
-anova.cca(spe.rda, step=1000)
+# 
+# envdas <- env[,1]
+# envtopo <- env[,c(2:4)]
+# envchem <- env[,c(5:11)]
+# spe.hel <- decostand(spe, method="hellinger")
+# 
+# spe.rda <- rda(spe.hel ~ ., envchem)
+# coef(spe.rda)
+# 
+# spechem.physio <- rda(spe.hel, envchem, envtopo)
+# 
+# # PermutationTest
+# anova.cca(spe.rda, step=1000)
 ```
 
 ### Multivariate Models
