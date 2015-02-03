@@ -9,13 +9,11 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-In the last exercise, we explored within-site or $\alpha$-diversity of a community.
-However, community ecologists are often interested in the spatial or temporal variation in community composition. 
-To understand this variation, we will partition regional diversity (aka $\gamma$-diversity) into within- ($\alpha$) and between- ($\beta$) site diversity. 
-As such, $\beta$-diversity represents the compositional similarity and differentiation between sites. 
+In this excercise, we move beyond the investgation of within-site, $\alpha$-diversity.
+We will explore $\beta$-diversity, which is defined as the diveristy that occurs among sites. 
+This requires that we examine the compositional similarity of assemblages that vary in space or time. 
 
-In this exercise, we will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
-During this processs you will learn how to:
+After completing this exercise you will know how to:
 
 1. formally quantify $\beta$-diversity
 2. visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
@@ -40,13 +38,12 @@ require("vegan")
 
 ## 2) LOADING DATA
 
-So far we have explored data related to zooplankton biomass, tree abundances at Barro-Colorado Island (BCI), and soil bacteria from plots in the KBS Long-Term Ecological Site (http://lter.kbs.msu.edu/).
-This week we will be a new dataset; however, we will use the soil bacteria data that we used for $\alpha$-diversity for homework.
-This week we will primarily be using a fish data set from the `ade4` package for our exercise.
-This data set (`doubs`) includes fish abundances, environmental variables, and spatial cooridinates for 30 sites in the Doubs River.
-The Doubs River runs near the France-Switzerland boarder in the Jura Mountains.
-This data set has been used to show that fish communities can be a good indicator of ecological zones in rivers and streams. 
-Let's load the `ade` package and the `doubs` data set. 
+To date, we have analyzed biodiversity data sets for freshwater zooplankton, tropical forest trees, and soil bacteria.
+In this exercise, we introduce a new dataset containing information on stream fish assemblages from the Doubs river, which runs near the France-Switzerland boarder in the Jura Mountains.
+The data set (`doubs`) includes fish abundances, environmental variables, and spatial cooridinates for 30 sites. 
+The data set has previously been used to demonstrate that fish communities can be a good indicator of ecological zones in rivers and streams. 
+
+Let's load the `ade` package, which contains the `doubs` data set. 
 
 ```{r}
 require(ade4)
