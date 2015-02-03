@@ -45,8 +45,8 @@ The data set has previously been used to demonstrate that fish communities can b
 
 Let's load the `ade` package, which contains the `doubs` data set. 
 
-```{r}
-require(ade4)
+```{r, results='hide'}
+require("ade4")
 data(doubs)
 ```
 
@@ -66,16 +66,17 @@ str(doubs, max.level = 1)
 
 ***Question 1***:  Describe some of the attributes of the `doubs` dataset. 
 
-a.  How many objects are in the list `doubs`?
-b.  What types of data structures are contained in the `doubs` list?
+a.  How many objects are in the `doubs` data set?
+b.  What types of data structures are contained in the `doubs` data set?
 c.  What are the units of nitrate ("nit") in the stream water?
-d.  How many fish species are there in the `doubs` list?
+d.  How many fish species are there in the `doubs` data set?
 
 > ***Answer 1a***:  
 > ***Answer 1b***:  
 > ***Answer 1c***:  
 > ***Answer 1d***:  
 
+### Visualizing the `doubs` data set
 There is a wealth of information in the `doubs` dataset that can be used to address various issues related to $\beta$-diversity.
 For example, we might use the environmental or spatial data to develop or test a hypothesis.
 Below we have generated two plots of the doubs fish data. 
@@ -118,7 +119,7 @@ legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
 
 a.  How does fish richness vary along the Doubs River?
 b.  How does Brown Trout (*Salmo trutta*) abundance vary along the Doubs River?
-c.  What does this say about the limitations of richness when trying to understand patterns of biodiversity?
+c.  What do these patterns say about the limitations of using richness when examining patterns of biodiversity?
 
 > ***Answer 2a***:  
 > ***Answer 2b***:  
@@ -126,11 +127,11 @@ c.  What does this say about the limitations of richness when trying to understa
 
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
 There are various ways to quantify $\beta$-diversity. 
-Perhaps one of the simplest metrics is $\pmb\beta$-**Diversity**, which was developed by Robert Whittaker (1960). 
+Perhaps one of the simplest metrics is **Whittaker's** $\pmb\beta$-**Diversity**, which was developed by Robert Whittaker (1960). 
 This classic index is useful for comparing $\beta$-diversity between two samples. 
-The equation for Whittaker's $\beta$ is as follows:
+The equation for Whittaker's $\beta$-Diversity is as follows:
 $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$ 
-where *S* = the total number of species recorded in a system (i.e., $\gamma$-diversity) and $\bar{\alpha}$ which is the mean sample richness (i.e., $\alpha$ diversity).
+where *S* = the total number of species recorded across sites (i.e., $\gamma$-diversity) and $\bar{\alpha}$ which is the mean richness (i.e., $\alpha$ diversity) among sites.
 Subtracting 1 scales $\beta_{w}$ from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diversity).
 
 We can write this as a function in R:
@@ -145,16 +146,13 @@ beta.w <- function(site1 = "", site2 = ""){
   b.w   = round(s/a.bar - 1, 3)
   return(b.w)
 }
-
-fish <- doubs$fish
-b <- beta.w(fish[1,], fish[2, ])
 ```
 
-***Question 3***: Using the `beta.w` function above, answer the following questions
-a.  What is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set? 
+***Question 3***: Using the `beta.w` function above, answer the following questions:
+a.  What is the $\beta$-diversity for fish assemblages sampled from site 1 and site 2 of the `doubs` data set? 
 b.  Based on the formula for $\beta_{w}$, what does this value represent?
 
-> ***Answer 3a***: 
+> ***Answer 3a***:  
 > ***Answer 3b***: 
 
 ## 4) QUANTIFYING BETA-DIVERSITY FOR TWO OR MORE SAMPLES
@@ -168,9 +166,10 @@ In order to quantify $\beta$-diversity for more than two samples, we need to int
 In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix. 
 The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
 In the sections below, we describe some of the common similarity and dissimilarity metrics used for constructing a resemblance matrix.
-Throughout this handout, we will use common notations in accordance with Legendre & Legendre (2012), which is a recommended book that can be electronically accessed via the IU library (see the course syllabus [http://goo.gl/y4oK7c]). 
+Throughout this handout, we will use common notations in accordance with Legendre & Legendre (2012), which can be electronically accessed via the IU library (see the course syllabus [http://goo.gl/y4oK7c]). 
 
 ### A.  Incidence-Based Measures of Similarity and Dissimilarity
+When you are working with presence-absence data, you can you the following metrics for generating a similarity or dissimilarity matrix. 
 
 \begin{center}
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
@@ -178,31 +177,34 @@ Throughout this handout, we will use common notations in accordance with Legendr
   \hline \hline \\ [-1.5ex]
   Jaccard & 
   $S_7 = \frac{a}{a+b+c}$ & 
-  Compares the number of shared species to the number of species in the combined assemblages  (global view ) \\
+  Compares the number of shared species to the number of species in the combined assemblages  (global view) \\
   \\ [-1.5ex]
   Sørensen & 
   $S_8 = \frac{2a}{(2a+b+c)}$ & 
-  Compares the number of shared speces to the mean number of species in a single assemblage (local view) \\
+  Compares the number of shared species to the mean number of species in a single assemblage (local view) \\
   \\ [-1.5ex]
   \hline
   \end{tabular}
   \end{center}
 
-Where *a* = the number of shared speces, *b* = the number of unique species in the first assemblage, and *c* = the number of unique species in the second assemblage.
+In the above table, *a* = the number of shared speces, *b* = the number of unique species in the first assemblage, and *c* = the number of unique species in the second assemblage.
 
 ***Question 4***: What are the differences between Jaccard and Sørensen metrics? When might you use one instead of the other? In what situations would these measures of $\beta$ diversity fail?
 
-> ***Answer 3a***:  
-> ***Answer 3b***:
-> ***Answer 3c***:
+> ***Answer 4a***:  
+> ***Answer 4b***:  
+> ***Answer 4c***:  
 
-*Notes on incidence-based similarity*: These are just two of the many incidence-based similarity measures. Others (including Ochiai, Kulczynski-Cody, and Lennon) are including in table 6.1 of Magurran & McGill 2011. The difference in these measures include how means are calculated (Sorensen = harmonic mean, Ochiai = geometric mean, and Kulcynski-Code = arithmetic mean), and how unique species are dealt with if only one sample has unique species (Lennon). However, though the two measures we have provided are the most commonly seen in the literature, we encourage you to read more about these other measures. 
+*Notes on incidence-based similarity*: Jacard and Sørensen are perhaps the two most commonly used incidence-based measures of similarity. 
+Others include Ochiai, Kulczynski-Cody, and Lennon, which can be found in Table 6.1 of Magurran & McGill (2011). 
+The differences in these measures include how means are calculated (Sørensen = harmonic mean, Ochiai = geometric mean, and Kulczynski-Cody = arithmetic mean), and how unique species are dealt with if only one sample has unique species (Lennon). 
 
-Also, it is important to note that these equations calculate similarity, but can (and in many cases should) be converted to dissimilarity (D). 
-In `vegan`, disimilarities (*D*) are usually returnd from functions instead of similarities (*S*).
+Also, it is important to note that these equations calculate similarity, but can (and in many cases should) be converted to dissimilarity (*D*). 
+In `vegan`, disimilarities (*D*) are usually returned from functions instead of similarities (*S*).
 The conversion between similarity and dissimilarity is calculated as `D = 1 - S`.
 
 ### B.  Abundance-Based Measures of Similarity and Dissimilarity
+When you are working with abundance data, you can you the following metrics for generating a similarity or dissimilarity matrix. 
 
 \begin{center}
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
@@ -210,23 +212,25 @@ The conversion between similarity and dissimilarity is calculated as `D = 1 - S`
   \hline \hline \\ [-1.5ex]
   \raggedright Bray-Curtis Dissimilarity &
   $D_{14} = \frac{\sum\limits_{j=1}^{p} \left|{y_{1j} - y_{2j}} \right|}{\sum\limits_{j = 1}^{p}\left(y_{1j} + y_{2j}\right)}$  &
-  A quantitative version of the Sørensen index. Semimetric. Generally used as an overall similarity measure. Also known as the *percentage difference* \\
+  A quantitative version of the Sørensen index. Commonly used measure of similarity. Also known as the \emph{percentage difference}. \\
   \\ [-1.5ex]
   \raggedright Morisita-Horn &
-  $S_{MH} = \frac{2 \sum\limits_{j=1}^{p} y_{1j}y_{2j}}{\left(\sum\limits_{j=1}^{p}y_{1j}^{2} + \sum\limits_{j=1}^{p} y_{2j}^{2}\right)}$ &
-  A measure of *compositional overlap*. Uses squared differences in relative abundance and thus most influenced by more abundant species. Resistant to undersampling. \\
+  $S_{MH} = \frac{2 \sum\limits_{j=1}^{p} y_{1j} \cdot y_{2j}}{\left(\sum\limits_{j=1}^{p}y_{1j}^{2} + \sum\limits_{j=1}^{p} y_{2j}^{2}\right)}$ &
+  A measure of \emph{compositional overlap}. Uses squared differences in relative abundance and thus is most influenced by more abundant species. Resistant to undersampling. \\
   \\ [-1.5ex]
   \hline
   \end{tabular}
   \end{center}
 
-Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2, $y_{1+}$ is the sum of abundances in site 1 and $y_{2+}$ in site 2, $y_{++}$ is the sum of all abuncances across all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across sites, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
+In the above table $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2. 
 
-As with incidence based measures, these are just a few of the many options for calculating similarity or dissimilarity between communities. 
+As with incidence-based measures, there are many other options for calculating similarity or dissimilarity between communities, which include Mean Character Difference, Canberra, Coefficient of Divergence, and Grower. 
 
-### C.  Other Measures Measures of Similarity and Dissimilarity (Distance) 
-
-*Note*: some of the metrics below may not be appropriate for species abundances
+### C. A Cautionary Note on Other Measures of Distance
+Some distance measures have been developed for and are widely used to compare quantitative discriptors.
+However, in general, they should not be used for abundance-based data.
+This is because they lead to the *Species Abundance Paradox*: the distance between two sites that have no species in common is smaller than the distance between sites with shared species.
+Examples of these types of measure include Euclidean Distance and Manhattan Distance:
 
 ***Euclidean Distance***: 
 $D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
@@ -234,62 +238,42 @@ $D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
 ***Manhattan Distance***: 
 $D_{7} = \sum\limits_{j = 1}^{p} \left| y_{ij} - y_{2j} \right|$
 
-These distance measures have been developed for and widely used to compare quantitative discriptors.
-However, in general, they should not be used for abundance based data.
-This is because they lead to the *Species Abundance Paradox*: the distance between two sites that have no species in common is smaller than the distance between sites with shared species.
-However, methods exist to transform data prior to measuring distance and these may be appropriate for species abundance data. 
-It is recommended that you read more about these distance measures if you are interested in implementing them to address your research questions.
+It should be noted that methods exist to transform species abundance data prior to implementing metrics like Euclidean Distance and Manhattan Distance (e.g., Chord transformation and Chi-Square transformation).
+It is recommended that you read more about these distance metrics if you are interested in implementing them to address your research questions.
 
-\begin{center}
-\begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
-  \textbf{Index} & \textbf{Equation} & \textbf{Properties} \\ 
-  \hline \hline \\ [-1.5ex]
-  Chord Distance & 
-  $D_3 = \sqrt{2\left(1 - \frac{\sum\limits_{j=1}^{p}y_{1j} \cdot  y_{2j}}{\sum\limits_{j=1}^{p}y_{1j}^{2} \cdot \sum\limits_{j=1}^{p} y_{2j}^{2}}\right)}$ &
-  Range: 0 to $\sqrt{2}$ (from "two sites share the same species in the same proportions" to "no species in common") \\
-  \\ [-1.5ex]
-  \raggedright Chi-Squared Distance & 
-  $D_{16} = \sqrt{\sum\limits_{j = 1}^{p} \frac{1}{y_{+j}/y_{++}} \left( \frac{y_{1j}}{y_{1+}} - \frac{y_{2j}}{y_{2+}} \right)^2}$ &
-  Used to compute the association between the rows and columns of a frequency table. Preserved in correspondence analysis.  \\
-  \\ [-1.5ex]
-  \hline
-  \end{tabular}
-  \end{center}
-  
-Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2, $y_{1+}$ is the sum of abundances in site 1 and $y_{2+}$ in site 2, $y_{++}$ is the sum of all abuncances across all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across sites, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
-  
 ### D.  Constructing the Resemblance Matrix
 
-Conveniently, `vegan` has many of the similarity metrics used to construct a resemblance matrix using the function `vegdist()`.
-Let's apply `vegdist` to the fish assemblages in the Doubs River (`doubs`) with the exception of site 8, which had no observations.
+Conveniently, `vegan` includes many of the similarity metrics used to construct a resemblance matrix.  
+These metrics can be calcualted using the `vegdist()` function.
+Let's use `vegdist` to create a resemblance matrix for the fish assemblages in the Doubs River (`doubs`). 
+However, we'll need to remove site 8 from `doubs` because for some reason it has no observations. 
 
 ```{r}
 fish <- doubs$fish 
-
-rowSums(fish)    
-fish <- fish[-8, ]               # Remove Site 8 From Data
+fish <- fish[-8, ] # Remove site 8 from data
+fish.rel <- decostand(fish, method = "total")
 
 # Calculate Jaccard 
-fish.dj <- vegdist(fish, method="jaccard", binary=TRUE)
+fish.dj <- vegdist(fish.rel, method="jaccard", binary=TRUE)
 
 # Calculate Bray-Curtis 
-fish.db <- vegdist(fish, method="bray")
+fish.db <- vegdist(fish.rel, method="bray")
 ```
 
-Now that you created a resemblance matrix, it would be nice to visualize the fish assemblages of the Doubs River. 
-As a start, we can print the resemblance matrix:
+Now that we've created a resemblance matrix, it would be nice to visualize the fish assemblages of the Doubs River. 
+As a start, we can print the Bray-Curtis-based resemblance matrix in the console:
 
 ```{r, results='hide'}
 fish.db
 ```
 
-If you run this command in your console, you will see a large diagonal matrix. 
-Typically, resemblance matrices usually just show the upper or lower triangle of values.
-This is because the two triangles will have the same information.
+From this, you will see a large diagonal matrix. 
+Typically, resemblance matrices just show the upper or lower triangle of values.
+This is because the two triangles have the same information.
 However, you can generate a square resemblance matrix with the following command:
 
 ```{r}
-fish.db <- vegdist(fish, method="bray", upper=TRUE, diag=TRUE)
+fish.db <- vegdist(fish.rel, method="bray", upper=TRUE, diag=TRUE)
 ```
 
 ***Question 5***: Does the resemblance matrix (`fish.db`) represent similarity or dissimilarity? How do you know?
@@ -307,63 +291,62 @@ This function will allow us to make a basic heatmap of our resemblance matrix.
 However, first there are a few things we need to do:
 1. We need to define a color palette.
 R include many predefined color palettes; however, we are going to make our own color palette.
-2. We need to make sure that our resemblance matrix is plotted in the correct order. 
-By default this will not happen so we have to force it to be in the order we want. 
+2. We need to make sure that our resemblance matrix is plotted correctly. 
+In particular, we need specify the order in which we want our sites plotted.
 
 ```{r}
 jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", 
                                  "#7FFF7F", "yellow", "#FF7F00", "red", 
                                  "#7F0000"))
-order <- rev(attr(fish.db, "Labels"))  # Allows us to flip the heatmap to look like RM
+order <- rev(attr(fish.db, "Labels"))  # defines order of sites for plotting
 levelplot(as.matrix(fish.db)[, order], aspect = "iso", col.regions = jet.colors, 
-          xlab="Doubs Site", ylab = "Doubs Site", main = "Bray-Curtis Distance")
+          xlab="Doubs Site", ylab = "Doubs Site", scales=list(cex=0.5), 
+          main = "Bray-Curtis Distance")
 ```
 
 ### B.  Cluster Analysis
-Another common way to visualize $\beta$-diversity is to use clustering.
-Clustering is technique that places objects in groups based on their similarity to one another.  
-Cluserting is generally considered an exploratory technique, although there are ways to test whether certain clusters are statistically different from others. 
+Another common way to visualize $\beta$-diversity is through cluster analysis.
+Clustering is mostly an exploratory technique that places objects in groups based on their similarity to one another.
 In this exercise, we will use hierarchical clustering, specifically Ward Clustering. 
+###WARD CLUSTERING....
 However, there are numerous methods for clustering, which can influence your conclusions.  
 See chapter 8 of Legendre and Legendre (2012) for more information on clustering
-***perhaps another sentence on Ward Clustering would be useful? -- JTL***
-***also, not sure if people will follow what's being done below...or more importantly why -- JTL**
-***Perhaps we need to explain how to interpret "height"? -- JTL***
 
 ```{r}
-fish.upgma <- hclust(fish.db, method="average")
 fish.ward <- hclust(fish.db, method="ward.D")
-fish.ward$height <- sqrt(fish.ward$height)  # Square Root Transformation of Branch Lengths for Visualization
-plot(fish.upgma)
+fish.ward <- hclust(fish.db, method="complete")
+fish.ward$height <- sqrt(fish.ward$height)  # Sqrt transform of branch lengths for visualization
 plot(fish.ward)
 ```
 
-***Question 6***: Based on this clustering analysis, what hypotheses could be addressed with these data?
-***Hard to say. Maybe some of the intuition of the data was lost by cutting out first part of visualization. Need to know something about the numbers of the sites, presumably low are upstream and higher number are downstream? -- JTL***
+***Question 6***: Based on this clustering analysis and the introdutory plots that we generated after loading the data, what hypotheses could be addressed with the `doubs` data set?
 
 > ***Answer 6***: 
 
-***Any value in showing them this, too? Segue into cluster anaylysis? -- JTL***
+Another clustering visualization tool that can be used for exploratory purpsoses is`heatmap()` function.
+This tool will generate a clustering diagram that incorporates abundances of different fish species in different sites using hierarchical clustering methods. ###polish### ###Do we want different colors and scale bar###
+
 ```{r}
-heatmap(as.matrix(doubs$fish))
+heatmap(as.matrix(fish))
 ```
 
 ### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
 When objects are plotted (usually in two or three diemnsions or "axes"), ordination can be useful for determining similarity among objects. 
-Using a biodiversity example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
+For example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
+There are various orditnation techniques that can be applied to multivariate biodiversity data. 
+When choosing and ordination technique, carefull consideration should be given based on the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled. 
 
-There are various orditnation techniqeus that can be applied to multivariate biodiversity data. 
-Carefuly consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled. 
-
-In this exercise, we focus on one commonly used ordination technique: **Principal Coordainates Analysis (PCoA)**, which is sometimes referred to as metric (multidimensional) scalling. 
+In this exercise, we focus on one commonly used ordination technique: **Principal Coordinates Analysis (PCoA)**, which is sometimes referred to as metric multidimensional scalling. 
 PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from a site-by-species matrix. 
 Next, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
 After centering **`A`**, PCoA is solved through eigenanlaysis, which generates eigenvectors corresponding to each ordination axis and an associated eigenvalue. 
 
-*Notes on PCoA* A nice feature of PCoA is that it can accept many different types of resemblance matrices. 
+A nice feature of PCoA is that it can accept resemblance matrices generated with various measures of dissimilarity. 
 This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
-When one uses a Eucldean distance matrix with PCoA, the results are identical to that of Principal Components Analysis (PCA).
+When one uses a Euclidean distance matrix with PCoA, the results are identical to that of Principal Components Analysis (PCA).
+
+### Change out soilbac with doubs###
 
 We are going to revisit the soil bacteria data set that we introduced in the $\alpha$-diversity excercise. 
 
