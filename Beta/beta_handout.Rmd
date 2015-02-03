@@ -9,11 +9,17 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-In this exercise, you will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
+In the last exercise, we explored within-site or $\alpha$-diversity of a community.
+However, community ecologists are often interested in the spatial or temporal variation in community composition. 
+To understand this variation, we will partition regional diversity (aka $\gamma$-diversity) into within- ($\alpha$) and between- ($\beta$) site diversity. 
+As such, $\beta$-diversity represents the compositional similarity and differentiation between sites. 
+
+In this exercise, we will explore between-site biodiversity, also known as beta ($\beta$) diversity. 
 During this processs you will learn how to:
-1.  formally quantify $\beta$-diversity
-2.  visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
-3.  test hypotheses about $\beta$-diversity using multivariate statistics
+
+1. formally quantify $\beta$-diversity
+2. visualize $\beta$-diversity with heatmaps, cluster analysis, and ordination
+3. test hypotheses about $\beta$-diversity using multivariate statistics
 
 ## 1) SETUP
 ### Retrieve and Set Your Working Directory
@@ -33,10 +39,13 @@ require("vegan")
 ```
 
 ## 2) LOADING DATA
-In addition to the BCI and soil bacteria data that we used for $\alpha$-diversity, we will be using a fish data set in the `ade4` package.
-This data set has fish abundances, environmental variables, and spatial cooridinates for 30 sites in the Doubs River, which runs near the France-Switzerland boarder in the Jura Mountains. 
-***At one point I had more info about the data here (similar to what we have for BCI). Do we want to not have that kinda stuff in the handouts?***
-***I looked over the content that was deleted. A lot of what describing the data structure (see beta_supplementary.Rmd). I thought it might be useful to have them descirbe the `doubs` data, and incorporate that into the questions. But feel free to add information back -- JTL***
+
+So far we have explored data related to zooplankton biomass, tree abundances at Barro-Colorado Island (BCI), and soil bacteria from plots in the KBS Long-Term Ecological Site (http://lter.kbs.msu.edu/).
+This week we will be a new dataset; however, we will use the soil bacteria data that we used for $\alpha$-diversity for homework.
+This week we will primarily be using a fish data set from the `ade4` package for our exercise.
+This data set (`doubs`) includes fish abundances, environmental variables, and spatial cooridinates for 30 sites in the Doubs River.
+The Doubs River runs near the France-Switzerland boarder in the Jura Mountains.
+This data set has been used to show that fish communities can be a good indicator of ecological zones in rivers and streams. 
 Let's load the `ade` package and the `doubs` data set. 
 
 ```{r}
@@ -44,12 +53,20 @@ require(ade4)
 data(doubs)
 ```
 
-*Note on `doubs`* While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
+*Note on `doubs`*: While working in R this semester, we have learned about different data structures, including vectors, matrices, and data frames. 
 Now, we are working with yet another data structure: a **list**. 
 In R, a list is an object that contains a collection of other objects of similar or different types.
 
-***Question 1***:  Use the `str` function to describe some of the attributes of `doubs`. 
+We can use the `str()` function to describe some of the attributes of `doubs`.
+Because this dataset is complex, we can pass the "max.level = 1" arguement to minimize the output of `str()`
+
+```{r, results='hide'}
+str(doubs, max.level = 1)
+```
+
+***Question 1***:  Describe some of the attributes of the `doubs` dataset. 
 Also, you can use the dollar sign (`$`) between the list name (`doubs`) and objects within the list (`env`).
+In addition, always remember that you can find additional information using the `help()` function.
 a.  How many objects are in `doubs` list?
 b.  What types of data structures are used in the `doubs` list?
 c.  What are the units of nitrate ("nit") in the stream water?
@@ -57,54 +74,20 @@ d.  How many fish species are there in the `doubs` list?
 
 > ***Answer 1a***:  
 > ***Answer 1b***:  
-> ***Answer 1c***: 
-> ***Answer 1d***:
+> ***Answer 1c***:  
+> ***Answer 1d***:  
 
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
-In this section we introduce two relatively simple indices: **Turnover** and **Whittaker's $\beta$-Diversity**.
-These indices allow us to estimate $\beta$-diversity between two samples. 
 
-
-***I'm thinking more about this section. The classical measure is probably just Whittaker's. The Turnover calculation (though the underlying principal is the same) is used to compare turnover in time. So maybe just Whittakers to keep it simple***
-***I need to look at the equations a bit more closely, but it appears that they 
-
-
-### A.  Turnover
-Turnover is defined as the rate or magnitude of change in species composition in space or time. 
-
-We can calculate turnover with the following equation:
-$turnover = \frac{b + c}{S_1 + S_2}$
-where b = the number of species only present in the first sample; c = the number of species only present in the second sample; $S_1$ = the total number of species in the first sample; and $S_2$ = the number of species in the second sample. 
-
-In R, we can write this as a function as follows:
-
-```{r}
-turnover <- function(site1 = " ", site2 = " "){
-  site1 = subset(site1, select = site1 > 0)               # Removes absences
-  site2 = subset(site2, select = site2 > 0)               # Removes absences
-  b  = length(setdiff(colnames(site1), colnames(site2)))  # Number of unique in 1st
-  c  = length(setdiff(colnames(site2), colnames(site1)))  # Number of unique in 2nd
-  s1 = length(site1)                                      # Number of species in 1st 
-  s2 = length(site2)                                      # Number of species in 2nd 
-  t  = round((b + c)/(s1 + s2), 3)                        # Calculats turnover to three decimals
-  return(t)                                               # Returns turnover
-}
-```
-
-***Question 2***: Using the `turnover` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set?
-
-> ***Answer 2***:  
-
-### B.  Whittaker's $\beta$-Diversity
-
-***I think maybe we can do a better job os describing this metric. For example, S is actually gamma diversity -- a concept we can explicitly address. Also, "sample richness" could be described as the mean richness (i.e., alpha diversity) of two samples. It seems sort of suprising that Whittaker's and beta give the same exact answer, no? -- JTL***
-
-Another classic measures of $\beta$-diversity was developed by Robert Whittaker (1960):
+In this section we introduce a relatively simple measure of $\beta$-diversity: **Whittaker's** $\pmb\beta$-**Diversity**.
+This index allow us to estimate $\beta$-diversity between samples. 
+Whittaker's $\beta$ is a classic measure of $\beta$-diversity and was developed by Robert Whittaker (1960). 
+The equation for Whittaker's $\beta$ is as follows:
 $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$ 
-where S = the total number of species recorded in a system and $\bar{\alpha}$ is the average sample richness.
+where *S* = the total number of species recorded in a system (i.e., $\gamma$-diversity) and $\bar{\alpha}$ which is the mean sample richness (i.e., $\alpha$ diversity).
 Subtracting 1 scales $\beta_{w}$ from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diversity).
 
-Again, we can write this as a function in R:
+We can write this as a function in R:
 
 ```{r}
 beta.w <- function(site1 = "", site2 = ""){
@@ -116,19 +99,24 @@ beta.w <- function(site1 = "", site2 = ""){
   b.w   = round(s/a.bar - 1, 3)
   return(b.w)
 }
+
+fish <- doubs$fish
+b <- beta.w(fish[1,], fish[2, ])
 ```
 
-***Question 3***: Using the `beta.w` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set?
+***Question 2***: Using the `beta.w` function above, what is the $\beta$-diversity for fish sampled from site 1 and site 2 of the `doubs` data set? Based on the formula for $\beta_{w}$, what does this value represent?
 
-> ***Answer 3***:  
+> ***Answer 2a***: 
+> ***Answer 2b***: 
 
 ## 4) QUANTIFYING BETA-DIVERSITY FOR TWO OR MORE SAMPLES
+
 Often, we often want to compare the diversity of more than just a pair of samples. 
 In this section we will estimate $\beta$-diversity for multiple samples. 
 During this process, you will learn how to generate similarity and dissimilarity matrices for different data sets that will be needed for visualizing and quantifying $\beta$-diversity. 
 
 ### Resemblance Matrix
-Here, introduce another primary ecological data structure: the **Resemblance Matrix**. 
+Here, we introduce our second primary ecological data structure: the **Resemblance Matrix**. 
 In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix. 
 The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
 In the sections below, we describe some of the common similarity and dissimilarity metrics used for constructing a resemblance matrix using notations of Legendre & Legendre (2012). 
@@ -153,16 +141,16 @@ In the sections below, we describe some of the common similarity and dissimilari
 
 Where *a* = the number of shared speces, *b* = the number of unique species in the first assemblage, and *c* = the number of unique species in the second assemblage.
 
-***Question 4***: What are the differences between Jaccard and Sørensen metrics? When might you use one instead of the other?
+***Question 4***: What are the differences between Jaccard and Sørensen metrics? When might you use one instead of the other? In what situations would these measures of $\beta$ diversity fail?
 
-> ***Answer 4***:  
+> ***Answer 3a***:  
+> ***Answer 3b***:
+> ***Answer 3c***:
 
-***I think another important question is to consider the utility of these measures (or when do they fall apart). For example, both would consider a maple forest with a few oaks and an Oak forest with 2 maples as the same. Just something to consider.***
-***Perhpas take a stab at integrating into question 4? -- JTL***
+*Notes on incidence-based similarity*: These are just two of many incidence-based similarity measures. Others (including Ochiai, Kulczynski-Cody, and Lennon) are including in table 6.1 of Magurran & McGill 2011. The difference in these measures include how means are calculated (Sorensen = harmonic mean, Ochiai = geometric mean, and Kulcynski-Code = arithmetic mean), and how unique species are dealt with if only one sample has unique species (Lennon). However, though the two measures we have provided are the most commonly seen in the literature, we encourage you to read more about these other measures. 
 
-*Notes on incidence-based similarity*: See table 6.1 in Magurran & McGill 2011 and table 7.2 in Legendre & Legendre 2012 for other measures including Ochiai and Kulczynski-Cody. 
 Also, it is important to note that these equations calculate similarity, but can (and in many cases should) be converted to dissimilarity (D), or distance.
-In `vegan`, distances are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
+In `vegan`, disimilarities are calculated as `D = 1 - S`; however, this conversion may not preserve Euclidean distance.
 See Table 7.2 in Legendre & Legendre 2012 for more discussion on this topic.
 ***I feel like students could be a bit confused by distance vs. dissimilarity. Not sure referrring them to Legendre and Legendre is sufficient -- JTL***
 
@@ -291,29 +279,27 @@ fish.ch.ward$height <- sqrt(fish.ch.ward$height)  # Square Root Transformation o
 plot(fish.ch.ward)
 ```
 
-
 ***Question 6***: Based on this clustering analysis, what hypotheses could be addressed with these data?
 ***Hard to say. Maybe some of the intuition of the data was lost by cutting out first part of visualization. Need to know something about the numbers of the sites, presumably low are upstream and higher number are downstream? -- JTL***
 
 > ***Answer 6***: 
 
-
-### Ordination
+### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
 When objects are plotted (usually in two or three diemnsions or "axes"), ordination can be useful for determining similarity among objects. 
-Using a biodiversity example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are futher apart in ordination space.  
+Using a biodiversity example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
 
 There are various orditnation techniqeus that can be applied to multivariate biodiversity data. 
 Carefuly consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled. 
 
 In this exercise, we focus on one commonly used ordination technique: **Principal Coordainates Analysis (PCoA)**, which is sometimes referred to as metric (multidimensional) scalling. 
-PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from your site-by-species matrix. 
-In the next step, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
+PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from a site-by-species matrix. 
+Next, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
 After centering **`A`**, PCoA is solved through eigenanlaysis, which generates eigenvectors corresponding to each ordination axis and an associated eigenvalue. 
 
 *Notes on PCoA* A nice feature of PCoA is that it can accept many different types of resemblance matrices. 
 This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
-When one uses a Eucldean distance matrix with PCoA, the results will be identical to that of Principal Components Analysis (PCA).
+When one uses a Eucldean distance matrix with PCoA, the results are identical to that of Principal Components Analysis (PCA).
 
 We are going to revisit the soil bacteria data set that we introduced in the $\alpha$-diversity excercise. 
 
@@ -323,62 +309,155 @@ soilbac.tax <- (t(soilbac.total[,1:5]))
 soilbac <- as.data.frame(t(soilbac.total[,6:ncol(soilbac.total)]))
 ```
 
-Let's conduct a PCoA on this slightly expanded dataset. 
-First, we will create a Bray-Curtis dissimilarity matrix from the site-by-species matrix we just loaded.
-Then we will use the `cmdscale` function from the 'stats' packag in R, which performs "classical metric multidimensional scaling"
+To conduct a PCoA, first we will create a Bray-Curtis dissimilarity matrix from the site-by-species matrix (`soilbac`).
+Then we will use the `cmdscale` function from the `stats` package in R, which performs "classical metric multidimensional scaling"
 
 ```{r}
 soilbac.bray <- vegdist(soilbac, method="bray")
 soilbac.pcoa <- cmdscale(soilbac.bray, eig=TRUE) 
+```
 
+Now we will use some of the plotting packages in `vegan` to visualize the ordination. 
+
+```{r}
 ordiplot(scores(soilbac.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
 abline(h=0, lty=3)
 abline(v=0, lty=3)
 ```
 
+***Question 7***: As you will recall, soil bacteria were sampled from four different replicated land-use treatments (T1 = agriculture, T7 = grassland, DF = deciduous fores, and CF = conifersou forest). 
+Based on the PCoA ordination, describe the effects of land-use on soil bacterial $\beta$-diversity? 
 
-***Maybe we should walk though calculating percent variance explained***
-***I also have code for estimating influential species based on correlations***
-*** need to mess with code below to add species on top. If we think necessary with this larger data se***
-*** Will try to figure other stuff out below***
-***"Broken stick model"...confused***
+> ***Answer 7***: 
 
-# Add Species
-spe.wa <- wascores(spe.b.pcoa$points[,1:2], spe)
-text(spe.wa, rownames(spe.wa), cex=0.7, col="red")
-
-```
+In PCoA, we can quantify the amount of variation that is explained by each orthogonal axis.
+It can give us an overall sense of how much "singal" is our data set if for example we sampled along some predetermined enviornmental gradient. 
+This is not something that can be done in all ordination methods. 
+We can estimate variance explained by dividing the eigenvalue of each axis by the sum of all eigenvalues. 
+*Note*: in PCoA and other ordination techniques, the first axis explains the most variation, follwed by the second, third, etc.
 
 ```{r}
-evplot <- function(ev)
-{
-  # Broken stick model (MacArthur 1957)
-	n <- length(ev)
-	bsm <- data.frame(j=seq(1:n), p=0)
-	bsm$p[1] <- 1/n
-	for (i in 2:n) bsm$p[i] <- bsm$p[i-1] + (1/(n + 1 - i))
-	bsm$p <- 100*bsm$p/n
-	# Plot eigenvalues and % of variation for each axis
-	par(mfrow=c(2,1))
-	barplot(ev, main="Eigenvalues", col="bisque", las=2)
-	abline(h=mean(ev), col="red")
-	legend("topright", "Average eigenvalue", lwd=1, col=2, bty="n")
-	barplot(t(cbind(100*ev/sum(ev), bsm$p[n:1])), beside=TRUE, 
-		main="% variation", col=c("bisque",2), las=2)
-	legend("topright", c("% eigenvalue", "Broken stick model"), 
-		pch=15, col=c("bisque",2), bty="n")
-}
-
-evplot(spe.b.pcoa$eig)
-
-
-env <- doubs$env
-env <- env[-8, ]
-spe.pcoa.env <- envfit(spe.b.pcoa, env)
-evplot(spe.b.pcoa$eig)
+explainvar1 <- soilbac.pcoa$eig[1]/sum(soilbac.pcoa$eig)
+explainvar2 <- soilbac.pcoa$eig[2]/sum(soilbac.pcoa$eig)
 ```
 
-## E. Hypothesis Testing
+In the PCoA plot that you just created, we are looking at the relationship of samples in species space. 
+Differences in species abundances are contributing the separation of samples along each PCoA axis. 
+We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species vectors. 
+We will obtain this information using the `add.spec.scores` function in the R `BiodiversityR` package, which we will now load. 
+
+```{r}
+require(BiodiversityR)
+# soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
+# corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
+# corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
+# colnames(cor_spp)[6]<-"Corr1"
+# colnames(cor_spp)[7]<-"Corr2"
+# corrcut <- 0.7
+# imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
+# imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
+```
+
+***Question 7***: Using the `add.spec.scores` function, can you generate any hypotheses about what soil bacterial taxa are potential indicators of land-use variation? 
+
+> ***Answer 7***: 
+
+## 6) HYPOTHESIS TESTING
+
+Some of the visualization tools that we just learned about are powerful for exploring data sets and generating hypotheses, but  can fall short of providing robust tests of *a priori* hypotheses and predictions. 
+Here, we wil introduce a few techniques that are appropriate for testing hypotheses that you might have when using multivariate data and are interested in questions related to $\beta$-diversity. 
+
+### A.  Multivariate procedures for categorical designs
+
+PERMANOVA stands for permutational multivariate analysis of variance. 
+It is a multivariate analog to univariate ANOVA and has less restrictions than parametric multivariate analysis of variance (MANOVA). 
+As the name suggests, it evaluates differences according to your specified model by randomly permuting the data.
+PERMANOVA can easily handle simple designs, but also accomodates nested and higher-order studies. 
+It can handle missing observations and supplies output such as F ratios, pseudo P-values, and R^{2} values.
+We will implement PERMANOVA with the `adonis` function in the `vegan` package. 
+
+To run `adonis`, you need to import a "factors" table, which specifies your treatments and replicates. 
+There are actually two treatments associated with the `soilbac` data set. 
+The first is the land-use factor, which has already been introduced. 
+The other factor is watering treatment. 
+Half the soil samples were characterized when they were very dry, and the other half were characterized three days after being watered.
+So, in the end, we have a two-by-two full factorial design (with the exception of one missing sample from the DF land-use treatment)
+
+Let's import our factors table associated with `soilbac`. 
+
+```{r}
+factors <- read.table("./data/soil.factors.txt" , sep = "\t", header=TRUE) 
+```
+
+Now, we can run `adonis` on the `soilbac` site-by-species matrix, but we also need to specify the model, the number of permutations, and the dissimilarity metric that we want to use to create a resemblance matrix. 
+
+```{r}
+soil.adonis <-adonis(soilbac ~ land + time + land*time, factors, permutations = 999, method = "bray") 
+```
+
+***Question 8***: Using the output of the PERMANOVA model, interpret the resuls of the experiment that generated the `soilbac` data set. 
+
+> ***Answer 8***: 
+
+
+### B.  Mutivariate procedures for continuous designs
+
+### i.  Mantel test
+A **Mantel test** is essentially a multivariate correlation analysis. 
+It produces an *r* value that is analagous to the Pearson's correlation coefficient. 
+The p-value from the Mantel test is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices. 
+
+In the following section, we will peform a Mantel test using the `mantel` function in `vegan`. 
+This requires that we first create a distance matrix for each of our raw matrices. 
+After creating the distance matrices, we will test the hypotheses that 1) fish assemblages are correlated with stream environmental variables, and 2) fish assemblages are correlated with geographic location.
+
+```{r}
+fish.dist <- vegdist(doubs$fish[-8, ], method = "bray")
+env.dist <- vegdist(scale(doubs$env[-8,]),method = "euclid")
+geo.dist <- vegdist(doubs$xy[-8,], method = "euclid")
+mantel(fish.dist,env.dist)
+mantel(fish.dist,geo.dist)
+```
+
+The results from our Mantel tests suggest that fish diversity is correlated with stream environmental conditions *and* geographic location. 
+We can try to tease this relationship apart by conducting a **partial Mantel test**. 
+In this type of an analysis, we can look for a correlation between two matrices while "controlling" for a third matix. 
+For our example, we will look for correlations between fish assemblage and the stream environment, while holding geography constant. 
+
+```{r}
+mantel.partial(fish.dist, env.dist, geo.dist, method = "pearson", permutations = 999)
+```
+
+***Question 9***: What conclusions can you draw about the effects of geography and environmental conditions on the $\beta$-diversity of fish in the Doubs River based on the results of the Mantel tests above?
+
+> ***Answer 9***: 
+
+## 7) HOMEWORK
+
+1.  We are going to revsit the soil bacteria data set from the $\alpha$-diversity exercise. 
+You may recall that 16S rRNA sequences were generated from replicate sites from four different land-use treatments (T1 = agriculture, T7 = grassland, DF = deciduous forest, and CF = coniferous forest). 
+On top of this, we characterized bacteria from the above soils under dry vs. wet condtions. 
+Thus, we have a 2 x 2 full factorial design (with the exception of a missing sample from the DF land-use treatment). 
+More background on this study can be found in Aanderud et al. 2015 (http://goo.gl/TRgISq)
+
+Two files are available to you in the "~/Assignments/Beta/data"" directory:
+
+a.  Site-by-species matrix ("soilbacfull.txt")
+b.  Factors file describing the treatments ("soil.factors.txt")
+
+Use a combination of visualization and hypothesis-testing techniques described above, interpret the results from the exepriment in a $\beta$-diversity framework. 
+
+2.  Use Knitr to create a pdf of your completed alpha_exercise.Rmd document, push it to GitHub, and create a pull request.
+The due date for this assignment will be announced in class and/or canvas.
+
+
+
+
+
+
+
+
+
 
 
 
@@ -390,23 +469,20 @@ evplot(spe.b.pcoa$eig)
 # subset explanatory varaibles
 
 
-
-envdas <- env[,1]
-envtopo <- env[,c(2:4)]
-envchem <- env[,c(5:11)]
-spe.hel <- decostand(spe, method="hellinger")
-
-spe.rda <- rda(spe.hel ~ ., envchem)
-coef(spe.rda)
-
-spechem.physio <- rda(spe.hel, envchem, envtopo)
-
-# PermutationTest
-anova.cca(spe.rda, step=1000)
+# 
+# envdas <- env[,1]
+# envtopo <- env[,c(2:4)]
+# envchem <- env[,c(5:11)]
+# spe.hel <- decostand(spe, method="hellinger")
+# 
+# spe.rda <- rda(spe.hel ~ ., envchem)
+# coef(spe.rda)
+# 
+# spechem.physio <- rda(spe.hel, envchem, envtopo)
+# 
+# # PermutationTest
+# anova.cca(spe.rda, step=1000)
 ```
-
-
-
 
 ### Multivariate Models
 Mantel Test --> could be useful
@@ -418,18 +494,6 @@ CCA --> could be done on Doubs or introduce BCI/BCIsoils
 
 
 
-## Homework
-Microbes in an Agricultural System
 
-History of the system
-Define hypotheses
-
-Richness (rarefied) for each treatment (barplot, box-n-whisker plot)
-Bray Curtis
-PCoA
-PERMANOVA
-Indicator groups
-
-BCI Data - which physical property underlies variation in Tree Composition
 
 
