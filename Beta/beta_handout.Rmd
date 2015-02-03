@@ -168,6 +168,34 @@ The conversion between similarity and dissimilarity is calculated as `D = 1 - S`
   $S_{MH} = \frac{2 \sum\limits_{j=1}^{p} y_{1j}y_{2j}}{\left(\sum\limits_{j=1}^{p}y_{1j}^{2} + \sum\limits_{j=1}^{p} y_{2j}^{2}\right)}$ &
   A measure of *compositional overlap*. Uses squared differences in relative abundance and thus most influenced by more abundant species. Resistant to undersampling. \\
   \\ [-1.5ex]
+  \hline
+  \end{tabular}
+  \end{center}
+
+Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2, $y_{1+}$ is the sum of abundances in site 1 and $y_{2+}$ in site 2, $y_{++}$ is the sum of all abuncances across all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across sites, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
+
+As with incidence based measures, these are just a few of the many options for calculating similarity or dissimilarity between communities. 
+
+### C.  Other Measures Measures of Similarity and Dissimilarity (Distance) 
+
+*Note*: some of the metrics below may not be appropriate for species abundances
+
+***Euclidean Distance***: 
+$D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
+
+***Manhattan Distance***: 
+$D_{7} = \sum\limits_{j = 1}^{p} \left| y_{ij} - y_{2j} \right|$
+
+These distance measures have been developed for and widely used to compare quantitative discriptors.
+However, in general, they should not be used for abundance based data.
+This is because they lead to the *Species Abundance Paradox*: the distance between two sites that have no species in common is smaller than the distance between sites with shared species.
+However, methods exist to transform data prior to measuring distance and these may be appropriate for species abundance data. 
+It is recommended that you read more about these distance measures if you are interested in implementing them to address your research questions.
+
+\begin{center}
+\begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
+  \textbf{Index} & \textbf{Equation} & \textbf{Properties} \\ 
+  \hline \hline \\ [-1.5ex]
   Chord Distance & 
   $D_3 = \sqrt{2\left(1 - \frac{\sum\limits_{j=1}^{p}y_{1j} \cdot  y_{2j}}{\sum\limits_{j=1}^{p}y_{1j}^{2} \cdot \sum\limits_{j=1}^{p} y_{2j}^{2}}\right)}$ &
   Range: 0 to $\sqrt{2}$ (from "two sites share the same species in the same proportions" to "no species in common") \\
@@ -179,26 +207,11 @@ The conversion between similarity and dissimilarity is calculated as `D = 1 - S`
   \hline
   \end{tabular}
   \end{center}
-
-Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2, $y_{1+}$ is the sum of abundances in site 1 and $y_{2+}$ in site 2, $y_{++}$ is the sum of all abuncances at all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across sites, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
-
-As with incidence based measures, these are just a few of the many options for calculating 
-
-### C.  Other Measures Measures of Similarity and Dissimilarity 
-
-*Note*: some of the metrics below may not be appropriate for species abundances
-
-Euclidean Distance: 
-$D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
-
-Manhattan Metric: 
-$D_{7} = \sum\limits_{j = 1}^{p} \left| y_{ij} - y_{2j} \right|$
-
-These metric distance measures have been developed for and widely used to compare quantitative discriptors.
-However, in general, they should not be used for abundance based data.
-This is because they lead to the *Species Abundance Paradox*: the distance between two sites that have no species in common is smaller than the distance between sites with shared species. 
+  
+Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2, $y_{1+}$ is the sum of abundances in site 1 and $y_{2+}$ in site 2, $y_{++}$ is the sum of all abuncances across all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across sites, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
   
 ### D.  Constructing the Resemblance Matrix
+
 Conveniently, `vegan` has many of the similarity metrics used to construct a resemblance matrix using the function `vegdist()`.
 Let's apply `vegdist` to the fish assemblages in the Doubs River (`doubs`) with the exception of site 8, which had no observations.
 
@@ -206,7 +219,7 @@ Let's apply `vegdist` to the fish assemblages in the Doubs River (`doubs`) with 
 fish <- doubs$fish 
 
 rowSums(fish)    
-fish <- fish[-8, ]
+fish <- fish[-8, ]               # Remove Site 8 From Data
 
 # Calculate Jaccard 
 fish.dj <- vegdist(fish, method="jaccard", binary=TRUE)
@@ -231,8 +244,7 @@ However, you can generate a square resemblance matrix with the following command
 fish.db <- vegdist(fish, method="bray", upper=TRUE, diag=TRUE)
 ```
 
-*** Wording of this question raises questions abou the distinction between distance and dissimilarity -- JTL**
-***Question 5***: Does the resemblance matrix (`fish.db`) represent similarity or distance? How do you know?
+***Question 5***: Does the resemblance matrix (`fish.db`) represent similarity or dissimilarity? How do you know?
 
 > ***Answer 5***: 
 
@@ -243,17 +255,20 @@ One way to visualize $\beta$-diversity is to plot the data in our resemblance ma
 Heatmaps are a two-dimensional, color representation of a data matrix. 
 R has various heatmap functions.
 Here we are going to use the `levelplot()` function in the `lattice` package of R.
-We will define our own color palette, and custom order our matrix so that our plot looks like a resemblance matrix. 
+This function will allow us to make a basic heatmap of our resemblance matrix.
+However, first there are a few things we need to do:
+1. We need to define a color palette.
+R include many predefined color palettes; however, we are going to make our own color palette.
+2. We need to make sure that our resemblance matrix is plotted in the correct order. 
+By default this will not happen so we have to force it to be in the order we want. 
 
 ```{r}
-jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", "#7FFF7F", "yellow", "#FF7F00", "red", "#7F0000"))
-order <- rev(attr(fish.db, "Labels"))          # Allows us to flip the heatmap to look like RM
-levelplot(as.matrix(fish.db)[, order], aspect = "iso", col.regions = jet.colors, xlab="Doubs Site", ylab = "Doubs Site", main = "Bray-Curtis Distance")
-```
-
-***Any value in showing them this, too? Segue into cluster anaylysis? -- JTL***
-```{r}
-heatmap(as.matrix(doubs$fish))
+jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", 
+                                 "#7FFF7F", "yellow", "#FF7F00", "red", 
+                                 "#7F0000"))
+order <- rev(attr(fish.db, "Labels"))  # Allows us to flip the heatmap to look like RM
+levelplot(as.matrix(fish.db)[, order], aspect = "iso", col.regions = jet.colors, 
+          xlab="Doubs Site", ylab = "Doubs Site", main = "Bray-Curtis Distance")
 ```
 
 ### B.  Cluster Analysis
@@ -279,6 +294,11 @@ plot(fish.ch.ward)
 ***Hard to say. Maybe some of the intuition of the data was lost by cutting out first part of visualization. Need to know something about the numbers of the sites, presumably low are upstream and higher number are downstream? -- JTL***
 
 > ***Answer 6***: 
+
+***Any value in showing them this, too? Segue into cluster anaylysis? -- JTL***
+```{r}
+heatmap(as.matrix(doubs$fish))
+```
 
 ### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
