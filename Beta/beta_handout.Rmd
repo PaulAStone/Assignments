@@ -77,6 +77,51 @@ d.  How many fish species are there in the `doubs` list?
 > ***Answer 1c***:  
 > ***Answer 1d***:  
 
+Because we have a wealth of information about this dataset, we can use that information for various purposes.
+We might use the environmental or spatial data to test a hypothesis.
+However, we can also use the spatial data for graphical representations. 
+For example, below we have provided a two plots of the doubs fish data. 
+The first plot shows richness at each site in the stream.
+The second plot shows the abundance of a particular fish species at each site in the stream.
+
+```{r, fig.width=8, fig.height=3.75, echo=FALSE}
+# Define Plot Parameters
+par(mfrow = c(1,2), mar = c(4, 4, 3, 4) + 0.1, xpd = TRUE)
+
+# Stream Fish
+spa.S <- specnumber(doubs$fish)               
+spa.S.color <- rev(terrain.colors(31))    # Define Richness Color Pallette
+spa.N.color <- rev(terrain.colors(7))     # Define Abundance Color Pallette
+
+# Stream Fish Richness
+plot(doubs$xy, asp = 1, type = 'l', col = "light blue", lwd = 10, las = 1, 
+     xlim = c(0,280), ylim = c(0,280), main = "Fish Richneses (S)", 
+     xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
+points(doubs$xy, pch = 22, cex=2, bg = spa.S.color[spa.S + 1])
+text(doubs$xy, as.character(spa.S), cex = 0.5, col="red")
+text(150, 0, "Upstream", cex = 1, col = "red")
+text(48, 114, "Downstream", cex = 1, col = "red")
+legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
+       title = "S", legend = seq(0, 30, 10), pt.bg = spa.S.color[seq(1, 31, 10)])    
+
+# Brown Trout Abundance
+plot(doubs$xy, asp = 1, type = 'l', col = "light blue", lwd = 10, las = 1, cex.axis = 0.75, 
+     xlim = c(0, 280), ylim = c(0, 280),main = "Brown Trout Abundance (N)", 
+     xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
+points(doubs$xy, pch = 22, cex=2, bg = spa.N.color[doubs$fish$Satr + 1])
+text(doubs$xy, as.character(doubs$fish$Satr), cex = 0.5, col="red")
+text(150, 0, "Upstream", cex=1, col="red")
+text(48, 114, "Downstream", cex=1, col="red")
+legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
+       title = "N", legend = seq(0, 6, 2), pt.bg = spa.N.color[seq(1, 7, 2)])
+```
+
+In the last exercise, we used species abundance data and the *site-by-species* matrix to measure the diversity within a particular site (e.g., richness). 
+However, these measurs are not always adequate for compariing communities across site.
+For example, in the figure above you can see that there is a stretch of the Doubs River where observed richness is constant at 6 species.
+However, if you look at just Brown Trout abundance you can see large changes in the abundance of this particular species in the same stretch of the river. 
+Therefore, to properly make comparisions between sites, we will need to make sure that we are comparing communities based on compositional similarities and differences. 
+
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
 
 In this section we introduce a relatively simple measure of $\beta$-diversity: **Whittaker's** $\pmb\beta$-**Diversity**.
@@ -283,11 +328,11 @@ See chapter 8 of Legendre and Legendre (2012) for more information on clustering
 ***Perhaps we need to explain how to interpret "height"? -- JTL***
 
 ```{r}
-fish.norm <- decostand(fish, "normalize")         # Two step process to calculate chord distances
-fish.ch <- vegdist(fish.norm, "euc")
-fish.ch.ward <- hclust(fish.ch, method="ward.D")
-fish.ch.ward$height <- sqrt(fish.ch.ward$height)  # Square Root Transformation of Branch Lengths for Visualization
-plot(fish.ch.ward)
+fish.upgma <- hclust(fish.db, method="average")
+fish.ward <- hclust(fish.db, method="ward.D")
+fish.ward$height <- sqrt(fish.ward$height)  # Square Root Transformation of Branch Lengths for Visualization
+plot(fish.upgma)
+plot(fish.ward)
 ```
 
 ***Question 6***: Based on this clustering analysis, what hypotheses could be addressed with these data?
