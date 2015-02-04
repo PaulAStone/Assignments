@@ -502,35 +502,32 @@ Here, we wil introduce a few techniques that are appropriate for testing hypothe
 
 ### A.  Multivariate procedures for categorical designs
 
-PERMANOVA stands for permutational multivariate analysis of variance. 
+PERMANOVA stands for permutational multivariate analysis of variance (Anderson 2001). 
 It is a multivariate analog to univariate ANOVA and has less restrictions than parametric multivariate analysis of variance (MANOVA). 
 As the name suggests, it evaluates differences according to your specified model by randomly permuting the data.
 PERMANOVA can easily handle simple designs, but also accomodates nested and higher-order studies. 
-It can handle missing observations and supplies output such as F ratios, pseudo P-values, and R^{2} values.
-We will implement PERMANOVA with the `adonis` function in the `vegan` package. 
+In addition, it can handle missing observations and unbalanced designs. 
+The PERMANOVA output supplies analogs to the classic ANOVA table such as F ratios, pseudo P-values, and $R^{2}$ values.
+We will implement PERMANOVA with the `adonis()` function in the `vegan` package. 
 
-To run `adonis`, you need to import a "factors" table, which specifies your treatments and replicates. 
-There are actually two treatments associated with the `soilbac` data set. 
-The first is the land-use factor, which has already been introduced. 
-The other factor is watering treatment. 
-Half the soil samples were characterized when they were very dry, and the other half were characterized three days after being watered.
-So, in the end, we have a two-by-two full factorial design (with the exception of one missing sample from the DF land-use treatment)
+To run `adonis`, you first need a factor vector or matrix that specifies your treatments and replicates.
+This vector or matrix can either be provided in the form of a file that you open in R (e.g. `read.table()`) or a user specified vector or matrix that you write within R.
 
-Let's import our factors table associated with `soilbac`. 
+For example, based on earlier work done in the Doubs River it has been suggested that river can be broken into four distinct regions based on river quality.
+The first region (sites 1-14) of the stream (upstream) has been rated as being high quality.
+The second (sites 15 - 19) and forth (sites 26 - 30) regions have been rates as being moderate quality.
+And the third region (sites (20 - 25) have ben rated has being low quality.
 
-```{r}
-factors <- read.table("./data/soil.factors.txt" , sep = "\t", header=TRUE) 
-```
-
-Now, we can run `adonis` on the `soilbac` site-by-species matrix, but we also need to specify the model, the number of permutations, and the dissimilarity metric that we want to use to create a resemblance matrix. 
+Though the Doubs River is not a controlled experimental system, we can use these quality groupings to test the prediction that river quality category influences fish community composition.
 
 ```{r}
-soil.adonis <-adonis(soilbac ~ land + time + land*time, factors, permutations = 999, method = "bray") 
+quality <- c(rep("HQ", 13), rep("MQ", 5), rep("LQ", 6), rep("MQ", 5))
+adonis(fish ~ quality, method = "bray", permutations = 999)
 ```
 
-***Question 8***: Using the output of the PERMANOVA model, interpret the resuls of the experiment that generated the `soilbac` data set. 
+***Question 10***: Based on the PERMANOVA results, evaluate the prediction that river quality influences fish community composition. 
 
-> ***Answer 8***: 
+> ***Answer 10***: 
 
 
 ### B.  Mutivariate procedures for continuous designs
@@ -538,32 +535,32 @@ soil.adonis <-adonis(soilbac ~ land + time + land*time, factors, permutations = 
 ### i.  Mantel test
 A **Mantel test** is essentially a multivariate correlation analysis. 
 It produces an *r* value that is analagous to the Pearson's correlation coefficient. 
-The p-value from the Mantel test is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices. 
+The p-value from the Mantel test is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices.
+For example, we could use a Mantel test to determine if $\beta$-diversity (i.e., Bray-Curtis distance) is correlated to environmental variables. 
 
 In the following section, we will peform a Mantel test using the `mantel` function in `vegan`. 
-This requires that we first create a distance matrix for each of our raw matrices. 
-After creating the distance matrices, we will test the hypotheses that 1) fish assemblages are correlated with stream environmental variables, and 2) fish assemblages are correlated with geographic location.
+This requires that we first have two matrices (distance matrices) to compare. 
+Here we will compare the Bray-Curtic distance matrix we created earlier with a new distance matrix of environmental factors (doubs$env) which we must first create.
+After creating the distance matrices, we will test the hypothesis that fish assemblages are correlated with stream environmental variables.
 
 ```{r}
 fish.dist <- vegdist(doubs$fish[-8, ], method = "bray")
 env.dist <- vegdist(scale(doubs$env[-8,]),method = "euclid")
-geo.dist <- vegdist(doubs$xy[-8,], method = "euclid")
 mantel(fish.dist,env.dist)
-mantel(fish.dist,geo.dist)
 ```
 
-The results from our Mantel tests suggest that fish diversity is correlated with stream environmental conditions *and* geographic location. 
-We can try to tease this relationship apart by conducting a **partial Mantel test**. 
-In this type of an analysis, we can look for a correlation between two matrices while "controlling" for a third matix. 
-For our example, we will look for correlations between fish assemblage and the stream environment, while holding geography constant. 
-
-```{r}
-mantel.partial(fish.dist, env.dist, geo.dist, method = "pearson", permutations = 999)
-```
-
-***Question 9***: What conclusions can you draw about the effects of geography and environmental conditions on the $\beta$-diversity of fish in the Doubs River based on the results of the Mantel tests above?
+***Question 11***: What do the results from our Mantel tests suggest that about fish diversity and stream environmental conditions? 
 
 > ***Answer 9***: 
+
+### ii.  Constrained Ordination
+Another way we can test hypotheses based on continuous designs is by using a modification of ordations called constrained ordination (also called canonical ordination).
+These techniques explore relationships between two matrices: a response matrix and an explainatory matrix. 
+At the same time, constrained ordination uses both matrices to conduct the ordination analysis mentioned above.
+Two common constrained ordination procedues (canonical correspondance analysis (CCA) and redundance analysis (RDA)) are based on the linear model framework and can thus be used to test hypotheses based on continuous design experiments.
+As such, these methods combine multipe regression with classical ordination procedures (CA and PCA). 
+These techniques work by first conducting mutivariate multiple linear regression followed by either CA (with CCA) or PCA (with RDA) on the matrix of fitted values to obtain a constrained ordination.
+The residual matrix can also be used to obtain an unconstrained ordination. 
 
 ## 7) HOMEWORK
 
@@ -587,6 +584,28 @@ The due date for this assignment will be announced in class and/or canvas.
 
 
 
+
+There are actually two treatments associated with the `soilbac` data set. 
+The first is the land-use factor, which has already been introduced. 
+The other factor is watering treatment. 
+Half the soil samples were characterized when they were very dry, and the other half were characterized three days after being watered.
+So, in the end, we have a two-by-two full factorial design (with the exception of one missing sample from the DF land-use treatment)
+
+Let's import our factors table associated with `soilbac`. 
+
+```{r}
+factors <- read.table("./data/soil.factors.txt" , sep = "\t", header=TRUE) 
+```
+
+Now, we can run `adonis` on the `soilbac` site-by-species matrix, but we also need to specify the model, the number of permutations, and the dissimilarity metric that we want to use to create a resemblance matrix. 
+
+```{r}
+soil.adonis <-adonis(soilbac ~ land + time + land*time, factors, permutations = 999, method = "bray") 
+```
+
+***Question 8***: Using the output of the PERMANOVA model, interpret the resuls of the experiment that generated the `soilbac` data set. 
+
+> ***Answer 8***: 
 
 
 
