@@ -343,31 +343,20 @@ heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
 > ***Answer 6***: 
 
 ### C.  Ordination
-Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
-The primry aim of ordination is to represent multiple variables (e.g., sites) in a reduced number of orthogonal (independent) axes. 
-The first axis of an ordination explains the most variation in the data set, followed by the second axis, then the third, and so on (there are typically n-1 axes, where n is the number of sites).
-Ordination plots can be particularly useful for visualizing the similarity among objects. 
-For example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
+The primry aim of ordination is to represent multiple objects in a reduced number of orthogonal (i.e., independent) axes. 
+The first axis of an ordination explains the most variation in the data set, followed by the second axis, then the third, and so on where the total number of axes is less than or equal to the number of objects.
+Ordination plots are particularly useful for visualizing the similarity among objects. 
+For example, in the context of $\beta$ diversity, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
 There are various orditnation techniques that can be applied to multivariate biodiversity data.
 Common methods include: Principal Components Analysis (PCA), Correspondence Analysis (CA), Principal Coordinate Analysis (PCoA), Factor Analysis (FA), and Nonmetric Multidemensional Scaling (NMDS).
-When choosing an ordination technique, carefull consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
-
+When choosing an ordination technique, careful consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
 
 ### An overview of Principal Coordinates Analysis (PCoA)
-In this exercise, we focus on Principal Coordinates Analysis (PCoA), which is sometimes referred to as metric multidimensional scalling. 
-PCoA starts with creating a matrix A which is a transformed and centered version of a distance matrix D. These steps preserve all distances, therefore, 
-
-
-is a robust ordination technique that can be used on any distance matrix.
-PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, $\pmb{D}$, from a site-by-species matrix. 
-Next, $\pmb{D}$ is transformed as follows: $\pmb{A} = - \frac{1}{\bar{2}} \pmb{D}^2_{ij}$ where ${ij}$ refer to the elments in $\pmb{D}$.
-This transformation is used to preserve distances in $\pmb{D}$.
-Next, $\pmb{A}$ is centered to reposition the multidimensional data.
-The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, which solves the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
+In this exercise, we focus on Principal Coordinates Analysis (PCoA), which is sometimes referred to as metric multidimensional scaling. 
+PCoA starts with creating a matrix $\pmb{A}$ which is a transformed and centered version of a distance matrix $\pmb{D}$$\pmb{D}$. Because these steps preserve all distances, PCoA is a flexible ordination technique that allows us to use virtually any distance metric (e.g., Jaccard, Bray-Curtis, Gower, Euclidean, etc.). The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, which solves the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
 Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to obtain the principal coordinates.
-The eigenvalues are ordered from largest to smallest.
 
-To conduct a PCoA, we will use the `cmdscale` function from the `stats` package in R, which performs PCoA (a.k.a., "classical metric multidimensional scaling").
+To conduct a PCoA, we will use the `cmdscale` function from the `stats` package in R, which performs PCoA.
 The input for this function is our resemblance matrix (Bray-Curtis distances for the `doubs` dataset).
 In addition, we are going to set *k* = 3 (number of dimensions we want returned) and *eig* = TRUE (which saves the eigenvalues).
 
@@ -375,7 +364,7 @@ In addition, we are going to set *k* = 3 (number of dimensions we want returned)
 fish.pcoa <- cmdscale(fish.db, eig = TRUE, k = 3) 
 ```
 
-###Interpetting results of PCoA
+###Interpetting PCoA output
 The `cmdscale` function produces a list of output.
 The first item *points* contains the coordinates for each site in each reduced dimension.
 The second item *eig* contains the eigenvalues.
@@ -383,10 +372,8 @@ The last three items pertain to other options of the analysis that we will not c
 
 First, we want to examine the eigenvalues.
 The eigenvalues are the scaling factors that allowed us to reduce the dimensionality of a data set. 
-The eigenvalues can also be used to inform us about how much variation a PCoA was able to capture in a data set. 
-
-In PCoA, we can quantify the amount of variation that is explained by each orthogonal axis, which provides an overall sense of how much "signal" is our data set.
-We can estimate the variance explained by dividing the eigenvalue of each axis by the sum of all eigenvalues. 
+The eigenvalues can also be used to calcualte the amount of variation that is explained by each orthogonal axis.
+To do this, we divide the eigenvalue of each axis by the sum of all eigenvalues.
 In the following chunk of code, we quantify the percent variation in the `doubs` data set that is explained by the first three axes of the PCoA.
 
 ```{r}
@@ -396,12 +383,10 @@ explainvar3 <- round(fish.pcoa$eig[3]/sum(fish.pcoa$eig), 3) * 100
 sum.eig <- sum(explainvar1, explainvar2, explainvar3)
 ```
 
-Another way to evaluate our analysis is to make sure that the first few PCoA axes capture a greater than expected amount of the total possible variation.
-There are two ways we can make this assessment. 
+Another way to evaluate our analysis is to assess whether or not the first few PCoA axes capture a disproportionately large amount of the total explained variation.
 First, the eigenvalues associated with the first few axes should be larger than the average of all the eigenvalues. 
 Second, we can compare the eigenvalues associated with the first few axes to the expectations of the *broken-stick model*. 
-
-**I'm not sure whether or not student are going to intuit broken stick model without an explanation**
+**Need to add half a sentence or a bit more for this to be effective**
 
 We will evaluate these two criteria with the following plots:
 
@@ -417,20 +402,13 @@ legend("topright", legend = c("Avg Eig", "Broken-Stick"),
        lty = c(2, 4), bty= "n", col = c("blue", "red"))
 ```
 
-**Can/should this be turned into a question? -- perhaps make them use percent variaiton, avg eig, and broken stick model to evaluate this PCoA**Qualitatively, we can see that the first three axes of our PCoA ordination have higher eigenvalues than both the mean eigenvalue and the expectation of the Broken-Stick model. 
-Based on this, we can be comfortable using these as a representation of our data. By qualitative assessment, we can see that the first three axes of our PCoA ordination have higher eigenvalues than both the mean eigenvalue and the expectation of the Broken-Stick model. 
-Based on this, we can be comfortable using these as a representation of our data.
+***Question 7***: Based on the three criteria described above, does the PCoA do a good job of explaining variation in the `doubs` data set? Please justify.
 
-***Question 7***: How much of the variation in fish community composition can be assessed by just looking at the first PCoA Axis? What is the cummulative variation that can be explained by using the first two axes?
+> ***Answer 7***: 
 
+###Creating an PCoA ordination plot 
+Having evaluated the PCoA output, now we will create an ordination plot using the following R chunk.
 
-> ***Answer 7a***:
-> ***Answer 7b***:
-
-
-Now that we have have used PCoA and know that the first few axes are sufficient at explaining a substantial amount of variation in the data, we can use the coordinates provides by PCoA to plot each site on an x-y scatterplot. 
- 
- 
 ```{r pcoalayer1, eval = TRUE}
 # Define Plot Parameters
 par(mar = c(5, 5, 2, 2) + 0.1)
@@ -459,8 +437,9 @@ text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
 
 > ***Answer 8***:
 
-One useful feature of ordinations is the ability to plot expainatory vectors in your reduced ordination space. For example, we might be interested in how individual fish species contribute to the patterns observedin our PCoA. 
 
+###Identifying influential species in PCoA 
+One useful feature of ordinations is the ability to plot explanatory vectors in your reduced ordination space. For example, we might be interested in how individual fish species contribute to the patterns observedin our PCoA. 
 
 One useful feature of ordinations is the ability to plot expainatory vectors in your reduced ordination space. 
 For example, we might be interested in how individual fish species contribute to the patterns observedin our PCoA. 
