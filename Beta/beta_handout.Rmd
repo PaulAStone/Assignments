@@ -500,6 +500,8 @@ mantel.partial(fish.dist, env.dist, geo.dist, method = "pearson", permutations =
 
 > ***Answer 9***: 
 
+**RDA???**
+
 ## 7) HOMEWORK
 
 1.  We are going to revsit the soil bacteria data set from the $\alpha$-diversity exercise. 
