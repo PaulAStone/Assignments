@@ -43,7 +43,15 @@ We will also use packages developed in R for geographical information systems (G
 library(RgoogleMaps) # overlays of data onto a Google map.
 ```
 
-## 2) MAKE A MAP
+## 2) LOADING DATA
+We will be analyzing data from a survey of shallow ponds east of Bloomington, Indiana that are scattered throughout Brown County State Park, Yellowwood State Forest, and Hoosier National Forest. 
+In the 1940s, Maury Reeves of the Indiana Department of Natural Resources started making ponds with a small dozer in an effort to create a refuge for deer and turkeys. 
+In the summer of 2013, we visited approximately 50 of these "refuge" ponds and used GPS to record their geographic location. 
+In addition, the ponds were sampled for water chemistry, phsyical properties, and bacterial community composition. 
+
+![pond](/Users/lennonj/Desktop/data/pond.JPG)
+
+## 3) MAKE A MAP
 There are many possible ways to generate maps in R as well as to conduct geographical analyses.
 Some are offerred in the **RGIS tutorial -- what is this**. 
 
@@ -69,7 +77,7 @@ As you can see, the pond samples are distributed over a fairly **large local are
 Likewise, they are unevenly distributed in space, and over a complex topographic area.
 
 
-## 3.) EXAMINE AGGREGATION
+## 4) EXAMINE AGGREGATION
 
 Aggregation is the tendency for organisms to cluster in space or for events to occur within a particular period of time. 
 Aggregation also refer to the tendency of a variable to take on a particular value, e.g., mean temperature, modal body size, average abundance.
@@ -156,7 +164,7 @@ This spatially implicit distribution of abundance is often referred to as the sp
 > ***Answer 1***: 
 
 
-## 4.) EXAMINE DISTANCE-DECAY
+## 5) EXAMINE DISTANCE-DECAY
 First law of geography...spatial autocorrelation...decrease in similarity with distance...
 
 
@@ -208,7 +216,7 @@ res
 ```
 
 
-## 5.) EXAMINE SPECIES-AREA RELATIONSHIP,
+## 6) EXAMINE SPECIES-AREA RELATIONSHIP,
 ##     a.k.a, taxa-area relationship
 
 The species-area relationship (SAR) describes the rate at which we discover or accumulate species with increasing area. The general relationship of the SAR ... and is of the form S=c*A^z ... which was first predicted by Arrhenius (1921)...wow, that's old.
