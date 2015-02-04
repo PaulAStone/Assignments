@@ -12,6 +12,8 @@ geometry: margin=2.54cm
 In this exercise, we expand upon concepts $\beta$-diversity through a more explicit treatment of geographic ecology. 
 
 ### Can we mention something up here about species area relationships; something more concrete?
+###adressing marjor eco concepts?##
+
 After completing this exercise you will know how to:
 
 1. Quantify the aggregation of species
@@ -36,7 +38,8 @@ We will also use the `BiodiversityR` package, which contains additional diversit
 require("vegan")
 ```
 
-We will also use packages developed in R for geographical information systems (GIS). These packages will allow us to generate maps of study areas, project diversity data onto environmental layers, and conduct geographical analyses.
+We will also use packages developed in R for geographical information systems (GIS). 
+These packages will allow us to generate maps of study areas, project diversity data onto environmental layers, and conduct geographical analyses.
 
 ```{r}
 #install.packages("RgoogleMaps")
@@ -44,20 +47,18 @@ library(RgoogleMaps) # overlays of data onto a Google map.
 ```
 
 ## 2) LOADING DATA
-We will be analyzing data from a survey of shallow ponds east of Bloomington, Indiana that are scattered throughout Brown County State Park, Yellowwood State Forest, and Hoosier National Forest. 
-In the 1940s, Maury Reeves of the Indiana Department of Natural Resources started making ponds with a small dozer in an effort to create a refuge for deer and turkeys. 
-In the summer of 2013, we visited approximately 50 of these "refuge" ponds and used GPS to record their geographic location. 
+We will be analyzing data from a survey of shallow ponds found east of Bloomington, Indiana that are scattered throughout Brown County State Park, Yellowwood State Forest, and Hoosier National Forest. 
+In the 1940s, Maury Reeves of the Indiana Department of Natural Resources started making ponds with a small dozer in an effort to create a refuge for wildlife, specifically deer and turkey. 
+In the summer of 2013, we visited approximately 50 of these "refuge" ponds and recorded their geographic locations using Global Positioning System (GPS). 
 In addition, the ponds were sampled for water chemistry, phsyical properties, and bacterial community composition. 
 
-![pond](/Users/lennonj/Desktop/data/pond.JPG)
+![pond](./data/pond.JPG)
 
 ## 3) MAKE A MAP
-There are many possible ways to generate maps in R as well as to conduct geographical analyses.
-Some are offerred in the **RGIS tutorial -- what is this**. 
-
-### Generate a map using Google Maps
-Let's retrieve a map of Indiana using the `GetMap` function in the package `RgoogleMaps`.
-We will generate a map in the RStudio centered on Brown County, Indiana (39.1 degrees latitude, -86.3 degrees longitude)
+There are many ways to conduct geographical analyses in R (see RGIS tutorial ***located where?**)
+In this section of the exercise, we are going to use R to generate a map using **Google Maps**.
+First, we will retrieve a map of Indiana using the `GetMap` function in the package `RgoogleMaps`.
+Then, we will generate a map in RStudio that is centered on Brown County, Indiana (39.1 degrees latitude, -86.3 degrees longitude).
 
 ### It seems the extent of the maps is a bit large (contains Martinsville); can we zoom in? I'm assumign the zoom arugment?###
 ```{r}
@@ -70,7 +71,10 @@ lons <- Ponds[, 4] # longitudes
 PlotOnStaticMap(newmap, lats, lons, cex=1.5, col='red', add = TRUE)
 ```
 
-### We need to introduce backgroun on the ponds. This comes out of nowhere. I have background that can be included. Would be cool to embed an image (i.e., JPEG) into .Rmd; I am guessing this could be done?### 
+***Question 1***: Based on the map that you just generated, what can you conclude about the geographic and topographic distribution of the refuge ponds?
+
+> ***Answer 1***: 
+
 
 **Perhaps turn following two sentences into a question; make them describe the distribution?**
 As you can see, the pond samples are distributed over a fairly **large local area???** 
