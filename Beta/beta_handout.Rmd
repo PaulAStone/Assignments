@@ -390,9 +390,9 @@ We can estimate the variance explained by dividing the eigenvalue of each axis b
 In the following chunk of code, we quantify the percent variation in the `doubs` data set that is explained by the first three axes of the PCoA.
 
 ```{r}
-explainvar1 <- fish.pcoa$eig[1]/sum(fish.pcoa$eig)
-explainvar2 <- fish.pcoa$eig[2]/sum(fish.pcoa$eig)
-explainvar3 <- fish.pcoa$eig[3]/sum(fish.pcoa$eig)
+explainvar1 <- round(fish.pcoa$eig[1]/sum(fish.pcoa$eig), 3) * 100
+explainvar2 <- round(fish.pcoa$eig[2]/sum(fish.pcoa$eig), 3) * 100
+explainvar3 <- round(fish.pcoa$eig[3]/sum(fish.pcoa$eig), 3) * 100
 sum.eig <- sum(explainvar1, explainvar2, explainvar3)
 ```
 
@@ -420,14 +420,6 @@ legend("topright", legend = c("Avg Eig", "Broken-Stick"),
 **Can/should this be turned into a question? -- perhaps make them use percent variaiton, avg eig, and broken stick model to evaluate this PCoA**Qualitatively, we can see that the first three axes of our PCoA ordination have higher eigenvalues than both the mean eigenvalue and the expectation of the Broken-Stick model. 
 Based on this, we can be comfortable using these as a representation of our data. By qualitative assessment, we can see that the first three axes of our PCoA ordination have higher eigenvalues than both the mean eigenvalue and the expectation of the Broken-Stick model. 
 Based on this, we can be comfortable using these as a representation of our data.
-
-Finally, we will use some of the plotting functions in `vegan` to visualize the ordination. 
-
-```{r}
-ordiplot(scores(fish.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
-abline(h=0, lty=3)
-abline(v=0, lty=3)
-```
 
 ***Question 7***: How much of the variation in fish community composition can be assessed by just looking at the first PCoA Axis? What is the cummulative variation that can be explained by using the first two axes?
 
