@@ -45,7 +45,7 @@ The data set has previously been used to demonstrate that fish communities can b
 
 Let's load the `ade` package, which contains the `doubs` data set. 
 
-```{r, results='hide'}
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("ade4")
 data(doubs)
 ```
@@ -53,8 +53,9 @@ data(doubs)
 ### Introduction to a new data structure: Lists
 While working in R this semester, we have learned about vectors, matrices, and data frames. 
 Here we introduce another data structure: a **list**. 
-In R, a list is an object that contains a collection of other objects of similar or different types.
+In R, a list is an object that contains a collection of other objects of similar or different types.g
 
+### The Doubs dataset
 We can use the `str()` function to describe some of the attributes of `doubs`, which is a list.
 Because this dataset is somewhat complex, we can pass the "max.level = 1" arguement to minimize the output of `str()`. 
 Also, you can use the the dollar sign (`$`) between the list name (`doubs`) and objects within the list (e.g., `env`) to explore the data set. 
@@ -64,22 +65,22 @@ Last, recall that you can use `help()` to learn more about a data set that is co
 str(doubs, max.level = 1)
 ```
 
-***Question 1***:  Describe some of the attributes of the `doubs` dataset. 
+***Question 1***:  Describe some of the attributes of the `Doubs` dataset. 
 
-a.  How many objects are in the `doubs` data set?
-b.  What types of data structures are contained in the `doubs` data set?
+a.  How many objects are in the `Doubs` data set?
+b.  What types of data structures are contained in the `Doubs` dataset?
 c.  What are the units of nitrate ("nit") in the stream water?
-d.  How many fish species are there in the `doubs` data set?
+d.  How many fish species are there in the `Doubs` dataset?
 
 > ***Answer 1a***:  
 > ***Answer 1b***:  
 > ***Answer 1c***:  
 > ***Answer 1d***:  
 
-### Visualizing the `doubs` data set
-There is a wealth of information in the `doubs` dataset that can be used to address various issues related to $\beta$-diversity.
+### Visualizing the Doubs dataset
+There is a wealth of information in the `Doubs` dataset that can be used to address various issues related to $\beta$-diversity.
 For example, we might use the environmental or spatial data to develop or test a hypothesis.
-Below we have generated two plots of the doubs fish data. 
+Below we have generated two plots of the `Doubs` fish data. 
 The first plot shows fish richness at each site in the stream.
 The second plot shows the abundance of a particular fish species at each site in the stream.
 
@@ -93,7 +94,7 @@ spa.S.color <- rev(terrain.colors(31))    # Define Richness Color Pallette
 spa.N.color <- rev(terrain.colors(7))     # Define Abundance Color Pallette
 
 # Stream Fish Richness
-plot(doubs$xy, asp = 1, type = 'l', col = "light blue", lwd = 10, las = 1, 
+plot(doubs$xy, asp = 1, type = 'l', col = "light blue", lwd = 10, las = 1, cex.axis = 0.75,
      xlim = c(0,280), ylim = c(0,280), main = "Fish Richneses (S)", 
      xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
 points(doubs$xy, pch = 22, cex=2, bg = spa.S.color[spa.S + 1])
@@ -126,6 +127,7 @@ c.  What do these patterns say about the limitations of using richness when exam
 > ***Answer 2c***:  
 
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
+
 There are various ways to quantify $\beta$-diversity. 
 Perhaps one of the simplest metrics is **Whittaker's** $\pmb\beta$-**Diversity**, which was developed by Robert Whittaker (1960). 
 This classic index is useful for comparing $\beta$-diversity between two samples. 
@@ -172,6 +174,8 @@ Throughout this handout, we will use common notations in accordance with Legendr
 When you are working with presence-absence data, you can you the following metrics for generating a similarity or dissimilarity matrix. 
 
 \begin{center}
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
   \textbf{Index} & \textbf{Equation} & \textbf{Properties} \\
   \hline \hline \\ [-1.5ex]
@@ -207,6 +211,8 @@ The conversion between similarity and dissimilarity is calculated as `D = 1 - S`
 When you are working with abundance data, you can you the following metrics for generating a similarity or dissimilarity matrix. 
 
 \begin{center}
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
 \begin{tabular}{ m{2.5cm} m{5.5cm} m{6.5cm} }
   \textbf{Index} & \textbf{Equation} & \textbf{Properties} \\ 
   \hline \hline \\ [-1.5ex]
@@ -251,13 +257,12 @@ However, we'll need to remove site 8 from `doubs` because for some reason it has
 ```{r}
 fish <- doubs$fish 
 fish <- fish[-8, ] # Remove site 8 from data
-fish.rel <- decostand(fish, method = "total")
 
 # Calculate Jaccard 
-fish.dj <- vegdist(fish.rel, method="jaccard", binary=TRUE)
+fish.dj <- vegdist(fish, method="jaccard", binary=TRUE)
 
 # Calculate Bray-Curtis 
-fish.db <- vegdist(fish.rel, method="bray")
+fish.db <- vegdist(fish, method="bray")
 ```
 
 Now that we've created a resemblance matrix, it would be nice to visualize the fish assemblages of the Doubs River. 
@@ -273,7 +278,7 @@ This is because the two triangles have the same information.
 However, you can generate a square resemblance matrix with the following command:
 
 ```{r}
-fish.db <- vegdist(fish.rel, method="bray", upper=TRUE, diag=TRUE)
+fish.db <- vegdist(fish, method="bray", upper=TRUE, diag=TRUE)
 ```
 
 ***Question 5***: Does the resemblance matrix (`fish.db`) represent similarity or dissimilarity? How do you know?
@@ -307,28 +312,33 @@ levelplot(as.matrix(fish.db)[, order], aspect = "iso", col.regions = jet.colors,
 ### B.  Cluster Analysis
 Another common way to visualize $\beta$-diversity is through cluster analysis.
 Clustering is mostly an exploratory technique that places objects in groups based on their similarity to one another.
-In this exercise, we will use hierarchical clustering, specifically Ward Clustering. 
-###WARD CLUSTERING....
-However, there are numerous methods for clustering, which can influence your conclusions.  
-See chapter 8 of Legendre and Legendre (2012) for more information on clustering
+In this exercise, we will use hierarchical clustering, specifically Ward's Clustering. 
+Ward's Clustering (i.e., Ward's minimum variance method) is a clustering technique based  on the linear model criterion of least squares.
+The method minimizes within-cluster sums of squared distances between sites.
+However, there are numerous methods for clustering (e.g., Single Linkage, UPGMA, UPGMC), and the choice of clustering method can influence your conclusions.  
+See chapter 8 of Legendre and Legendre (2012) for more information on the various clustering methods that can be used. 
+
+```{r}  
+fish.ward <- hclust(fish.db, method="ward.D2")
+plot(fish.ward, xlab = "Doubs River Fish", 
+     ylab = "Squared Bray-Curtis Distance",
+     sub = "Ward's Clustering")
+```
+
+Another clustering visualization tool that can be used for exploratory purpsoses is`heatmap.2()` function from the `gplots` package.
+This tool will generate a clustering diagram that incorporates fish abundance at each site.
 
 ```{r}
-fish.ward <- hclust(fish.db, method="ward.D")
-fish.ward <- hclust(fish.db, method="complete")
-fish.ward$height <- sqrt(fish.ward$height)  # Sqrt transform of branch lengths for visualization
-plot(fish.ward)
+require(gplots)
+heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
+          hclustfun = function(x) hclust(x, method = "ward.D2"), 
+          col = jet.colors(100), trace = "none", density.info="none")
 ```
 
 ***Question 6***: Based on this clustering analysis and the introdutory plots that we generated after loading the data, what hypotheses could be addressed with the `doubs` data set?
 
 > ***Answer 6***: 
 
-Another clustering visualization tool that can be used for exploratory purpsoses is`heatmap()` function.
-This tool will generate a clustering diagram that incorporates abundances of different fish species in different sites using hierarchical clustering methods. ###polish### ###Do we want different colors and scale bar###
-
-```{r}
-heatmap(as.matrix(fish))
-```
 
 ### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
