@@ -328,10 +328,8 @@ plot(fish.ward, xlab = "Doubs River Fish",
      sub = "Ward's Clustering")
 ```
 
-Another clustering tool that aids in visualization for exploratory purpsoses is`heatmap.2()`, which is a function in the `gplots` package.
-This tool will generate a clustering diagram that allows one to examine the abundance of different fish species in different sites. 
-
-** Time permitting we might be able to a) change color pallette, and b) add scale bar for abudnances**
+Another clustering tool that aids in visualization for exploratory purposes is`heatmap.2()`, which is a function in the `gplots` package.
+This tool generates a cluster diagram that allows one to examine the abundance of different fish species in different sites. 
 
 ```{r, message = FALSE, warning = FALSE}
 require(gplots)
