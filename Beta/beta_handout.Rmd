@@ -424,7 +424,7 @@ explainvar3 <- round(fish.pcoa$eig[3] / sum(fish.pcoa$eig), 3) * 100
 Now that we have have used PCoA and know that the first few axes are sufficient at explaining a substantial amount of variation in the data, we can use the coordinates provides by PCoA to plot each site on an x-y scatterplot. 
  
  
-```{r}
+```{r pcoalayer1, eval = TRUE}
 # Define Plot Parameters
 par(mar = c(5, 5, 2, 2) + 0.1)
 
@@ -457,7 +457,31 @@ text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
 One useful feature of ordinations is the ability to plot expainatory vectors in your reduced ordination space. For example, we might be interested in how individual fish species contribute to the patterns observedin our PCoA. 
 
 
+```{r pcoalayer2, echo=-1}
+<<pcoalayer1>>
+require("BiodiversityR")
 
+fish
+
+
+# Calculating Relative Abundance
+fishREL <- fish
+  for(i in 1:nrow(fish)){
+    fishREL[i, ] = fish[i, ]/sum(fish[i, ])
+    } 
+
+fit <- envfit(fish.pcoa, fishREL, perm = 999)
+# 
+# plot(fit, add = TRUE, col = "gray")
+
+# Calculate Species Scores
+fish.pcoa <- add.spec.scores(fish.pcoa,fishREL,method="pcoa.scores", multi = 1)
+text(fish.pcoa$cproj[ ,1], fish.pcoa$cproj[ ,2], 
+     labels = row.names(fish.pcoa$cproj), col = "black")
+
+
+
+```
 
 
 
