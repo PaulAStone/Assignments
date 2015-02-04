@@ -538,7 +538,7 @@ mantel(fish.dist,env.dist)
 
 ***Question 11***: What do the results from our Mantel tests suggest that about fish diversity and stream environmental conditions? 
 
-> ***Answer 9***: 
+> ***Answer 11***: 
 
 ### ii.  Constrained Ordination
 Another way we can test hypotheses based on continuous designs is by using a modification of ordations called constrained ordination (also called canonical ordination).
@@ -548,6 +548,69 @@ Two common constrained ordination procedues (canonical correspondance analysis (
 As such, these methods combine multipe regression with classical ordination procedures (CA and PCA). 
 These techniques work by first conducting mutivariate multiple linear regression followed by either CA (with CCA) or PCA (with RDA) on the matrix of fitted values to obtain a constrained ordination.
 The residual matrix can also be used to obtain an unconstrained ordination. 
+A permutation test can then be used to test for significance. 
+
+Here we will use the environmental data for the Doubs River to conduct a Canonical Correspondance Analysis on the Doubs River fish communities. 
+We will first create a new matrix that has explainatory environmental data based on water chemistry.
+We will then use the `cca()` function from the `vegan` package.
+Note, we have to specify that we want to the the function in the `vegan` package because there are cca functions in both `vegan` and `ade4`.
+We will then use permutation tests to test the significance of our model and to test the infuence of each environmental factor on your constrained axes.
+
+```{r}
+# Define Environmental Matrix
+env.chem <- as.matrix(doubs$env[-8 , 5:11])
+
+# Conduct CCA 
+doubs.cca <- vegan::cca(fish ~ env.chem)
+
+# Permutation Tests
+anova(doubs.cca, by = "axis")
+cca.fit <- envfit(doubs.cca, env.chem, perm = 999)
+cca.fit
+
+# Visualization
+cca.explainvar1 <- round(doubs.cca$CCA$eig[1]/sum(c(doubs.cca$CCA$eig, 
+                                                    doubs.cca$CA$eig)), 3) * 100
+cca.explainvar2 <- round(doubs.cca$CCA$eig[2]/sum(c(doubs.cca$CCA$eig, 
+                                                    doubs.cca$CA$eig)), 3) * 100
+
+
+# Define Plot Parameters
+par(mar = c(5, 5, 4, 4) + 0.1)
+
+biplots <- scores(doubs.cca, display = "bp")
+
+
+# Initiate Plot
+plot(scores(doubs.cca, display = "wa"), xlim = c(-3.5, 2),
+     xlab=paste("CCA 1 (", cca.explainvar1, "%)", sep=""),
+     ylab=paste("CCA 2 (", cca.explainvar2, "%)", sep=""),
+     pch=16, cex=2.0, type="n", cex.lab=1.5, cex.axis=1.2, axes=FALSE)
+
+# Add Axes
+axis(side = 1, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
+axis(side = 2, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
+abline(h = 0, lty = 3)
+abline(v = 0, lty = 3)
+box(lwd=2)
+
+# Add Points & Labels
+points(scores(doubs.cca, display = "wa"),
+       pch=19, cex=3, bg="gray", col="gray")
+text(scores(doubs.cca, display = "wa"), 
+     labels = row.names(scores(doubs.cca, display = "wa")))
+
+# Add Vectors
+vectors <- scores(doubs.cca, display = "bp")
+row.names(vectors) <- c("pH", "har", "pho", "nit", "amm", "oxy", "bdo")
+arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, lwd = 2, lty = 1, length = 0.2)
+text(vectors[,1] * 2, vectors[, 2] * 2, pos = 3, 
+     labels = row.names(vectors))
+axis(side = 3, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
+axis(side = 4, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
+
+
+```
 
 
 ## 7) HOMEWORK
