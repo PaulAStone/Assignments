@@ -233,10 +233,10 @@ In the above table $y_{1j}$ is the abundance of each species (1:p) in site 1 and
 As with incidence-based measures, there are many other options for calculating similarity or dissimilarity between communities, which include Mean Character Difference, Canberra, Coefficient of Divergence, and Grower. 
 
 ### C. A Cautionary Note on Other Measures of Distance
-Some distance measures have been developed for and are widely used to compare quantitative discriptors.
-However, in general, they should not be used for abundance-based data.
+There are other distance measures that you are likely to encounter because they are widely used.
+It is important to note that some of these should *not* be used for abundance-based data in biodiversity analyses. 
 This is because they lead to the *Species Abundance Paradox*: the distance between two sites that have no species in common is smaller than the distance between sites with shared species.
-Examples of these types of measure include Euclidean Distance and Manhattan Distance:
+In particular, the paradox described above arises when Euclidean Distance and Manhattan Distance are used:
 
 ***Euclidean Distance***: 
 $D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
@@ -244,7 +244,7 @@ $D_{1} = \sqrt{\sum\limits_{j =1}^{p} \left( y_{1j} - y_{2j} \right)^{2}}$
 ***Manhattan Distance***: 
 $D_{7} = \sum\limits_{j = 1}^{p} \left| y_{ij} - y_{2j} \right|$
 
-It should be noted that methods exist to transform species abundance data prior to implementing metrics like Euclidean Distance and Manhattan Distance (e.g., Chord transformation and Chi-Square transformation).
+Methods exist to transform species abundance data prior to implementing metrics like Euclidean Distance and Manhattan Distance (e.g., Chord transformation and Chi-Square transformation).
 It is recommended that you read more about these distance metrics if you are interested in implementing them to address your research questions.
 
 ### D.  Constructing the Resemblance Matrix
@@ -252,7 +252,7 @@ It is recommended that you read more about these distance metrics if you are int
 Conveniently, `vegan` includes many of the similarity metrics used to construct a resemblance matrix.  
 These metrics can be calcualted using the `vegdist()` function.
 Let's use `vegdist` to create a resemblance matrix for the fish assemblages in the Doubs River (`doubs`). 
-However, we'll need to remove site 8 from `doubs` because for some reason it has no observations. 
+Before that, we'll need to remove site 8 from `doubs` because for some reason it has no observations. 
 
 ```{r}
 fish <- doubs$fish 
@@ -295,9 +295,9 @@ Here we are going to use the `levelplot()` function in the `lattice` package of 
 This function will allow us to make a basic heatmap of our resemblance matrix.
 However, first there are a few things we need to do:
 1. We need to define a color palette.
-R include many predefined color palettes; however, we are going to make our own color palette.
+R includes many predefined color palettes; however, we are going to make our own color palette.
 2. We need to make sure that our resemblance matrix is plotted correctly. 
-In particular, we need specify the order in which we want our sites plotted.
+In particular, we need specify the order in which we want our sites to be plotted in the heatmap.
 
 ```{r}
 jet.colors <- colorRampPalette(c("#00007F", "blue", "#007FFF", "cyan", 
@@ -312,8 +312,8 @@ levelplot(as.matrix(fish.db)[, order], aspect = "iso", col.regions = jet.colors,
 ### B.  Cluster Analysis
 Another common way to visualize $\beta$-diversity is through cluster analysis.
 Clustering is mostly an exploratory technique that places objects in groups based on their similarity to one another.
-In this exercise, we will use hierarchical clustering, specifically Ward's Clustering. 
-Ward's Clustering (i.e., Ward's minimum variance method) is a clustering technique based  on the linear model criterion of least squares.
+In this exercise, we will use hierarchical clustering, specifically **Ward's Clustering**. 
+Ward's Clustering (a.k.a., Ward's minimum variance method) is a clustering technique based on the linear model criterion of least squares.
 The method minimizes within-cluster sums of squared distances between sites.
 However, there are numerous methods for clustering (e.g., Single Linkage, UPGMA, UPGMC), and the choice of clustering method can influence your conclusions.  
 See chapter 8 of Legendre and Legendre (2012) for more information on the various clustering methods that can be used. 
@@ -325,8 +325,10 @@ plot(fish.ward, xlab = "Doubs River Fish",
      sub = "Ward's Clustering")
 ```
 
-Another clustering visualization tool that can be used for exploratory purpsoses is`heatmap.2()` function from the `gplots` package.
-This tool will generate a clustering diagram that incorporates fish abundance at each site.
+Another clustering tool that aids in visualization for exploratory purpsoses is`heatmap.2()`, which is a function in the `gplots` package.
+This tool will generate a clustering diagram that allows one to examine the abundance of different fish species in different sites. 
+
+** Time permitting we might be able to a) change color pallette, and b) add scale bar for abudnances**
 
 ```{r}
 require(gplots)
@@ -335,10 +337,11 @@ heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
           col = jet.colors(100), trace = "none", density.info="none")
 ```
 
-***Question 6***: Based on this clustering analysis and the introdutory plots that we generated after loading the data, what hypotheses could be addressed with the `doubs` data set?
+***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, what hypotheses could be addressed with the `doubs` data set?
 
 > ***Answer 6***: 
 
+** Jay stopped here
 
 ### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
