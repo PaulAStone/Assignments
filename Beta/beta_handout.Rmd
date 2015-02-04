@@ -328,7 +328,7 @@ plot(fish.ward, xlab = "Doubs River Fish",
 Another clustering visualization tool that can be used for exploratory purpsoses is`heatmap.2()` function from the `gplots` package.
 This tool will generate a clustering diagram that incorporates fish abundance at each site.
 
-```{r}
+```{r, message = FALSE, warning = FALSE}
 require(gplots)
 heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
           hclustfun = function(x) hclust(x, method = "ward.D2"), 
@@ -342,36 +342,32 @@ heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
 
 ### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
-When objects are plotted (usually in two or three diemnsions or "axes"), ordination can be useful for determining similarity among objects. 
+The aim of ordination is to represent multiple variables (e.g., sites) in a reduced number of orthogonal (linearly independentand uncorrelated) axes. 
+Axes are constructed and order in such a way to capture the main trends in the data, in decreasing order.
+Thus, when objects are plotted (usually in two or three dimensions or "axes"), ordination can be useful for determining similarity among objects. 
 For example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
-There are various orditnation techniques that can be applied to multivariate biodiversity data. 
-When choosing and ordination technique, carefull consideration should be given based on the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled. 
+There are various orditnation techniques that can be applied to multivariate biodiversity data.
+Common methods include: Principal Component Analysis, Correspondence Analysis, Principal Coordinate Analysis, and Nonmetric Multidemensional Scalling.
+When choosing an ordination technique, carefull consideration should be given based on the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
 
 In this exercise, we focus on one commonly used ordination technique: **Principal Coordinates Analysis (PCoA)**, which is sometimes referred to as metric multidimensional scalling. 
-PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, **`D`**, from a site-by-species matrix. 
-Next, **`D`** is transformed as follows: $A = - \frac{1}{\bar{2}} D^2_{ij}$ where ${ij}$ refer to the elments in **`D`**.
-After centering **`A`**, PCoA is solved through eigenanlaysis, which generates eigenvectors corresponding to each ordination axis and an associated eigenvalue. 
+PCoA is a robust ordination technique that can be used on any distance matrix
+PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, $\pmb{D}$, from a site-by-species matrix. 
+Next, $\pmb{D}$ is transformed as follows: $\pmb{A} = - \frac{1}{\bar{2}} \pmb{D}^2_{ij}$ where ${ij}$ refer to the elments in $\pmb{D}$.
+This transformation is used to preserve distances in $\pmb{D}$.
+Next, $\pmb{A}$ is centered to reposition the multidimensional data.
+The demensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, which solve the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
+Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to optain the principal coordinates.
+The eigenvalues are ordered from largest to smallest.
 
 A nice feature of PCoA is that it can accept resemblance matrices generated with various measures of dissimilarity. 
 This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
 When one uses a Euclidean distance matrix with PCoA, the results are identical to that of Principal Components Analysis (PCA).
 
-### Change out soilbac with doubs###
-
-We are going to revisit the soil bacteria data set that we introduced in the $\alpha$-diversity excercise. 
-
-```{r}                                 
-soilbac.total <- read.table("./data/soilbacfull.txt", sep = "\t", header = TRUE, row.names = 1)
-soilbac.tax <- (t(soilbac.total[,1:5]))
-soilbac <- as.data.frame(t(soilbac.total[,6:ncol(soilbac.total)]))
-```
-
-To conduct a PCoA, first we will create a Bray-Curtis dissimilarity matrix from the site-by-species matrix (`soilbac`).
-Then we will use the `cmdscale` function from the `stats` package in R, which performs "classical metric multidimensional scaling"
+To conduct a PCoA, we will use the `cmdscale` function from the `stats` package in R, which performs PCoA (AKA "classical metric multidimensional scaling")
 
 ```{r}
-soilbac.bray <- vegdist(soilbac, method="bray")
-soilbac.pcoa <- cmdscale(soilbac.bray, eig=TRUE) 
+fish.pcoa <- cmdscale(fish.db, eig=TRUE) 
 ```
 
 Now we will use some of the plotting packages in `vegan` to visualize the ordination. 
