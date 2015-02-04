@@ -55,7 +55,7 @@ While working in R this semester, we have learned about vectors, matrices, and d
 Here we introduce another data structure: a **list**. 
 In R, a list is an object that contains a collection of other objects of similar or different types.g
 
-### The Doubs dataset
+### Exploring the `doubs` data set
 We can use the `str()` function to describe some of the attributes of `doubs`, which is a list.
 Because this dataset is somewhat complex, we can pass the "max.level = 1" arguement to minimize the output of `str()`. 
 Also, you can use the the dollar sign (`$`) between the list name (`doubs`) and objects within the list (e.g., `env`) to explore the data set. 
@@ -65,12 +65,15 @@ Last, recall that you can use `help()` to learn more about a data set that is co
 str(doubs, max.level = 1)
 ```
 
-***Question 1***:  Describe some of the attributes of the `Doubs` dataset. 
+***Question 1***:  Describe some of the attributes of the `doubs` dataset. 
 
-a.  How many objects are in the `Doubs` data set?
-b.  What types of data structures are contained in the `Doubs` dataset?
+a.  How many objects are in the `doubs` data set?
+b.  What types of data structures are contained in the `doubs` dataset?
 c.  What are the units of nitrate ("nit") in the stream water?
-d.  How many fish species are there in the `Doubs` dataset?
+d.  How many fish species are there in the `doubs` dataset?
+
+**Seems to me that when we're referring to the dataset, "d" should be lowercase: `doubs`; this is how it's loaded. I stoped correcting here**
+
 
 > ***Answer 1a***:  
 > ***Answer 1b***:  
@@ -311,11 +314,11 @@ levelplot(as.matrix(fish.db)[, order], aspect = "iso", col.regions = jet.colors,
 
 ### B.  Cluster Analysis
 Another common way to visualize $\beta$-diversity is through cluster analysis.
-Clustering is mostly an exploratory technique that places objects in groups based on their similarity to one another.
+Cluster analysis is largely an exploratory technique that assigns objects to groups based on their similarity to one another.
 In this exercise, we will use hierarchical clustering, specifically **Ward's Clustering**. 
 Ward's Clustering (a.k.a., Ward's minimum variance method) is a clustering technique based on the linear model criterion of least squares.
 The method minimizes within-cluster sums of squared distances between sites.
-However, there are numerous methods for clustering (e.g., Single Linkage, UPGMA, UPGMC), and the choice of clustering method can influence your conclusions.  
+However, there are numerous methods for clustering (e.g., Single Linkage, UPGMA, UPGMC), and the choice of clustering method can influence the conclusions that you draw from your analysis.  
 See chapter 8 of Legendre and Legendre (2012) for more information on the various clustering methods that can be used. 
 
 ```{r}  
@@ -337,61 +340,67 @@ heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
           col = jet.colors(100), trace = "none", density.info="none")
 ```
 
-***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, what hypotheses could be addressed with the `doubs` data set?
+***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, develop a hypothesis or two for the `doubs` data set?
 
 > ***Answer 6***: 
 
-** Jay stopped here
-
 ### C.  Ordination
 Ordination is a statistical technique that is used for visualizing objects (e.g., sites) when there are multiple observations (e.g., species within sites). 
-The aim of ordination is to represent multiple variables (e.g., sites) in a reduced number of orthogonal (linearly independentand uncorrelated) axes. 
-Axes are constructed and order in such a way to capture the main trends in the data, in decreasing order.
-Thus, when objects are plotted (usually in two or three dimensions or "axes"), ordination can be useful for determining similarity among objects. 
+The primry aim of ordination is to represent multiple variables (e.g., sites) in a reduced number of orthogonal (independent) axes. 
+The first axis of an ordination explains the most variation in the data set, followed by the second axis, then the third, and so on (there are typically n-1 axes, where n is the number of sites).
+Ordination plots can be particularly useful for visualizing the similarity among objects. 
 For example, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.  
 There are various orditnation techniques that can be applied to multivariate biodiversity data.
-Common methods include: Principal Component Analysis, Correspondence Analysis, Principal Coordinate Analysis, and Nonmetric Multidemensional Scalling.
-When choosing an ordination technique, carefull consideration should be given based on the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
+Common methods include: Principal Components Analysis (PCA), Correspondence Analysis (CA), Principal Coordinate Analysis (PCoA), Factor Analysis (FA), and Nonmetric Multidemensional Scaling (NMDS).
+When choosing an ordination technique, carefull consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
 
-In this exercise, we focus on one commonly used ordination technique: **Principal Coordinates Analysis (PCoA)**, which is sometimes referred to as metric multidimensional scalling. 
-PCoA is a robust ordination technique that can be used on any distance matrix
+In this exercise, we focus on **Principal Coordinates Analysis (PCoA)**, which is sometimes referred to as metric multidimensional scalling. 
+PCoA is a robust ordination technique that can be used on any distance matrix.
 PCoA starts with creating a dissimilarity (i.e., resemblance) matrix, $\pmb{D}$, from a site-by-species matrix. 
 Next, $\pmb{D}$ is transformed as follows: $\pmb{A} = - \frac{1}{\bar{2}} \pmb{D}^2_{ij}$ where ${ij}$ refer to the elments in $\pmb{D}$.
 This transformation is used to preserve distances in $\pmb{D}$.
 Next, $\pmb{A}$ is centered to reposition the multidimensional data.
-The demensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, which solve the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
-Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to optain the principal coordinates.
+The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, which solves the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
+Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to obtain the principal coordinates.
 The eigenvalues are ordered from largest to smallest.
 
-A nice feature of PCoA is that it can accept resemblance matrices generated with various measures of dissimilarity. 
-This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
-When one uses a Euclidean distance matrix with PCoA, the results are identical to that of Principal Components Analysis (PCA).
-
-### I'm not sure what the above sentences are for. Seem sketchy
-
-To conduct a PCoA, we will use the `cmdscale` function from the `stats` package in R, which performs PCoA (AKA "classical metric multidimensional scaling").
-The input for this function is our resemblance matrix (Bray-Curtis distances for the Doubs dataset).
-In addition, we are going to set *k* = 3 (number of demensions we want to calculate) and *eig* = TRUE (save the eigenvalues).
+To conduct a PCoA, we will use the `cmdscale` function from the `stats` package in R, which performs PCoA (a.k.a., "classical metric multidimensional scaling").
+The input for this function is our resemblance matrix (Bray-Curtis distances for the `doubs` dataset).
+In addition, we are going to set *k* = 3 (number of dimensions we want returned) and *eig* = TRUE (which saves the eigenvalues).
 
 ```{r}
 fish.pcoa <- cmdscale(fish.db, eig = TRUE, k = 3) 
 ```
 
-The `cmdscale` function produces a list of outputs.
-The first item *points* includes the coordinates for each site in each reduced demension.
-The second item *eig* includes the eigenvalues for our analysis.
-The last three items are other options in the analysis, but we will not use them here.
+###Interpetting results of PCoA
+The `cmdscale` function produces a list of output.
+The first item *points* contains the coordinates for each site in each reduced dimension.
+The second item *eig* contains the eigenvalues.
+The last three items pertain to other options of the analysis that we will not cover here.
 
-First, we want to explore the eigenvalues.
-The eigenvalues are the scaling factors that allowed us to reduce the dimensionality of our data. 
-We might start by looking at these eigenvalues to make sure that we are interpreting our analysis correctly.
-For our ordination to be useful, we need to know that we captured a sufficient amount of information about the differences in our sites by looking at just a few of the ordination axes. 
-One way we can do this is by making sure that the first few axes capture a greater than expected amount of possible variation.
-There are two ways we can make this judgement. 
-First, we might compare these initial eigenvalues to the average eigenvalues and make sure that they are larger.
-Second, we might compare these initial eigenvalues to the expectation of the *broken-stick model*. 
+First, we want to examine the eigenvalues.
+The eigenvalues are the scaling factors that allowed us to reduce the dimensionality of a data set. 
+The eigenvalues can also be used to inform us about how much variation a PCoA was able to capture in a data set. 
 
-Here, we will qualitatively make this comparision by plotting each eigenvalues and using these two assessment techniques.
+In PCoA, we can quantify the amount of variation that is explained by each orthogonal axis, which provides an overall sense of how much "signal" is our data set.
+We can estimate the variance explained by dividing the eigenvalue of each axis by the sum of all eigenvalues. 
+In the following chunk of code, we quantify the percent variation in the `doubs` data set that is explained by the first three axes of the PCoA.
+
+```{r}
+explainvar1 <- fish.pcoa$eig[1]/sum(fish.pcoa$eig)
+explainvar2 <- fish.pcoa$eig[2]/sum(fish.pcoa$eig)
+explainvar3 <- fish.pcoa$eig[3]/sum(fish.pcoa$eig)
+sum.eig <- sum(explainvar1, explainvar2, explainvar3)
+```
+
+Another way to evaluate our analysis is to make sure that the first few PCoA axes capture a greater than expected amount of the total possible variation.
+There are two ways we can make this assessment. 
+First, the eigenvalues associated with the first few axes should be larger than the average of all the eigenvalues. 
+Second, we can compare the eigenvalues associated with the first few axes to the expectations of the *broken-stick model*. 
+
+**I'm not sure whether or not student are going to intuit broken stick model without an explanation**
+
+We will evaluate these two criteria with the following plots:
 
 ```{r}
 plot(fish.pcoa$eig, xlab = "PCoA Axis", ylab = "Eigenvalue", las = 1, cex.lab = 1.5, pch = 16)
@@ -401,13 +410,13 @@ lines(1:29, b.stick, type = "l", lty = 4, lwd = 2, col = "red")
 legend("topright", legend = c("Avg Eig", "Broken-Stick"), lty = c(2, 4), bty= "n", col = c("blue", "red"))
 ```
 
-By qualitative assessment, we can see that the first three axes of our PCoA ordination have higher eigenvalues than both the mean eigenvalue and the expectation of the Broken-Stick model. 
+**Can/should this be turned into a question? -- perhaps make them use percent variaiton, avg eig, and broken stick model to evaluate this PCoA**Qualitatively, we can see that the first three axes of our PCoA ordination have higher eigenvalues than both the mean eigenvalue and the expectation of the Broken-Stick model. 
 Based on this, we can be comfortable using these as a representation of our data. 
 
-Now we will use some of the plotting packages in `vegan` to visualize the ordination. 
+Finally, we will use some of the plotting functions in `vegan` to visualize the ordination. 
 
 ```{r}
-ordiplot(scores(soilbac.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
+ordiplot(scores(fish.pcoa)[,c(1,2)], type='t', main="PCoA with taxa")
 abline(h=0, lty=3)
 abline(v=0, lty=3)
 ```
@@ -417,37 +426,9 @@ Based on the PCoA ordination, describe the effects of land-use on soil bacterial
 
 > ***Answer 7***: 
 
-In PCoA, we can quantify the amount of variation that is explained by each orthogonal axis.
-It can give us an overall sense of how much "singal" is our data set if for example we sampled along some predetermined enviornmental gradient. 
-This is not something that can be done in all ordination methods. 
-We can estimate variance explained by dividing the eigenvalue of each axis by the sum of all eigenvalues. 
-*Note*: in PCoA and other ordination techniques, the first axis explains the most variation, follwed by the second, third, etc.
 
-```{r}
-explainvar1 <- soilbac.pcoa$eig[1]/sum(soilbac.pcoa$eig)
-explainvar2 <- soilbac.pcoa$eig[2]/sum(soilbac.pcoa$eig)
-```
 
-In the PCoA plot that you just created, we are looking at the relationship of samples in species space. 
-Differences in species abundances are contributing the separation of samples along each PCoA axis. 
-We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species vectors. 
-We will obtain this information using the `add.spec.scores` function in the R `BiodiversityR` package, which we will now load. 
 
-```{r}
-require(BiodiversityR)
-# soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
-# corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
-# corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
-# colnames(cor_spp)[6]<-"Corr1"
-# colnames(cor_spp)[7]<-"Corr2"
-# corrcut <- 0.7
-# imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
-# imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
-```
-
-***Question 7***: Using the `add.spec.scores` function, can you generate any hypotheses about what soil bacterial taxa are potential indicators of land-use variation? 
-
-> ***Answer 7***: 
 
 ## 6) HYPOTHESIS TESTING
 
@@ -523,8 +504,8 @@ mantel.partial(fish.dist, env.dist, geo.dist, method = "pearson", permutations =
 
 1.  We are going to revsit the soil bacteria data set from the $\alpha$-diversity exercise. 
 You may recall that 16S rRNA sequences were generated from replicate sites from four different land-use treatments (T1 = agriculture, T7 = grassland, DF = deciduous forest, and CF = coniferous forest). 
-On top of this, we characterized bacteria from the above soils under dry vs. wet condtions. 
-Thus, we have a 2 x 2 full factorial design (with the exception of a missing sample from the DF land-use treatment). 
+On top of this, we characterized bacteria from the different soils under dry vs. wet condtions. 
+Thus, we have a 2 x 2 full-factorial design (with the exception of a missing sample from the DF land-use treatment). 
 More background on this study can be found in Aanderud et al. 2015 (http://goo.gl/TRgISq)
 
 Two files are available to you in the "~/Assignments/Beta/data"" directory:
@@ -532,7 +513,7 @@ Two files are available to you in the "~/Assignments/Beta/data"" directory:
 a.  Site-by-species matrix ("soilbacfull.txt")
 b.  Factors file describing the treatments ("soil.factors.txt")
 
-Use a combination of visualization and hypothesis-testing techniques described above, interpret the results from the exepriment in a $\beta$-diversity framework. 
+Use a combination of visualization and hypothesis-testing techniques described above to interpret the results from the exepriment in a $\beta$-diversity framework. 
 
 2.  Use Knitr to create a pdf of your completed alpha_exercise.Rmd document, push it to GitHub, and create a pull request.
 The due date for this assignment will be announced in class and/or canvas.
