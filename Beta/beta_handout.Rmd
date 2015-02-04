@@ -424,7 +424,7 @@ explainvar3 <- round(fish.pcoa$eig[3] / sum(fish.pcoa$eig), 3) * 100
 Now that we have have used PCoA and know that the first few axes are sufficient at explaining a substantial amount of variation in the data, we can use the coordinates provides by PCoA to plot each site on an x-y scatterplot. 
  
  
-```{r}
+```{r pcoalayer1, eval = TRUE}
 # Define Plot Parameters
 par(mar = c(5, 5, 2, 2) + 0.1)
 
@@ -454,34 +454,46 @@ text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
 > ***Answer 8***:
 
 
-One useful feature of ordinations is the ability to plot expainatory vectors in your reduced ordination space. For example, we might be interested in how individual fish species contribute to the patterns observedin our PCoA. 
-
-
-
-
-
-
-
+One useful feature of ordinations is the ability to plot expainatory vectors in your reduced ordination space. 
+For example, we might be interested in how individual fish species contribute to the patterns observedin our PCoA. 
 In the PCoA plot that you just created, we are looking at the relationship of samples in species space. 
 Differences in species abundances are contributing the separation of samples along each PCoA axis. 
-We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species vectors. 
-We will obtain this information using the `add.spec.scores` function in the R `BiodiversityR` package, which we will now load. 
+We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species relative abundances. 
+We will obtain this information using the `add.spec.scores` function in the R `BiodiversityR` package, which we will now load.
+First, we will use this function to calculate coordinates of each species on the PCoA.
+These coordinates reflect how the species contribute to the patterns seen in the ordination.
+Then we will use the same function to determine the correlation of species for each axis.
+We can use some cut-off criteria to pull out the important species for each axis.
+Finally, we will use another function, `envfit()` from the vegan pacakge, to conduct a permutation test on these correlations.
 
-```{r}
-require(BiodiversityR)
-# soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
-# corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
-# corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
-# colnames(cor_spp)[6]<-"Corr1"
-# colnames(cor_spp)[7]<-"Corr2"
-# corrcut <- 0.7
-# imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
-# imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
+```{r pcoalayer2, echo=-1}
+<<pcoalayer1>>
+require("BiodiversityR")
+
+# Calculating Relative Abundance
+fishREL <- fish
+  for(i in 1:nrow(fish)){
+    fishREL[i, ] = fish[i, ]/sum(fish[i, ])
+    } 
+
+# Calculate and Add Species Scores
+fish.pcoa <- add.spec.scores(fish.pcoa,fishREL,method="pcoa.scores")
+text(fish.pcoa$cproj[ ,1], fish.pcoa$cproj[ ,2], 
+     labels = row.names(fish.pcoa$cproj), col = "black")
+
+# Other Measures of Correlation
+spe.corr <- add.spec.scores(fish.pcoa, fishREL, method = "cor.scores")$cproj
+# spe.corr <- spe.corr[order(spe.corr[, 1],decreasing=TRUE),] # sorts based on r of PCoA axis 1
+corrcut <- 0.7                                              # define cutoff
+imp.spp <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcut, ]
+
+fit <- envfit(fish.pcoa, fishREL, perm = 999)
 ```
 
-***Question 7***: Using the `add.spec.scores` function, can you generate any hypotheses about what soil bacterial taxa are potential indicators of land-use variation? 
+***Question 9***: Using the correlations above, can you generate any hypotheses about which fish species are potential indicators of river quality? Discuss any differences in the three methods used.
 
-> ***Answer 7***: 
+> ***Answer 9a***: 
+> ***Answer 9b***
 
 ## 6) HYPOTHESIS TESTING
 
