@@ -1,7 +1,7 @@
 ---
 title: "Geographical Ecology"
 author: "Z620: Quantitative Biodiversity, Indiana University"
-date: "? Feb, 2015"
+date: "February 13, 2015"
 header-includes:
    - \usepackage{array}
 output: pdf_document
@@ -9,13 +9,19 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-In this exercise, we will explore primary geographical aspects of biodiversity.
-You will also learn to:
-1.  Calculate univariate metrics of aggregation 
-2.  Visualize geographical patterns
-3.  Test hypotheses of spatial correlation
+In this exercise, we expand upon concepts $\beta$-diversity through a more explicit treatment of geographic ecology. 
 
-## 1.) SETUP
+### Can we mention something up here about species area relationships; something more concrete?
+###adressing marjor eco concepts?##
+
+After completing this exercise you will know how to:
+
+1. Quantify the aggregation of species
+2. Visualize geographical patterns of species 
+3. Test hypotheses regarding the spatial correlation of species
+
+
+## 1) SETUP
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
@@ -24,28 +30,37 @@ getwd()
 setwd("~/GitHub/QuantitativeBiodiversity/Assignments/GeographicalEcology")
 ```
 
-### Load Basic Packages 
-As in previous exercises, we will use the `vegan` package to estimate aspects of diversity.
+### Load Packages 
+As in previous exercises, we will use the `vegan` package.
 We will also use the `BiodiversityR` package, which contains additional diversity estimators and related functions.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("vegan")
 ```
 
-We will also use packages developed in R for geographical information systems (GIS). These packages will allow us to generate maps of study areas, project diversity data onto environmental layers, and conduct geographical analyses.
+We will also use packages developed in R for geographical information systems (GIS). 
+These packages will allow us to generate maps of study areas, project diversity data onto environmental layers, and conduct geographical analyses.
 
 ```{r}
 #install.packages("RgoogleMaps")
 library(RgoogleMaps) # overlays of data onto a Google map.
 ```
 
+## 2) LOADING DATA
+We will be analyzing data from a survey of shallow ponds found east of Bloomington, Indiana that are scattered throughout Brown County State Park, Yellowwood State Forest, and Hoosier National Forest. 
+In the 1940s, Maury Reeves of the Indiana Department of Natural Resources started making ponds with a small dozer in an effort to create a refuge for wildlife, specifically deer and turkey. 
+In the summer of 2013, we visited approximately 50 of these "refuge" ponds and recorded their geographic locations using Global Positioning System (GPS). 
+In addition, the ponds were sampled for water chemistry, phsyical properties, and bacterial community composition. 
 
-## 2.) MAKE A MAP
+![pond](./data/pond.JPG)
 
-### Generate a map using Google maps
-Let's retrieve a map of Indiana using the `GetMap` function in the package `RgoogleMaps`.
-We will generate a map in the RStudio centered on Brown County, Indiana (39.1 degrees latitude, -86.3 degrees longitude)
+## 3) MAKE A MAP
+There are many ways to conduct geographical analyses in R (see RGIS tutorial ***located where?**)
+In this section of the exercise, we are going to use R to generate a map using **Google Maps**.
+First, we will retrieve a map of Indiana using the `GetMap` function in the package `RgoogleMaps`.
+Then, we will generate a map in RStudio that is centered on Brown County, Indiana (39.1 degrees latitude, -86.3 degrees longitude).
 
+### It seems the extent of the maps is a bit large (contains Martinsville); can we zoom in? I'm assumign the zoom arugment?###
 ```{r}
 newmap <- GetMap(center = c(39.1,-86.3), zoom = 10, destfile = "Brown_Co_map.png", maptype="terrain")
 PlotOnStaticMap(newmap, zoom = 10, cex = 2, col='blue') # Now, plot the map in RStudio
@@ -56,27 +71,33 @@ lons <- Ponds[, 4] # longitudes
 PlotOnStaticMap(newmap, lats, lons, cex=1.5, col='red', add = TRUE)
 ```
 
-As you can see, the pond samples are distributed over a fairly large local area. 
+***Question 1***: Based on the map that you just generated, what can you conclude about the geographic and topographic distribution of the refuge ponds?
+
+> ***Answer 1***: 
+
+
+**Perhaps turn following two sentences into a question; make them describe the distribution?**
+As you can see, the pond samples are distributed over a fairly **large local area???** 
 Likewise, they are unevenly distributed in space, and over a complex topographic area.
-There are many possible ways to generate maps in R as well as to conduct geographical analyses.
-Some are offerred in the RGIS tutorial.
 
-## 3.) EXAMINE AGGREGATION
 
-Aggregation can refer to the tendency for organisms to cluster within an environment, for events to occur within a particular period of time, and also refer to the tendency of a variable to take on a particular value, e.g., mean temperature, modal body size, average abundance.
+## 4) EXAMINE AGGREGATION
 
-In this component of the exercise, we will explore aspects of aggregation through graphical exploration and the calculation of univariate metrics.
+Aggregation is the tendency for organisms to cluster in space or for events to occur within a particular period of time. 
+Aggregation also refer to the tendency of a variable to take on a particular value, e.g., mean temperature, modal body size, average abundance.
+
+In this component of the exercise, we will explore aspects of **spatial???** aggregation through graphical exploration and the calculation of univariate metrics.
 
 ### Spatially implicit
 Before examining how environmental variables, abundances, and aspects of diversity vary with distance or increasing area, we will examine how they vary within the landscape, regardless of their position in space.
 
 ### Graphically examine environmental data
-Before investigating correlations or conducting statistical tests, we can ask whether our data appear to be normally distributed, highly skewed, multi-modal, or even spurious.
-A basic graphical examination can be a powerful way to visualize many underlying statistical properties at once. 
+Before investigating correlations or conducting any statistical tests, we can ask whether our data appear to be normally distributed, highly skewed, multi-modal, or **even spurious -- not sure I know what this mean in comparison to other distributions mentioned**.
+A basic graphical examination can be a powerful way to visualize many underlying statistical properties. 
 
 Let's begin with a simple graphical exploration of our environmental data.
-We will use kernel density curves, which are similar in use to histograms but avoid arbitrarily binning continuous data.
-Kernel density curves attempt to account for uncertainty and reveal the 'probability density' of a variable taking values within a particular range.
+We will use kernel density curves, which are similar to histograms, but more appropriate for continuous data because they avoid the arbitrary creation of bins.
+Kernel density curves attempt to account for uncertainty and reveal the 'probability density' of a variable taking values within a particular range.**this last sentence sounds sort of jargony to me**
 
 ```{r}
 EnvData <- Ponds[5:21]
@@ -94,6 +115,13 @@ plot(density(data), col = 'darkorchid', main = "Depth")
 data <- as.numeric(EnvData[, "DOC"])
 plot(density(data), col = 'darkgoldenrod3', main = "DOC")
 ```
+
+**Can we describe "bandwidth" on plots?**
+
+** This is really cool, but I would recommend turning text below into a question. Let's have them describe it to us insstead of the other way around.** 
+
+**--> Jay Stopped here **
+
 
 **Graphical examination:**
 While distributions of temperature, elevation, and dissolved organic carbon appear to aggregated around a single modal value, depth appears to have two distinct modes.
@@ -140,7 +168,7 @@ This spatially implicit distribution of abundance is often referred to as the sp
 > ***Answer 1***: 
 
 
-## 4.) EXAMINE DISTANCE-DECAY
+## 5) EXAMINE DISTANCE-DECAY
 First law of geography...spatial autocorrelation...decrease in similarity with distance...
 
 
@@ -192,7 +220,7 @@ res
 ```
 
 
-## 5.) EXAMINE SPECIES-AREA RELATIONSHIP,
+## 6) EXAMINE SPECIES-AREA RELATIONSHIP,
 ##     a.k.a, taxa-area relationship
 
 The species-area relationship (SAR) describes the rate at which we discover or accumulate species with increasing area. The general relationship of the SAR ... and is of the form S=c*A^z ... which was first predicted by Arrhenius (1921)...wow, that's old.

@@ -269,7 +269,27 @@ turnover <- function(site1 = " ", site2 = " "){
 Where $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2, $y_{1+}$ is the sum of abundances in site 1 and $y_{2+}$ in site 2, $y_{++}$ is the sum of all abuncances across all sites, $y_{+j}$ is the sum of abundances of the $j^{th}$ species across sites, and $y_{ij}/y_{i+}$ is the relative abundances at site $i$. 
 
 
+In the PCoA plot that you just created, we are looking at the relationship of samples in species space. 
+Differences in species abundances are contributing the separation of samples along each PCoA axis. 
+We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species vectors. 
+We will obtain this information using the `add.spec.scores` function in the R `BiodiversityR` package, which we will now load. 
 
+"indicator analysis"
+```{r}
+require(BiodiversityR)
+soilbac.pcoa.corr <- add.spec.scores(soilbac.pcoa, soilbac, method = "cor.scores", Rscale = TRUE, scaling = 1, multi = 1)
+corr.spp <- cbind.data.frame(t(soilbac.tax), soilbac.pcoa.corr$cproj[,1], soilbac.pcoa.corr$cproj[,2]) 
+corr.spp <- corr.spp[order(corr.spp[,6],decreasing=TRUE),] # sorts based on r of PCoA axis 1
+colnames(cor_spp)[6]<-"Corr1"
+colnames(cor_spp)[7]<-"Corr2"
+corrcut <- 0.7
+imp.spp.axis1 <- corr.spp[corr.spp[,6] >= corrcut | corr.spp[,6] <= -corrcut,]
+imp.spp.axis2 <- corr.spp[corr.spp[,7] >= corrcut | corr.spp[,7] <= -corrcut,]
+```
+
+***Question 7***: Using the `add.spec.scores` function, can you generate any hypotheses about what soil bacterial taxa are potential indicators of land-use variation? 
+
+> ***Answer 7***: 
 
 # Add Species to PCoA ordination -- cool but takes a long time and looks messy with lots of species
 soil.pcoa.spp <- wascores(soilbac.pcoa$points[,1:2], soilbac)
