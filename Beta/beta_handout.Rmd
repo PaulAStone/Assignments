@@ -364,11 +364,42 @@ A nice feature of PCoA is that it can accept resemblance matrices generated with
 This flexibilty can be important for emphasizing or deemphasizing certain attributes of a data set (e.g., rare vs. commmon species).
 When one uses a Euclidean distance matrix with PCoA, the results are identical to that of Principal Components Analysis (PCA).
 
-To conduct a PCoA, we will use the `cmdscale` function from the `stats` package in R, which performs PCoA (AKA "classical metric multidimensional scaling")
+### I'm not sure what the above sentences are for. Seem sketchy
+
+To conduct a PCoA, we will use the `cmdscale` function from the `stats` package in R, which performs PCoA (AKA "classical metric multidimensional scaling").
+The input for this function is our resemblance matrix (Bray-Curtis distances for the Doubs dataset).
+In addition, we are going to set *k* = 3 (number of demensions we want to calculate) and *eig* = TRUE (save the eigenvalues).
 
 ```{r}
-fish.pcoa <- cmdscale(fish.db, eig=TRUE) 
+fish.pcoa <- cmdscale(fish.db, eig = TRUE, k = 3) 
 ```
+
+The `cmdscale` function produces a list of outputs.
+The first item *points* includes the coordinates for each site in each reduced demension.
+The second item *eig* includes the eigenvalues for our analysis.
+The last three items are other options in the analysis, but we will not use them here.
+
+First, we want to explore the eigenvalues.
+The eigenvalues are the scaling factors that allowed us to reduce the dimensionality of our data. 
+We might start by looking at these eigenvalues to make sure that we are interpreting our analysis correctly.
+For our ordination to be useful, we need to know that we captured a sufficient amount of information about the differences in our sites by looking at just a few of the ordination axes. 
+One way we can do this is by making sure that the first few axes capture a greater than expected amount of possible variation.
+There are two ways we can make this judgement. 
+First, we might compare these initial eigenvalues to the average eigenvalues and make sure that they are larger.
+Second, we might compare these initial eigenvalues to the expectation of the *broken-stick model*. 
+
+Here, we will qualitatively make this comparision by plotting each eigenvalues and using these two assessment techniques.
+
+```{r}
+plot(fish.pcoa$eig, xlab = "PCoA Axis", ylab = "Eigenvalue", las = 1, cex.lab = 1.5, pch = 16)
+abline(h = mean(fish.pcoa$eig), lty = 2, lwd = 2, col = "blue")
+b.stick <- bstick(29, sum(fish.pcoa$eig))
+lines(1:29, b.stick, type = "l", lty = 4, lwd = 2, col = "red")
+legend("topright", legend = c("Avg Eig", "Broken-Stick"), lty = c(2, 4), bty= "n", col = c("blue", "red"))
+```
+
+By qualitative assessment, we can see that the first three axes of our PCoA ordination have higher eigenvalues than both the mean eigenvalue and the expectation of the Broken-Stick model. 
+Based on this, we can be comfortable using these as a representation of our data. 
 
 Now we will use some of the plotting packages in `vegan` to visualize the ordination. 
 
