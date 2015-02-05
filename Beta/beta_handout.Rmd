@@ -241,7 +241,7 @@ As with incidence-based measures, there are many other options for calculating s
 ### D. A Cautionary Note on Other Measures of Distance
 There are other distance measures that you are likely to encounter because they are widely used.
 It is important to note that some of these should *not* be used for abundance-based data in biodiversity analyses. 
-This is because they lead to the **Species Abundance Paradox**, whih is a phenomenon that occurs when the distance between two sites that have no species in common is smaller than the distance between sites with shared species.
+This is because they lead to the **Species Abundance Paradox**, which is a phenomenon that occurs when the distance between two sites that have no species in common is smaller than the distance between sites with shared species.
 In particular, the paradox described above arises when Euclidean Distance and Manhattan Distance are used:
 
 ***Euclidean Distance***: 
@@ -511,7 +511,7 @@ It is a multivariate analog to univariate ANOVA and has less restrictions than p
 As the name suggests, it evaluates differences according to a specified model by randomly permuting the data.
 PERMANOVA can easily handle simple designs, but also accomodates nested and higher-order studies. 
 In addition, it can deal with missing values and unbalanced designs. 
-The PERMANOVA output is similar to the output of classic ANOVA; it includes (pseudo) F-tests, p-values, and $r^{2}$ values.
+The PERMANOVA output is similar to the output of classic ANOVA; it includes (pseudo) F-tests, p-values, and $R^{2}$ values.
 We will implement PERMANOVA with the `adonis()` function in the `vegan` package. 
 
 To run `adonis`, you first need a factor vector or matrix that specifies your treatments and replicates.
