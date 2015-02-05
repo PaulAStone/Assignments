@@ -67,17 +67,17 @@ str(doubs, max.level = 1)
 
 ***Question 1***:  Describe some of the attributes of the `doubs` dataset. 
 
-a.  How many objects are in the `doubs`?
-b.  What types of data structures are contained in the `doubs`?
+a.  How many objects are in `doubs`?
+b.  What types of data structures are contained in `doubs`?
 c.  What are the units of nitrate ("nit") in the stream water?
-d.  How many fish species are there in `doubs`?
+d.  How many fish species are there `doubs`?
 
 > ***Answer 1a***:  
 > ***Answer 1b***:  
 > ***Answer 1c***:  
 > ***Answer 1d***:  
 
-### Visualizing the Doubs dataset
+### Visualizing the Doubs River dataset
 There is a wealth of information in the `doubs` dataset that can be used to address various issues related to $\beta$-diversity.
 For example, we might use the environmental or spatial data to develop or test a hypothesis.
 Below we have generated two plots of the `doubs` fish data. 
@@ -160,7 +160,7 @@ b.  Based on the formula for $\beta_{w}$, what does this value represent?
 ## 4) QUANTIFYING BETA-DIVERSITY FOR TWO OR MORE SAMPLES
 
 Often, we often want to compare the diversity of more than just a pair of samples.
-For example, there are 29 sites in the Doubs River with fish communities and we might want to compare each.
+For example, it would be nice to be able to compare fish assemblages for *all* of sites in the Doubs River. 
 In this section we will estimate $\beta$-diversity for multiple samples. 
 During this process, you will learn how to generate similarity and dissimilarity matrices for different data sets that will be needed for visualizing and quantifying $\beta$-diversity. 
 
@@ -168,8 +168,8 @@ During this process, you will learn how to generate similarity and dissimilarity
 In order to quantify $\beta$-diversity for more than two samples, we need to introduce our second primary ecological data structure: the **Resemblance Matrix**. 
 In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix. 
 The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
-In the sections below, we describe some of the common similarity and dissimilarity metrics used for constructing a resemblance matrix.
-Throughout this handout, we will use common notations in accordance with Legendre & Legendre (2012), which can be electronically accessed via the IU library (see the course syllabus [http://goo.gl/y4oK7c]). 
+In the sections below, we describe some of the similarity and dissimilarity metrics that are commonly used for constructing a resemblance matrix.
+Throughout this handout, we adopt the notations of Legendre & Legendre (2012), which can be electronically accessed via the IU library (see the course syllabus [http://goo.gl/y4oK7c]). 
 
 ### A.  Incidence-Based Measures of Similarity and Dissimilarity
 When you are working with presence-absence data, you can use the following metrics for generating a similarity or dissimilarity matrix. 
@@ -198,7 +198,7 @@ In the above table, *a* = the number of species shared between assemblages, *b* 
 
 a.  What are the differences between Jaccard and Sørensen metrics?
 b.  When might you use one instead of the other?
-c.  In what situations would these metrics of $\beta$ diversity fail?
+c.  In what situations would these metrics of $\beta$-diversity fail?
 
 > ***Answer 4a***:  
 > ***Answer 4b***:  
@@ -212,7 +212,7 @@ In `vegan`, disimilarities (*D*) are usually returned from functions instead of 
 The conversion between similarity and dissimilarity is calculated as `D = 1 - S`.
 
 ### B.  Abundance-Based Measures of Similarity and Dissimilarity
-When you are working with abundance data, you can you the following metrics for generating a similarity or dissimilarity matrix. 
+When you are working with abundance data, you can use the following metrics for generating a similarity or dissimilarity matrix. 
 
 \begin{center}
 \hyphenpenalty 10000
@@ -322,7 +322,7 @@ Another common way to visualize $\beta$-diversity is through cluster analysis.
 Cluster analysis is largely an exploratory technique that assigns objects to groups based on their similarity to one another.
 In this exercise, we will use hierarchical clustering, specifically **Ward's Clustering**. 
 Ward's Clustering (a.k.a., Ward's minimum variance method) is a clustering technique based on the linear model criterion of least squares.
-The method minimizes within-cluster sums of squared distances between sites.
+The method minimizes within-cluster sums-of-squared distances between sites.
 However, there are numerous methods for clustering (e.g., Single Linkage, UPGMA, UPGMC), which can influence the conclusions that you draw from your analysis.
 See chapter 8 of Legendre and Legendre (2012) for more information on the various clustering methods that can be used. 
 
@@ -357,12 +357,12 @@ Ordination plots are particularly useful for visualizing the similarity among ob
 For example, in the context of $\beta$ diversity, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.
 
 There are various orditnation techniques that can be applied to multivariate biodiversity data.
-Common methods include: Principal Components Analysis (PCA), Correspondence Analysis (CA), Principal Coordinate Analysis (PCoA), Factor Analysis (FA), and Nonmetric Multidemensional Scaling (NMDS).
+Common methods include: Principal Components Analysis (PCA), Correspondence Analysis (CA), Principal Coordinates Analysis (PCoA), Factor Analysis (FA), and Nonmetric Multidemensional Scaling (NMDS).
 When choosing an ordination technique, careful consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
 
 ### An overview of Principal Coordinates Analysis (PCoA)
 In this exercise, we focus on Principal Coordinates Analysis (PCoA), which is sometimes referred to as metric multidimensional scaling. 
-PCoA starts with creating a matrix, $\pmb{A}$, which is a transformed and centered version of distance matrix $\pmb{D}$. Because these steps preserve all distances, PCoA is a flexible ordination technique that allows us to use virtually any distance metric (e.g., Jaccard, Bray-Curtis, Gower, Euclidean, etc.). The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, that solve the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
+PCoA starts with creating a matrix, $\pmb{A}$, which is a transformed and centered version of distance matrix, $\pmb{D}$. Because these steps preserve all distances, PCoA is a flexible ordination technique that allows us to use virtually any distance metric (e.g., Jaccard, Bray-Curtis, Gower, Euclidean, etc.). The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, that solves the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
 Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to obtain the principal coordinates.
 
 To conduct a PCoA, we will use the `cmdscale()` function from the `stats` package, which performs PCoA.
@@ -394,8 +394,7 @@ sum.eig <- sum(explainvar1, explainvar2, explainvar3)
 
 Another way to evaluate our analysis is to assess whether or not the first few PCoA axes capture a disproportionately large amount of the total explained variation.
 First, the eigenvalues associated with the first few axes should be larger than the average of all the eigenvalues (*Kaiser-Guttman criterion*). 
-Second, we can compare the eigenvalues associated with the first few axes to the expectations of the *broken-stick model*. 
-**Need to add half a sentence or a bit more for this to be effective**
+Second, we can compare the eigenvalues associated with the first few axes to the expectations of the *broken-stick model*, which we introduced in the $\alpha$-diversity exercise when discussing species abundance distributions (SAD). In the current context, the broken stick model assumes that the total sum of eigenvalues decreases sequentially with ordered PCoA axes. 
 
 We will evaluate these two criteria with the following plots:
 
@@ -421,8 +420,9 @@ legend("topright", legend = c("Avg Eigenvalue", "Broken-Stick"),
 
 > ***Answer 7***: 
 
-###Creating an PCoA ordination plot 
+###Creating a PCoA ordination plot 
 Having evaluated the PCoA output, now we will create an ordination plot.
+We will plot all of the fish assemblages of the Doubs River for the first two PCoA axes. 
 
 ```{r pcoalayer1, eval = TRUE, fig.width=6, fig.height=4}
 # Define Plot Parameters
@@ -447,7 +447,9 @@ text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
      labels = row.names(fish.pcoa$points))
 ```
  
-***Question 8***: As you will recall, these fish communities were sampled along the Doubs River in the Jara Mountains (France-Switzerland boarder). In addition, you know that these sites are ordered in space with *Site 1* being the most upstream and *Site 30* being the most downstream (see plot in section 2). Given this, what hypotheses could you make about these fish communities? (Reminder: the original goals of this study included using fish communities as indicators of stream health). 
+***Question 8***: As you will recall, the fish assemblages fromteh Doubs River came from sites that were ordered in space with *Site 1* being the most upstream and *Site 30* being the most downstream (see plot in section 2). Given this, what hypotheses could you make about these fish assemblages? (Reminder: the original goals of this study included using fish communities as indicators of stream health). 
+
+**I'm not sure I really understand what we want students to say about question 8. I assume it is intended to relate to the ordination, but the question seems a little divorced from this. How about incoporporting into question 9?
 
 > ***Answer 8***:
 
