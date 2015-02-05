@@ -502,7 +502,7 @@ Here, we wil introduce a few techniques that are appropriate for testing hypothe
 
 PERMANOVA stands for permutational multivariate analysis of variance (Anderson 2001). 
 It is a multivariate analog to univariate ANOVA and has less restrictions than parametric multivariate analysis of variance (MANOVA). 
-As the name suggests, it evaluates differences according to your specified model by randomly permuting the data.
+As the name suggests, it evaluates differences according to a specified model by randomly permuting the data.
 PERMANOVA can easily handle simple designs, but also accomodates nested and higher-order studies. 
 In addition, it can handle missing observations and unbalanced designs. 
 The PERMANOVA output supplies analogs to the classic ANOVA table such as F ratios, pseudo P-values, and $R^{2}$ values.
@@ -512,14 +512,17 @@ To run `adonis`, you first need a factor vector or matrix that specifies your tr
 This vector or matrix can either be provided in the form of a file that you open in R (e.g. `read.table()`) or a user specified vector or matrix that you write within R.
 
 For example, based on earlier work done in the Doubs River it has been suggested that river can be broken into four distinct regions based on river quality.
-The first region (sites 1-14) of the stream (upstream) has been rated as being high quality.
-The second (sites 15 - 19) and forth (sites 26 - 30) regions have been rates as being moderate quality.
-And the third region (sites (20 - 25) have ben rated has being low quality.
+The first region (sites 1-14) has been rated as being high quality.
+The second (sites 15 - 19) and forth (sites 26 - 30) regions have been rated as being moderate quality.
+And the third region (sites 20 - 25) has been rated has being low quality.
 
 Though the Doubs River is not a controlled experimental system, we can use these quality groupings to test the prediction that river quality category influences fish community composition.
 
-```{r}
+```{r, results='hide'}
+# Create "Factors"" vector
 quality <- c(rep("HQ", 13), rep("MQ", 5), rep("LQ", 6), rep("MQ", 5))
+
+# Run PERMANOVA with adonis function
 adonis(fish ~ quality, method = "bray", permutations = 999)
 ```
 
@@ -533,23 +536,27 @@ adonis(fish ~ quality, method = "bray", permutations = 999)
 ### i.  Mantel test
 A **Mantel test** is essentially a multivariate correlation analysis. 
 It produces an *r* value that is analagous to the Pearson's correlation coefficient. 
-The p-value from the Mantel test is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices.
-For example, we could use a Mantel test to determine if $\beta$-diversity (i.e., Bray-Curtis distance) is correlated to environmental variables. 
+In addition, it produces a *p-value* that is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices.
+Use a Mantel test, you could determine if $\beta$-diversity (i.e., Bray-Curtis distance) is correlated with environmental variables. 
 
-In the following section, we will peform a Mantel test using the `mantel` function in `vegan`. 
+In the following section, we will peform a Mantel test using the `mantel()` function in `vegan`. 
 This requires that we first have two matrices (distance matrices) to compare. 
-Here we will compare the Bray-Curtic distance matrix we created earlier with a new distance matrix of environmental factors (doubs$env) which we must first create.
+Here we will compare the Bray-Curtic distance matrix we created earlier with a new distance matrix of environmental factors (doubs$env).
 After creating the distance matrices, we will test the hypothesis that fish assemblages are correlated with stream environmental variables.
 
-```{r}
+```{r, results = "hide"}
+# Define Matrices
 fish.dist <- vegdist(doubs$fish[-8, ], method = "bray")
 env.dist <- vegdist(scale(doubs$env[-8,]),method = "euclid")
+
+#Mantel Test
 mantel(fish.dist,env.dist)
 ```
 
-***Question 11***: What do the results from our Mantel tests suggest that about fish diversity and stream environmental conditions? 
+***Question 11***: What do the results from our Mantel tests suggest that about fish diversity and stream environmental conditions? How might this relate to your hypothesis about stream quality influencing fish communities?
 
-> ***Answer 11***: 
+> ***Answer 11a***:  
+> ***Answer 11b***: 
 
 ### ii.  Constrained Ordination
 Another way we can test hypotheses based on continuous designs is by using a modification of ordations called constrained ordination (also called canonical ordination).
@@ -567,7 +574,7 @@ We will then use the `cca()` function from the `vegan` package.
 Note, we have to specify that we want to the the function in the `vegan` package because there are cca functions in both `vegan` and `ade4`.
 We will then use permutation tests to test the significance of our model and to test the infuence of each environmental factor on your constrained axes.
 
-```{r}
+```{r, results = "hide"}
 # Define Environmental Matrix
 env.chem <- as.matrix(doubs$env[-8 , 5:11])
 
@@ -579,17 +586,14 @@ anova(doubs.cca, by = "axis")
 cca.fit <- envfit(doubs.cca, env.chem, perm = 999)
 cca.fit
 
-# Visualization
-cca.explainvar1 <- round(doubs.cca$CCA$eig[1]/sum(c(doubs.cca$CCA$eig, 
-                                                    doubs.cca$CA$eig)), 3) * 100
-cca.explainvar2 <- round(doubs.cca$CCA$eig[2]/sum(c(doubs.cca$CCA$eig, 
-                                                    doubs.cca$CA$eig)), 3) * 100
+# Calculate Explained Variation
+cca.explainvar1 <- round(doubs.cca$CCA$eig[1] / 
+                         sum(c(doubs.cca$CCA$eig, doubs.cca$CA$eig)), 3) * 100
+cca.explainvar2 <- round(doubs.cca$CCA$eig[2] / 
+                         sum(c(doubs.cca$CCA$eig, doubs.cca$CA$eig)), 3) * 100
 
 # Define Plot Parameters
 par(mar = c(5, 5, 4, 4) + 0.1)
-
-biplots <- scores(doubs.cca, display = "bp")
-
 
 # Initiate Plot
 plot(scores(doubs.cca, display = "wa"), xlim = c(-3.5, 2), ylim = c(-3.2, 3.2),
@@ -610,7 +614,7 @@ points(scores(doubs.cca, display = "wa"),
 text(scores(doubs.cca, display = "wa"), 
      labels = row.names(scores(doubs.cca, display = "wa")))
 
-# Add Vectors
+# Add Environmental Vectors
 vectors <- scores(doubs.cca, display = "bp")
 row.names(vectors) <- c("pH", "har", "pho", "nit", "amm", "oxy", "bdo")
 arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, lwd = 2, lty = 1, length = 0.2, col = "red")
@@ -621,6 +625,10 @@ axis(side = 3, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
 axis(side = 4, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
      at = pretty(range(vectors[, 2])) * 2, labels = pretty(range(vectors[, 2])))
 ```
+
+***Question 11***: 
+
+> ***Answer 12***: 
 
 
 ## 7) HOMEWORK
