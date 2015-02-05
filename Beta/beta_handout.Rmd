@@ -233,7 +233,7 @@ When you are working with abundance data, you can use the following metrics for 
   \end{center}
 
 In the above table $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2.
-As with incidence-based measures, there are many other options for calculating similarity or dissimilarity between communities, including Mean Character Difference, Canberra, Coefficient of Divergence, and Grower. 
+As with incidence-based measures, there are many other options for calculating similarity or dissimilarity between communities, including Mean Character Difference, Canberra, Coefficient of Divergence, and Gower. 
 
 ### C. A Cautionary Note on Other Measures of Distance
 There are other distance measures that you are likely to encounter because they are widely used.
@@ -346,7 +346,7 @@ heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
           col = jet.colors(100), trace = "none", density.info="none")
 ```
 
-***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, develop a hypothesis or two for the `doubs` data set? 
+***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, develop a hypothesis for the `doubs` data set? 
 
 > ***Answer 6***: 
 
@@ -447,23 +447,13 @@ text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
      labels = row.names(fish.pcoa$points))
 ```
  
-***Question 8***: As you will recall, the fish assemblages fromteh Doubs River came from sites that were ordered in space with *Site 1* being the most upstream and *Site 30* being the most downstream (see plot in section 2). Given this, what hypotheses could you make about these fish assemblages? (Reminder: the original goals of this study included using fish communities as indicators of stream health). 
-
-**I'm not sure I really understand what we want students to say about question 8. I assume it is intended to relate to the ordination, but the question seems a little divorced from this. How about incoporporting into question 9?
-
-> ***Answer 8***:
-
-
-###Identifying influential species in PCoA 
-One useful feature of ordinations is the ability to plot explanatory vectors in ordination space. 
-For example, we might be interested in how differences in species abundances contribute to the separation of samples along each PCoA axis. 
-We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species relative abundances. 
+###Identifying and visualizing influential species in PCoA 
+Basic ordination plots allow us to see how samples separate from one another. 
+It is logical to ask what features of the data set are driving the observed divergence of points. 
+In the Doubs River example, sites are separating along the PCoA axes owing to variation in the abundance of different fish species. 
+We can get a better sense of "who" is contributing to this trend by plotting explanatory vectors (i.e., species coordinates) in ordination space.
 We will obtain this information using the `add.spec.scores()` function in the `BiodiversityR` package.
-First, we will use this function to calculate species coordinates in our PCoA.
-These coordinates reflect how (strength and direction) the species contribute to ordination patterns.
-Then we will use the same function to determine the correlation of each species along each axis.
-We can use some cut-off criteria to pull out the important species.
-Finally, we will use the `envfit()` function from the `vegan` pacakge, to conduct a permutation test on these correlations.
+These coordinates reflect the strength and direction that each species has on the ordination of the different sites.
 
 ```{r pcoalayer2, message = FALSE, warning = FALSE, echo=-c(1:16), fig.width=6, fig.height=4}
 <<pcoalayer1>>
@@ -480,8 +470,14 @@ fishREL <- fish
 fish.pcoa <- add.spec.scores(fish.pcoa,fishREL,method="pcoa.scores")
 text(fish.pcoa$cproj[ ,1], fish.pcoa$cproj[ ,2], 
      labels = row.names(fish.pcoa$cproj), col = "black")
+```
 
-# Calculate Species Correlations and Identify Important Species
+A more quantitative way of identifying influential species involves determining the correlation of each species along each PCoA axis. 
+To do this, we will use the `add.spec.scores` function again.  
+Then we can identify a correlation-coefficient cutoff (e.g. *r* = 0.70) to pull out important species.  
+Finally, we will use the `envfit()` function from the `vegan` pacakge, to conduct a permutation test on these correlations.
+
+```{r}
 spe.corr <- add.spec.scores(fish.pcoa, fishREL, method = "cor.scores")$cproj
 corrcut <- 0.7       # user defined cutoff
 imp.spp <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcut, ]
@@ -490,15 +486,18 @@ imp.spp <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcu
 fit <- envfit(fish.pcoa, fishREL, perm = 999)
 ```
 
-***Question 9***: Using the correlations above, can you generate any hypotheses about which fish species are potential indicators of river quality? Discuss any differences in the three methods used. Do they agree or disagree? Explain.
+***Question 9***: Address the following questions about the ordination results of the `doubs` data set:
+
+a.  Generate a hypothesis about which fish species are potential indicators of river quality.
+b.  Do the different approaches described in the ordination section agree or disagree? Explain. 
 
 > ***Answer 9a***:  
 > ***Answer 9b***:  
 
 ## 6) HYPOTHESIS TESTING
 
-Some of the visualization tools that we just learned about are powerful for exploring data sets and generating hypotheses, but  can fall short of providing robust tests of *a priori* hypotheses and predictions. 
-Here, we wil introduce a few techniques that are appropriate for testing hypotheses that you might have when using multivariate data and are interested in questions related to $\beta$-diversity. 
+The visualization tools that we just learned about are powerful for exploring data sets and *generating* hypotheses. 
+In this section we introduce some methods that are better suited for *testing* hypotheses and predictions related to $\beta$-diversity.
 
 ### A.  Multivariate procedures for categorical designs
 
