@@ -23,7 +23,7 @@ After completing this exercise you will know how to:
 ### Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
-rm(list=ls())
+rm(list = ls())
 getwd()
 setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Beta")
 ```
@@ -86,6 +86,7 @@ The second plot shows the abundance of a particular fish species, Brown Trout (*
 
 ```{r, fig.width=8, fig.height=3.75, echo=FALSE}
 # Define Plot Parameters
+opar <- par(no.readonly = TRUE) 
 par(mfrow = c(1,2), mar = c(4, 4, 3, 4) + 0.1, xpd = TRUE)
 
 # Stream Fish
@@ -98,7 +99,7 @@ plot(doubs$xy, asp = 1, type = 'l', col = "light blue", lwd = 10, las = 1, cex.a
      xlim = c(0,280), ylim = c(0,280), main = "Fish Richneses (S)", 
      xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
 points(doubs$xy, pch = 22, cex=2, bg = spa.S.color[spa.S + 1])
-text(doubs$xy, as.character(spa.S), cex = 0.5, col="red")
+text(doubs$xy, as.character(spa.S), cex = 0.5, col = "red")
 text(150, 0, "Upstream", cex = 1, col = "red")
 text(48, 114, "Downstream", cex = 1, col = "red")
 legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
@@ -108,12 +109,13 @@ legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
 plot(doubs$xy, asp = 1, type = 'l', col = "light blue", lwd = 10, las = 1, cex.axis = 0.75, 
      xlim = c(0, 280), ylim = c(0, 280),main = "Brown Trout Abundance (N)", 
      xlab = "X-Coordinate (km)", ylab = "Y-Coordinate (km)")
-points(doubs$xy, pch = 22, cex=2, bg = spa.N.color[doubs$fish$Satr + 1])
+points(doubs$xy, pch = 22, cex = 2, bg = spa.N.color[doubs$fish$Satr + 1])
 text(doubs$xy, as.character(doubs$fish$Satr), cex = 0.5, col="red")
-text(150, 0, "Upstream", cex=1, col="red")
-text(48, 114, "Downstream", cex=1, col="red")
+text(150, 0, "Upstream", cex = 1, col = "red")
+text(48, 114, "Downstream", cex = 1, col = "red")
 legend("topright", inset=c(-0.25, 0), pch = 22, pt.cex = 2, bty = 'n',
        title = "N", legend = seq(0, 6, 2), pt.bg = spa.N.color[seq(1, 7, 2)])
+par <- opar
 ```
 
 ***Question 2***: Answer the following questions based on the spatial patterns of richness (i.e., $\alpha$-diversity) and Brown Trout (*Salmo trutta*) abundance in the Doubs River. 
@@ -262,10 +264,10 @@ fish <- doubs$fish
 fish <- fish[-8, ] # Remove site 8 from data
 
 # Calculate Jaccard 
-fish.dj <- vegdist(fish, method="jaccard", binary=TRUE)
+fish.dj <- vegdist(fish, method = "jaccard", binary = TRUE)
 
 # Calculate Bray-Curtis 
-fish.db <- vegdist(fish, method="bray")
+fish.db <- vegdist(fish, method = "bray")
 ```
 
 Now that we've created a resemblance matrix, it would be nice to visualize the fish assemblages of the Doubs River. 
@@ -281,7 +283,7 @@ This is because the two triangles have the same information.
 However, you can generate a square resemblance matrix with the following command:
 
 ```{r}
-fish.db <- vegdist(fish, method="bray", upper=TRUE, diag=TRUE)
+fish.db <- vegdist(fish, method = "bray", upper = TRUE, diag = TRUE)
 ```
 
 ***Question 5***: Does the resemblance matrix (`fish.db`) represent similarity or dissimilarity? What information in the resemblance matrix led you to arrive at your answer?
@@ -313,7 +315,7 @@ order <- rev(attr(fish.db, "Labels"))
 
 # Plot Heatmap
 levelplot(as.matrix(fish.db)[, order], aspect = "iso", col.regions = jet.colors, 
-          xlab="Doubs Site", ylab = "Doubs Site", scales=list(cex=0.5), 
+          xlab = "Doubs Site", ylab = "Doubs Site", scales = list(cex = 0.5), 
           main = "Bray-Curtis Distance")
 ```
 
@@ -328,7 +330,7 @@ See chapter 8 of Legendre and Legendre (2012) for more information on the variou
 
 ```{r, fig.width=8, fig.height=3.5} 
 # Perform Cluster Analysis
-fish.ward <- hclust(fish.db, method="ward.D2")
+fish.ward <- hclust(fish.db, method = "ward.D2")
 
 # Plot Cluster
 par(mar = c(1, 5, 2, 2) + 0.1)
@@ -343,7 +345,7 @@ This tool generates a cluster diagram that allows one to examine the abundance o
 require(gplots)
 heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
           hclustfun = function(x) hclust(x, method = "ward.D2"), 
-          col = jet.colors(100), trace = "none", density.info="none")
+          col = jet.colors(100), trace = "none", density.info = "none")
 ```
 
 ***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, develop a hypothesis for the `doubs` data set? 
@@ -362,7 +364,7 @@ When choosing an ordination technique, careful consideration should be given to 
 
 ### i. An overview of Principal Coordinates Analysis (PCoA)
 In this exercise, we focus on Principal Coordinates Analysis (PCoA), which is sometimes referred to as metric multidimensional scaling. 
-PCoA starts with creating a matrix, $\pmb{A}$, which is a transformed and centered version of distance matrix, $\pmb{D}$. Because these steps preserve all distances, PCoA is a flexible ordination technique that allows us to use virtually any distance metric (e.g., Jaccard, Bray-Curtis, Gower, Euclidean, etc.). The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, that solves the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
+PCoA starts with creating a matrix, $\pmb{A}$, which is a transformed and centered version of distance matrix, $\pmb{D}$. Because these steps preserve all distances, PCoA is a flexible ordination technique that allows us to use virtually any distance metric (e.g., Jaccard, Bray-Curtis, Gower, Euclidean, etc.). The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, that solve the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
 Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to obtain the principal coordinates.
 
 To conduct a PCoA, we will use the `cmdscale()` function from the `stats` package, which performs PCoA.
@@ -386,9 +388,9 @@ To do this, we divide the eigenvalue of each axis by the sum of all eigenvalues.
 In the following chunk of code, we quantify the percent variation in the `doubs` data set that is explained by the first three axes of the PCoA.
 
 ```{r}
-explainvar1 <- round(fish.pcoa$eig[1]/sum(fish.pcoa$eig), 3) * 100
-explainvar2 <- round(fish.pcoa$eig[2]/sum(fish.pcoa$eig), 3) * 100
-explainvar3 <- round(fish.pcoa$eig[3]/sum(fish.pcoa$eig), 3) * 100
+explainvar1 <- round(fish.pcoa$eig[1] / sum(fish.pcoa$eig), 3) * 100
+explainvar2 <- round(fish.pcoa$eig[2] / sum(fish.pcoa$eig), 3) * 100
+explainvar3 <- round(fish.pcoa$eig[3] / sum(fish.pcoa$eig), 3) * 100
 sum.eig <- sum(explainvar1, explainvar2, explainvar3)
 ```
 
@@ -413,7 +415,7 @@ lines(1:29, b.stick, type = "l", lty = 4, lwd = 2, col = "red")
 
 # Add Legend
 legend("topright", legend = c("Avg Eigenvalue", "Broken-Stick"), 
-       lty = c(2, 4), bty= "n", col = c("blue", "red"))
+       lty = c(2, 4), bty = "n", col = c("blue", "red"))
 ```
 
 ***Question 7***: Based on the three criteria described above, does the PCoA do a good job of explaining variation in the `doubs` data set? Please justify.
@@ -430,19 +432,19 @@ par(mar = c(5, 5, 1, 2) + 0.1)
 
 # Initiate Plot
 plot(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2], ylim = c(-0.2, 0.7),
-     xlab=paste("PCoA 1 (", explainvar1, "%)", sep=""),
-     ylab=paste("PCoA 2 (", explainvar2, "%)", sep=""),
-     pch=16, cex=2.0, type="n", cex.lab=1.5, cex.axis=1.2, axes=FALSE)
+     xlab = paste("PCoA 1 (", explainvar1, "%)", sep = ""),
+     ylab = paste("PCoA 2 (", explainvar2, "%)", sep = ""),
+     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
 
 # Add Axes
-axis(side = 1, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
-axis(side = 2, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
+axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
+axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
 abline(h = 0, v = 0, lty = 3)
 box(lwd = 2)
 
 # Add Points & Labels
 points(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
-       pch=19, cex=3, bg="gray", col="gray")
+       pch = 19, cex = 3, bg = "gray", col = "gray")
 text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2], 
      labels = row.names(fish.pcoa$points))
 ```
@@ -452,7 +454,7 @@ Basic ordination plots allow us to see how samples separate from one another.
 A logical follow-up is to ask what features of the data set are driving the observed divergence among points. 
 In the Doubs River example, sites are separating along the PCoA axes owing to variation in the abundance of different fish species. 
 We can get a better sense of "who" is contributing to this trend by plotting explanatory vectors (i.e., species coordinates) in ordination space.
-We will obtain this information using the `add.spec.scores()` function in the `BiodiversityR` package.
+We can obtain this information using the `add.spec.scores()` function in the `BiodiversityR` package.
 These coordinates reflect the strength and direction that each species has on the ordination of the different sites.
 
 ```{r pcoalayer2, message = FALSE, warning = FALSE, echo=-c(1:16), fig.width=6, fig.height=4}
@@ -463,11 +465,11 @@ require("BiodiversityR")
 # Calculating Relative Abundance
 fishREL <- fish
   for(i in 1:nrow(fish)){
-    fishREL[i, ] = fish[i, ]/sum(fish[i, ])
+    fishREL[i, ] = fish[i, ] / sum(fish[i, ])
     } 
 
 # Calculate and Add Species Scores
-fish.pcoa <- add.spec.scores(fish.pcoa,fishREL,method="pcoa.scores")
+fish.pcoa <- add.spec.scores(fish.pcoa,fishREL,method = "pcoa.scores")
 text(fish.pcoa$cproj[ ,1], fish.pcoa$cproj[ ,2], 
      labels = row.names(fish.pcoa$cproj), col = "black")
 ```
@@ -479,8 +481,8 @@ Finally, we will use the `envfit()` function from the `vegan` pacakge, to conduc
 
 ```{r}
 spe.corr <- add.spec.scores(fish.pcoa, fishREL, method = "cor.scores")$cproj
-corrcut <- 0.7       # user defined cutoff
-imp.spp <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcut, ]
+corrcut  <- 0.7       # user defined cutoff
+imp.spp  <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcut, ]
 
 # Permutation Test for Species Abundances Across Axes
 fit <- envfit(fish.pcoa, fishREL, perm = 999)
@@ -488,11 +490,13 @@ fit <- envfit(fish.pcoa, fishREL, perm = 999)
 
 ***Question 9***: Address the following questions about the ordination results of the `doubs` data set:
 
-a.  Generate a hypothesis about which fish species are potential indicators of river quality.
-b.  Do the different approaches described in the ordination section agree or disagree? Explain. 
+a.  Generate a hypothesis about the grouping of sites in the Doubs River based on fish community composition.
+b.  Generate a hypothesis about which fish species are potential indicators of river quality.
+c.  Do the different approaches described in the ordination section agree or disagree? Explain. 
 
 > ***Answer 9a***:  
-> ***Answer 9b***:  
+> ***Answer 9b***:   
+> ***Answer 9c***:
 
 ## 6) HYPOTHESIS TESTING
 
@@ -595,26 +599,27 @@ par(mar = c(5, 5, 4, 4) + 0.1)
 
 # Initiate Plot
 plot(scores(doubs.cca, display = "wa"), xlim = c(-3.5, 2), ylim = c(-3.2, 3.2),
-     xlab=paste("CCA 1 (", cca.explainvar1, "%)", sep=""),
-     ylab=paste("CCA 2 (", cca.explainvar2, "%)", sep=""),
-     pch=16, cex=2.0, type="n", cex.lab=1.5, cex.axis=1.2, axes=FALSE)
+     xlab = paste("CCA 1 (", cca.explainvar1, "%)", sep = ""),
+     ylab = paste("CCA 2 (", cca.explainvar2, "%)", sep = ""),
+     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
 
 # Add Axes
-axis(side = 1, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
-axis(side = 2, labels=T, lwd.ticks=2, cex.axis=1.2, las = 1)
+axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
+axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
 abline(h = 0, v = 0, lty = 3)
-box(lwd=2)
+box(lwd = 2)
 
 # Add Points & Labels
 points(scores(doubs.cca, display = "wa"),
-       pch=19, cex=3, bg="gray", col="gray")
+       pch = 19, cex = 3, bg = "gray", col = "gray")
 text(scores(doubs.cca, display = "wa"), 
      labels = row.names(scores(doubs.cca, display = "wa")))
 
 # Add Environmental Vectors
 vectors <- scores(doubs.cca, display = "bp")
 row.names(vectors) <- c("pH", "har", "pho", "nit", "amm", "oxy", "bdo")
-arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, lwd = 2, lty = 1, length = 0.2, col = "red")
+arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, 
+       lwd = 2, lty = 1, length = 0.2, col = "red")
 text(vectors[,1] * 2, vectors[, 2] * 2, pos = 3, 
      labels = row.names(vectors))
 axis(side = 3, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
@@ -636,7 +641,7 @@ On top of this, we characterized bacteria composition from the different soils u
 Thus, we have a 2 x 2 full-factorial design (with the exception of a missing sample from the DF land-use treatment). 
 More background on this study can be found in Aanderud et al. 2015 (http://goo.gl/TRgISq)
 
-Two files are available to you in the "~/Assignments/Beta/data"" directory:
+Two files are available to you in the "~/QB2015_[username]/Beta/data"" directory:
 
 a.  Site-by-species matrix ("soilbacfull.txt")
 b.  A factor file that describes the treatments ("soil.factors.txt")
