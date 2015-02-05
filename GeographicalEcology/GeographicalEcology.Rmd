@@ -36,6 +36,7 @@ We will also use the `BiodiversityR` package, which contains additional diversit
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("vegan")
+require("BiodiversityR")
 ```
 
 We will also use packages developed in R for geographical information systems (GIS). 
@@ -43,7 +44,7 @@ These packages will allow us to generate maps of study areas, project diversity 
 
 ```{r}
 #install.packages("RgoogleMaps")
-library(RgoogleMaps) # overlays of data onto a Google map.
+library(RgoogleMaps) # overlays of data onto a Google map. #vs. require()???#
 ```
 
 ## 2) LOADING DATA
@@ -52,18 +53,19 @@ In the 1940s, Maury Reeves of the Indiana Department of Natural Resources starte
 In the summer of 2013, we visited approximately 50 of these "refuge" ponds and recorded their geographic locations using Global Positioning System (GPS). 
 In addition, the ponds were sampled for water chemistry, phsyical properties, and bacterial community composition. 
 
-![pond](./data/pond.JPG)
-
+```{r}
+#![pond](./data/pond.JPG)
+```
 ## 3) MAKE A MAP
-There are many ways to conduct geographical analyses in R (see RGIS tutorial ***located where?**)
 In this section of the exercise, we are going to use R to generate a map using **Google Maps**.
 First, we will retrieve a map of Indiana using the `GetMap` function in the package `RgoogleMaps`.
 Then, we will generate a map in RStudio that is centered on Brown County, Indiana (39.1 degrees latitude, -86.3 degrees longitude).
 
 ### It seems the extent of the maps is a bit large (contains Martinsville); can we zoom in? I'm assumign the zoom arugment?###
 ```{r}
-newmap <- GetMap(center = c(39.1,-86.3), zoom = 10, destfile = "Brown_Co_map.png", maptype="terrain")
-PlotOnStaticMap(newmap, zoom = 10, cex = 2, col='blue') # Now, plot the map in RStudio
+newmap <- GetMap(center = c(39.1,-86.3), zoom = 10, 
+                 destfile = "Brown_Co_map.png", maptype="terrain")
+PlotOnStaticMap(newmap, zoom = 10, cex = 2, col='blue') # Plot map in RStudio
 
 Ponds <- read.table(file="BrownCoData/20130801_PondData.csv", head=TRUE, sep=",")
 lats <- Ponds[, 3] # latitudes
@@ -75,30 +77,27 @@ PlotOnStaticMap(newmap, lats, lons, cex=1.5, col='red', add = TRUE)
 
 > ***Answer 1***: 
 
-
-**Perhaps turn following two sentences into a question; make them describe the distribution?**
-As you can see, the pond samples are distributed over a fairly **large local area???** 
-Likewise, they are unevenly distributed in space, and over a complex topographic area.
-
-
-## 4) EXAMINE AGGREGATION
+## 4) AGGREGATION
 
 Aggregation is the tendency for organisms to cluster in space or for events to occur within a particular period of time. 
 Aggregation also refer to the tendency of a variable to take on a particular value, e.g., mean temperature, modal body size, average abundance.
 
-In this component of the exercise, we will explore aspects of **spatial???** aggregation through graphical exploration and the calculation of univariate metrics.
+In this component of the exercise, we will explore aspects of **spatial???** aggregation through graphical exploration **and the calculation of univariate metrics. --> passive?**
 
 ### Spatially implicit
-Before examining how environmental variables, abundances, and aspects of diversity vary with distance or increasing area, we will examine how they vary within the landscape, regardless of their position in space.
+Before examining how environmental variables, abundances, and aspects of diversity vary with distance or increasing area, we will examine how they vary within the landscape, regardless of their position in space. **as worded, sort of jargony; will students follow?**
 
-### Graphically examine environmental data
-Before investigating correlations or conducting any statistical tests, we can ask whether our data appear to be normally distributed, highly skewed, multi-modal, or **even spurious -- not sure I know what this mean in comparison to other distributions mentioned**.
-A basic graphical examination can be a powerful way to visualize many underlying statistical properties. 
+**awkward, abrupt transition here...going from aggretation to exploring distribution of data; perhaps start off with looking at distribution of variables and then investigate spatial aggregation**
 
-Let's begin with a simple graphical exploration of our environmental data.
-We will use kernel density curves, which are similar to histograms, but more appropriate for continuous data because they avoid the arbitrary creation of bins.
+### i. Graphically examine environmental data
+Before conducting any formal statistical analyses, it's good practice to look at the underlying distribution of your data.
+We can ask whether our data appear to be normally distributed, highly skewed, multi-modal, or **even spurious -- not sure I know what this mean in comparison to other distributions mentioned**
+
+Let's begin with a simple graphical exploration of the environmental data collected from the refuge ponds.
+We will use **kernel density curves**, which are similar to histograms, but more appropriate for continuous data because they avoid the arbitrary creation of bins.
 Kernel density curves attempt to account for uncertainty and reveal the 'probability density' of a variable taking values within a particular range.**this last sentence sounds sort of jargony to me**
 
+**Should we include units of these measures? degrees C, meters = elevation?, feet!?!? = depth, mg/L = DOC
 ```{r}
 EnvData <- Ponds[5:21]
 par(mfrow=c(2, 2))
@@ -116,24 +115,18 @@ data <- as.numeric(EnvData[, "DOC"])
 plot(density(data), col = 'darkgoldenrod3', main = "DOC")
 ```
 
-**Can we describe "bandwidth" on plots?**
+**Can we describe "bandwidth" on plots? what does this mean?**
 
-** This is really cool, but I would recommend turning text below into a question. Let's have them describe it to us insstead of the other way around.** 
+***Question 1***:  Describe the distributions of of the environmental variables in the refuge ponds. 
 
-**--> Jay Stopped here **
+> ***Answer 1***: 
 
-
-**Graphical examination:**
-While distributions of temperature, elevation, and dissolved organic carbon appear to aggregated around a single modal value, depth appears to have two distinct modes.
-While temperature appears more or less normally distributed around a mean of 22 degrees celsius, elevation is clearly left skewed while DOC is clearly right skewed.
-
-We have already begun to learn something about our environmental data without accounting for the locations of our samples.
-Likewise, we can do the same for the distribution of abundance and diversity among taxa.
-
-### Graphically examine taxonomic data
+### ii. Graphically examine taxonomic data
 
 Load the site-by-OTU matrix for samples taken from ponds in and around Brown County, Indiana.
+**perhaps we need to describe the biological data more above? Bacterial 16S rRNA genes, etc. **
 
+**we've been trying to be consistent and keep variable names lower case**
 ```{r}
 # Site by OTU matrix
 OTUs <- read.csv(file="BrownCoData/SiteBySpecies.csv", head=TRUE, sep=",")
@@ -142,8 +135,9 @@ OTUs <- as.data.frame(OTUs[-1]) # remove first column (site names)
 Site.N <- as.vector(rowSums(OTUs)) # no. reads
 ```
 
-Construct kernel-density curves for the distribution of abundance among individual OTU's across the Brown County Pond dataset. 
+Now, let's construct kernel-density curves for the distribution of abundance among individual OTU's across the Brown County Pond dataset. **I suppose we can just call in "brown county ponds" but above have referred to it as "refuge ponds"; for exercise and publications, maybe we can just pick something; not sure all ponds are actually in brown county**
 
+**More importantly, we need to take some time to teach students about loops. First introduced in alpha exercise, but we never explained. Safe to assume that most student are not familiar with loops or while statements...at least not in R, but I was say more generally, too**
 ```{r}
 ad <- c(0,0)
 otu <- 1
@@ -163,18 +157,28 @@ As you can see, sampled abundance for a given OTU is often aggregated, revealing
 **In fact, this uneven spatial distribution of abundance is common occurrence in ecological systems.**
 This spatially implicit distribution of abundance is often referred to as the species spatial abundance distribution (SSAD).
 
-***Question 1***: In the site-by-species matrix, each row represents a site and each column represents a species. If the SSAD is generated by considering all rows for a single column, then what do we obtain when we consider all columns for a given row? Have examined this sort of data structure before? If so, elaborate?
+**I think the concept here needs to be more developed. Maybe we'll talk about SSAD in lecture. I'm afraid most students will have never heard of SSAD. Need to explain. X-axis is not labeled, so not sure what we're looking at. Also, perhaps this is an opportunity to ask a question as opposed to telling them what they're seeing. learning opp**
+
+** Should SSAD be it's own section as opposed to be nestled in with "aggregation"? Seems like theory or concept is a little burried**
+
+***Question 1***: In the site-by-species matrix, each row represents a site and each column represents an OTU. 
+If the SSAD is generated by considering all rows for a single column, then what do we obtain when we consider all columns for a given row? 
+Have we examined this sort of data structure before? 
+If so, elaborate?
+
+**See comment above about introducing a new core concept (i.e., SSAD). Need to teach them what this is first!**
 
 > ***Answer 1***: 
 
 
-## 5) EXAMINE DISTANCE-DECAY
+## 5) THE DISTANCE-DECAY RELATIONSHIP
 First law of geography...spatial autocorrelation...decrease in similarity with distance...
-
+**Lot more text and development needed*
+**Lots of code for them to type out**
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 #install.packages("simba")
-library(simba)
+library(simba) #vs. require()???#
 ```
 
 
@@ -220,10 +224,9 @@ res
 ```
 
 
-## 6) EXAMINE SPECIES-AREA RELATIONSHIP,
-##     a.k.a, taxa-area relationship
-
-The species-area relationship (SAR) describes the rate at which we discover or accumulate species with increasing area. The general relationship of the SAR ... and is of the form S=c*A^z ... which was first predicted by Arrhenius (1921)...wow, that's old.
+## 6) THE SPECIES-AREA RELATIONSHIP
+The species-area relationship (SAR) describes the rate at which we discover or accumulate species with increasing area. 
+The general relationship of the SAR ... and is of the form S=c*A^z ... which was first predicted by Arrhenius (1921)...wow, that's old.
 
 ### Random accmulation of sites
 

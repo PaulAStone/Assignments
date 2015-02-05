@@ -233,7 +233,7 @@ When you are working with abundance data, you can use the following metrics for 
   \end{center}
 
 In the above table $y_{1j}$ is the abundance of each species (1:p) in site 1 and $y_{2j}$ in site 2.
-As with incidence-based measures, there are many other options for calculating similarity or dissimilarity between communities, including Mean Character Difference, Canberra, Coefficient of Divergence, and Grower. 
+As with incidence-based measures, there are many other options for calculating similarity or dissimilarity between communities, including Mean Character Difference, Canberra, Coefficient of Divergence, and Gower. 
 
 ### C. A Cautionary Note on Other Measures of Distance
 There are other distance measures that you are likely to encounter because they are widely used.
@@ -346,7 +346,7 @@ heatmap.2(as.matrix(fish), distfun = function(x) vegdist(x, method = "bray"),
           col = jet.colors(100), trace = "none", density.info="none")
 ```
 
-***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, develop a hypothesis or two for the `doubs` data set? 
+***Question 6***: Based on cluster analyses and the introdutory plots that we generated after loading the data, develop a hypothesis for the `doubs` data set? 
 
 > ***Answer 6***: 
 
@@ -356,11 +356,11 @@ The first axis of an ordination explains the most variation in the data set, fol
 Ordination plots are particularly useful for visualizing the similarity among objects. 
 For example, in the context of $\beta$ diversity, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.
 
-There are various orditnation techniques that can be applied to multivariate biodiversity data.
+There are various ordination techniques that can be applied to multivariate biodiversity data.
 Common methods include: Principal Components Analysis (PCA), Correspondence Analysis (CA), Principal Coordinates Analysis (PCoA), Factor Analysis (FA), and Nonmetric Multidemensional Scaling (NMDS).
 When choosing an ordination technique, careful consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
 
-### An overview of Principal Coordinates Analysis (PCoA)
+### i. An overview of Principal Coordinates Analysis (PCoA)
 In this exercise, we focus on Principal Coordinates Analysis (PCoA), which is sometimes referred to as metric multidimensional scaling. 
 PCoA starts with creating a matrix, $\pmb{A}$, which is a transformed and centered version of distance matrix, $\pmb{D}$. Because these steps preserve all distances, PCoA is a flexible ordination technique that allows us to use virtually any distance metric (e.g., Jaccard, Bray-Curtis, Gower, Euclidean, etc.). The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, that solves the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
 Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to obtain the principal coordinates.
@@ -420,7 +420,7 @@ legend("topright", legend = c("Avg Eigenvalue", "Broken-Stick"),
 
 > ***Answer 7***: 
 
-###Creating a PCoA ordination plot 
+###ii. Creating a PCoA ordination plot 
 Having evaluated the PCoA output, now we will create an ordination plot.
 We will plot all of the fish assemblages of the Doubs River for the first two PCoA axes. 
 
@@ -447,23 +447,13 @@ text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
      labels = row.names(fish.pcoa$points))
 ```
  
-***Question 8***: As you will recall, the fish assemblages fromteh Doubs River came from sites that were ordered in space with *Site 1* being the most upstream and *Site 30* being the most downstream (see plot in section 2). Given this, what hypotheses could you make about these fish assemblages? (Reminder: the original goals of this study included using fish communities as indicators of stream health). 
-
-**I'm not sure I really understand what we want students to say about question 8. I assume it is intended to relate to the ordination, but the question seems a little divorced from this. How about incoporporting into question 9?
-
-> ***Answer 8***:
-
-
-###Identifying influential species in PCoA 
-One useful feature of ordinations is the ability to plot explanatory vectors in ordination space. 
-For example, we might be interested in how differences in species abundances contribute to the separation of samples along each PCoA axis. 
-We can gain some insight into "who" is responsible for this separation by examining the correlation between the site scores and the species relative abundances. 
+###iii. Identifying and visualizing influential species in PCoA 
+Basic ordination plots allow us to see how samples separate from one another. 
+A logical follow-up is to ask what features of the data set are driving the observed divergence among points. 
+In the Doubs River example, sites are separating along the PCoA axes owing to variation in the abundance of different fish species. 
+We can get a better sense of "who" is contributing to this trend by plotting explanatory vectors (i.e., species coordinates) in ordination space.
 We will obtain this information using the `add.spec.scores()` function in the `BiodiversityR` package.
-First, we will use this function to calculate species coordinates in our PCoA.
-These coordinates reflect how (strength and direction) the species contribute to ordination patterns.
-Then we will use the same function to determine the correlation of each species along each axis.
-We can use some cut-off criteria to pull out the important species.
-Finally, we will use the `envfit()` function from the `vegan` pacakge, to conduct a permutation test on these correlations.
+These coordinates reflect the strength and direction that each species has on the ordination of the different sites.
 
 ```{r pcoalayer2, message = FALSE, warning = FALSE, echo=-c(1:16), fig.width=6, fig.height=4}
 <<pcoalayer1>>
@@ -480,8 +470,14 @@ fishREL <- fish
 fish.pcoa <- add.spec.scores(fish.pcoa,fishREL,method="pcoa.scores")
 text(fish.pcoa$cproj[ ,1], fish.pcoa$cproj[ ,2], 
      labels = row.names(fish.pcoa$cproj), col = "black")
+```
 
-# Calculate Species Correlations and Identify Important Species
+A more quantitative way of identifying influential species involves determining the correlation of each species along each PCoA axis.
+To do this, we will use the `add.spec.scores` function again.
+Then we can identify a correlation-coefficient cutoff (e.g. *r* = 0.70) to pull out important species.
+Finally, we will use the `envfit()` function from the `vegan` pacakge, to conduct a permutation test on these correlations.
+
+```{r}
 spe.corr <- add.spec.scores(fish.pcoa, fishREL, method = "cor.scores")$cproj
 corrcut <- 0.7       # user defined cutoff
 imp.spp <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcut, ]
@@ -490,15 +486,18 @@ imp.spp <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcu
 fit <- envfit(fish.pcoa, fishREL, perm = 999)
 ```
 
-***Question 9***: Using the correlations above, can you generate any hypotheses about which fish species are potential indicators of river quality? Discuss any differences in the three methods used. Do they agree or disagree? Explain.
+***Question 9***: Address the following questions about the ordination results of the `doubs` data set:
+
+a.  Generate a hypothesis about which fish species are potential indicators of river quality.
+b.  Do the different approaches described in the ordination section agree or disagree? Explain. 
 
 > ***Answer 9a***:  
 > ***Answer 9b***:  
 
 ## 6) HYPOTHESIS TESTING
 
-Some of the visualization tools that we just learned about are powerful for exploring data sets and generating hypotheses, but  can fall short of providing robust tests of *a priori* hypotheses and predictions. 
-Here, we wil introduce a few techniques that are appropriate for testing hypotheses that you might have when using multivariate data and are interested in questions related to $\beta$-diversity. 
+The visualization tools that we just learned about (ie., heatmaps, cluser analysis, and ordination) are powerful for exploring data sets and *generating* hypotheses. 
+In this section we introduce some methods that are better suited for *testing* hypotheses and predictions related to $\beta$-diversity.
 
 ### A.  Multivariate procedures for categorical designs
 
@@ -506,19 +505,19 @@ PERMANOVA stands for permutational multivariate analysis of variance (Anderson 2
 It is a multivariate analog to univariate ANOVA and has less restrictions than parametric multivariate analysis of variance (MANOVA). 
 As the name suggests, it evaluates differences according to a specified model by randomly permuting the data.
 PERMANOVA can easily handle simple designs, but also accomodates nested and higher-order studies. 
-In addition, it can handle missing observations and unbalanced designs. 
-The PERMANOVA output supplies analogs to the classic ANOVA table such as F ratios, pseudo P-values, and $R^{2}$ values.
+In addition, it can deal with missing values and unbalanced designs. 
+The PERMANOVA output is similar to the output of classic ANOVA; it includes (pseudo) F-tests, p-values, and $R^{2}$ values.
 We will implement PERMANOVA with the `adonis()` function in the `vegan` package. 
 
 To run `adonis`, you first need a factor vector or matrix that specifies your treatments and replicates.
-This vector or matrix can either be provided in the form of a file that you open in R (e.g. `read.table()`) or a user specified vector or matrix that you write within R.
+This vector or matrix can either be provided in the form of a file that you open in R (e.g. `read.table()`) or a user-specified vector or matrix that you write within R.
 
-For example, based on earlier work done in the Doubs River it has been suggested that river can be broken into four distinct regions based on river quality.
-The first region (sites 1-14) has been rated as being high quality.
-The second (sites 15 - 19) and forth (sites 26 - 30) regions have been rated as being moderate quality.
-And the third region (sites 20 - 25) has been rated has being low quality.
+Earlier work done in the Doubs River suggested that the river can be broken into four distinct regions based on fish habitat quality.
+The first region (sites 1-14) has been rated as being "high quality".
+The second (sites 15 - 19) and fourth (sites 26 - 30) regions have been rated as being "moderate quality".
+And the third region (sites 20 - 25) has been rated has being "low quality".
 
-Though the Doubs River is not a controlled experimental system, we can use these quality groupings to test the prediction that river quality category influences fish community composition.
+Though the Doubs River is not a controlled experimental system, let's test the hypothesis that fish community composition is affected by river quality rankings.
 
 ```{r, results='hide'}
 # Create "Factors"" vector
@@ -538,12 +537,11 @@ adonis(fish ~ quality, method = "bray", permutations = 999)
 ### i.  Mantel test
 A **Mantel test** is essentially a multivariate correlation analysis. 
 It produces an *r* value that is analagous to the Pearson's correlation coefficient. 
-In addition, it produces a *p-value* that is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices.
-Use a Mantel test, you could determine if $\beta$-diversity (i.e., Bray-Curtis distance) is correlated with environmental variables. 
+In addition, it produces a *p-value* that is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices. 
 
 In the following section, we will peform a Mantel test using the `mantel()` function in `vegan`. 
-This requires that we first have two matrices (distance matrices) to compare. 
-Here we will compare the Bray-Curtic distance matrix we created earlier with a new distance matrix of environmental factors (doubs$env).
+This requires that we first have two distance matrices to compare. 
+Here, we will compare the Bray-Curtis distance matrix we created earlier with a new distance matrix of environmental factors (doubs$env).
 After creating the distance matrices, we will test the hypothesis that fish assemblages are correlated with stream environmental variables.
 
 ```{r, results = "hide"}
@@ -555,26 +553,24 @@ env.dist <- vegdist(scale(doubs$env[-8,]),method = "euclid")
 mantel(fish.dist,env.dist)
 ```
 
-***Question 11***: What do the results from our Mantel tests suggest that about fish diversity and stream environmental conditions? How might this relate to your hypothesis about stream quality influencing fish communities?
+***Question 11***: What do the results from our Mantel test suggest about fish diversity and stream environmental conditions? How might this relate to your hypothesis about stream quality influencing fish communities?
 
-> ***Answer 11a***:  
-> ***Answer 11b***: 
+> ***Answer 11***:  
 
 ### ii.  Constrained Ordination
-Another way we can test hypotheses based on continuous designs is by using a modification of ordations called constrained ordination (also called canonical ordination).
-These techniques explore relationships between two matrices: a response matrix and an explainatory matrix. 
-At the same time, constrained ordination uses both matrices to conduct the ordination analysis mentioned above.
-Two common constrained ordination procedues (canonical correspondance analysis (CCA) and redundance analysis (RDA)) are based on the linear model framework and can thus be used to test hypotheses based on continuous design experiments.
-As such, these methods combine multipe regression with classical ordination procedures (CA and PCA). 
-These techniques work by first conducting mutivariate multiple linear regression followed by either CA (with CCA) or PCA (with RDA) on the matrix of fitted values to obtain a constrained ordination.
-The residual matrix can also be used to obtain an unconstrained ordination. 
-A permutation test can then be used to test for significance. 
+Another way we can test hypotheses with continuous data is to use **constrained ordination**, which is sometimes referred to as canonical ordination.
+Constrained ordination explores the relationships between two matrices: an **explanatory matrix** and a **response matrix**. 
+Canonical correspondence analysis (CCA) and redundancy analysis (RDA) are two types of constrained ordination.
+These techniques are based on the linear model framework and thus can be used to formally test hypotheses.
+Constrained ordination works by first conducting multivariate multiple linear regression followed either by correspondence analysis (CA) with CCA or Principal Components Analysis (PCA) with RDA, while using the matrix of fitted values to obtain a constrained ordination.
+A permutation test can then be used to test for overall significance. 
 
-Here we will use the environmental data for the Doubs River to conduct a Canonical Correspondance Analysis on the Doubs River fish communities. 
-We will first create a new matrix that has explainatory environmental data based on water chemistry.
+Here, we will use environmental data to conduct a CCA on the fish assemblages of the Doubs River. 
+We will start by creating an explanatory matrix that contains water chemistry data.
 We will then use the `cca()` function from the `vegan` package.
-Note, we have to specify that we want to the the function in the `vegan` package because there are cca functions in both `vegan` and `ade4`.
-We will then use permutation tests to test the significance of our model and to test the infuence of each environmental factor on your constrained axes.
+Note, we have to specify that we want the `cca` function in the `vegan` package because there are `cca` functions in both `vegan` and `ade4`!
+We will then use permutation tests to evaluate the significance of our model. 
+Finally, we will test the influence of each environmental variable on the constrained axes.
 
 ```{r, results = "hide"}
 # Define Environmental Matrix
@@ -627,7 +623,7 @@ axis(side = 4, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
      at = pretty(range(vectors[, 2])) * 2, labels = pretty(range(vectors[, 2])))
 ```
 
-***Question 12***: 
+***Question 12***: Based on the CCA, what are the environmental variables that seem to be contributing to stream water quality for fish assemblages?
 
 > ***Answer 12a***: 
 
@@ -636,90 +632,16 @@ axis(side = 4, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
 
 1.  We are going to revsit the soil bacteria data set from the $\alpha$-diversity exercise. 
 You may recall that 16S rRNA sequences were generated from replicate sites from four different land-use treatments (T1 = agriculture, T7 = grassland, DF = deciduous forest, and CF = coniferous forest). 
-On top of this, we characterized bacteria from the different soils under dry vs. wet condtions. 
+On top of this, we characterized bacteria composition from the different soils under experimentally manipulated dry vs. wet condtions. 
 Thus, we have a 2 x 2 full-factorial design (with the exception of a missing sample from the DF land-use treatment). 
 More background on this study can be found in Aanderud et al. 2015 (http://goo.gl/TRgISq)
 
 Two files are available to you in the "~/Assignments/Beta/data"" directory:
 
 a.  Site-by-species matrix ("soilbacfull.txt")
-b.  Factors file describing the treatments ("soil.factors.txt")
+b.  A factor file that describes the treatments ("soil.factors.txt")
 
-Use a combination of visualization and hypothesis-testing techniques described above to interpret the results from the exepriment in a $\beta$-diversity framework. 
-
-
-
-Condcut your beta-analyses with an incidence-based distance metric and an abundance-based distance metric. Compare and contrast the outcomes. 
+Use a combination of visualization and hypothesis-testing techniques described above to interpret the results from the exepriment in a $\beta$-diversity framework. Peform this analysis using an incidence-based distance metric and an abundance-based distance metric. Compare and contrast the outcomes. 
 
 2.  Use Knitr to create a pdf of your completed alpha_exercise.Rmd document, push it to GitHub, and create a pull request.
 The due date for this assignment will be announced in class and/or canvas.
-
-
-
-
-
-
-There are actually two treatments associated with the `soilbac` data set. 
-The first is the land-use factor, which has already been introduced. 
-The other factor is watering treatment. 
-Half the soil samples were characterized when they were very dry, and the other half were characterized three days after being watered.
-So, in the end, we have a two-by-two full factorial design (with the exception of one missing sample from the DF land-use treatment)
-
-Let's import our factors table associated with `soilbac`. 
-
-```{r}
-factors <- read.table("./data/soil.factors.txt" , sep = "\t", header=TRUE) 
-```
-
-Now, we can run `adonis` on the `soilbac` site-by-species matrix, but we also need to specify the model, the number of permutations, and the dissimilarity metric that we want to use to create a resemblance matrix. 
-
-```{r}
-# soil.adonis <-adonis(soilbac ~ land + time + land*time, factors, permutations = 999, method = "bray") 
-```
-
-***Question 8***: Using the output of the PERMANOVA model, interpret the resuls of the experiment that generated the `soilbac` data set. 
-
-> ***Answer 8***: 
-
-
-
-
-
-
-
-
-***Not sure what we want to do with the following section  -- JTL***
-### Constrained Ordination
-
-```{r}
-# subset explanatory varaibles
-
-
-# 
-# envdas <- env[,1]
-# envtopo <- env[,c(2:4)]
-# envchem <- env[,c(5:11)]
-# spe.hel <- decostand(spe, method="hellinger")
-# 
-# spe.rda <- rda(spe.hel ~ ., envchem)
-# coef(spe.rda)
-# 
-# spechem.physio <- rda(spe.hel, envchem, envtopo)
-# 
-# # PermutationTest
-# anova.cca(spe.rda, step=1000)
-```
-
-### Multivariate Models
-Mantel Test --> could be useful
-
-PERMANOVA --> on soilbac data
-
-CCA --> could be done on Doubs or introduce BCI/BCIsoils
-
-
-
-
-
-
-
