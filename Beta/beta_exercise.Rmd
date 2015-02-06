@@ -29,18 +29,18 @@ If you need a second paragraph be sure to start the first line with ">".
 6. For homework, follow the directions at the bottom of this file. 
 7. When you are done, **Knit** the text and code into a PDF file.
 8. After Knitting, please submit the completed exercise by creating a **pull request** via GitHub.
-Your pull request should include this file *alpha_exercise.Rmd* and the PDF output of `Knitr` (*alpha_exercise.pdf*).
+Your pull request should include this file *beta_exercise.Rmd* and the PDF output of `Knitr` (*beta_exercise.pdf*).
 
 ## 1) R SETUP
 
 Typically, the first thing you will do in either a R script or a RMarkdown file is setup your environment. 
 This includes things such as setting the working directory and loading any packages that you will need.
 
-In the R code chunk below, please provide the code to: 
-1) clear your R environment,
-2) print your current working directory,
-3) set your working directory to your */Beta* folder, and
-4) load the `vegan` R package (be sure to install if needed).
+In the R code chunk below, provide the code to:  
+1) clear your R environment,  
+2) print your current working directory,  
+3) set your working directory to your "*/Beta*" folder, and  
+4) load the `vegan` R package (be sure to install if needed).  
 
 ```{r}
 
@@ -57,9 +57,9 @@ In this exercise, we introduce a new dataset containing information on stream fi
 The data set (`doubs`) includes fish abundances, environmental variables, and spatial cooridinates for 30 sites.
 The data set has previously been used to demonstrate that fish communities can be good indicators of ecological zones in rivers and streams.
 
-In the R code chunk below, please do the following:
-1. Load the `doubs` data set.
-2. Explore the structure of the data set using the `str()` and `help()` functions as needed.
+In the R code chunk below, do the following:  
+1. load the `doubs` data set, and  
+2. explore the structure of the data set using the `str()` and `help()` functions as needed.
 
 ```{r}
 
@@ -69,16 +69,15 @@ In the R code chunk below, please do the following:
 ```
 
 ***Question 1***:  Describe some of the attributes of the `doubs` dataset.
+a.  How many objects are in `doubs`?  
+b.  What types of data structures are contained in `doubs`?  
+c.  What are the units of nitrate ("nit") in the stream water?  
+d.  How many fish species are there in the `doubs` data set?  
 
-a.  How many objects are in `doubs`?
-b.  What types of data structures are contained in `doubs`?
-c.  What are the units of nitrate ("nit") in the stream water?
-d.  How many fish species are there in the `doubs` data set?
-
-> ***Answer 1a***:
-> ***Answer 1b***:
-> ***Answer 1c***:
-> ***Answer 1d***:
+> ***Answer 1a***:  
+> ***Answer 1b***:  
+> ***Answer 1c***:  
+> ***Answer 1d***:  
 
 ### D. Visualizing the Doubs River Dataset
 There is a wealth of information in the `doubs` dataset that can be used to address various issues related to $\beta$-diversity.
@@ -88,13 +87,13 @@ The first plot shows fish richness at each site in the stream.
 The second plot shows the abundance of a particular fish species, Brown Trout (*Salmo trutta*), at each site in the stream.
 
 ***Question 2***: Answer the following questions based on the spatial patterns of richness (i.e., $\alpha$-diversity) and Brown Trout (*Salmo trutta*) abundance in the Doubs River.  
-a.  How does fish richness vary along the sampled reach of the Doubs River?
-b.  How does Brown Trout (*Salmo trutta*) abundance vary along the sampled reach of the Doubs River?
-c.  What do these patterns say about the limitations of using richness when examining patterns of biodiversity?
+a.  How does fish richness vary along the sampled reach of the Doubs River?  
+b.  How does Brown Trout (*Salmo trutta*) abundance vary along the sampled reach of the Doubs River?  
+c.  What do these patterns say about the limitations of using richness when examining patterns of biodiversity?  
 
-> ***Answer 2a***:
-> ***Answer 2b***:
-> ***Answer 2c***:
+> ***Answer 2a***:  
+> ***Answer 2b***:  
+> ***Answer 2c***:  
 
 ## 3) QUANTIFYING BETA-DIVERSITY BETWEEN TWO SAMPLES
 
@@ -105,9 +104,9 @@ The equation for Whittaker's $\beta$-Diversity is as follows:
 $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$, where *S* = the total number of species recorded across sites (i.e., $\gamma$-diversity) and $\bar{\alpha}$ is the mean richness (i.e., $\alpha$ diversity) among sites.
 Subtracting 1 scales $\beta_{w}$ from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diversity).
 
-In the R code chunk below, please do the following:
-1. Write a function for calculating Whittaker's $\beta$, $\beta_{w}$.
-2. Use this function to calculate the $\beta$ diversity between the fish assemblages in site 1 and 2 of the Doubs River.
+In the R code chunk below, do the following:  
+1. write a function for calculating Whittaker's $\beta$, $\beta_{w}$, and  
+2. use this function to calculate the $\beta$ diversity between the fish assemblages in site 1 and 2 of the Doubs River.
 
 ```{r}
 
@@ -123,11 +122,11 @@ In the R code chunk below, please do the following:
 ```
 
 ***Question 3***: Using the `beta.w` function above, answer the following questions:  
-a.  What is the $\beta$-diversity for fish assemblages sampled from site 1 and site 2 of the `doubs` data set?
-b.  Based on the formula for $\beta_{w}$, what does this value represent?
+a.  What is the $\beta$-diversity for fish assemblages sampled from site 1 and site 2 of the `doubs` data set?  
+b.  Based on the formula for $\beta_{w}$, what does this value represent?  
 
 > ***Answer 3a***:  
-> ***Answer 3b***: 
+> ***Answer 3b***:  
 
 ## 4) QUANTIFYING BETA-DIVERSITY FOR TWO OR MORE SAMPLES
 
@@ -144,9 +143,9 @@ In the sections below, we describe some of the similarity and dissimilarity metr
 Throughout this handout, we adopt the notations of Legendre & Legendre (2012); this book can be electronically accessed via the IU library (see the course syllabus [http://goo.gl/y4oK7c]). 
 
 ***Question 4***: Answer the following questions about incidence-based measures of similarity:  
-a.  What are the differences between Jaccard and Sørensen metrics?
-b.  When might you use one instead of the other?
-c.  In what situations would these incidence-based metrics of $\beta$-diversity fail?
+a.  What are the differences between Jaccard and Sørensen metrics?  
+b.  When might you use one instead of the other?  
+c.  In what situations would these incidence-based metrics of $\beta$-diversity fail?  
 
 > ***Answer 4a***:  
 > ***Answer 4b***:  
@@ -155,11 +154,11 @@ c.  In what situations would these incidence-based metrics of $\beta$-diversity 
 
 ### E.  Constructing the Resemblance Matrix
 
-In the R code chunk below, please do the following:
-1. Make a new object, "fish", containing the fish abundance data for the Doubs River.
-2. Remove any sites without fish observations.
-3. Construct a resemblance matrix based on Jaccard Similarity ("fish.dj").
-4. Construct a resemblance matrix based on Bray-Curtis Distance ("fish.db").
+In the R code chunk below, do the following:  
+1. make a new object, "fish", containing the fish abundance data for the Doubs River,  
+2. remove any sites without fish observations,  
+3. construct a resemblance matrix based on Jaccard Similarity ("fish.dj"), and  
+4. construct a resemblance matrix based on Bray-Curtis Distance ("fish.db").  
 
 ```{r}
 
@@ -182,10 +181,10 @@ In the R code chunk below, please do the following:
 One way to visualize $\beta$-diversity is to plot the data in our resemblance matrix using a **heatmap**.
 Heatmaps are a two-dimensional, color representation of a data matrix. 
 
-In the R code chunk below, please do the following:
-1. Create a costom color palette (feel free to make your own).
-2. Define the order of sites in the River.
-3. Use the `levelplot()` function to create a heatmap of fish abundances in the Doubs River
+In the R code chunk below, do the following:  
+1. create a costom color palette (feel free to make your own),  
+2. define the order of sites in the River, and  
+3. use the `levelplot()` function to create a heatmap of fish abundances in the Doubs River.
 
 ```{r}
 
@@ -209,9 +208,9 @@ The method minimizes within-cluster sums-of-squared distances between sites.
 However, there are numerous methods for clustering (e.g., Single Linkage, UPGMA, UPGMC), which can influence the conclusions that you draw from your analysis.
 See chapter 8 of Legendre and Legendre (2012) for more information on the various clustering methods that can be used. 
 
-In the R code chunk below, please do the following:
-1. Perform a cluster analysis using Ward's Clustering
-2. Plot your cluster analysis (use either method)
+In the R code chunk below, do the following:  
+1. perform a cluster analysis using Ward's Clustering, and  
+2. plot your cluster analysis (use either method).
 
 ```{r} 
 
@@ -248,10 +247,10 @@ To conduct a PCoA, we will use the `cmdscale()` function from the `stats` packag
 The input for this function is our resemblance matrix (Bray-Curtis distances for the `doubs` dataset).
 In addition, we are going to set *k* = 3 (number of dimensions we want returned) and *eig* = TRUE (which saves the eigenvalues).
 
-In the R code chunk below, please do the following:
-1. Perform a Principal Coordinates Analysis.
-2. Calculate the variation explained by the first three axes in your ordination
-3. Make a plot the compare the eigenvalues of each axis with the expectations of the Kaiser-Guttman criterion and the Broken-Stick model.
+In the R code chunk below, do the following:  
+1. perform a Principal Coordinates Analysis,  
+2. calculate the variation explained by the first three axes in your ordination, and  
+3. make a plot the compare the eigenvalues of each axis with the expectations of the Kaiser-Guttman criterion and the Broken-Stick model.  
 
 ```{r}
 
@@ -272,11 +271,10 @@ In the R code chunk below, please do the following:
 
 ###iii. Creating a PCoA Ordination Plot 
 
-In the R code chunk below, please do the following:
-1. Plot the PCoA ordination.
-2. Label the points using the Doubs River site number.
-3. Add species corrdinates
-4. Identify 
+In the R code chunk below, do the following:  
+1. plot the PCoA ordination,  
+2. label the sites as points using the Doubs River site number, and   
+3. identify Influential Species and add species corrdinates to PCoA plot.
 
 ```{r}
 
@@ -290,54 +288,27 @@ In the R code chunk below, please do the following:
 
 ```
  
-###iv. Identifying and Visualizing Influential Species in PCoA 
-Basic ordination plots allow us to see how samples separate from one another. 
-A logical follow-up is to ask what features of the data set are driving the observed divergence among points. 
-In the Doubs River example, sites are separating along the PCoA axes owing to variation in the abundance of different fish species. 
-We can get a better sense of "who" is contributing to this trend by plotting explanatory vectors (i.e., species coordinates) in ordination space.
-We can obtain this information using the `add.spec.scores()` function in the `BiodiversityR` package.
-These coordinates reflect the strength and direction that each species has on the ordination of the different sites.
-
-```{r pcoalayer2, message = FALSE, warning = FALSE, echo=-c(1:16), fig.width=6, fig.height=4}
-<<pcoalayer1>>
-
-require("BiodiversityR")
-
-# Calculating Relative Abundance
-fishREL <- fish
-  for(i in 1:nrow(fish)){
-    fishREL[i, ] = fish[i, ] / sum(fish[i, ])
-    } 
-
-# Calculate and Add Species Scores
-fish.pcoa <- add.spec.scores(fish.pcoa,fishREL,method = "pcoa.scores")
-text(fish.pcoa$cproj[ ,1], fish.pcoa$cproj[ ,2], 
-     labels = row.names(fish.pcoa$cproj), col = "black")
-```
-
-A more quantitative way of identifying influential species involves determining the correlation of each species along the PCoA axes.
-To do this, we will use the `add.spec.scores` function again.
-Then we can identify a correlation-coefficient cutoff (e.g. *r* = 0.70) to pull out important species.
-Finally, we will use the `envfit()` function from the `vegan` pacakge, to conduct a permutation test on these correlations.
+In the R code chunk below, do the following:  
+1. identify influential species based on correlations along each PCoA axis (use a  cutoff of 0.70), and   
+2. use a permutation test (999 permutations) to test the correlations of each species along each axis.
 
 ```{r}
-spe.corr <- add.spec.scores(fish.pcoa, fishREL, method = "cor.scores")$cproj
-corrcut  <- 0.7       # user defined cutoff
-imp.spp  <- spe.corr[abs(spe.corr[, 1]) >= corrcut | abs(spe.corr[, 2]) >= corrcut, ]
 
-# Permutation Test for Species Abundances Across Axes
-fit <- envfit(fish.pcoa, fishREL, perm = 999)
+
+
+
+
+
 ```
 
-***Question 9***: Address the following questions about the ordination results of the `doubs` data set:
+***Question 9***: Address the following questions about the ordination results of the `doubs` data set:  
+a. Generate a hypothesis about the grouping of sites in the Doubs River based on fish community composition.  
+b. Generate a hypothesis about which fish species are potential indicators of river quality.  
+c. Do the different approaches described in the ordination section agree or disagree? Explain.  
 
-a.  Generate a hypothesis about the grouping of sites in the Doubs River based on fish community composition.
-b.  Generate a hypothesis about which fish species are potential indicators of river quality.
-c.  Do the different approaches described in the ordination section agree or disagree? Explain. 
-
-> ***Answer 9a***:  
+> ***Answer 9a***:   
 > ***Answer 9b***:   
-> ***Answer 9c***:
+> ***Answer 9c***:  
 
 ## 6) HYPOTHESIS TESTING
 
@@ -362,14 +333,15 @@ The first region (sites 1-14) has been rated as being "high quality".
 The second (sites 15 - 19) and fourth (sites 26 - 30) regions have been rated as being "moderate quality".
 And the third region (sites 20 - 25) has been rated has being "low quality".
 
-Even though the Doubs River is not a controlled experiment, let's test the hypothesis that fish community composition is affected by river quality rankings.
+In the R code chunk below, do the following:  
+1. create a vector the identifies fish habitat quality along the Doubts River, and   
+2. using that vector, conduct a PERMANOVA to test the hypothesis that habitat quality influences fish community composition.  
 
 ```{r, results='hide'}
-# Create "Factors"" vector
-quality <- c(rep("HQ", 13), rep("MQ", 5), rep("LQ", 6), rep("MQ", 5))
 
-# Run PERMANOVA with adonis function
-adonis(fish ~ quality, method = "bray", permutations = 999)
+
+
+
 ```
 
 ***Question 10***: Based on the PERMANOVA results, evaluate the prediction that river quality influences fish community composition. 
@@ -389,13 +361,16 @@ This requires that we first have two distance matrices to compare.
 Here, we will compare the Bray-Curtis distance matrix we created earlier with a new distance matrix of environmental factors (doubs$env).
 After creating the distance matrices, we will test the hypothesis that fish assemblages are correlated with stream environmental variables.
 
-```{r, results = "hide"}
-# Define Matrices
-fish.dist <- vegdist(doubs$fish[-8, ], method = "bray")
-env.dist <- vegdist(scale(doubs$env[-8,]),method = "euclid")
+In the R code chunk below, do the following:   
+1. create distance matrices for both fish communities and environmental factors, and    
+2. use a Mantel test to determine if these matrices are correlated.  
 
-#Mantel Test
-mantel(fish.dist,env.dist)
+```{r}
+
+
+
+
+
 ```
 
 ***Question 11***: What do the results from our Mantel test suggest about fish diversity and stream environmental conditions? How might this relate to your hypothesis about stream quality influencing fish communities?
@@ -417,56 +392,35 @@ Note, we have to specify that we want the `cca` function in the `vegan` package 
 We will then use permutation tests to evaluate the significance of our model. 
 Finally, we will test the influence of each environmental variable on the constrained axes.
 
-```{r, results = "hide"}
-# Define Environmental Matrix
-env.chem <- as.matrix(doubs$env[-8 , 5:11])
+In the R code chunk below, do the following:  
+1. create an environmental matrix consisting of the the water chemistry data included in the `doubs` data set,  
+2. conduct a Canonical Correspondance Analysis using the environmental matix as the explainatory varaibles,  
+3. use a permutation test to determine the significance of the constrained analysis,    
+4. use a permutaiton test to determine the correlation of each environmental factor on the constrained axes,  
+5. calculate the explained variation on the first and second constrained axes,  
+6. plot the constrained ordination results including labeled points for each site, and   
+7. add vectors that demonstrate the influence of each environmental factor the the constrained ordination (scale appropriately).   
 
-# Conduct CCA 
-doubs.cca <- vegan::cca(fish ~ env.chem)
+```{r}
 
-# Permutation Tests
-anova(doubs.cca, by = "axis")
-cca.fit <- envfit(doubs.cca, env.chem, perm = 999)
-cca.fit
 
-# Calculate Explained Variation
-cca.explainvar1 <- round(doubs.cca$CCA$eig[1] / 
-                         sum(c(doubs.cca$CCA$eig, doubs.cca$CA$eig)), 3) * 100
-cca.explainvar2 <- round(doubs.cca$CCA$eig[2] / 
-                         sum(c(doubs.cca$CCA$eig, doubs.cca$CA$eig)), 3) * 100
 
-# Define Plot Parameters
-par(mar = c(5, 5, 4, 4) + 0.1)
 
-# Initiate Plot
-plot(scores(doubs.cca, display = "wa"), xlim = c(-3.5, 2), ylim = c(-3.2, 3.2),
-     xlab = paste("CCA 1 (", cca.explainvar1, "%)", sep = ""),
-     ylab = paste("CCA 2 (", cca.explainvar2, "%)", sep = ""),
-     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
 
-# Add Axes
-axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-abline(h = 0, v = 0, lty = 3)
-box(lwd = 2)
 
-# Add Points & Labels
-points(scores(doubs.cca, display = "wa"),
-       pch = 19, cex = 3, bg = "gray", col = "gray")
-text(scores(doubs.cca, display = "wa"), 
-     labels = row.names(scores(doubs.cca, display = "wa")))
 
-# Add Environmental Vectors
-vectors <- scores(doubs.cca, display = "bp")
-row.names(vectors) <- c("pH", "har", "pho", "nit", "amm", "oxy", "bdo")
-arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, 
-       lwd = 2, lty = 1, length = 0.2, col = "red")
-text(vectors[,1] * 2, vectors[, 2] * 2, pos = 3, 
-     labels = row.names(vectors))
-axis(side = 3, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
-     at = pretty(range(vectors[, 1])) * 2, labels = pretty(range(vectors[, 1])))
-axis(side = 4, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
-     at = pretty(range(vectors[, 2])) * 2, labels = pretty(range(vectors[, 2])))
+
+
+
+
+
+
+
+
+
+
+
+
 ```
 
 ***Question 12***: Based on the CCA, what are the environmental variables that seem to be contributing to stream water quality for fish assemblages?
