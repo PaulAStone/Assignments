@@ -99,10 +99,6 @@ c.  What do these patterns say about the limitations of using richness when exam
 
 There are various ways to quantify $\beta$-diversity. 
 Perhaps one of the simplest metrics is **Whittaker's** $\pmb\beta$-**Diversity**, which was developed by Robert Whittaker (1960). 
-This classic index is useful for comparing $\beta$-diversity between two samples. 
-The equation for Whittaker's $\beta$-Diversity is as follows:
-$\beta_{W} = \frac{S}{\bar{\alpha}} - 1$, where *S* = the total number of species recorded across sites (i.e., $\gamma$-diversity) and $\bar{\alpha}$ is the mean richness (i.e., $\alpha$ diversity) among sites.
-Subtracting 1 scales $\beta_{w}$ from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diversity).
 
 In the R code chunk below, do the following:  
 1. write a function for calculating Whittaker's $\beta$-diversity (i.e., $\beta_{w}$) and  
@@ -139,8 +135,6 @@ During this process, you will learn how to generate similarity and dissimilarity
 In order to quantify $\beta$-diversity for more than two samples, we need to introduce our second primary ecological data structure: the **Resemblance Matrix**. 
 In the context of biodiversity, a resemblance matrix is a data structure that calculates the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix. 
 The resemblance matrix can be generated from a site-by-species matrix containing incidence (presence-absence) data or abundance data. 
-In the sections below, we describe some of the similarity and dissimilarity metrics that are commonly used for constructing a resemblance matrix.
-Throughout this handout, we adopt the notations of Legendre & Legendre (2012); this book can be electronically accessed via the IU library (see the course syllabus [http://goo.gl/y4oK7c]). 
 
 ***Question 4***: Answer the following questions about incidence-based measures of similarity:  
 a.  What are the differences between Jaccard and Sørensen metrics?  
@@ -204,9 +198,6 @@ Another common way to visualize $\beta$-diversity is through cluster analysis.
 Cluster analysis is an exploratory technique that assigns objects to groups based on their similarity to one another.
 In this exercise, we will use hierarchical clustering, specifically **Ward's Clustering**. 
 Ward's Clustering (a.k.a., Ward's minimum variance method) is an agglomerative clustering technique based on the linear model criterion of least squares.
-The method minimizes within-cluster sums-of-squared distances between sites.
-However, there are numerous methods for clustering (e.g., Single Linkage, UPGMA, UPGMC), which can influence the conclusions that you draw from your analysis.
-See chapter 8 of Legendre and Legendre (2012) for more information on the various clustering methods that can be used. 
 
 In the R code chunk below, do the following:  
 1. perform a cluster analysis using Ward's Clustering, and  
@@ -237,10 +228,6 @@ For example, in the context of $\beta$ diversity, sites that are closer in ordin
 ### i. Principal Coordinates Analysis (PCoA)
 In this exercise, we focus on Principal Coordinates Analysis (PCoA), which is sometimes referred to as metric multidimensional scaling. 
 For a description of PCoA, please refer to the handout.
-
-To conduct a PCoA, we will use the `cmdscale()` function from the `stats` package, which performs PCoA.
-The input for this function is our resemblance matrix (Bray-Curtis distances for the `doubs` dataset).
-In addition, we are going to set *k* = 3 (number of dimensions we want returned) and *eig* = TRUE (which saves the eigenvalues).
 
 In the R code chunk below, do the following:  
 1. perform a Principal Coordinates Analysis,  
@@ -318,10 +305,6 @@ As the name suggests, it evaluates differences according to a specified model by
 PERMANOVA can easily handle simple designs, but also accomodates nested and higher-order studies. 
 In addition, it can deal with missing values and unbalanced designs. 
 The PERMANOVA output is similar to the output of classic ANOVA; it includes (pseudo) F-tests, p-values, and $R^{2}$ values.
-We will implement PERMANOVA with the `adonis()` function in the `vegan` package. 
-
-To run `adonis`, you first need a factor vector or matrix that specifies your treatments and replicates.
-This vector or matrix can either be provided in the form of a file that you open in R (e.g. `read.table()`) or a user-specified vector or matrix that you write within R.
 
 Earlier work done in the Doubs River suggested that the river can be broken into four distinct regions based on fish habitat quality.
 The first region (sites 1-14) has been rated as being "high quality".
@@ -351,14 +334,9 @@ A Mantel test is essentially a multivariate correlation analysis.
 It produces an *r* value that is analagous to the Pearson's correlation coefficient. 
 In addition, it produces a p-value that is derived from the deviation of observed correlation to that of correlations derived from randomizations of the two matrices. 
 
-In the following section, we will peform a Mantel test using the `mantel()` function in `vegan`. 
-This requires that we first have two distance matrices to compare. 
-Here, we will compare the Bray-Curtis distance matrix we created earlier with a new distance matrix of environmental factors (doubs$env).
-After creating the distance matrices, we will test the hypothesis that fish assemblages are correlated with stream environmental variables.
-
 In the R code chunk below, do the following:   
 1. create distance matrices for both fish communities and environmental factors, and    
-2. use a Mantel test to determine if these matrices are correlated.  
+2. use a Mantel test to determine if these matrices are correlated, and test the hypothesis that fish assemblages are correlated with stream environmental variables.  
 
 ```{r}
 
@@ -377,13 +355,6 @@ Another way we can test hypotheses with continuous data is to use **constrained 
 Constrained ordination explores the relationships between two matrices: an **explanatory matrix** and a **response matrix**. 
 Canonical correspondence analysis (CCA) and redundancy analysis (RDA) are two types of constrained ordination.
 These techniques are based on the linear model framework and thus can be used to formally test hypotheses.
-
-Here, we will use environmental data to conduct a CCA on the fish assemblages of the Doubs River. 
-We will start by creating an explanatory matrix that contains water chemistry data.
-We will then use the `cca()` function from the `vegan` package.
-Note, we have to specify that we want the `cca` function in the `vegan` package because there are `cca` functions in both `vegan` and `ade4`!
-We will then use permutation tests to evaluate the significance of our model. 
-Finally, we will test the influence of each environmental variable on the constrained axes.
 
 In the R code chunk below, do the following:  
 1. create an environmental matrix consisting of the the water chemistry data included in the `doubs` data set,  
