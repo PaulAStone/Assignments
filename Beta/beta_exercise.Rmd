@@ -33,7 +33,7 @@ Your pull request should include this file *beta_exercise.Rmd* and the PDF outpu
 
 ## 1) R SETUP
 
-Typically, the first thing you will do in either a R script or a RMarkdown file is setup your environment. 
+Typically, the first thing you will do in either an R script or an RMarkdown file is setup your environment. 
 This includes things such as setting the working directory and loading any packages that you will need.
 
 In the R code chunk below, provide the code to:  
@@ -59,7 +59,7 @@ The data set has previously been used to demonstrate that fish communities can b
 
 In the R code chunk below, do the following:  
 1. load the `doubs` data set, and  
-2. explore the structure of the data set using the `str()` and `help()` functions as needed.
+2. explore the structure of the data set using `str()`, `help()`, and the dollar sign ($) as needed.
 
 ```{r}
 
@@ -68,7 +68,7 @@ In the R code chunk below, do the following:
 
 ```
 
-***Question 1***:  Describe some of the attributes of the `doubs` dataset.
+***Question 1***:  Describe some of the attributes of the `doubs` dataset.  
 a.  How many objects are in `doubs`?  
 b.  What types of data structures are contained in `doubs`?  
 c.  What are the units of nitrate ("nit") in the stream water?  
@@ -105,7 +105,7 @@ $\beta_{W} = \frac{S}{\bar{\alpha}} - 1$, where *S* = the total number of specie
 Subtracting 1 scales $\beta_{w}$ from 0 (minimum $\beta$-diversity) to 1 (maximum $\beta$-diversity).
 
 In the R code chunk below, do the following:  
-1. write a function for calculating Whittaker's $\beta$, $\beta_{w}$, and  
+1. write a function for calculating Whittaker's $\beta$-diversity (i.e., $\beta_{w}$) and  
 2. use this function to calculate the $\beta$ diversity between the fish assemblages in site 1 and 2 of the Doubs River.
 
 ```{r}
@@ -156,7 +156,7 @@ c.  In what situations would these incidence-based metrics of $\beta$-diversity 
 
 In the R code chunk below, do the following:  
 1. make a new object, "fish", containing the fish abundance data for the Doubs River,  
-2. remove any sites without fish observations,  
+2. remove any sites where no fish were observed,  
 3. construct a resemblance matrix based on Jaccard Similarity ("fish.dj"), and  
 4. construct a resemblance matrix based on Bray-Curtis Distance ("fish.db").  
 
@@ -182,8 +182,8 @@ One way to visualize $\beta$-diversity is to plot the data in our resemblance ma
 Heatmaps are a two-dimensional, color representation of a data matrix. 
 
 In the R code chunk below, do the following:  
-1. create a costom color palette (feel free to make your own),  
-2. define the order of sites in the River, and  
+1. create a custom color palette (feel free to make your own),  
+2. define the order of sites in the Doubs River, and  
 3. use the `levelplot()` function to create a heatmap of fish abundances in the Doubs River.
 
 ```{r}
@@ -210,7 +210,7 @@ See chapter 8 of Legendre and Legendre (2012) for more information on the variou
 
 In the R code chunk below, do the following:  
 1. perform a cluster analysis using Ward's Clustering, and  
-2. plot your cluster analysis (use either method).
+2. plot your cluster analysis (use either `hclust` or `heatmap.2`).
 
 ```{r} 
 
@@ -234,14 +234,9 @@ The first axis of an ordination explains the most variation in the data set, fol
 Ordination plots are particularly useful for visualizing the similarity among objects. 
 For example, in the context of $\beta$ diversity, sites that are closer in ordination space have species assemblages that are more similar to one another than sites that are further apart in ordination space.
 
-There are various ordination techniques that can be applied to multivariate biodiversity data.
-Common methods include: Principal Components Analysis (PCA), Correspondence Analysis (CA), Principal Coordinates Analysis (PCoA), Factor Analysis (FA), and Nonmetric Multidemensional Scaling (NMDS).
-When choosing an ordination technique, careful consideration should be given to the data type (continuous vs. categorical), model assumptions, and the underlying mathematical procedures that are invovled.
-
-### i. An Overview of Principal Coordinates Analysis (PCoA)
+### i. Principal Coordinates Analysis (PCoA)
 In this exercise, we focus on Principal Coordinates Analysis (PCoA), which is sometimes referred to as metric multidimensional scaling. 
-PCoA starts with creating a matrix, $\pmb{A}$, which is a transformed and centered version of distance matrix, $\pmb{D}$. Because these steps preserve all distances, PCoA is a flexible ordination technique that allows us to use virtually any distance metric (e.g., Jaccard, Bray-Curtis, Gower, Euclidean, etc.). The dimensionality of $\pmb{A}$ is then reduced by determining each eigenvector, $\pmb{u}_i$, and eigenvalue, $\pmb{\lambda}_i$, that solve the following equation: $\pmb{A u}_i = \pmb{\lambda}_i \pmb{u}_i$. 
-Finally, each eigenvector, $\pmb{u}_i$, is scaled to length $\sqrt{\pmb{\lambda}_i}$ to obtain the principal coordinates.
+For a description of PCoA, please refer to the handout.
 
 To conduct a PCoA, we will use the `cmdscale()` function from the `stats` package, which performs PCoA.
 The input for this function is our resemblance matrix (Bray-Curtis distances for the `doubs` dataset).
@@ -250,7 +245,7 @@ In addition, we are going to set *k* = 3 (number of dimensions we want returned)
 In the R code chunk below, do the following:  
 1. perform a Principal Coordinates Analysis,  
 2. calculate the variation explained by the first three axes in your ordination, and  
-3. make a plot the compare the eigenvalues of each axis with the expectations of the Kaiser-Guttman criterion and the Broken-Stick model.  
+3. make a plot that compares the eigenvalues of each axis with the expectations of the Kaiser-Guttman criterion and the Broken-Stick model.  
 
 ```{r}
 
@@ -274,7 +269,7 @@ In the R code chunk below, do the following:
 In the R code chunk below, do the following:  
 1. plot the PCoA ordination,  
 2. label the sites as points using the Doubs River site number, and   
-3. identify Influential Species and add species corrdinates to PCoA plot.
+3. identify influential species and add species corrdinates to PCoA plot.
 
 ```{r}
 
@@ -289,7 +284,7 @@ In the R code chunk below, do the following:
 ```
  
 In the R code chunk below, do the following:  
-1. identify influential species based on correlations along each PCoA axis (use a  cutoff of 0.70), and   
+1. identify influential species based on correlations along each PCoA axis (use a cutoff of 0.70), and   
 2. use a permutation test (999 permutations) to test the correlations of each species along each axis.
 
 ```{r}
@@ -334,7 +329,7 @@ The second (sites 15 - 19) and fourth (sites 26 - 30) regions have been rated as
 And the third region (sites 20 - 25) has been rated has being "low quality".
 
 In the R code chunk below, do the following:  
-1. create a vector the identifies fish habitat quality along the Doubts River, and   
+1. create a vector the identifies fish habitat quality along the Doubs River, and   
 2. using that vector, conduct a PERMANOVA to test the hypothesis that habitat quality influences fish community composition.  
 
 ```{r, results='hide'}
@@ -382,8 +377,6 @@ Another way we can test hypotheses with continuous data is to use **constrained 
 Constrained ordination explores the relationships between two matrices: an **explanatory matrix** and a **response matrix**. 
 Canonical correspondence analysis (CCA) and redundancy analysis (RDA) are two types of constrained ordination.
 These techniques are based on the linear model framework and thus can be used to formally test hypotheses.
-Constrained ordination works by first conducting multivariate multiple linear regression followed either by correspondence analysis (CA) with CCA or Principal Components Analysis (PCA) with RDA, while using the matrix of fitted values to obtain a constrained ordination.
-A permutation test can then be used to test for overall significance. 
 
 Here, we will use environmental data to conduct a CCA on the fish assemblages of the Doubs River. 
 We will start by creating an explanatory matrix that contains water chemistry data.
@@ -394,7 +387,7 @@ Finally, we will test the influence of each environmental variable on the constr
 
 In the R code chunk below, do the following:  
 1. create an environmental matrix consisting of the the water chemistry data included in the `doubs` data set,  
-2. conduct a Canonical Correspondance Analysis using the environmental matix as the explainatory varaibles,  
+2. conduct a Canonical Correspondance Analysis using the environmental matix as the explanatory variables,  
 3. use a permutation test to determine the significance of the constrained analysis,    
 4. use a permutaiton test to determine the correlation of each environmental factor on the constrained axes,  
 5. calculate the explained variation on the first and second constrained axes,  
