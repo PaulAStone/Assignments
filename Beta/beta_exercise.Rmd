@@ -249,7 +249,7 @@ In addition, we are going to set *k* = 3 (number of dimensions we want returned)
 
 In the R code chunk below, do the following:  
 1. perform a Principal Coordinates Analysis,  
-2. calculate the variation explained by the first three axes in your ordination,  
+2. calculate the variation explained by the first three axes in your ordination, and  
 3. make a plot the compare the eigenvalues of each axis with the expectations of the Kaiser-Guttman criterion and the Broken-Stick model.  
 
 ```{r}
@@ -289,7 +289,7 @@ In the R code chunk below, do the following:
 ```
  
 In the R code chunk below, do the following:  
-1. identify influential species based on correlations along each PCoA axis using a correlation-coefficient cutoff of 0.70, and   
+1. identify influential species based on correlations along each PCoA axis (use a  cutoff of 0.70), and   
 2. use a permutation test (999 permutations) to test the correlations of each species along each axis.
 
 ```{r}
@@ -334,8 +334,8 @@ The second (sites 15 - 19) and fourth (sites 26 - 30) regions have been rated as
 And the third region (sites 20 - 25) has been rated has being "low quality".
 
 In the R code chunk below, do the following:  
-1. Create a vector the identifies fish habitat quality along the Doubts River.  
-2. Using that vector, conduct a PERMANOVA to test the hypothesis that habitat quality influences fish community composition.  
+1. create a vector the identifies fish habitat quality along the Doubts River, and   
+2. using that vector, conduct a PERMANOVA to test the hypothesis that habitat quality influences fish community composition.  
 
 ```{r, results='hide'}
 
@@ -362,8 +362,8 @@ Here, we will compare the Bray-Curtis distance matrix we created earlier with a 
 After creating the distance matrices, we will test the hypothesis that fish assemblages are correlated with stream environmental variables.
 
 In the R code chunk below, do the following:   
-1. Create distance matrices for both fish communities and environmental factors.  
-2. Use a Mantel test to determine if these matrices are correlated.  
+1. create distance matrices for both fish communities and environmental factors, and    
+2. use a Mantel test to determine if these matrices are correlated.  
 
 ```{r}
 
@@ -393,13 +393,13 @@ We will then use permutation tests to evaluate the significance of our model.
 Finally, we will test the influence of each environmental variable on the constrained axes.
 
 In the R code chunk below, do the following:  
-1. Create an environmental matrix consisting of the the water chemistry data included in the `doubs` data set.  
-2. Conduct a Canonical Correspondance Analysis using the environmental matix as the explainatory varaibles.  
-3. Use a permutation test to determine the significance of the constrained analysis.  
-4. Use a permutaiton test to determine the correlation of each environmental factor on the constrained axes.  
-5. Calculate the explained variation on the first and second constrained axes.  
-6. Plot the constrained ordination results including labeled points for each site.  
-7. Add vectors that demonstrate the influence of each environmental factor the the constrained ordination (scale appropriately).   
+1. create an environmental matrix consisting of the the water chemistry data included in the `doubs` data set,  
+2. conduct a Canonical Correspondance Analysis using the environmental matix as the explainatory varaibles,  
+3. use a permutation test to determine the significance of the constrained analysis,    
+4. use a permutaiton test to determine the correlation of each environmental factor on the constrained axes,  
+5. calculate the explained variation on the first and second constrained axes,  
+6. plot the constrained ordination results including labeled points for each site, and   
+7. add vectors that demonstrate the influence of each environmental factor the the constrained ordination (scale appropriately).   
 
 ```{r}
 
