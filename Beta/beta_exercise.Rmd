@@ -251,83 +251,43 @@ In addition, we are going to set *k* = 3 (number of dimensions we want returned)
 In the R code chunk below, please do the following:
 1. Perform a Principal Coordinates Analysis.
 2. Calculate the variation explained by the first three axes in your ordination
+3. Make a plot the compare the eigenvalues of each axis with the expectations of the Kaiser-Guttman criterion and the Broken-Stick model.
 
 ```{r}
-fish.pcoa <- cmdscale(fish.db, eig = TRUE, k = 3) 
+
+
+
+
+
+
+
+
+
 ```
 
-###ii. Interpetting PCoA Output
-The `cmdscale` function produces a list of output.
-The first item *points* contains the coordinates for each site in each reduced dimension.
-The second item *eig* contains the eigenvalues.
-The last three items pertain to other options of the analysis that we will not cover here.
-
-First, we want to examine the eigenvalues.
-The eigenvalues are the scaling factors that allowed us to reduce the dimensionality of a data set. 
-The eigenvalues can also be used to calcualte the amount of variation that is explained by each orthogonal axis.
-To do this, we divide the eigenvalue of each axis by the sum of all eigenvalues.
-In the following chunk of R code, we quantify the percent variation in the `doubs` data set that is explained by the first three axes of the PCoA.
-
-```{r}
-explainvar1 <- round(fish.pcoa$eig[1] / sum(fish.pcoa$eig), 3) * 100
-explainvar2 <- round(fish.pcoa$eig[2] / sum(fish.pcoa$eig), 3) * 100
-explainvar3 <- round(fish.pcoa$eig[3] / sum(fish.pcoa$eig), 3) * 100
-sum.eig <- sum(explainvar1, explainvar2, explainvar3)
-```
-
-Another way to evaluate our analysis is to assess whether or not the first few PCoA axes capture a disproportionately large amount of the total explained variation.
-First, the eigenvalues associated with the first few axes should be larger than the average of all the eigenvalues (*Kaiser-Guttman criterion*). 
-Second, we can compare the eigenvalues associated with the first few axes to the expectations of the *broken-stick model*, which we introduced in the $\alpha$-diversity exercise when discussing species abundance distributions (SAD). In the current context, the broken stick model assumes that the total sum of eigenvalues decreases sequentially with ordered PCoA axes. 
-
-We will evaluate these two criteria with the following plots:
-
-```{r, fig.width=6, fig.height=4}
-# Define Plot Parameters
-par(mar = c(5, 5, 1, 2) + 0.1)
-
-# Plot Eigenvalues
-plot(fish.pcoa$eig, xlab = "PCoA Axis", ylab = "Eigenvalue", 
-     las = 1, cex.lab = 1.5, pch = 16)
-
-# Add Expectation based on Kaiser-Guttman criterion and Broken Stick Model
-abline(h = mean(fish.pcoa$eig), lty = 2, lwd = 2, col = "blue")
-b.stick <- bstick(29, sum(fish.pcoa$eig))
-lines(1:29, b.stick, type = "l", lty = 4, lwd = 2, col = "red")
-
-# Add Legend
-legend("topright", legend = c("Avg Eigenvalue", "Broken-Stick"), 
-       lty = c(2, 4), bty = "n", col = c("blue", "red"))
-```
 
 ***Question 7***: Based on the three criteria described above, does the PCoA do a good job of explaining variation in the `doubs` data set? Please justify.
 
 > ***Answer 7***: 
 
 ###iii. Creating a PCoA Ordination Plot 
-Having evaluated the PCoA output, now we will create an ordination plot.
-We will plot all of the fish assemblages of the Doubs River for the first two PCoA axes. 
 
-```{r pcoalayer1, eval = TRUE, fig.width=6, fig.height=4}
-# Define Plot Parameters
-par(mar = c(5, 5, 1, 2) + 0.1)
+In the R code chunk below, please do the following:
+1. Plot the PCoA ordination.
+2. Label the points using the Doubs River site number.
+3. Add species corrdinates
+4. Identify 
 
-# Initiate Plot
-plot(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2], ylim = c(-0.2, 0.7),
-     xlab = paste("PCoA 1 (", explainvar1, "%)", sep = ""),
-     ylab = paste("PCoA 2 (", explainvar2, "%)", sep = ""),
-     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
+```{r}
 
-# Add Axes
-axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-abline(h = 0, v = 0, lty = 3)
-box(lwd = 2)
 
-# Add Points & Labels
-points(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2],
-       pch = 19, cex = 3, bg = "gray", col = "gray")
-text(fish.pcoa$points[ ,1], fish.pcoa$points[ ,2], 
-     labels = row.names(fish.pcoa$points))
+
+
+
+
+
+
+
 ```
  
 ###iv. Identifying and Visualizing Influential Species in PCoA 
