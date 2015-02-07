@@ -1,0 +1,46 @@
+---
+title: "Among Site (Beta) Diversity"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "February 6, 2015"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+##Oerview##
+Following R chunk take data file with lots of taxonomy information (characters) and OTU data (site-by-species matrix) and turns it into a list. 
+
+## 1) SETUP
+### A. Retrieve and Set Your Working Directory
+```{r, results = 'hide'}
+rm(list = ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/Beta")
+```
+
+## 2) LOAD DATA
+```{r}
+soilbac.full <- read.table("./data/soilbacfull.txt", sep = "\t", header = TRUE, row.names = 1)
+```
+
+##3) CREATE LIST
+```{r}
+tax <- data.frame(soilbac.full[,1:5]) #assign taxonomy
+otu <- data.frame(soilbac.full[,6:28]) #assign site-by-species matrix
+soilbac.list <- list(tax, otu) # create list
+names(soilbac.list) <- c("tax","otu") # name objects in list
+str(soilbac.list, max.level = 1) # look at structure of list
+```
+
+##4) SAVE LIST 
+```{r}
+write.table(soilbac.list, sep = "\t", file = "data/soilbac.list.txt")
+```
+
+##5) LOAD LIST
+Somethig is not quite right here, probably because I'm not writing the table correctly.
+```{r}
+soilbac.list.test <- read.table("./data/soilbac.list.txt", sep = "\t")
+str(soilbac.list.test, max.level = 1) 
+```
