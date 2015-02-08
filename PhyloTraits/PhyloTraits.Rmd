@@ -1,0 +1,40 @@
+---
+title: "Phylogenetic Diversity - Traits"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "February 20, 2015"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+
+## 1) SETUP
+### A. Retrieve and Set Your Working Directory
+
+```{r, results = 'hide'}
+rm(list = ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
+```
+
+### B. Load Packages 
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
+require("muscle")
+require("ape")
+```
+
+## 2) LOADING DATA
+
+### A. Description of Data Set
+P isolates
+
+
+## 3) ALLIGN SEQUENCES
+```{r}
+seq.aln <- muscle(seqs="p.isolates.fasta")
+```
+
+## 4) NEED TO CREATE NEXUS OR NEWICK TREE FILE????
+
