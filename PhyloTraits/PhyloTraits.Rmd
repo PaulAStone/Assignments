@@ -23,18 +23,47 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("muscle")
 require("ape")
+require("seqinr")
 ```
 
 ## 2) LOADING DATA
-
-### A. Description of Data Set
-P isolates
-
-
-## 3) ALLIGN SEQUENCES
 ```{r}
-seq.aln <- muscle(seqs="p.isolates.fasta")
+#p.bac.fasta <- read.table("p.isolates.fasta", sep = "\t")
+#p.bac.fasta <- read.fasta(file = "p.isolates.fasta")
+#p.bac.fasta <- read.fasta(file = "p.isolates.fasta", as.string = TRUE)
+
+```
+### A. Description of Data Set
+The meintenance of biodiversity is thought to be influenced by trade-offs among species. 
+One such trade-off involves species that are highly specialized at using a single resource. 
+However, this may come at the cost of not being able to use other resoruces as well.
+We set out to test this hypothesized trade-off in bacteria by assessing generalist and specialist strategies on different forms of phopshorus, which commonly limits growth and reproduction of populations in freshwater ecosystems.
+More..
+
+## 3) ALLIGN SEQUENCES AND WRITE ALLIGNED FASTA FILE
+Appears that DNA sequences can be alligned in R using at least two packages: `ape` and `muscle`. 
+In `ape`, alignments can be done with the functions `clustal`, `muscle`, and `tcoffee`, all which seem to have a range of options. 
+However, it appears that perhaps these functions call on other instaled programs, like ClustalX. 
+In contrast, the `muscle` package uses the `muscle` function and seems to align sequences in a "stand alone" fashion. 
+
+```{r}
+seq.aln <- muscle::muscle(seqs="p.isolates.fasta")
+
+write.fasta(sequences=seq.aln[[2]], seq.aln[[1]], file.out="p.isolates.aln.fasta")
 ```
 
-## 4) NEED TO CREATE NEXUS OR NEWICK TREE FILE????
+## 4) VISUALIZE THE ALLIGNMENT
+```{r}
+read.aln <- read.alignment(file = "p.isolates.aln.fasta", format = "fasta")
+
+
+```
+
+
+
+seq.dist <- dist.dna(read.aln, p = TRUE)
+
+
+
+
 
