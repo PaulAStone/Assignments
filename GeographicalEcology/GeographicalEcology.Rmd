@@ -9,18 +9,19 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-In this exercise, we will add a spatial context to the concepts of alpha ($\alpha$) and beta ($\beta$) by considering how diversity can vary across distance and area. We will re-emphasize the importance of the site-by-species matrix and also emphasize core concepts like aggregation and spatial autocorrelation. We will discuss spatially implicit and spatially explicit patterns and stress the importance of spatial scale. Throughout this exercise, we will introduce you to new R functions and packages, and cover new rudimentary programming skills.
+In this exercise, we will add spatial context to the concepts of alpha ($\alpha$) and beta ($\beta$) by considering how diversity can vary as a function of distance and area. 
+After introducing core concepts of aggregation and spatial autocorrelation, we will explore spatially implicit and explicit patterns of biodiversity. 
 
 After completing this exercise you will know how to:
 
-1. Quantify, compare, and interpret the distribution of abundance and richness across space.
-2. Examine whether spatial patterns are highly dependent on scale.
-3. Examine how geographic distance influences similarity of communities and environments.
-4. Use control structures such as `loops` to control how R operates on variables.
+1.  Use control structures such as `loops` to control how R operates on variables.
+2.  Examine the extent to which patterns of biodiversity are dependent on spatial scale.
+3.  Examine the effect of geographic distance on the similarity of environmental conditions and community composition.
+4.  Quantify, compare, and interpret the distribution of abundance and richness across space.
 
 
-## 1.) SETUP
-### Retrieve and Set Your Working Directory
+## 1) SETUP
+### A. Retrieve and Set Your Working Directory
 
 ```{r, results = 'hide'}
 rm(list=ls())
@@ -28,30 +29,29 @@ getwd()
 setwd("~/GitHub/QuantitativeBiodiversity/Assignments/GeographicalEcology")
 ```
 
-
-### Load Packages 
-As in previous exercises, we will use the `vegan` package.
-We will also use the `BiodiversityR` package, which contains additional diversity estimators and related functions.
+### B. Load Packages 
+We will use the `vegan` and `BiodiversityR` packages for biodiversity estimators and related functions.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 library("vegan")
 library("BiodiversityR")
 ```
 
-We will also use package developed in R for geographical information systems (GIS).
-These packages will allow us to generate maps, project diversity data onto environmental layers, and conduct geographical analyses.
+We will also use a package developed in R for geographical information systems (GIS).
+This package will allow us to generate maps, project diversity data onto environmental layers, and conduct geographical analyses.
 
 ```{r}
-#install.packages("RgoogleMaps")
-library(RgoogleMaps) # overlays of data onto a Google map.
+library(RgoogleMaps)
 ```
 
 ***Question 1***: Identify two ways that the library() function differs from require(). 
 
 > ***Answer 1***:
 
+##I THINK YOU MISINTERPRETTED A QUESTION I HAD FOR YOU; I WASN'T SUGGESTING THIS AS A STUDENT QUESTION
 
-### Load Data
+
+## 2) LOADING DATA
 We will analyze environmental and bacterial community data from a survey of shallow ponds found east of Bloomington, Indiana.
 These ponds are scattered throughout Brown County State Park, Yellowood State Forest, and Hoosier National Forest.
 In the 1940s, Maury Reeves of the Indiana Department of Natural Resources began constructing refuge ponds for wildlife.
@@ -65,13 +65,15 @@ Let's begin by loading an image of one of these ponds.
 #![pond](./data/pond.JPG)
 ```
 
-***Question 2***: The image of this pond should provoke thoughts of the processes, mechanisms, and dynamics driving biodiversity of various communities and populations. As a thought exercise, speculate on what you would expect to find in terms of the biodiversity of this pond, and why.
+***Question 2***: The image of this pond should provoke thoughts of the processes, mechanisms, and dynamics driving biodiversity of various communities and populations. 
+As a thought exercise, speculate on what you would expect to find in terms of the biodiversity of this pond, and why.
 
 > ***Answer 2***: 
+ 
+##CONSIDER SKIPPING QUESTION 2, ABOVE
 
 
-
-## 2.) MAKE A MAP
+## 3) MAKE A MAP
 In this section of the exercise, we are going to use R to generate a map of the refuge ponds using **Google Maps**.
 First, we will retrieve a map of Indiana using the `GetMap` function in the package `RgoogleMaps`.
 Then, we will generate a map in RStudio that is centered on Brown County, Indiana (39.1 degrees latitude, -86.3 degrees longitude).
@@ -87,70 +89,83 @@ PlotOnStaticMap(newmap, lats, lons, cex=1, pch=20, col='red', add = TRUE)
 # Use the help() function to learn about GetMap and PlotOnStaticMap. 
 ```
 
-
 ***Question 3***: Based on the map you generated, what do you notice about the spatial distribution of the refuge ponds?
 
 > ***Answer 3***: 
 
 
+##THERE'S A BIT OF A ROUGH TRANSITION BETWEEN INTRODUCING PONDS AND TRANSITIONING TO "PLINKO"...WE SHOULD TRY TO KEEP THINGS WOVEN TOGETHER AS MUCH AS WE CAN
 
-## 3.) PRIMARY CONCEPTS
 
-### Concept 1: Spatial aggregation
+## 4) PRIMARY CONCEPTS OF GEOGRAPHIC ECOLOGY
 
-Spatial aggregation refers to the tendency for things to cluster in space, i.e. to be under-dispersed. There are many ecological reasons to expect individuals to be aggregated. Resources and environmental conditions are often aggregated and patchy. Individuals closely associate for protection and reproductive opportunities, and respond to sociobiological pressures to form groups, family units, and colonies.
+### A. Concept 1: Spatial Aggregation
+Spatial aggregation refers to the tendency for things to cluster in space, i.e. to be under-dispersed. There are many ecological reasons to expect individuals to be aggregated. 
+Resources and environmental conditions are often aggregated and patchy. 
+Individuals closely associate for protection and reproductive opportunities, and respond to sociobiological pressures to form groups, family units, and colonies.
 
-However, stochastic models also predict aggregation based on various scenarios of random movement and placement. Consider a scenario where individuals enter an environment from a central upstream location and then move downward, veering randomly left and right until they arrive at at downstream edge. Run the following code to see a demonstration of this scenario.
+However, stochastic models also predict aggregation based on various scenarios of random movement and placement. 
+Consider a scenario where individuals enter an environment from a central upstream location and then move downward, veering randomly left and right until they arrive at at downstream edge. Run the following code to see a demonstration of this scenario.
 
 If you attempt to Knit this file, you must comment out this chunk.
+##PROBABLY JUST LEAVE OUT OF THE EXERCISE. 
+##PERHAPS NOT PUT INTO R CHUNK OR COMMENT IT OUT SINCE IT'S NOT COING TO KNIT
 ```{r}
-#install.packages("animation") # install if necessary
-library(animation)
-ani.options(interval = 0.1, nmax = 200)
-quincunx()
+#library(animation)
+#ani.options(interval = 0.1, nmax = 200)
+#quincunx()
 ```
 
-This example is referred to as the Galton Board or Bean Machine, and demonstrates how the randomly descending individuals aggregate in a way that approaches a normal distribution.
+This example is referred to as the Galton Board or "Bean Machine", and demonstrates how the randomly descending individuals aggregate in a way that approaches a normal distribution.
 
-***Question 4***: Can you think of other ways in which random movement/placement could produce spatial aggregation? Why might it be important to consider that aggregation can occur in scenarios where each individual movement cannot be reliably predicted, but where the general outcome can?
+***Question 4***: Can you think of other ways in which random movement/placement could produce spatial aggregation? 
+Why might it be important to consider that aggregation can occur in scenarios where each individual movement cannot be reliably predicted, but where the general outcome can?
 
 > ***Answer 4***: 
 
-
-***Question 5***: It may be of no surprise that spatial aggregation is common. But, under what scenarios would you expect a uniform distribution, e.g., nearly equal distances between all individuals?
+***Question 5***: It may be of no surprise that spatial aggregation is common. 
+But, under what scenarios would you expect a uniform distribution, e.g., nearly equal distances between all individuals?
 
 > ***Answer 5***:
 
+##COMBINE QUESTIONS 4 AND 5. TRY TO MAKE A BIT MORE CONCRETE?
 
-### Concept 2: Spatially explicit and implicit
+### B. Concept 2: Spatially Explicit and Implicit Treatment of Data
+In the previous demonstration, many individuals aggregated around the center of the x-axis. 
+Consequently, our knowledge of where the aggregation occurred was **explicit**. 
+But, because we did not track the location of each individual, our knowledge of where any individual ended up, was **implicit**. 
+That is, the pattern of aggregation implies that an individual drawn at random will have likely ended up somewhere near the center.
 
-In the previous demonstration, many individuals aggregated around the center of the x-axis. Consequently, our knowledge of where the aggregation occurred was **explicit**. But, because we did not track the location of each individual, our knowledge of where any individual ended up, was **implicit**. That is, the pattern of aggregation implies that an individual drawn at random will have likely ended up somewhere near the center.
+In short, if the location of some unit (e.g., individuals, patches) is known and is examined or modeled, then our analysis or model is spatially explicit with regards to that unit. 
+While our Galton Board, was spatially implicit with regards to individuals, we were able to track which locations were becoming aggregated and so, was spatially explicit in regards to "patches".
 
-In short, if the location of some unit (e.g. individuals, patches) is known and is examined or modeled, then our analysis or model is spatially explicit with regards to that unit. While our Galton Board, was spatially implicit with regards to individuals, we were able to track which locations were becoming aggregated and so, was spatially explicit in regards to "patches".
-
-In accounting for space and location in your own research, you'll need to know whether you are dealing with a spatially implicit or explicit problem/hypothesis and whether you need a spatially explicit or implicit analysis/model.
+When accounting for space and location in your own research, you'll need to know whether you are dealing with a spatially implicit or explicit problem/hypothesis and whether you need a spatially explicit or implicit analysis/model.
 
 ***Question 6***: In considering our microbial data from the refuge ponds, what is our data (and probably our questions) spatially explicit and implicit in regards to?
 
-
 > ***Answer 6***: 
 
+## AGAIN, I THINK IT'S IMPORTANT THAT WE CONSIDER FLOW AND TRANSITIONS. CONCEPTS OF SPATIALLY IMPLICIT AND EXPLICITY MAY BE IMPORTANT BUT AT THIS STAGE MAY SEEM DISJOINT FROM THE PONDS. MAYBE THE PONDS DATA SET DOESN'T NEED TO BE INTRODUCED UNTIL IT'S ACTUALLY GOING TO BE USED. 
 
-### Concept 3: Spatial autocorrelation
-
-Aggregation is one of the most common features of any natural system. Another is spatial autocorrelation, that is, the degree to which a set of spatial features and their associated data values tend to be clustered together in space (positive spatial autocorrelation) or dispersed (negative spatial autocorrelation). 
-Tobler's first law of geography is a formulation of the concept of spatial autocorrelation made by the geographer Waldo Tobler (1930-). 
+### Concept 3: Spatial Autocorrelation
+Aggregation is one of the most common features of any natural system. 
+Another is spatial autocorrelation, that is, the degree to which a set of spatial features and their associated data values tend to be clustered together in space (positive spatial autocorrelation) or dispersed (negative spatial autocorrelation). 
+Tobler's ##YEAR?## first law of geography is a formulation of the concept of spatial autocorrelation made by the geographer Waldo Tobler (1930-). 
 This law states that "Everything is related to everything else, but near things are more related than distant things."
 
 When analyzing spatial data, it is important to check for autocorrelation. 
-If there is evidence of spatial autocorrelation, then one of the underlying assumptions of your analysis may be violated and your results may be invalidated.
+If there is evidence of spatial autocorrelation, then one of the underlying assumptions of your analysis may be violated and your results may be biased and invalid.
 
 Addressing spatial autocorrelation leads to more robust and replicable results.  
-Analysis of spatial autocorrelation can be broken down into steps: detecting, describing, and adjusting/predicting.
+Analysis of spatial autocorrelation can be broken down into steps: detecting, describing, and **adjusting/predicting -- these things don't really seem all that similar --jtl **
 
-
-**i. Detecting spatial autocorrelation**
-*Moran's I* and the *Mantel test* are commonly-used indicators of spatial autocorrelation. Both will indicate if your spatial autocorrelation is positive or negative and provide a p-value for the level of autocorrelation.  Both *Moran's I* and the *Mantel test* test against the null that there is no spatial autocorrelation. Moran's I does this with a correlation that is weighted by inverse distances; the Mantel test examines the correlation between two distance matrices and generating a null distribution for this correlation by randomly permuting one of the matrices.
+### i. Detecting spatial autocorrelation##
+*Moran's I* and the *Mantel test* are commonly used indicators of spatial autocorrelation. 
+##Mantel test is more general that what it's being said it to be used for ##
+Both will indicate if your spatial autocorrelation is positive or negative and provide a p-value for the level of autocorrelation. 
+Both *Moran's I* and the *Mantel test* test against the null that there is no spatial autocorrelation. 
+Moran's I does this with a correlation that is weighted by inverse distances, while the Mantel test examines the correlation between two distance matrices and generating a null distribution for this correlation by randomly permuting one of the matrices.
+##fix grammar in last sentence##
 
 Let's calculate **Moran's I** for one of our environmental variables
 ```{r}
@@ -174,12 +189,16 @@ ponds.dists.inv[is.infinite(ponds.dists.inv)] <- 0
 Moran.I(Ponds$Temp, ponds.dists.inv)
 ```
 
+##NOTE THAT MANTEL TESTS WERE DONE LAST WEEK FOR BETADIVERSITY
+##WE USED MANTEL TESTS FROM `VEGAN`; should we use those again? Reason to use a new pacakge for this?
+##WHAT ABOUT PARTIAL MANTEL TESTS TO TEASE APART ENV AND GEO?
+
 Next, let's calculate **Mantel's test** for the same environmental variable
 ```{r}
 #install.packages("ade4")
 library(ade4)
 
-ponds.dists <- dist( cbind(lons, lats))
+ponds.dists <- dist(cbind(lons, lats))
 env.dists <- dist(Ponds$Temp)
 
 # Checking the upper left corner of our results
@@ -190,11 +209,16 @@ as.matrix(ponds.dists)[1:5, 1:5]
 mantel.rtest(ponds.dists, env.dists, nrepet = 9999)
 ```
 
+### ii. Describing and Visualizing Autocorrelation##
+Here, we will generate a **variogram** for our pond data. 
+##species data or enviromental data???##
+A variogram (or semi-variogram) gives you a sense of the degree and range of spatial autocorrelation in your data and how it changes over distances.
 
-**ii. Describing and visualizing autocorrelation**
-Here, we will generate a variogram for our data. A variogram (or semi-variogram) gives you a sense of the degree and range of spatial autocorrelation in your data and how it changes over distances.
+**Semi-variance:** A measure of the dispersion of all observations that fall below the mean or target value of a data set. 
+Semivariance is an average of the squared deviations of values that are less than the mean. 
+Semivariance is similar to variance; however, it only considers observations below the mean.
 
-**Semi-variance:** A measure of the dispersion of all observations that fall below the mean or target value of a data set. Semivariance is an average of the squared deviations of values that are less than the mean. Semivariance is similar to variance; however, it only considers observations below the mean.
+##BETTER INTERRATED CONCEPTS AND TEXT
 
 ```{r}
 #install.packages("geoR")
@@ -214,15 +238,18 @@ plot(v1, type = "b", main = "Variogram: Temp")
 
 ```
 
+### Concept 4: Scale-Dependence
 
-### Concept 4: Scale dependence
+### SEEMS LIKE THERE SHOULD BE SOMETHING AFTER "SCALE-DEPENDENCE" ABOVE. OF WHAT?
+### SECTIONS BELOW SEEM LIKE THEY NEED TO BE FILLED OUT. 
 
 **i. extent and grain**
 
 
 **ii. How interpretation can change with extent** 
 
-Here, we generate a single sample of data based on a random draw from a normal distribution (aka Gaussian distribution, bell curve). While all the points were randomly drawn from the same distribution, zooming in and out to different extents reveals what we would very likely call different patterns of aggregation.
+Here, we generate a single sample of data based on a random draw from a normal distribution (a.k.a., Gaussian distribution, bell curve). 
+While all the points were randomly drawn from the same distribution, zooming in and out to different extents reveals what we would very likely call different patterns of aggregation.
 
 ```{r}
 # generate the data
@@ -239,9 +266,7 @@ plot(x, pch = ".") # The distribution of points is clearly aggregated around the
 plot(x, xlim = c(-1, 1), ylim = c(-1, 1)) # Zooming in, our first guess would not be that these points were drawn from a normal distribution. In fact, they look more randomly distributed than aggregated. Of course, they WERE randomly distribution...according to the Gaussian distribution
 ```
 
-
-## 7.) PRIMARY SPATIAL PATTERNS
-
+## 5) PRIMARY SPATIAL PATTERNS OF BIODIVERSITY
 Having covered the core concepts of geographical (or spatial) ecology, let's explore some of the primary patterns used to quantify and study the geographic distribution of biodiversity. 
 
 ### Spatially implicit patterns of aggregation and diversity
@@ -258,9 +283,11 @@ OTUs <- as.data.frame(OTUs[-1]) # remove first column (site names)
 Site.N <- as.vector(rowSums(OTUs)) # no. reads
 ```
 
-Now, let's construct kernel-density curves for the distribution of abundance among individual OTU's across the refuge pond dataset.
+Now, let's construct **kernel-density curves** for the distribution of abundance among individual OTU's across the refuge pond dataset.
+##KERNEL DENSITY CURVES ARE INTRODUCED HERE, BUT WITHOUT EXPLANATION; ACTUALLLY DESCRIBED WELL BELOW. REORGANIZE?
 
-**Introducing loops**
+**Introducing loops** 
+##IS THIS JUST A NOTE FOR US OR ARE YOU PLANNING TO EXPAND?##
 
 ```{r}
 ad <- c(0,0)
@@ -271,17 +298,13 @@ while (length(ad) <= 10){
   ad <- OTUs[, otu]
   ad = as.vector(t(x = ad))
   ad = ad[ad > 0]
-
   }
   
 plot(density(ad), col = 'magenta', main = otu.names[otu])  
 ```
 
-
 As you can see, sampled abundance for a given OTU is often aggregated, revealing many sites where the OTU is relatively rare and many where it is relatively more common.
-**In fact, this uneven spatial distribution of abundance is common occurrence in ecological systems.**
-This spatially implicit distribution of abundance is often referred to as the species spatial abundance distribution (SSAD).
-
+This type of uneven spatial distribution of abundance is exceptionally common in ecological systems, and is often referred to as the **species spatial abundance distribution (SSAD)**.
 
 ***Question 1***: In the site-by-species matrix, each row represents a site and each column represents an OTU. 
 If the SSAD is generated by considering all rows for a single column, then what do we obtain when we consider all columns for a given row? 
@@ -290,7 +313,7 @@ If so, elaborate?
 
 > ***Answer 1***: 
 
-
+##I DON'T UNDERSTAND THE FOLLOWING ORGANIZATION. PERHAPS STILL FILLING IN THE DETAILS?
 
 **ii. Abundance-occupancy relationship** (i.e. more abundant species tend to be found in more loations)
 
@@ -310,6 +333,8 @@ library(simba)
 ```
 
 Sometimes, code and comments require 40 or so lines. C'est la vie.
+
+##DOESN'T APPEAR THAT EnvData IS DEFINED YET; CAUSING ERROR WHEN KNITTING FOR ME -- JTL
 
 ```{r}
 # calculate the similarity (Bray-Curtis) between the plots
@@ -350,10 +375,9 @@ abline(lm(struc ~ dist), col="red4")
 diffslope(dist, env, dist, struc)
 ```
 
-
 ### Cumulative patterns
 
-**i. Species-area relationship:** 
+**i. Species-area relationship (SAR):** 
 
 The species-area relationship (SAR) describes the rate at which we discover or accumulate species with increasing area. 
 The general relationship of the SAR ... and is of the form S=c*A^z ... which was first predicted by Arrhenius (1921)...wow, that's old.
@@ -369,8 +393,9 @@ OTU.obs <- function(x = ""){
   }
 ```
 
-
-## 8.) ENTER, THE ENVIRONMENT
+## 6) ENTER, THE ENVIRONMENT
+##SOME SORT OF DESCIRPTION HERE? OVERVIEW?
+## LITLE CONFUSED ABOUT "ENVIRONMENT" SORT OF BEING TACKED ON AT THE END; I'M A BIT CONFUSED BY FLOW. 
 
 ### i. Graphically examine environmental data
 It is good practice to look at the underlying distribution of your data, before conducting formal statistical tests.
@@ -398,7 +423,8 @@ data <- as.numeric(EnvData[, "DOC"])
 plot(density(data), col = 'darkgoldenrod3', main = "DOC")
 ```
 
-***Question 3***: In the density() function, what does "bandwidth", i.e., "bw" mean?
+***Question 3***: In the density() function, what does "bandwidth", i.e., "bw" mean? 
+##ACTUALLY, THIS WAS A QUESTION I HAD FOR YOU. THAT IS, WE SHOULD EXPLAIN/INTRODUCE. ALSO, SEE COMMENTS ABOVE ABOUT HOW KERNEL-DENSITIES ARE USED ABOVE, BUT THEN FORMALLY INTRODUCED/TAUGHT HERE, MUCH LATER. 
 
 > ***Answer 3***:
 
