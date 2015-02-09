@@ -81,23 +81,55 @@ Type the following at the R terminal for a detailed exmaple: vignette('Trees')
 read.aln.mat <- as.matrix(read.aln)
 read.aln.phydat <- phyDat(p, type = "DNA")
 seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
-nj.tree.phydat <- nj(seq.dist.phydat)
-parsimony(nj.tree.phydat, read.aln.phydat)
+tree.nj <- nj(seq.dist.phydat)
+parsimony(tree.nj, read.aln.phydat)
+tree.pars <- optim.parsimony(tree.nj, read.aln.phydat)
+tree.ratch <- pratchet(read.aln.phydat, trace = 0)
+parsimony(c(tree.pars,tree.ratch),read.aln.phydat)
+plot(tree.pars, main = "parsimony", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
 ```
 
 ## 6) MAXIMUM LIKELIHOOD ESTIMATION AND BOOTSTRAP SUPPORT
-**We may need to use the package `phangorn` (http://cran.r-project.org/web/packages/phangorn/phangorn.pdf)**
+** Beware really long, something is not right. 
 ** Discussed by Paradis (2012) on pp 138-159
 ```{r}
-ml <- pml(nj.tree.phydat, data = seq.dist.phydat) 
+ml <- pml(tree.nj, data = seq.dist.phydat) 
 
 seq.dist.phydat
+```
 
 ## 7) MAPPING TRAITS ONTO TREES
-** Discussed by Paradis (2012), chapter 4
-** Basically, want to get to the point where people can visusalize singe or multiple traits mapped onto brances of trees
-** Could do this with Kali's P isoltes or with Lennon et al. (2010) with soil isolates and traits. 
 
+### A. Loading Trait Database
+```{r}
+p.growth <- read.table("data/p.isolates.stdgrowth.txt", sep = "\t", header = TRUE, row.names = 1)
+#p.growth <- as.data.frame(t(p.growth))
+```
+
+### B. Calculating Niche Breadth
+We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2}}\right)$, where ni is each resource 
+
+single isolate
+```{r}
+levins <- function(p_xi = ""){
+  x = 0
+  for (i in p_xi){
+    x = x + i^2
+    }
+    nb = 1 / (length(p_xi) * x) 
+  return(nb)
+}
+```  
+
+```{r}
+levins.2 <- function(p_xi = ""){
+  p_xi = as.numeric(p_xi)
+  nb = 1 / (length(p_xi) * (p_xi %*% p_xi))
+  return(nb)
+}  
+levins.2(p.growth[1, ])
+
+```
 ## 8) PHYLOGENETIC SIGNAL
 **Phylogenetic signal is outlined in Paradis (2012) on pp 236-239
 **Can we take a big-picture look at the phylogeny and traits combined and deteremine whether or not their is "signal" beyond null Brownian motion?
