@@ -26,43 +26,40 @@ require("ape")
 require("seqinr")
 ```
 
-## 2) LOADING DATA
-```{r}
-#p.bac.fasta <- read.table("p.isolates.fasta", sep = "\t")
-#p.bac.fasta <- read.fasta(file = "p.isolates.fasta")
-#p.bac.fasta <- read.fasta(file = "p.isolates.fasta", as.string = TRUE)
-
-```
-### A. Description of Data Set
+## 2) DESCRIPTION OF DATA
 The meintenance of biodiversity is thought to be influenced by trade-offs among species. 
 One such trade-off involves species that are highly specialized at using a single resource. 
 However, this may come at the cost of not being able to use other resoruces as well.
 We set out to test this hypothesized trade-off in bacteria by assessing generalist and specialist strategies on different forms of phopshorus, which commonly limits growth and reproduction of populations in freshwater ecosystems.
 More..
 
-## 3) ALLIGN SEQUENCES AND WRITE ALLIGNED FASTA FILE
-Appears that DNA sequences can be alligned in R using at least two packages: `ape` and `muscle`. 
+## 3) SEQUENCE ALIGNMENT
+It appears that DNA sequences can be alligned in R using at least two packages: `ape` and `muscle`. 
 In `ape`, alignments can be done with the functions `clustal`, `muscle`, and `tcoffee`, all which seem to have a range of options. 
-However, it appears that perhaps these functions call on other instaled programs, like ClustalX. 
-In contrast, the `muscle` package uses the `muscle` function and seems to align sequences in a "stand alone" fashion. 
+However, it seem that these functions call on other installed programs, like ClustalX. 
+In contrast, the `muscle` package aligns sequences in a "stand alone" fashion. 
 
 ```{r}
-seq.aln <- muscle::muscle(seqs="p.isolates.fasta")
-
-write.fasta(sequences=seq.aln[[2]], seq.aln[[1]], file.out="p.isolates.aln.fasta")
+seq.aln <- muscle::muscle(seqs="p.isolates.fasta") # align seqs; more options?!?!
+muscle::write.fasta(seq.aln, file = "out.aln.muscle") # save muscle-alligned file
+#seqinr::write.fasta(sequences=seq.aln[[2]], seq.aln[[1]], file.out="p.isolates.aln.fasta")
 ```
 
-## 4) VISUALIZE THE ALLIGNMENT
+## 4) VISUALIZE THE ALIGNMENT
 ```{r}
-read.aln <- read.alignment(file = "p.isolates.aln.fasta", format = "fasta")
-
-
+#read.aln <- read.alignment(file = "p.isolates.aln.fasta", format = "fasta")
+read.aln.m <- read.alignment(file = "out.aln.muscle", format = "fasta") # seqinr command to read muscle align
+p.DNAbin <- as.DNAbin(read.aln.m) # ape command to convert fasta file into DNAbin filetype
+x <- p.DNAbin[,400:500] # identify region (in bp of 16S rRNA) to visuzlize
+image(x, cex.lab = 0.5) # ape command to visusalize seq align
+grid(ncol(x),nrow(x),col="lightgrey") # ape command to add grid
 ```
 
-
-
-seq.dist <- dist.dna(read.aln, p = TRUE)
-
+## 5) CREATE EVOLUTIONARY MODEL AND NEIGHBOR-JOINING TREE
+```{r}
+seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE)
+nj.tree <- nj(seq.dist)
+```
 
 
 
