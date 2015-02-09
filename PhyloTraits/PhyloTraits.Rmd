@@ -40,25 +40,29 @@ However, it seem that these functions call on other installed programs, like Clu
 In contrast, the `muscle` package aligns sequences in a "stand alone" fashion. 
 
 ```{r}
-seq.aln <- muscle::muscle(seqs="p.isolates.fasta") # align seqs; more options?!?!
-muscle::write.fasta(seq.aln, file = "out.aln.muscle") # save muscle-alligned file
-#seqinr::write.fasta(sequences=seq.aln[[2]], seq.aln[[1]], file.out="p.isolates.aln.fasta")
+seq.aln <- muscle::muscle(seqs="p.isolates.fasta", out = "p.isolates.aln.fasta") 
 ```
 
 ## 4) VISUALIZE THE ALIGNMENT
 ```{r}
-#read.aln <- read.alignment(file = "p.isolates.aln.fasta", format = "fasta")
-read.aln.m <- read.alignment(file = "out.aln.muscle", format = "fasta") # seqinr command to read muscle align
-p.DNAbin <- as.DNAbin(read.aln.m) # ape command to convert fasta file into DNAbin filetype
+read.aln <- read.alignment(file = "p.isolates.aln.fasta", format = "fasta") # seqinr command to read muscle align
+
+p.DNAbin <- as.DNAbin(read.aln) # ape command to convert fasta file into DNAbin filetype
+
 x <- p.DNAbin[,400:500] # identify region (in bp of 16S rRNA) to visuzlize
+
 image(x, cex.lab = 0.5) # ape command to visusalize seq align
+
 grid(ncol(x),nrow(x),col="lightgrey") # ape command to add grid
 ```
 
 ## 5) CREATE EVOLUTIONARY MODEL AND NEIGHBOR-JOINING TREE
 ```{r}
-seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE)
-nj.tree <- nj(seq.dist)
+seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # ape command for Evo model: Kimura’s 2-parameters distance
+
+nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
+
+plot.phylo(nj.tree, type="phylogram", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1) # ape command
 ```
 
 
