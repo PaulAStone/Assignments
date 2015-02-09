@@ -56,7 +56,7 @@ image(x, cex.lab = 0.5) # ape command to visusalize seq align
 grid(ncol(x),nrow(x),col="lightgrey") # ape command to add grid
 ```
 
-## 5) CREATE EVOLUTIONARY MODEL AND NEIGHBOR-JOINING TREE
+## 5) CREATE AND EVALUATE EVOLUTIONARY MODELS
 ```{r}
 seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # ape command for Evo model: Kimura’s 2-parameters distance
 
@@ -65,6 +65,23 @@ nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
 plot.phylo(nj.tree, type="phylogram", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1) # ape command
 ```
 
+## 6) MAXIMUM LIKELIHOOD ESTIMATION AND BOOTSTRAP SUPPORT
+**We may need to use the package `phangorn` (http://cran.r-project.org/web/packages/phangorn/phangorn.pdf)**
+** Discussed by Paradis (2012) on pp 138-159
 
+## 7) MAPPING TRAITS ONTO TREES
+** Discussed by Paradis (2012), chapter 4
+** Basically, want to get to the point where people can visusalize singe or multiple traits mapped onto brances of trees
+** Could do this with Kali's P isoltes or with Lennon et al. (2010) with soil isolates and traits. 
 
+## 8) PHYLOGENETIC SIGNAL
+**Phylogenetic signal is outlined in Paradis (2012) on pp 236-239
+**Can we take a big-picture look at the phylogeny and traits combined and deteremine whether or not their is "signal" beyond null Brownian motion?
+Hopefully, we pick an example where the answer is "yes"
+
+## 9) PHYLOGENETIC INDEPENDENT CONTRASTS
+**Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
+**Can we take a trait-peformance relationship that's siginficant and correct for phylogeny? 
+Is the relationship still significant? 
+Do the parameters or explained varition change?
 
