@@ -20,6 +20,9 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
 ```
 
 ### B. Load Packages 
+
+What are these packages and why are we using them?
+
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("muscle")
 require("ape")
@@ -64,9 +67,9 @@ seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # ape: K
 nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
 upgma.tree <- upgma(seq.dist)
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
-nj.rooted <- root(nj.tree, outgroup, node = NULL)
-layout(matrix(c(1,2), 2, 1), height=c(1,2))
-par(mar = c(.1,.1,.1,.1))
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
+layout(matrix(c(1,2), 2, 1), height=c(2,2))
+par(mar = c(1,1,1,1))
 plot.phylo(nj.rooted, main = "NJ", "phylogram", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1) # ape command
 plot(upgma.tree, main = "UPGMA", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
 ```
@@ -78,20 +81,22 @@ There are functions like `optim.parsimony` that peforms tree rearragements via n
 Type the following at the R terminal for a detailed exmaple: vignette('Trees')
 
 ```{r}
-read.aln.mat <- as.matrix(read.aln)
-read.aln.phydat <- phyDat(p, type = "DNA")
-seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
-nj.tree.phydat <- nj(seq.dist.phydat)
-parsimony(nj.tree.phydat, read.aln.phydat)
+# read.aln.mat <- as.matrix(read.aln)
+# read.aln.phydat <- phyDat(p, type = "DNA")
+# seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
+# nj.tree.phydat <- nj(seq.dist.phydat)
+# parsimony(nj.tree.phydat, read.aln.phydat)
 ```
 
 ## 6) MAXIMUM LIKELIHOOD ESTIMATION AND BOOTSTRAP SUPPORT
 **We may need to use the package `phangorn` (http://cran.r-project.org/web/packages/phangorn/phangorn.pdf)**
 ** Discussed by Paradis (2012) on pp 138-159
 ```{r}
-ml <- pml(nj.tree.phydat, data = seq.dist.phydat) 
+ml <- pml(nj.rooted, data = seq.dist.phydat) 
+# 
+# seq.dist.phydat
 
-seq.dist.phydat
+```
 
 ## 7) MAPPING TRAITS ONTO TREES
 ** Discussed by Paradis (2012), chapter 4
