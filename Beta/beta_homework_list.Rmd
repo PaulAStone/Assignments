@@ -27,20 +27,20 @@ soilbac.full <- read.table("./data/soilbacfull.txt", sep = "\t", header = TRUE, 
 ##3) CREATE LIST
 ```{r}
 tax <- data.frame(soilbac.full[,1:5]) #assign taxonomy
-otu <- data.frame(soilbac.full[,6:28]) #assign site-by-species matrix
-soilbac.list <- list(tax, otu) # create list
-names(soilbac.list) <- c("tax","otu") # name objects in list
-str(soilbac.list, max.level = 1) # look at structure of list
+otu <- t(data.frame(soilbac.full[,6:28])) #assign site-by-species matrix
+soilbac <- list(otu, tax) # create list
+names(soilbac) <- c("otu", "tax") # name objects in list
+str(soilbac, max.level = 1) # look at structure of list
 ```
 
 ##4) SAVE LIST 
 ```{r}
-write.table(soilbac.list, sep = "\t", file = "data/soilbac.list.txt")
+save(soilbac, file = "./data/soilbac.RData")
 ```
 
 ##5) LOAD LIST
 Somethig is not quite right here, probably because I'm not writing the table correctly.
 ```{r}
-soilbac.list.test <- read.table("./data/soilbac.list.txt", sep = "\t")
-str(soilbac.list.test, max.level = 1) 
+rm(list = ls())
+load("./data/soilbac.RData")
 ```
