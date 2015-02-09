@@ -24,6 +24,7 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
 require("muscle")
 require("ape")
 require("seqinr")
+require("phangorn")
 ```
 
 ## 2) DESCRIPTION OF DATA
@@ -40,34 +41,57 @@ However, it seem that these functions call on other installed programs, like Clu
 In contrast, the `muscle` package aligns sequences in a "stand alone" fashion. 
 
 ```{r}
-seq.aln <- muscle::muscle(seqs="p.isolates.fasta", out = "p.isolates.aln.fasta") 
+seq.aln <- muscle::muscle(seqs="data/p.isolates.fasta", out = "data/p.isolates.afa") 
 ```
 
 ## 4) VISUALIZE THE ALIGNMENT
 ```{r}
-read.aln <- read.alignment(file = "p.isolates.aln.fasta", format = "fasta") # seqinr command to read muscle align
-
+read.aln <- read.alignment(file = "data/p.isolates.afa", format = "fasta") # seqinr command to read muscle align
 p.DNAbin <- as.DNAbin(read.aln) # ape command to convert fasta file into DNAbin filetype
-
-x <- p.DNAbin[,400:500] # identify region (in bp of 16S rRNA) to visuzlize
-
+x <- p.DNAbin[,100:500] # identify region (in bp of 16S rRNA) to visuzlize
 image(x, cex.lab = 0.5) # ape command to visusalize seq align
-
 grid(ncol(x),nrow(x),col="lightgrey") # ape command to add grid
 ```
 
-## 5) CREATE AND EVALUATE EVOLUTIONARY MODELS
+## 5) EVOLUTIONARY RECONSTRUCTION
+The `ape` package uses the `dist.dna` function to create distances for various DNA substitution models. 
 ```{r}
-seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # ape command for Evo model: Kimura’s 2-parameters distance
+seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # ape: Kimura’s 2-parameters distance
+```
 
+## 6) MAKE A NEIGHBOR-JOINING and UPGMA TREE
+```{r}
 nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
+upgma.tree <- upgma(seq.dist)
+outgroup <- match("Methanosarcina", nj.tree$tip.label)
+nj.rooted <- root(nj.tree, outgroup, node = NULL)
+layout(matrix(c(1,2), 2, 1), height=c(1,2))
+par(mar = c(.1,.1,.1,.1))
+plot.phylo(nj.rooted, main = "NJ", "phylogram", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1) # ape command
+plot(upgma.tree, main = "UPGMA", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
+```
 
-plot.phylo(nj.tree, type="phylogram", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1) # ape command
+## 7) MAKE A PARSIMONY TREE
+Using package `phangorn`.
+Requires phyDat formatted objects.
+There are functions like `optim.parsimony` that peforms tree rearragements via nearest-neighbor exchange and `pratchet` which uses parsimony ratchet to find trees with lower parsimony score.
+Type the following at the R terminal for a detailed exmaple: vignette('Trees')
+
+```{r}
+read.aln.mat <- as.matrix(read.aln)
+read.aln.phydat <- phyDat(p, type = "DNA")
+seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
+nj.tree.phydat <- nj(seq.dist.phydat)
+parsimony(nj.tree.phydat, read.aln.phydat)
 ```
 
 ## 6) MAXIMUM LIKELIHOOD ESTIMATION AND BOOTSTRAP SUPPORT
 **We may need to use the package `phangorn` (http://cran.r-project.org/web/packages/phangorn/phangorn.pdf)**
 ** Discussed by Paradis (2012) on pp 138-159
+```{r}
+ml <- pml(nj.tree.phydat, data = seq.dist.phydat) 
+
+seq.dist.phydat
 
 ## 7) MAPPING TRAITS ONTO TREES
 ** Discussed by Paradis (2012), chapter 4
@@ -78,6 +102,7 @@ plot.phylo(nj.tree, type="phylogram", use.edge.length = FALSE, direction = "righ
 **Phylogenetic signal is outlined in Paradis (2012) on pp 236-239
 **Can we take a big-picture look at the phylogeny and traits combined and deteremine whether or not their is "signal" beyond null Brownian motion?
 Hopefully, we pick an example where the answer is "yes"
+** visualig co-mapping, mantel tests
 
 ## 9) PHYLOGENETIC INDEPENDENT CONTRASTS
 **Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
