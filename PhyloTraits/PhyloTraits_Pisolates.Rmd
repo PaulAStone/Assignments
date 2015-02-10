@@ -1,0 +1,76 @@
+---
+title: "Phylogenetic Diversity - Traits"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "February 20, 2015"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## 1) SETUP
+### A. Retrieve and Set Your Working Directory
+
+```{r, results = 'hide'}
+rm(list = ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
+```
+
+
+### A. Loading Growth Rate Data
+```{r}
+p.growth <- read.table("data/p.isolates.raw.growth.txt", sep = "\t", header = TRUE, row.names = 1)
+#p.growth <- as.data.frame(t(p.growth))
+```
+
+### B. Calculate Nich Breadth
+We wil estimate niche breadth using Levins index (1968).
+Levins index ranges from 0 - 1 with lower values indicating specialization and higher values indicating generalization. 
+To make the growth rate data mesh with the indes, we need to standardize by taking the sum of the growth rates of an isoalte across all resoruces. 
+
+```{r}
+p.growth.std <- p.growth / (apply(p.growth, 1, sum))
+```
+
+Make function for Levins Index
+```{r}
+levins <- function(p_xi = ""){
+  x = 0
+  for (i in p_xi){
+    x = x + i^2
+    }
+    nb = 1 / (length(p_xi) * x) 
+  return(nb)
+}
+```  
+
+Niche breadth for isolates on different P sources
+```{r}
+nb <- levins(p.growth.std)
+```
+
+### C. Testing for Generalist-Specialist Tradeoff
+We will test for a hypothesized trade-off between niche breadth and a strain's maximum growth rate. 
+The expectation is that generalists will experience a cost that will be manifested in an overall lower maximum growth rate. 
+
+The following code gets the data set up for testing
+```{r}
+umax <- (apply(p.growth, 1, max)) # calculate max growth
+vec <- rep(NA, length(umax)) # make an empty vector for lake id
+tradeoff <- data.frame(nb,umax,vec) # make new data frame
+lake.test <- grepl("WG",row.names(tradeoff)) # test if WG or LL
+lake <- ifelse(lake.name == TRUE, 'WG', 'LL') # create lake id vector
+tradeoff <- data.frame(nb, umax, lake) # make dataframe
+tradeoff.LL <- tradeoff[ which(tradeoff$lake=='LL'),] ## LL data
+tradeoff.WG <- tradeoff[ which(tradeoff$lake=='WG'),]
+```
+
+The following code tests for tradeoff for the entire data set and each lake one-at-a-time
+```{r}
+fit.all <- lm(umax ~ nb, data = tradeoff)
+fit.LL <- lm(umax ~ nb, data = tradeoff.LL)
+fit.WG <- lm(umax ~ nb, data = tradeoff.WG)
+
+plot(tradeoff.LL$nb,tradeoff.LL$umax)
+plot(tradeoff.WG$nb,log10(tradeoff.WG$umax))
