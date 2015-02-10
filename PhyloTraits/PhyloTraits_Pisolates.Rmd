@@ -15,12 +15,10 @@ geometry: margin=2.54cm
 rm(list = ls())
 getwd()
 setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
-require("heR.Misc")
 
 ### A. Loading Growth Rate Data
 ```{r}
 p.growth <- read.table("data/p.isolates.raw.growth.txt", sep = "\t", header = TRUE, row.names = 1)
-#p.growth <- as.data.frame(t(p.growth))
 ```
 
 ### B. Calculate Nich Breadth
@@ -56,13 +54,8 @@ The expectation is that generalists will experience a cost that will be manifest
 The following code gets the data set up for testing
 ```{r}
 umax <- (apply(p.growth, 1, max)) # calculate max growth
-vec <- rep(NA, length(umax)) # make an empty vector for lake id
-tradeoff <- data.frame(nb,umax,vec) # make new data frame
-lake.test <- grepl("WG",row.names(tradeoff)) # test if WG or LL
-lake <- ifelse(lake.name == TRUE, 'WG', 'LL') # create lake id vector
-tradeoff <- data.frame(nb, umax, lake) # make dataframe
-tradeoff.LL <- tradeoff[ which(tradeoff$lake=='LL'),] ## LL data
-tradeoff.WG <- tradeoff[ which(tradeoff$lake=='WG'),]
+lake <- ifelse(grepl("WG",row.names(tradeoff)),'WG', 'LL') # make an empty vector for lake id
+tradeoff <- data.frame(nb,umax,lake) # make new data frame
 ```
 
 The following dummy variable regression tests for trade-off
@@ -80,27 +73,16 @@ WG.nb <- subset(nb,lake=="WG")
 LL.umax <- subset(umax,lake=="LL")
 WG.umax<-subset(umax,lake=="WG")
 
-plot(LL.nb, LL.umax, axes = F, xlab = "Niche Breadth", ylab = "Maximum Growth Rate", 
-  log = "y", pch = 21, cex = 2, las = 1, col = "black", bg = "white", 
-  xlim=c(0,1), ylim = c(min(umax-0.5), max(umax+0.5)))
+plot(LL.nb, log1p(LL.umax), axes = F, xlab = "Niche Breadth", ylab = "Maximum Growth Rate", 
+  pch = 21, cex = 2, las = 1, col = "black", bg = "white",
+  xlim=c(0,1), ylim = c(0, 1))
 
+  points(WG.nb,log1p(WG.umax),pch=21,cex=2,col="black", bg="black")
+  box()
+  axis(side = 1, labels=T, cex.axis = 1.25)
+  axis(side = 2, las = 1, cex.axis = 1.25, labels = c(0.1, 1, 10), at = log1p(c(0.1, 1, 10)))
 
-plot(LL.nb, LL.umax, xlab = "Niche Breadth", ylab = "Maximum Growth Rate", 
-  log = "y",pch = 21, cex = 2, col = "black", bg = "white", 
-  xlim=c(0,1), ylim = c(min(umax-0.5), max(umax+0.5)), las = 2)
-
-points(WG.nb,WG.umax,pch=21,cex=2,col="black", bg="black")
-
-axis(3,labels=F)
-axis(4,labels=F)
-
-plot(LL.nb,LL.umax,xlab="niche breadth",ylab="Maximum Growth Rate", pch=21, cex=2, col="black", bg="white",xlim=c(0,1),ylim=c(1.25*(min(umax)),1.25*(max(umax))), las = 2)
-
-axis(3,labels=F)
-axis(4,labels=F)
-
-legend(0.005, 0.7,"LL", cex=1, col="black", pch=1, bty="n")
-legend(0.005, 0.4,"WG", cex=1, col="black", pch=16, bty="n")
+legend("topleft", legend = c("LL","WG"), pch = c(1,16), cex =1, col = "black", bty = "n")
 
 ### Model Coefficients
 coefficients<-coefficients(fit) # model coefficients
