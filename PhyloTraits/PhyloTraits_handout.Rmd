@@ -20,6 +20,9 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
 ```
 
 ### B. Load Packages 
+
+What are these packages and why are we using them?
+
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("muscle")
 require("ape")
@@ -56,7 +59,7 @@ grid(ncol(x),nrow(x),col="lightgrey") # ape command to add grid
 ## 5) EVOLUTIONARY RECONSTRUCTION
 The `ape` package uses the `dist.dna` function to create distances for various DNA substitution models. 
 ```{r}
-seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # ape: Kimura’s 2-parameters distance
+seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # ape: Kimura’s 2-parameters distance
 ```
 
 ## 6) MAKE A NEIGHBOR-JOINING and UPGMA TREE
@@ -64,11 +67,12 @@ seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # ape: K
 nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
 upgma.tree <- upgma(seq.dist)
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
-nj.rooted <- root(nj.tree, outgroup, node = NULL)
-layout(matrix(c(1,2), 2, 1), height=c(1,2))
-par(mar = c(.1,.1,.1,.1))
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
+upgma.rooted <- root(upgma.tree, outgroup, resolve.root=TRUE)
+layout(matrix(c(1,2), 2, 1), height=c(2,2))
+par(mar = c(1,1,1,1))
 plot.phylo(nj.rooted, main = "NJ", "phylogram", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1) # ape command
-plot(upgma.tree, main = "UPGMA", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
+plot(upgma.rooted, main = "UPGMA", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
 ```
 
 ## 7) MAKE A PARSIMONY TREE
@@ -78,24 +82,37 @@ There are functions like `optim.parsimony` that peforms tree rearragements via n
 Type the following at the R terminal for a detailed exmaple: vignette('Trees')
 
 ```{r}
-read.aln.mat <- as.matrix(read.aln)
-read.aln.phydat <- phyDat(p, type = "DNA")
-seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
-tree.nj <- nj(seq.dist.phydat)
-parsimony(tree.nj, read.aln.phydat)
-tree.pars <- optim.parsimony(tree.nj, read.aln.phydat)
-tree.ratch <- pratchet(read.aln.phydat, trace = 0)
-parsimony(c(tree.pars,tree.ratch),read.aln.phydat)
-plot(tree.pars, main = "parsimony", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
+# read.aln.mat <- as.matrix(read.aln)
+# read.aln.phydat <- phyDat(p, type = "DNA")
+# seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
+# tree.nj <- nj(seq.dist.phydat)
+# parsimony(tree.nj, read.aln.phydat)
+# tree.pars <- optim.parsimony(tree.nj, read.aln.phydat)
+# tree.ratch <- pratchet(read.aln.phydat, trace = 0)
+# parsimony(c(tree.pars,tree.ratch),read.aln.phydat)
+# plot(tree.pars, main = "parsimony", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
 ```
 
 ## 6) MAXIMUM LIKELIHOOD ESTIMATION AND BOOTSTRAP SUPPORT
 ** Beware really long, something is not right. 
 ** Discussed by Paradis (2012) on pp 138-159
 ```{r}
+read.aln.mat <- as.matrix(read.aln)
+read.aln.phydat <- phyDat(read.aln.mat, type = "DNA")
+ml <- pml(nj.rooted, data = read.aln.phydat, k =4, inv = 0.2) 
+
+seq.dist.phydat
+
+
 ml <- pml(tree.nj, data = seq.dist.phydat) 
 
 seq.dist.phydat
+
+
+data(yeast)
+tree <- NJ(dist.logDet(yeast))
+fit <- pml(tree, yeast, k=4, inv=0.2)
+
 ```
 
 ## 7) MAPPING TRAITS ONTO TREES
