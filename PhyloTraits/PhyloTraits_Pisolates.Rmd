@@ -15,8 +15,7 @@ geometry: margin=2.54cm
 rm(list = ls())
 getwd()
 setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
-```
-
+require("heR.Misc")
 
 ### A. Loading Growth Rate Data
 ```{r}
@@ -66,11 +65,54 @@ tradeoff.LL <- tradeoff[ which(tradeoff$lake=='LL'),] ## LL data
 tradeoff.WG <- tradeoff[ which(tradeoff$lake=='WG'),]
 ```
 
-The following code tests for tradeoff for the entire data set and each lake one-at-a-time
+The following dummy variable regression tests for trade-off
+Specifically, the model test for an effect of niche breadth (continuous), lake identity (categorical), and an interaction between the two variables
 ```{r}
-fit.all <- lm(umax ~ nb, data = tradeoff)
-fit.LL <- lm(umax ~ nb, data = tradeoff.LL)
-fit.WG <- lm(umax ~ nb, data = tradeoff.WG)
+D <- (lake=="LL")*1
+fit<-lm(log10(umax) ~ nb + D + nb*D)
+summary(fit)
+```
 
-plot(tradeoff.LL$nb,tradeoff.LL$umax)
-plot(tradeoff.WG$nb,log10(tradeoff.WG$umax))
+### Plotting
+LL.nb <- subset(nb,lake=="LL")
+WG.nb <- subset(nb,lake=="WG")
+
+LL.umax <- subset(umax,lake=="LL")
+WG.umax<-subset(umax,lake=="WG")
+
+plot(LL.nb, LL.umax, axes = F, xlab = "Niche Breadth", ylab = "Maximum Growth Rate", 
+  log = "y", pch = 21, cex = 2, las = 1, col = "black", bg = "white", 
+  xlim=c(0,1), ylim = c(min(umax-0.5), max(umax+0.5)))
+
+
+plot(LL.nb, LL.umax, xlab = "Niche Breadth", ylab = "Maximum Growth Rate", 
+  log = "y",pch = 21, cex = 2, col = "black", bg = "white", 
+  xlim=c(0,1), ylim = c(min(umax-0.5), max(umax+0.5)), las = 2)
+
+points(WG.nb,WG.umax,pch=21,cex=2,col="black", bg="black")
+
+axis(3,labels=F)
+axis(4,labels=F)
+
+plot(LL.nb,LL.umax,xlab="niche breadth",ylab="Maximum Growth Rate", pch=21, cex=2, col="black", bg="white",xlim=c(0,1),ylim=c(1.25*(min(umax)),1.25*(max(umax))), las = 2)
+
+axis(3,labels=F)
+axis(4,labels=F)
+
+legend(0.005, 0.7,"LL", cex=1, col="black", pch=1, bty="n")
+legend(0.005, 0.4,"WG", cex=1, col="black", pch=16, bty="n")
+
+### Model Coefficients
+coefficients<-coefficients(fit) # model coefficients
+confit<-confint(fit,level=0.95) # 95% CI for parameters
+predicted<-fitted(fit) # predicted values
+rediduals<-residuals(fit) # residuals
+anova<-anova(fit) # anova table
+vcov<-vcov(fit) # covariance matrix for model parameters
+influence<-influence(fit) # regression diagnostics
+
+### Adding Regression Lines
+curve(coefficients[1]+coefficients[2]*x,from=min(nb),to=max(nb),add=TRUE)
+Int=coefficients[1]+coefficients[3]
+Slp=coefficients[2]+coefficients[4]
+curve((Int)+(Slp)*x,from=min(nb),to=max(nb),add=TRUE)
