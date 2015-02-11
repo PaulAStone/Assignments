@@ -44,12 +44,12 @@ However, it seem that these functions call on other installed programs, like Clu
 In contrast, the `muscle` package aligns sequences in a "stand alone" fashion. 
 
 ```{r}
-seq.aln <- muscle::muscle(seqs="data/p.isolates.fasta", out = "data/p.isolates.afa") 
+seq.aln <- muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
 ```
 
 ## 4) VISUALIZE THE ALIGNMENT
 ```{r}
-read.aln <- read.alignment(file = "data/p.isolates.afa", format = "fasta") # seqinr command to read muscle align
+read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") # seqinr command to read muscle align
 p.DNAbin <- as.DNAbin(read.aln) # ape command to convert fasta file into DNAbin filetype
 x <- p.DNAbin[,100:500] # identify region (in bp of 16S rRNA) to visuzlize
 image(x, cex.lab = 0.5) # ape command to visusalize seq align
@@ -97,21 +97,21 @@ Type the following at the R terminal for a detailed exmaple: vignette('Trees')
 ** Beware really long, something is not right. 
 ** Discussed by Paradis (2012) on pp 138-159
 ```{r}
-read.aln.mat <- as.matrix(read.aln)
-read.aln.phydat <- phyDat(read.aln.mat, type = "DNA")
-ml <- pml(nj.rooted, data = read.aln.phydat, k =4, inv = 0.2) 
-
-seq.dist.phydat
-
-
-ml <- pml(tree.nj, data = seq.dist.phydat) 
-
-seq.dist.phydat
-
-
-data(yeast)
-tree <- NJ(dist.logDet(yeast))
-fit <- pml(tree, yeast, k=4, inv=0.2)
+# read.aln.mat <- as.matrix(read.aln)
+# read.aln.phydat <- phyDat(read.aln.mat, type = "DNA")
+# ml <- pml(nj.rooted, data = read.aln.phydat, k =4, inv = 0.2) 
+# 
+# seq.dist.phydat
+# 
+# 
+# ml <- pml(tree.nj, data = seq.dist.phydat) 
+# 
+# seq.dist.phydat
+# 
+# 
+# data(yeast)
+# tree <- NJ(dist.logDet(yeast))
+# fit <- pml(tree, yeast, k=4, inv=0.2)
 
 ```
 
@@ -119,9 +119,59 @@ fit <- pml(tree, yeast, k=4, inv=0.2)
 
 ### A. Loading Trait Database
 ```{r}
-p.growth <- read.table("data/p.isolates.stdgrowth.txt", sep = "\t", header = TRUE, row.names = 1)
+p.growth <- read.table("./data/p.isolates.stdgrowth.txt", sep = "\t", header = TRUE, row.names = 1)
 #p.growth <- as.data.frame(t(p.growth))
 ```
+
+
+### Mapping Traits on Tree
+```{r}
+nj.tree <- bionj(seq.dist) # ape command for Neighbor Joining
+outgroup <- match("Methanosarcina", nj.tree$tip.label)
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
+nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
+traits <- p.growth[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
+
+# Drop Missing Branches and data
+nj.rooted <- drop.tip(nj.rooted, c("LL11A", "LL15", "WG37", "WG30A", "WG32", "LL12A"))
+traits <- traits[!rownames(traits) == "LL12", ]
+
+require(phylobase)
+require(adephylo)
+x <- phylo4d(nj.rooted, traits)
+table.phylo4d(x,treetype="clad", show.node=FALSE, cex.leg=0.5, cex.label = 0.5,
+use.edge.length=FALSE, edge.color="blue", edge.width=2, box=FALSE, las = 1) 
+
+
+
+
+library(latticeExtra)
+dd.col <- as.dendrogram(hc)
+col.ord <- order.dendrogram(dd.col)
+mat <- matrix(rnorm(4*4),nrow=4)
+colnames(mat) <- tree$tip.label
+rownames(mat) <- tree$tip.label
+levelplot(mat[tree$tip,tree$tip],type=c('g','p'),
+          aspect = "fill",
+          colorkey = list(space = "left"),
+          legend =
+            list(right =
+                   list(fun = dendrogramGrob,
+                        args =
+                          list(x = dd.col, 
+                               side = "right",
+                               size = 10))),
+          panel=function(...){
+            panel.fill('black',alpha=0.2)
+            panel.levelplot.points(...,cex=12,pch=23)
+          }
+)
+
+
+
+
+```
+
 
 ### B. Calculating Niche Breadth
 We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2}}\right)$, where ni is each resource 
