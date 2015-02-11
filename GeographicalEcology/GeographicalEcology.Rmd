@@ -11,14 +11,13 @@ geometry: margin=2.54cm
 ## OVERVIEW
 In this exercise, we will add a geographical context to alpha ($\alpha$) and beta ($\beta$) diversity.
 We will explore core concepts like spatial autocorrelation, aggregation, and scale dependence.
-We will also make use of Geographical Information Systems (GIS) to map and spatially explore environmental, spatial, and biodiversity data.
+We will also make use of Geographical Information Systems (GIS) to map and explore environmental, spatial, and biodiversity data.
 
-After completing this exercise you will be able to:
-
-1.  Quantify effects of geographic distance on environmental and ecological similarity.
-2.  Examine the extent to which patterns of diversity depend on spatial scale.
-3.  Use control structures such as `loops` to control how R operates on variables.
-4.  Find and use geospatial data and conduct basic GIS operations in R.
+After completing this exercise you will be able to:  
+1.  Quantify effects of geographic distance on environmental and ecological similarity.  
+2.  Examine the extent to which patterns of diversity depend on spatial scale.  
+3.  Use control structures such as `loops` to control how R operates on variables.  
+4.  Find and use geospatial data and conduct basic GIS operations in R.  
 
 ## 1.) SETUP
 ### A. Retrieve and Set Your Working Directory
@@ -30,42 +29,50 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/GeographicalEcology")
 ```
 
 ### B. Load Packages 
+
 We will use the `vegan` package for biodiversity estimators and related functions.
 We will also use packages developed in R for geographical information systems (GIS).
 These will allow us to generate maps, project diversity data onto environmental layers, and conduct geographical analyses.
-Be sure to run: install.packages("RgoogleMaps"), if not previously installed.
+Be sure to run **install.packages(PackageName)**, if not previously installed, where PackageName is the name of the package you want installed.
+Or, run **install.packages(PackageName, type="source", dependencies=TRUE)**, if the previous command doesn't work.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("vegan")
 
-require("sp")
+require("sp") # classes and methods for spatial data: points, lines, polygons, grids
+install.packages("geoR")
+install.packages("rgdal", type="source", dependencies=TRUE)
+require("geoR")        # Methods for geostatistical analyses
 require("rgdal")  # Geospatial Data Abstraction Library
 require("raster") # Methods to create a RasterLayer object
 
-require("RgoogleMaps")
-require("maptools")
-require("geoR")
+require("RgoogleMaps") # For querying the Google server for static maps. 
+require("maptools")    # Tools for manipulating and reading geospatial data
 ```
 
 ### C. Load and Compile a Large Dataset
+
 We will analyze environmental and bacterial community data from a survey of shallow ponds found east of Bloomington, IN.
 These ponds are scattered throughout Brown County State Park, Yellowood State Forest, and Hoosier National Forest.
 In the 1940s, Maury Reeves of the Indiana Department of Natural Resources began constructing refuge ponds for wildlife.
 In the summer of 2013, we visited approximately 50 of these ponds and recorded their geographic locations using a GPS unit; 'GPS' is the acronym for Global Positioning System.
 We sampled aspects of water chemistry, physical properties, and bacterial community composition.
+Let's load the environmental and site-by-species data for the refuge ponds.
 
-Let's begin by loading the environmental and site-by-species data for the refuge ponds.
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 Ponds <- read.table(file="BrownCoData/20130801_PondDataMod.csv", head=TRUE, sep=",")
 lats <- as.numeric(Ponds[, 3]) # latitudes (north and south)
 lons <- as.numeric(Ponds[, 4]) # longitudes (east and west)
-
 OTUs <- read.csv(file="BrownCoData/SiteBySpecies.csv", head=TRUE, sep=",")
 ```
 
-Take a look at the `Environment` tab in the upper right corner. You should see there are 16384 OTUs distributed across 52 sites, for which, we have 21 variables recorded. These variables include elevation (in meters) and geographical coordinates (lat-long), temperature (Celcius), dissolved oxygen (DO), among others. **This would be a great time to do some due diligence and look at the environmental metadata in the README.md file**.
+Take a look at the `Environment` tab in the upper right corner. You should see there are 16384 OTUs distributed across 52 sites, for which, we have 21 variables recorded. These variables include elevation (in meters) and geographical coordinates (lat-long), temperature (Celcius), dissolved oxygen (DO), among others. **This would be a great time to do some due diligence and look at the environmental metadata in the README.md file.**
 
-Having gotten familiar with the environmental and geograhpical data associated with the bacterial communities at our 52 refuge ponds, lets not stop there. Instead, let's add four additional columns of data to `Ponds`. There will be a column for richness (S), total abundance (N), Shannon's Diversity (H), and Simpson's evenness (De). These will provide quick-and-easy diversity related variables to explore with respect to distance and environment.
+As you can see, we have a lot of data environmental and geographical data associated with the bacterial communities at our 52 refuge ponds.
+But, let's not stop there. 
+Let's add four additional columns of data to `Ponds`. 
+There will be a column for richness (S), total abundance (N), Shannon's Diversity (H), and Simpson's evenness (De). 
+These will provide quick-and-easy diversity related variables to explore with respect to distance and environment.
 
 ```{r}
 otu.names <- names(OTUs)
@@ -75,14 +82,13 @@ Ponds$N <- as.vector(rowSums(OTUs)) # no. reads
 Ponds$S <- as.vector(rowSums(OTUs > 0) * 1)
 Ponds$H <- as.vector(diversity(OTUs, index = "shannon"))
 Ponds$De <- as.vector(diversity(OTUs, index = "invsimpson")/Ponds$S)
+# Note, for De at each site, we divided Simpson's Diversity by OTU site richness
 ```
 
 **Now we have a large compilation of geographical, environmental, taxonomic, richness, abundance, diversity, and evenness data! Let's do some Geographical Ecology!**
 
 ## 2.) MAP SAMPLES AND DATA
-Let's visualize the spatial distribution of our samples with a basic map in RStudio.
-There have been many GIS packages developed for R; we will use just a few of them to give you an idea of R and RStudio's GIS capabilities.
-Let's generate a map of the refuge ponds using the `GetMap` function in the package `RgoogleMaps`.
+Let's visualize the spatial distribution of our samples with a basic map in RStudio by generating a map of the refuge ponds using the `GetMap` function in the package `RgoogleMaps`.
 This map will be centered on Brown County, Indiana (39.1 latitude, -86.3 longitude).
 
 ```{r}
@@ -94,15 +100,17 @@ PlotOnStaticMap(newmap, lats, lons, cex=1, pch=20, col='red', add = TRUE)
 
 This map displays a lot of useful information that we otherwise, would not have been aware of. For example, all points are on National Forest land except for one that is north of all others. **Perhaps, a natural outgroup?** Likewise, the sample ponds appear to be aggregated in four or five small groups and distributed across a topographically complex area.
 
-Despite allowing us to contextualize our sample ponds within the broader landscape, the Google map misses a lot of information that would otherwise help us to understand the environmental and geographical factors that may coincide with our observations on diversity.
-Likewise, the data contained within the map cannot be easily extracted.
+Despite being a fast way to contextualize our sample ponds within the broader landscape, the Google map misses a lot of information that would otherwise help us to understand the environmental and geographical factors that may coincide with our observations on diversity.
+Likewise, the geographical data contained within the map cannot be extracted.
 
-Next, we'll use the high quality geospatial data on Indiana water bodies and % landcover. We have freely obtained these 'layers' from the **IndianaMap** geographical layer gallery: http://maps.indiana.edu/layerGallery.html.
+For spatially explicit data on environmental and geographic features, i.e. geospatial data, we can turn to one of the many freely accessible online GIS databases and warehouses.
+Here, we will use the high quality geospatial data on Indiana water bodies and percent landcover.
+We obtained these data 'layers' from the **IndianaMap** geographical layer gallery: http://maps.indiana.edu/layerGallery.html.
 
 ```{r}
 Land.Cover <- raster("LandCover/LandCover.tif")
 plot(Land.Cover, xlab='Longitude', ylab='Latitude', 
-main='Map of Geospatial data for % land cover,\nwater bodies, and sample sites')
+main='Map of geospatial data for % land cover,\nwater bodies, and sample sites')
 
 Water.Bodies <- readShapeSpatial("water/water.shp")
 plot(Water.Bodies, border='cyan', axes=TRUE, add = TRUE)
@@ -111,11 +119,15 @@ Refuge.Ponds <- SpatialPoints(cbind(lons, lats))
 plot(Refuge.Ponds, line='r', col='red', pch = 20, cex=1.5, add=TRUE)
 ```
 
-Whether it's data on temperature, elevation, soils and geology, human demographics, ecoregions, etc., diverse data can be found among the many GIS warehouses, e.g.: 
+Note, that the percent land cover, water bodies, and points for refuge ponds are in spatial agreement, i.e., there is no obvious mis-alignment.
+That is because we have previously modified each layer to have the same **datum**, **projection**, and nearly the same **extent**.  
+
+Working with geospatial data can be challenging because there is so much information involved with correctly identifying where on Earth something occurs and because there are many ways to represent points on a globe with 2-dimensional surface, i.e., a map.
+But, whether it's data on temperature, elevation, soils, geology, human demographics, ecoregions, etc., diverse data can be found among the many GIS warehouses.
+Here are some:
 1.) USGS: http://viewer.nationalmap.gov/viewer/
 2.) State organizations: http://www.indianamap.org/resources.php
 3.) USDA: http://datagateway.nrcs.usda.gov/
-
 
 ## PRIMARY CONCEPTS OF GEOGRAPHICAL ECOLOGY
 Having imported our primary community and environmental data from the refuge ponds, as well as having obtained a wealth of geospatial data from online sources, we are now ready to make a data intensive exploration into primary concepts and patterns of geographical ecology!
@@ -128,11 +140,9 @@ In short, spatial autocorrelation is the degree to which spatial variables are e
 
 Last week, you used the Mantel test to detect autocorrelated changes in environmental variables.
 This week, we reveal another way of detecting autocorrelation with respect to scale, that is, by using a **variogram**.
-Variograms are frequently used in spatial analyses and reveal the degree of spatial autocorrelation in sample data and the autocorrelation changes over distance.
+Variograms are frequently used in spatial analyses and reveal the degree of spatial autocorrelation in sample data and how the autocorrelation changes over scales of distance.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
-par(mfrow=c(1, 1)) # a 1x1 plot
-
 dists <- dist(cbind(lats, lons))
 breaks = seq(0, 1.5, l = 11)
 
@@ -142,11 +152,9 @@ colnames(v1.summary) <- c("lag", "semi-variance", "# of pairs")
 plot(v1, type = "b", main = "Variogram for DOC", xlab='Distance, (Km)', col='blue')
 ```
 
-As you can see, the semi-variance decreases with distances, where at a distance near 0.4 kilometers the semi-variance approaches 2. But, what's the semivariance? Well, if you were to find the differences between all possible points spaced a constant distance apart. And then, if you were to find the variance among the differences, and then divide that variance in half, you would have the semivariance! Consequenlty, a variance or semivariance of 2 is pretty small.
+As you can see, the **semivariance** decreases with distances, where at a distance near 0.4 kilometers the semi-variance approaches 2. But, what's the semivariance? Well, if you were to find the differences between all possible points spaced a constant distance apart. And then, if you were to find the variance among the differences, and then divide that variance in half, you would have the semivariance! Consequently, a variance of 4 or semivariance of 2 might be considerd small.
 
-For a more visually informative picture, we can visualize autocorrelation across the landscape, by calculating **Moran's I**, a correlational statistic that measures autocorrelation based on feature locations and feature values.
-
-Moran's I evaluates whether the pattern expressed is clustered, dispersed, or random and assigns a Moran's I Index value, a z-score and p-value. Take for example, our land cover data represented in a raster file. Using R's `raster` package, we can calculate **global** (across the landscape) and **local** (in comparison to neighbors) measures of **Moran's I**.
+For a more visually informative picture, we can visualize autocorrelation across the landscape, by calculating **Moran's I**, a correlational statistic that measures autocorrelation based on feature locations and feature values. Moran's I evaluates whether the pattern expressed is clustered, dispersed, or random and assigns a Moran's I Index value, a z-score and p-value. Take for example, our land cover data represented in a raster file. Using R's `raster` package, we can calculate **global** (across the landscape) and **local** (in comparison to neighbors) measures of **Moran's I**.
 
 ```{r, results = 'hide'} 
 Moran(Land.Cover)
@@ -158,14 +166,12 @@ plot(LC.Moran, xlab="Longitude", ylab="Latitude",
 
 Looking at the 'landscape' of Moran's I, we can see that spatial autocorrelation, at least in land cover, is generally low.
 
-
 ## Primary Pattern 1: Distance-decay relationship
 The distance-decay relationship is the primary pattern of spatial autocorrelation, and captures the rate of decreasing similarity with increasing distance. 
 This patterns address the question of whether near communities have greater similarity than far communities.
 Likewise, it can also be used to address whether near environments have greater similarity than far ones.
 
-
-Now, let's load the `simba` package and generate distance decay relationships for the environment and community composition. We'll only examine a few environmental variables and leave it to you to explore the rest!
+Let's load the `simba` package and generate distance decay relationships for the environment and community composition. We'll only examine a few environmental variables and leave it to you to explore the rest!
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 require("simba")
@@ -187,31 +193,32 @@ struc.dist.ls <- liste(struc.dist, entry="struc")
 env.dist.ls <- liste(env.dist, entry="env")
 coord.dist.ls <- liste(coord.dist, entry="dist")
 ```
-Now, create a data frame containg plot information, geographical distance, similarity of the environment, and similarity of community
+
+Now, create a data frame containg plot information, geographical distance, similarity of the environment, and similarity of community.
 
 ```{r}
 df <- data.frame(coord.dist.ls, env.dist.ls[,3], struc.dist.ls[,3])
 names(df)[4:5] <- c("env", "struc")
 attach(df) #df <- subset(df, struc != 0)
 ```
-Finally, let's plot the Distance-decay relationships!
+
+Finally, let's plot the Distance-decay relationships, with regression lines in red.
 
 ```{r}
-# plot Distance-Decay relationships with regression lines in red
 par(mfrow=c(1, 1))
 plot(dist, env, xlab="Geographic Distance", ylab="Euclidean Distance", 
-     main = "Distance-Decay\nfor the Environment")
+     main = "Distance-Decay\nfor the Environment", col='SteelBlue')
 abline(lm(env ~ dist), col="red4")
 
 par(mfrow=c(1, 1))
 plot(dist, struc, xlab="Geographic Distance", ylab="Bray-Curtis (similarity)", 
-     main="Distance-Decay for Community Composition")
+     main="Distance-Decay for Community Composition", col='darkorchid4')
 abline(lm(struc ~ dist), col="red4")
 ```
 
+Let's, examine the slope of the regression lines, asking whether they are significantly different.
 
 ```{r}
-# Are the slopes significantly different?
 diffslope(dist, env, dist, struc)
 ```
 
@@ -227,15 +234,14 @@ Perhaps, an examination of spatial aggregation in can help.
 ### Concept 2: Aggregation
 
 Tobler made a very general observation that occurs in nearly all systems.
-However, a related and seemingly conflicting observation is that natural phenomena are generally aggregated.
-In short, this means that similar conditions, organisms, and events are often encountered in patches, pulses, runs, and between certain periods of time.
-As you saw from the GIS map, you wouldn't have to walk long before encountering a pond.
+However, a related and seemingly conflicting observation is that **natural phenomena are generally aggregated**.
+In short, this means that similar conditions, organisms, and events are often encountered in patches, pulses, and runs.
+As you saw from the GIS map, you wouldn't have to walk long before encountering another pond.
 
 Reconciling the concepts of spatial autocorrelation and aggregation we might say that,
 **"Getting futher away means getting more different...until you encounter a new patch, pulse, or period of previous conditions."**
 
 Here, we will examine aggregation with respect to the relative abundance of bacterial taxa sampled among the refuge ponds.
-
 Spatial aggregation increases the chance that ecological differences between samples will reflect differences owing to geographical similarities and distance between points.
 Looking at the map of refuge ponds, we can see that some points belong to distinct clusters.
 
