@@ -10,13 +10,13 @@ geometry: margin=2.54cm
 
 ## OVERVIEW
 In this exercise, we will add a geographical context to alpha ($\alpha$) and beta ($\beta$) diversity.
-We will introduce Geographical Information Systems (GIS) to map and spatially explore environmental, spatial, and biodiversity data.
+We will introduce Geographical Information Systems (GIS) to map and spatially examine environmental and biodiversity data.
 This will allow us to explore core concepts like spatial autocorrelation, aggregation, and scale dependence.
 
 After completing this exercise you will be able to:  
 1.  Identify primary concepts and patterns of geographical ecology  
 2.  Examine effects of geographic distance on environmental and ecological similarity.  
-3.  Examine aggregation of abundance across space.  
+3.  Characterize aggregation of abundance across space.  
 4.  Examine the extent to which patterns of diversity depend on spatial scale.    
 5.  Use geospatial data and packages to conduct GIS operations in R.  
 6.  Use control structures such as `loops` to control how R operates on variables.
@@ -59,8 +59,6 @@ In the 1940s, Maury Reeves of the Indiana Department of Natural Resources began 
 In the summer of 2013, we visited approximately 50 of these ponds and recorded their geographic locations using a GPS unit; 'GPS' is the acronym for Global Positioning System.
 We sampled aspects of water chemistry, physical properties, and bacterial community composition.
 Let's load the environmental and site-by-species data for the refuge ponds.
-
-Let's begin by loading the environmental data and site-by-species matrix for the refuge ponds.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 Ponds <- read.table(file="BrownCoData/20130801_PondDataMod.csv", head=TRUE, sep=",")
@@ -105,11 +103,11 @@ PlotOnStaticMap(newmap, lats, lons, cex=1, pch=20, col='red', add = TRUE)
 ```
 
 This map displays a lot of useful information that we otherwise, would not have been aware of. 
-For example, all points are on National Forest land except for one that is north of all others. 
+For example, all points are on State or National Forest land. 
 Likewise, the sample ponds appear to be aggregated in four or five small groups and distributed across a topographically complex area.
 
 Despite being a fast way to contextualize our sample ponds within the broader landscape, the Google map misses a lot of information that would otherwise help us to understand the environmental and geographical factors that may coincide with our observations on diversity.
-Likewise, because the Google map is only an image, it actually contains nothing but visual data.
+Likewise, because the Google map is only an image, it doesn't contain any extractable environmental or geographic data.
 
 For spatially explicit data on environmental and geographic features, i.e. geospatial data, we can turn to one of the many freely accessible online GIS databases and warehouses.
 Here, we will use the high quality geospatial data on Indiana water bodies and percent landcover.
@@ -151,9 +149,15 @@ We want to know more than whether variables are generally auto-correlated, but h
 Variables that are highly autocorrelated at the meter scale may or may not be less autocorrelated at the kilometer scale.
 If we want to use these variables in our analyses, we should not use the scales over which they are autocorrelated.
 
-This week, we reveal another way of detecting autocorrelation with respect to scale, that is, by using a **variogram**.
-Variograms are frequently used in spatial analyses and reveal the degree of spatial autocorrelation in sample data and how the autocorrelation (measured as the **semivariance**) changes over scales of distance.
-If you were to find the differences between all possible points spaced a constant distance apart and then find the variance among the differences, and then divide that variance in half, you would have the semivariance.
+Here, we reveal a way of detecting autocorrelation with respect to scale, that is, by using a **variogram**.
+Variograms are frequently used in spatial analyses and reveal the degree of spatial autocorrelation in sample data and how the autocorrelation (measured as the **semivariance**) changes over distance.
+
+The semivariance is a measure of the dispersion of all observations that fall below the mean. 
+In fact, if you were to find the differences between all possible points spaced a constant distance apart and then find the variance among the differences, and then divide that variance in half, you would have the semivariance.
+While the semivariance is similar to the variance, it only considers observations below the mean.
+In this case, higher semivariance means implies greater dispersion (lower autocorrelation) of values at a given spatial scale.
+
+Let's plot the variogram for one of our environmental variables.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 xy <- data.frame(pond.name = Ponds$Sample_ID, lats = Ponds$lat, lons = Ponds$long)
@@ -167,18 +171,20 @@ UTM <- spTransform(xy, CRS("+proj=utm +zone=51 ellps=WGS84"))
 UTM<-as.data.frame(UTM)
 coords<-UTM[,1:2]
 
-var.trend.geoR <- variog(coords=coords, data=Ponds$pH, option="bin") # try TDS and pH!!
+var.trend.geoR <- variog(coords=coords, data=Ponds$DOC, option="bin") # try TDS and pH!!
 plot(var.trend.geoR, type = "b", main = "Variogram for pH", xlab='Distance (m)',
      col='blue')
 ```
 
-***Question 1***: How does the **semivariance** change with distance? Is there a distance (i.e. spatially lag) where semivariance is very high or low?
+***Question 1***: How does the **semivariance** change with distance? Is there a distance (i.e. "spatial lag") where semivariance is very high or low?
 
 > ***Answer 1***:
 
 
 For a more visually informative picture, we can visualize autocorrelation across the landscape, by calculating **Moran's I**, a correlational statistic that measures autocorrelation based on feature locations and feature values. 
-Moran's I evaluates whether the pattern expressed is clustered, dispersed, or random and assigns an index value, a z-score and p-value. 
+Moran's I evaluates whether the pattern expressed is clustered, dispersed, or random.
+The function we will use also assigns a global Moran index value, a z-score and p-value. 
+
 Take for example, our land cover data represented in a raster file. 
 Raster files are one of two types of digital graphic files, the other being vector files.
 Images in vector files are made of many lines and curves (or paths) that create the image. 
@@ -189,7 +195,7 @@ Using R's `raster` package, we can calculate **global** (across the landscape) a
 Moran(Land.Cover)
 LC.Moran <- MoranLocal(Land.Cover)
 plot(LC.Moran, xlab="Longitude", ylab="Latitude", 
-     main="Spatial autocorrelation in landcover\nacross our sampled landscape",
+     main="Spatial autocorrelation in % landcover\nacross our sampled landscape",
      col=rainbow(11, alpha=1))
 ```
 
@@ -202,10 +208,10 @@ plot(LC.Moran, xlab="Longitude", ylab="Latitude",
 ## Pattern 1: Distance-decay relationship
 
 The distance-decay relationship is the primary pattern of spatial autocorrelation, and captures the rate of decreasing similarity with increasing distance. 
-This patterns address the question of whether communities closer to one another are more similar than communities that are farther away from each other.
-Likewise, the distance-decay pattern can be used to address whether near environments have greater similarity than far ones.
+This pattern addresses whether communities close to one another are more similar than communities that are farther away.
+The distance-decay pattern can also be used to address whether near environments have greater similarity than far ones.
 
-Let's load the `simba` package and generate distance decay relationships for bacterial communities of our refuge ponds and for some of the environmental variables we measured. Note, this will span the next few code blocks.
+Let's load the `simba` package and generate distance decay relationships for bacterial communities of our refuge ponds and for some of the environmental variables we measured. Note, this analysis will span the next few code blocks.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 require("simba")
@@ -244,6 +250,7 @@ plot(dist, env, xlab="Geographic Distance", ylab="Euclidean Distance",
      main = "Distance-Decay for the Environment", col='SteelBlue')
 
 OLS <- lm(env ~ dist)
+OLS # print regression results to the screen
 abline(OLS, col="red4")
 
 par(mfrow=c(1, 1))
@@ -251,12 +258,13 @@ plot(dist, struc, xlab="Geographic Distance", ylab="Bray-Curtis (similarity)",
      main="Distance-Decay for Community Composition", col='darkorchid4')
 
 OLS <- lm(struc ~ dist)
+OLS # print regression results to the screen
 abline(OLS, col="red4")
 ```
 
 Let's, examine the slope of the regression lines, asking whether they are significantly different from one another.
 
-```{r, results = 'hide', message = FALSE, warning = FALSE}
+```{r}
 diffslope(dist, env, dist, struc)
 ```
 
@@ -269,6 +277,7 @@ diffslope(dist, env, dist, struc)
 ## Concept 2: Spatial Aggregation
 Tobler made a general observation that occurs in nearly all systems, i.e., spatial autocorrelation.
 A related observation is that natural phenomena are generally clustered, i.e., spatially aggregated.
+That is, individuals, conditions, and events often occur in patches, clusters, pulses, etc.
 Take for example, the ponds in our sample area.
 A highly level of aggregation would suggest that if we encounter one individual, then we are likely to encounter others of the same species nearby.
 
@@ -277,9 +286,19 @@ One of the primary patterns of spatial aggregation in ecology is the distributio
 The SSAD reveals the frequency at which we find a species at a particular abundance.
 In this way, the SSAD is similar to a histogram.
 
-Here, we will examine SSADs for OTU's in refuge pond dataset by constructing **kernel-density curves**.  
+Here, we will examine SSADs for OTU's in the refuge pond dataset by constructing **kernel-density curves**.  
 Kernel density curves are analogous to histograms, but avoid the arbitrary creation of bins or discrete classes.
 In constructing kernel density curves, we attempt to account for uncertainty and sampling error by focusing on the probability that a randomly drawn data point will take a value within a particular range, instead of the exact frequencies we observed.
+
+For example, suppose we were interested in how the location of individuals varied across sites or samples.
+Let's simulate this by drawing values from a normal distribution, at random.
+
+```{r}
+S.list <- rnorm(1000) # 1000 randomly drawn values from a normal distribution
+plot(density(S.list), col = 'red', xlab='Location',
+     ylab='Probability Density',  main = 'A kernel density curve for abundance across space')
+```
+
 
 Below, we will examine the SSADs of OTUs that are randomly drawn from the refuge ponds dataset. 
 But first, let's begin by defining a function that will generate the SSAD for a randomly drawn OTU.
@@ -300,7 +319,7 @@ But first, we will need to introduce **while loops**.
 If you have ever heard anything to the effect of, "While you're at it, do this...", then you are familiar with the concept of a while loop.
 The while loop is a type of **control flow** structure that allows us to tell a program to perform an operation *while* some condition is satisfied.
 
-For example, we might want R to draw numbers at random until 4 even numbers have been drawn.
+For example, we might want R to draw numbers at random until 4 numbers less than 50 have been drawn.
 ```{r}
 numbers = c() 
 while (length(numbers) < 4){ # while the counter is less than 4
@@ -309,7 +328,6 @@ while (length(numbers) < 4){ # while the counter is less than 4
     numbers <- c(numbers, x)
   }
 }
-
 numbers # check our numbers, each should be less than 50
 ```
 
@@ -337,14 +355,13 @@ Feel free to run this chunk as many time as you like.
 
 > ***Answer 4***:
 
-**Question ***: The SSAD is a statistical distribution and like all statistical distributions, the SSAD has a mean, median, mode, variance, skewness, kurtosis, etc. What aspects of the SSAD would you choose to quantify and report, and why? 
+***Question ***: The SSAD is a statistical distribution and like all statistical distributions, the SSAD has a mean, median, mode, variance, skewness, kurtosis, etc. What aspects of the SSAD would you choose to quantify and report, and why? 
 
 
 ***Question 5***: Each row in the site-by-species matrix represents a site. 
 Each column represents an OTU.
 If the SSAD is generated by considering all rows for a single column (i.e. OTU), then what do we obtain when we consider all columns for a given row (i.e. site)?
 Have we examined this sort of data structure before? 
-If so, then elaborate.
 
 > ***Answer 5***: 
 
@@ -353,7 +370,7 @@ If so, then elaborate.
 
 Our idea of whether variables are spatially autocorrelated and whether the abundances of OTUs are spatially aggregated can change with aspects of spatial scale, i.e. extent and grain.
 **Extent** is the greatest distance considered in an observation or study.
-**Grain** is the smallest or primary unit by which extent the is measured.
+**Grain** is the smallest or primary unit by which the extent is measured.
 
 Let's generate two random samples from a normal distribution, one sample for x-coordinates and one for y-coordinates.
 We'll let each x-y pair represent the location of a single individual, where all individuals belong to the same species.
@@ -390,13 +407,13 @@ par(mfrow=c(2, 2))
 df <- data.frame(x,y)
 
 h1 <- hist2d(df, nbins=80, show=TRUE, xlim=c(-2,2), ylim=c(-2,2),
-             xlab='x', ylab='y', main = "Fine grain" )
+             xlab='x-coord', ylab='y-coord', main = "Fine grain" )
 ad <- h1$counts
 plot(density(ad), col = 'red', xlab='Site abundance',
      ylab='Probability Density',  main = "Fine grain")
 
 h4 <- hist2d(df, nbins=20, show=TRUE, xlim=c(-2,2), ylim=c(-2,2),
-             xlab='x', ylab='y', main = "Coarse grain" )
+             xlab='x-coord', ylab='y-coord', main = "Coarse grain" )
 ad <- h4$counts
 plot(density(ad), col = 'red', xlab='Site abundance',
      ylab='Probability Density',  main = "Coarse grain")
@@ -408,7 +425,7 @@ plot(density(ad), col = 'red', xlab='Site abundance',
 
 
 
-***Question 8***: How are the kernel density curves we just generated for our randomly drawn points analogous to the species spatial abundance distributions (SSAD) that we generated for OTUs in our refuge plots? Do they basically represent the same thing? If so, how?
+***Question 8***: How are the kernel density curves we just generated for our randomly drawn points related to the species spatial abundance distributions (SSAD) that we generated for OTUs in our refuge plots?
 
 > ***Answer 8***:
 
@@ -422,7 +439,7 @@ Here, we introduce another core concept, accumulation across space.
 It may seem self-evident that, if starting from the scale of a single individual and increasing our sample area, that we will inevitably encounter more species, OTUs, or other taxa.
 
 For example, suppose we replicate our above random sampling strategy of drawing x-y coordinates from a normal distribution.
-But, instead of drawing just one sample representing one species, we will draw 50 samples, each representing the spatial distribution of a species with 1000 individuals.
+But, instead of drawing just one sample representing one species, we will draw 50 samples, with each representing a species with 1000 individuals.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 community <- c()
@@ -479,7 +496,7 @@ while (lim <= 100){ # while the spatial extent on the x and y is less than or eq
 ```
 
 
-Having generated our primary vectors, S.list and A.list, we can analyze how species richness scales with area.
+Having generated our primary vectors, S.list and A.list, we can analyze how species richness scales with area. In short, we can analyze one of ecology's oldest and most intensively studied patterns, the **Species-Area Relationship**.
 
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
@@ -511,15 +528,14 @@ Arrhenius's formula predicts a rate of increase in richness that is approximatel
 > ***Answer 9***:
 
 
-*** Question 10***: What was the slope of the species-area relationship for our randomly assembled community? Is this similar to the slopes you encountered in the reading?
+***Question 10***: What was the slope of the species-area relationship for our randomly assembled community? Is this similar to the slopes you encountered in the reading?
 
 > ***Answer 10***:
 
 
-*** Question 11***: We could use this 'random placement' approach to model how many ecological phenomena might occur via random sampling. What other spatial aspects of alpha and beta diversity could we address? Suggest at least 3.
+***Question 11***: We could use this 'random placement' approach to model how many ecological phenomena might occur via random sampling. What other spatial aspects of alpha and beta diversity could we address? Suggest at least 3.
 
 > ***Answer 11***:
-
 
 
 
