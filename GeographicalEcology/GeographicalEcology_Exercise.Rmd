@@ -71,6 +71,7 @@ A pop-up may appear, asking you to install certain R packages; choose yes.
 # 4. raster
 # 5. RgoogleMaps
 # 6. maptools
+install.packages("rgdal", repos="http://www.stats.ox.ac.uk/pub/RWin")
 ```
 
 ### C. Load and Compile a Large Dataset
@@ -318,7 +319,7 @@ But first, let's begin by defining a function that will generate the SSAD for a 
 
 
 
-}
+
 ```
 
 Next, we will draw 4 OTUs at random and plot their SSADs.
