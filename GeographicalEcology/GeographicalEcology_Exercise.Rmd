@@ -9,17 +9,17 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-In this exercise, we will add a geographical context to alpha ($\alpha$) and beta ($\beta$) diversity.
+In this exercise, we will add geographical context to alpha ($\alpha$) and beta ($\beta$) diversity.
 We will introduce Geographical Information Systems (GIS) to map and spatially examine environmental and biodiversity data.
 This will allow us to explore core concepts like spatial autocorrelation, aggregation, and scale dependence.
 
 After completing this exercise you will be able to:  
 1.  Identify primary concepts and patterns of geographical ecology  
-2.  Examine effects of geographic distance on environmental and ecological similarity.  
-3.  Characterize aggregation of abundance across space.  
-4.  Examine the extent to which patterns of diversity depend on spatial scale.    
-5.  Use geospatial data and packages to conduct GIS operations in R.  
-6.  Use control structures such as `loops` to control how R operates on variables.
+2.  Examine effects of geographic distance on environmental and ecological similarity  
+3.  Characterize aggregation of abundance across space  
+4.  Examine the extent to which patterns of diversity depend on spatial scale    
+5.  Use geospatial data and packages to conduct GIS operations in R 
+6.  Use control structures such as `loops` to control how R operates on variables
 
 
 ## Directions:
@@ -32,15 +32,11 @@ If you need a second paragraph be sure to start the first line with ">".
 5. Before you leave the classroom, **push** this file to your GitHub repo.
 6. For homework, follow the directions at the bottom of this file. 
 7. When you are done, **Knit** the text and code into a PDF file.
-8. After Knitting, please submit the completed exercise by creating a **pull request** via GitHub.
-Your pull request should include this file *GeographicalEcology_Exercise.Rmd* and the PDF output of `Knitr` (*GeographicalEcology_Exercise.pdf*).
-
+8. After Knitting, please submit the completed exercise by noon (12:00 PM) on Wednesday, February 18th by creating a **pull request** via GitHub.
+Your pull request should include this file (*GeographicalEcology_Exercise.Rmd*) and the PDF output of `Knitr` (*GeographicalEcology_Exercise.pdf*).
 
 ## 1.) SETUP
 ### A. Retrieve and Set Your Working Directory
-
-Typically, the first thing you will do in either an R script or an RMarkdown file is setup your environment. 
-This includes things such as setting the working directory and loading any packages that you will need.
 
 In the R code chunk below, provide the code to:  
 1) clear your R environment,  
@@ -63,7 +59,7 @@ We will use the `vegan` package for biodiversity estimators and related function
 ```
 
 We will also use a suite of six packages developed in R for geographical information systems (GIS).
-Be sure to run **install.packages(PackageName)**, if not previously installed, where PackageName is the name of the package you want installed.
+Be sure to run **install.packages("PackageName")**, if not previously installed, where PackageName is the name of the package you want installed.
 Or, run **install.packages(PackageName, type="source", dependencies=TRUE)**, if the previous command doesn't work.
 A pop-up may appear, asking you to install certain R packages; choose yes.
 
@@ -95,7 +91,7 @@ Let's load the environmental and site-by-species data for the refuge ponds.
 
 Take a look at the `Environment` tab in the upper right console of RStudio. 
 You should see there are 16,384 operational taxonomic units (OTUs) distributed across 51 sites, for which, we have 19 environmental and geographic variables recorded. 
-These variables include elevation (m), geographical coordinates (lat-long), temperature (C), Diameter(m), Depth(m), redox potential (ORP), specific conductivity or SpC (uS/cm), dissolved Oxygen (mg/L), total dissolved solids (g/L), salinity (p.s.u.=ppm), color - measured at absorbance = 660; an estimate of carbon in the water sample, chlorophyll a (ug/ml), dissolved organic carbon (mg/L), dissolved organic nitrogen (mg/L), and total phosphorus (ug/L).
+These variables include elevation (m), geographical coordinates (lat-long), temperature (C), diameter (m), depth (m), redox potential (ORP), specific conductivity or SpC (uS/cm), dissolved oxygen (mg/L), total dissolved solids (g/L), salinity (p.s.u.=ppm), color - measured at absorbance = 660; an estimate of carbon in the water sample, chlorophyll *a* (ug/L), dissolved organic carbon (mg/L), dissolved organic nitrogen (mg/L), and total phosphorus (ug/L).
 
 In addition to this wealth of environmental data, let's add four diversity-related columns of data to `Ponds` data set.
 These will provide basic diversity-related variables to explore with respect to geograpy and environmental conditions.
@@ -152,30 +148,11 @@ We obtained these data 'layers' from the **IndianaMap** geographical layer galle
 
 ```
 
-Note, that the percent land cover, water bodies, and points for refuge ponds are in spatial agreement, i.e., there is no obvious mis-alignment.
-That is because we have previously modified each layer to have the same *datum*, *projection*, and nearly the same *extent*.
-**See the glossary .Rmd file for basic definitions of these and other GIS terms.**
-
-Working with geospatial data can be challenging because there is so much information involved with correctly identifying where on Earth something occurs and because there are many ways to represent points on a globe with 2-dimensional surface, i.e., a map.
-But, whether it's data on temperature, elevation, soils, geology, human demographics, ecoregions, etc., diverse data can be found among the many GIS warehouses.
-Here are a few:
-1.) USGS: http://viewer.nationalmap.gov/viewer/
-2.) State organizations: http://www.indianamap.org/resources.php
-3.) USDA: http://datagateway.nrcs.usda.gov/
-
 ## 3. PRIMARY CONCEPTS AND PATTERNS
-Having imported our primary community and environmental data from the refuge ponds, as well as having obtained a wealth of geospatial data from online sources, we are now ready to make a data intensive exploration into primary concepts and patterns of geographical ecology.
+Having imported our community and environmental data from the refuge ponds, as well as having obtained a wealth of geospatial data from online sources, we are now ready to explore primary concepts and patterns of geographical ecology.
 
 ## A. Spatial Autocorrelation
-**Tobler's first law of geography** states that "Everything is related to everything else, but near things are more related than distant things" (Tobler 1970).
-This law is a formulation of the concept of spatial autocorrelation.
-In short, spatial autocorrelation is the degree to which spatial variables are either clustered in space (positive autocorrelation) or over-dispersed (negative autocorrelation).
-
 When examing spatial data, it is important to check for autocorrelation not just among variables but across distance.
-We want to know more than whether variables are generally auto-correlated, but how greatly that autocorrelation changes (increases or decreases) with distance.
-Variables that are highly autocorrelated at the meter scale may or may not be less autocorrelated at the kilometer scale.
-If we want to use these variables in our analyses, we should not use the scales over which they are autocorrelated.
-
 Here, we reveal a way of detecting autocorrelation with respect to scale, that is, by using a **variogram**.
 Variograms are frequently used in spatial analyses and reveal the degree of spatial autocorrelation in sample data and how the autocorrelation (measured as the **semivariance**) changes over distance.
 
@@ -218,10 +195,6 @@ For a more visually informative picture, we can visualize autocorrelation across
 Moran's I evaluates whether the pattern expressed is clustered, dispersed, or random.
 The function we will use also assigns a global Moran index value, a z-score and p-value. 
 
-Take for example, our land cover data represented in a raster file. 
-Raster files are one of two types of digital graphic files, the other being vector files.
-Images in vector files are made of many lines and curves (or paths) that create the image. 
-In contrast, raster images are composed of pixels and for our purposes, encode the values of the environment at a precise point.
 Using R's `raster` package, we can calculate **global** (across the landscape) and **local** (in comparison to neighbors) measures of **Moran's I**.
 
 ```{r, results = 'hide'} 
@@ -233,7 +206,8 @@ Using R's `raster` package, we can calculate **global** (across the landscape) a
 
 ```
 
-***Question 2***: Moran's global I can range from 0 to 1. What was Moran's global I? Looking at the 'landscape' of Moran's *local* I for percent landcover, make some observation about spatial autocorrelation. For example, where is it high or low?
+***Question 2***: Moran's global I can range from 0 to 1. What was Moran's global I? 
+Looking at the 'landscape' of Moran's *local* I for percent landcover, make some observation about spatial autocorrelation. For example, where is it high or low?
 
 > ***Answer 2***: 
 
@@ -276,7 +250,7 @@ Now, create a data frame containing similarity of the environment and similarity
 
 ```
 
-Finally, let's plot the Distance-decay relationships, with regression lines in red.
+Finally, let's plot the distance-decay relationships, with regression lines in red.
 
 ```{r}
 
@@ -312,20 +286,18 @@ Let's, examine the slope of the regression lines, asking whether they are signif
 
 
 ## Concept 2: Spatial Aggregation
-Tobler made a general observation that occurs in nearly all systems, i.e., spatial autocorrelation.
-A related observation is that natural phenomena are generally clustered, i.e., spatially aggregated.
-That is, individuals, conditions, and events often occur in patches, clusters, pulses, etc.
+Nnatural phenomena are generally clustered, i.e., spatially aggregated.
+Individuals, conditions, and events often occur in patches, clusters, pulses, etc.
 Take for example, the ponds in our sample area.
-A highly level of aggregation would suggest that if we encounter one individual, then we are likely to encounter others of the same species nearby.
+A high level of aggregation would suggest that if we encounter one individual, then we are likely to encounter others of the same species nearby.
 
 ## Pattern 2: Spatial abundance distribution
-One of the primary patterns of spatial aggregation in ecology is the distribution of a species abundance within a landscape, also referred to as the **species spatial abundance distribution (SSAD)**.
+One of the primary patterns of spatial aggregation in ecology is the distribution of a species's abundance within a landscape, also referred to as the **species spatial abundance distribution (SSAD)**.
 The SSAD reveals the frequency at which we find a species at a particular abundance.
 In this way, the SSAD is similar to a histogram.
 
 Here, we will examine SSADs for OTU's in the refuge pond dataset by constructing **kernel-density curves**.  
 Kernel density curves are analogous to histograms, but avoid the arbitrary creation of bins or discrete classes.
-In constructing kernel density curves, we attempt to account for uncertainty and sampling error by focusing on the probability that a randomly drawn data point will take a value within a particular range, instead of the exact frequencies we observed.
 
 For example, suppose we were interested in how the location of individuals varied across sites or samples.
 Let's simulate this by drawing values from a normal distribution, at random.
@@ -336,7 +308,6 @@ Let's simulate this by drawing values from a normal distribution, at random.
 
 
 ```
-
 
 Below, we will examine the SSADs of OTUs that are randomly drawn from the refuge ponds dataset. 
 But first, let's begin by defining a function that will generate the SSAD for a randomly drawn OTU.
@@ -369,9 +340,7 @@ while (length(numbers) < 4){ # while the counter is less than 4
 numbers # check our numbers, each should be less than 50
 ```
 
-
 Having very briefly intodroduced while loops, and inaverdently, an `if` statement, lets write a chunk of code that will draw OTUs at random from our refuge ponds dataset, and then generate their spatial abundance distributions (i.e. SSADs).
-
 ```{r}
 
 
@@ -387,16 +356,12 @@ Having very briefly intodroduced while loops, and inaverdently, an `if` statemen
 
 ```
 
-Feel free to run this chunk as many time as you like.
-
-***Question 4***: Is the sampled abundance for a given OTU often aggregated? If so, how do you know, that is, how do you interpret the pattern in the kernel density curve? Are there many sites with low abundance and few sites with high abundance?
+***Question 4***: Is the sampled abundance for a given OTU aggregated? 
+If so, how do you know?
+That is, how do you interpret the pattern in the kernel density curve? 
+Are there many sites with low abundance and few sites with high abundance?
 
 > ***Answer 4***:
-
-
-
-
-***Question ***: The SSAD is a statistical distribution and like all statistical distributions, the SSAD has a mean, median, mode, variance, skewness, kurtosis, etc. What aspects of the SSAD would you choose to quantify and report, and why? 
 
 
 ***Question 5***: Each row in the site-by-species matrix represents a site. 
@@ -415,7 +380,7 @@ Our idea of whether variables are spatially autocorrelated and whether the abund
 **Extent** is the greatest distance considered in an observation or study.
 **Grain** is the smallest or primary unit by which the extent is measured.
 
-Let's generate two random samples from a normal distribution, one sample for x-coordinates and one for y-coordinates.
+Let's generate two random samples from a normal distribution; one sample for x-coordinates and one for y-coordinates.
 We'll let each x-y pair represent the location of a single individual, where all individuals belong to the same species.
 Then, we'll plot the spatial distribution of our randomly distributed individuals at different extents.
 
@@ -431,7 +396,8 @@ Then, we'll plot the spatial distribution of our randomly distributed individual
 
 ```
 
-***Question 6***: What effect does changing the extent have on aggregation? Do you find this important or interesting given that 1.) all points were drawn from the same distribution and 2.) each plot contains the same points as all other plots with smaller extent?
+***Question 6***: What effect does changing the extent have on aggregation? 
+Do you find this important or interesting given that a) all points were drawn from the same distribution and b) each plot contains the same points as all other plots with smaller extent?
 
 > ***Answer 6***:
 
@@ -444,8 +410,9 @@ In fact, most statistical distributions from which random samples can be drawn a
 That is, they have obvious modes around which most values occur.
 
 Moving on, let's explore the effect of changing spatial `grain`, from a fine grain to a coarse grain. 
-We will do this while holding extent constant and will plot heat maps (i.e. 2D histogram) revealing the density of individuals in the landscape.
-We will then plot kernel density curves to reveal the probability that an individual chosen at random from the landscape will have come from a site with a particular abundance.
+We will do this while holding extent constant.
+We will then plot heat maps (i.e. 2D histogram) revealing the density of individuals in the landscape.
+Last, we will plot kernel density curves to reveal the probability that an individual chosen at random from the landscape will have come from a site with a particular abundance.
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 # install or require "gplots"
@@ -465,7 +432,8 @@ par(mfrow=c(2, 2))
 
 ```
 
-***Question 7***: Beyond changing the pixilated appearance of the plots, what does changing the spatial grain mean for interpreting aggregation? Consider the kernel density plots. 
+***Question 7***: Beyond changing the pixilated appearance of the plots, what does changing the spatial grain mean for interpreting aggregation? 
+Use kernel density plots to help answer this question. 
 
 > ***Answer 7***:
 
@@ -533,10 +501,8 @@ Let's begin by picking a corner at random and then accumulating area.
     # increase the extent multiplicately, but slowly
 ```
 
-
-Having generated our primary vectors, S.list and A.list, we can analyze how species richness scales with area. In short, we can analyze one of ecology's oldest and most intensively studied patterns, the **Species-Area Relationship**.
-
-
+Having generated our primary vectors, `S.list` and `A.list`, we can analyze how species richness scales with area. 
+In short, we can analyze one of ecology's oldest and most intensively studied patterns, the **Species-Area Relationship**.
 ```{r, results = 'hide', message = FALSE, warning = FALSE}
 
 
@@ -550,9 +516,7 @@ Having generated our primary vectors, S.list and A.list, we can analyze how spec
 
 ```
 
-
 ## Pattern 3: Species-area relationship (SAR)
-
 The fact that we accumulate species, and likewise increase richness, with increasing area is far from interesting.
 In fact, we just showed that we can expect this as a result of random sampling.
 What is interesting is the rate at which the accumulation of taxa occurs.
@@ -584,7 +548,7 @@ Arrhenius's formula predicts a rate of increase in richness that is approximatel
 
 ## 7) HOMEWORK
 
-**1.)** Complete the in-class exercise and the homework, Knit to a pdf, and submit a pull request before noon on Wednesday.
+**1.)** Complete the in-class exercise and the homework, Knit to a pdf, and submit a pull request before noon on Wednesday, February 18th, 2015.
 
 **2.)** Each refuge pond has an associated diameter. Build the species-area relationship for the refuge pond dataset using the following recipe: 
 
