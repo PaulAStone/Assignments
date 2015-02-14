@@ -41,6 +41,7 @@ require("muscle")
 require("ape")
 require("seqinr")
 require("phangorn")
+require("geiger")
 ```
 
 ## 2) DESCRIPTION OF DATA
@@ -150,6 +151,8 @@ Type the following at the R terminal for a detailed exmaple: vignette('Trees')
 ml <- mlphylo(p.DNAbin, model = DNAmodel("JC69"))
 
 ```{r}
+read.aln.mat <- as.matrix(read.aln)
+read.aln.phydat <- phyDat(read.aln.mat, type = "DNA")
 tree.p <- NJ(dist.logDet(read.aln.phydat))
 ml <- pml(tree.p, read.aln.phydat, k = 4, inv = 0.2)
 fit.opt <- optim.pml(ml, optGamma = TRUE, optInv=TRUE)
@@ -168,7 +171,6 @@ fit.opt <- optim.pml(ml, optGamma = TRUE, optInv=TRUE)
 p.growth <- read.table("./data/p.isolates.stdgrowth.txt", sep = "\t", header = TRUE, row.names = 1)
 #p.growth <- as.data.frame(t(p.growth))
 ```
-
 
 ### Mapping Traits on Tree
 ```{r}
@@ -243,11 +245,26 @@ levins.2 <- function(p_xi = ""){
 levins.2(p.growth[1, ])
 
 ```
+
 ## 8) PHYLOGENETIC SIGNAL
-**Phylogenetic signal is outlined in Paradis (2012) on pp 236-239
-**Can we take a big-picture look at the phylogeny and traits combined and deteremine whether or not their is "signal" beyond null Brownian motion?
-Hopefully, we pick an example where the answer is "yes"
-** visualig co-mapping, mantel tests
+Phylogenetic signal occurs when the traits of closely related species are more similar than what is expected by chance. 
+In many cases, testing for phylogenetic signal is a prerequsite for addressing questions related to trait evolution and phylogenetic biodiversity. 
+If there is significant phylogenetic signal, then evolutionary history is important for understanding the relationships between for example a trait and the peformance of individuals being considered. 
+If there is *not* any phylogenetic signal, then the relationship between traits and peformance can explored using normal statistical methods. 
+
+### Pagel’s Lambda
+http://bodegaphylo.wikispot.org/iv._testing_phylogenetic_signal_in_r
+http://blog.phytools.org/2013/10/simplified-lambdatree.html
+
+
+```{r}
+require("geiger")
+lambdaTree(read.aln.phydat, 0) ---> needs to be class phylo!!!
+
+```
+
+
+
 
 ## 9) PHYLOGENETIC INDEPENDENT CONTRASTS
 **Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
