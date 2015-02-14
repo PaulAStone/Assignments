@@ -148,7 +148,7 @@ Type the following at the R terminal for a detailed exmaple: vignette('Trees')
 ** Problems with `pml`
 ### `myphylo` has been removed!!! Advice is to use phangorn
 ** We should consider `mlphylo` in `ape`
-ml <- mlphylo(p.DNAbin, model = DNAmodel("JC69"))
+ml <- mlphylo(p.DNAbin, model = DNAmodel("JC69")) 
 
 ```{r}
 read.aln.mat <- as.matrix(read.aln)
