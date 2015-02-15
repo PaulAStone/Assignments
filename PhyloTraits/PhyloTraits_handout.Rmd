@@ -32,7 +32,9 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
 ### B. Load Packages 
 There are many contributed R packages that have been developed for conducting phylogenetic analyses (http://cran.r-project.org/web/views/Phylogenetics.html). 
 We will rely heavily on `ape`, which peforms a wide range of phylogenetic analyses. 
+Documentation on `ape` can be found here: http://cran.r-project.org/web/packages/ape/ape.pdf
 We will supplement this with other packages for some specialized tasks such as sequence alignment (`muscle`), reading of alinged sequences (`seqinr`), and maximum likelihood reconstruction (`phangorn`).
+Documentation on `phangorn` can be found here: http://cran.r-project.org/web/packages/phangorn/phangorn.pdf.
 Let's install these packages using the `install.packages()` fucntion. 
 Then let's load the packages and their dependencies with the `require()` function:
 
@@ -57,78 +59,93 @@ We will take a phylogenetic approach to mapping phosphorus resource use onto a p
 ## 3) SEQUENCE ALIGNMENT
 After generating or retrieving sequence data, the first step of a phylogenetic analysis is to peform an alignment. 
 This can be done with nucleotides (DNA or RNA) or proteins (amino acids). 
-There are various methods for aligning sequences, but the basic premise is to use a algorithm to arrange sequences relative to one another using conserved regions so that evolutionary reconstructions can be performed.
+There are various methods for aligning sequences, but the basic premise is to use a algorithm to arrange sequences relative to one another based on conserved regions so that downstream phylogenetic analyses can be performed.
 In R, there are at least two packages that can be used for aligning sequences: `ape` and `muscle`. 
 In `ape`, alignments can be done with the functions `clustal`, `muscle`, and `tcoffee`, all which have a range of options. 
 However, these functions require that other programs be installed on your computer.
 Therefore, for this exericse, we are going to use the `muscle` package in R becasue it will align sequences in a "stand alone" fashion without the need for installing additional software. 
+We will read in a **fasta-formatted** file into the `muslce` alignment function.
+This is a very common way to handle sequence data.
+Let's take a second to look at the *p.isolates.fasta* file. 
+Open the terminal and change directory to the dat folder. 
+You can then type `nano p.isolates.fasta` at the command line. 
 
+Now, let's align our sequences. 
+Using the `muscle` fuction, we will read in our fasta file and create a **fasta-aligned* output file.  
 ```{r}
 seq.aln <- muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
 ```
 
+***Question 1***: Compare the `p.isolates.fasta` file and the `p.isolates.afa` file. 
+Describe what is going on in the alinged file. 
+
+> ***Answer 1***: 
+
 ## 4) VISUALIZING ALIGNMENTS
 It is good practice to view your sequences after alignment. 
-This may not be practical for large databases, but in our example, we're only dealing with 45 sequences plus an outgroup sequence. 
-First, we will read in the fasta-aligned file that we created above using the `read.alignment` function from the `seqinr` package. 
+This may not be practical for large databases, but in our example, the alignment only contains sequences for 45 species plus an outgroup. 
+Therefore, to visualize our alingment, first, we will read in the fasta-aligned file using the `read.alignment` function in the `seqinr` package. 
 Then, using the `ape` package, we will convert the alignnment file it into a **DNAbin object**, which is a bit-level coding scheme that allows R to store and manipulate sequence data.
 Last, we will visualize the alignment by color-coding bases different colors. 
 
 ```{r}
-read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") 
-p.DNAbin <- as.DNAbin(read.aln) 
-x <- p.DNAbin[,100:500] # identify base pair region of 16S rRNa gene to visuzlize
-image(x, cex.lab = 0.5) # ape command to visusalize seq align
-grid(ncol(x),nrow(x),col="lightgrey") # ape command to add grid
+read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") # read in afa file {seqinr}
+p.DNAbin <- as.DNAbin(read.aln) # convert afa to DNAbin object {ape}
+x <- p.DNAbin[,100:500] # identify base pair region of 16S rRNA gene to visuzlize
+image(x, cex.lab = 0.5) # command to visusalize seq align {ape}
+grid(ncol(x),nrow(x),col="lightgrey") # command to add grid {ape}
 ```
 
-***Question 1***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes. Approximatley how long were our reads? 
+***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes. Approximatley how long were our reads? 
 
-> ***Answer 1***: 
+> ***Answer 2***: 
 
-## 5) MODELS OF DNA EVOLUTION
+## 5) SUBSTITUTION MODELS OF DNA EVOLUTION
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
 Various models have been developed to estimate the rates that nucleotides change, which can be important for inferring relatedness of genes.
 For example, the **Jukes-Cantor model (JC69)** is the simplest **substitution model**.
-It assumes all that nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability. 
+It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability. 
 The **Felenstein model (F81)** builds from JC69 by allowing base frequences to vary. 
 The **Kimura model (K80)** also assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).
 **Hasegawa, Kishino, and Yano (HKY85)** merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. 
 Many other models of DNA evolution exist, which take into account features such as G+C bias and the probabilities associated with time-reversible nucleotide changes (e.g., T -> C -> T).
+
+##PERHAPS WE CAN MAKE TABLE HERE
+
 Fortunately, the `ape` package has a function (`dist.dna`) that will create distances for a large number of DNA substitution models. 
-Let's create a distance file based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
+Let's create a distance matrix among our bacterial isolates based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
 
 ```{r}
-seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # 
+seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # {ape}
 ```
 
-## 6) PHYLOGENETIC RECONSTRUCTION
-Phylogenetic trees...
+## MIGHT BE GOOD TO HAVE A QUESTION HERE. IN BOOK, THEY COMPARE BY PLOTTING ONE-TO-ONES. INTERPRET?
 
-### NEIGHBOR JOINING
-Neighbor joining trees take a distance matrix based on comparisons of pairs of sequences.
+## 6) MAKING AN PHYLOGENETIC TREE
+After processing your aligned data with a DNA substitution model, often you will want to create an evolutionary tree. 
+This can be done with various methods including neighbor-joining, maximum parsimony, maximum likelihood, and Bayesian inference.
+R has the capability of creating trees using all of these methods. 
+In the following section, we will go over a couple of them. 
+
+### A. Neighbor Joining Tree
+Neighbor joining trees are generated from a distance matrix based on comparisons of pairs of sequences.
 Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
 Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
-However, today, other non-distance-based phylogenetic methods are more commonly used. 
 
-***NOT SURE WE NEED TO DO BOTH NJ AND UPGMA***
 ```{r}
-nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
-outgroup <- match("Methanosarcina", nj.tree$tip.label)
-nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
-#upgma.tree <- upgma(seq.dist)
-#upgma.rooted <- root(upgma.tree, outgroup, resolve.root=TRUE)
-#layout(matrix(c(1,2), 2, 1), height=c(2,2))
-#par(mar = c(1,1,1,1))
-plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE, direction = "right", cex = 0.6, label.offset = 1) # ape command
-#plot(upgma.rooted, main = "UPGMA", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
+nj.tree <- nj(seq.dist) # performs neihbor joining; makes object `phylo` {ape}
+outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE) # reroots tree with outgroup {ape}
+plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
+           direction = "right", cex = 0.7, label.offset = 1) # makes tree {ape}
 ```
 
-## 7) MAXIMIM PARSIMONY
+### B. Maximum Parsimony
+### Perhaps should include just for equal coverage, although we're not planning to do any Bayesian stuff right now
 Using package `phangorn`.
 Requires phyDat formatted objects.
 There are functions like `optim.parsimony` that peforms tree rearragements via nearest-neighbor exchange and `pratchet` which uses parsimony ratchet to find trees with lower parsimony score.
-Type the following at the R terminal for a detailed exmaple: vignette('Trees')
+Type the following at the R terminal for a detailed exmaple: vignette ('Trees')
 
 ```{r}
 # read.aln.mat <- as.matrix(read.aln)
@@ -142,27 +159,54 @@ Type the following at the R terminal for a detailed exmaple: vignette('Trees')
 # plot(tree.pars, main = "parsimony", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
 ```
 
-## 6) MAXIMUM LIKELIHOOD ESTIMATION AND BOOTSTRAP SUPPORT
-** Beware really long, something is not right. 
+### C. Maximum Likelihood
 ** Discussed by Paradis (2012) on pp 138-159
-** Problems with `pml`
-### `myphylo` has been removed!!! Advice is to use phangorn
-** We should consider `mlphylo` in `ape`
-ml <- mlphylo(p.DNAbin, model = DNAmodel("JC69")) 
+** following a lot of what's here: http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf
 
 ```{r}
-read.aln.mat <- as.matrix(read.aln)
-read.aln.phydat <- phyDat(read.aln.mat, type = "DNA")
-tree.p <- NJ(dist.logDet(read.aln.phydat))
-ml <- pml(tree.p, read.aln.phydat, k = 4, inv = 0.2)
-fit.opt <- optim.pml(ml, optGamma = TRUE, optInv=TRUE)
-
-# data(yeast) # yeast is a list of `phyDat` tpe
-# tree <- NJ(dist.logDet(yeast))
-# fit <- pml(tree, yeast, k = 4, inv = 0.2)
-# fit.opt <- optim.pml(fit, optGamma = TRUE, optInv=TRUE)
-
+read.aln.mat <- as.matrix(read.aln) # read in fasta-aligned file as matrix
+read.aln.phydat <- phyDat(read.aln.mat, type = "DNA") # converts aligned fasta to phyDat {phangorm}
+tree <- nj(dist.logDet(read.aln.phydat)) # pairwise distances for phyDat object {phangorn}
+fit <- pml(tree, read.aln.phydat) # maximum likelihood function; 
+          #returns data, tree, and output, etc. {phangorn}
+fit.JC <- optim.pml(fit, TRUE) # optimizes model parms; default is Jukes-Cantor {phangorn}
+fit.GTR <- update(fit, k = 4, inv = 0.2) # {phangorn}
+fit.GTR <- optim.pml(fit.GTR, TRUE, TRUE, TRUE, TRUE, TRUE, 
+                     control = pml.control(trace = 0)) # {phangorn} SOMEWHAT SLOW
 ```
+
+Head-to-head comparison of models.
+```{r}
+anova(fit, fit.JC, fit.GTR)
+AIC(fit, fit.JC, fit.GTR)
+SH.test(fit, fit.JC, fit.GTR)
+model.tests <- modelTest(read.aln.phydat) # compares all substitution models {phangorn} SOMEWHAT SLOW
+env <- attr(model.tests, "env")
+ls(envir = env)
+fit.model <- eval(get("HKY+G+I", env), env)
+```
+
+Calculate bootstrap support values for tree (SOMEWHAT SLOW: ~2 MINUTES)
+```{r}
+bs <- bootstrap.pml(fit.JC, bs = 100, optNni = TRUE,
+            control = pml.control(trace = 0)) #{phangorn} 
+```
+
+### Make tree with bootstrap support values 
+### BEWARE: Won't finish, even after changin bs to 5 in the `bootstrap.pml` funtion
+### "It is possible that the bootstrap is performed in parallel, with help of the multicore package. Unfortunately the multicore package does not work under windows or with GUI/interfaces ("aqua" on a mac). However it will speed up nicely from the command line ("X11")."
+### Actually, if we're going to do this, we  would use package `parallel` http://www.stat.colostate.edu/~jah/Computing_Hints/files/parallel.pdf
+### But doesn't work with Windows apparently
+
+```{r}
+par(mar=c(.1,.1,.1,.1))
+plotBS(fit.JC$tree, bs) #{phangorn}
+```
+
+http://grokbase.com/t/r/r-help/12876aby2z/r-how-to-write-out-a-tree-file-with-bootstrap-from-phangorn-package
+"tree <- plotBS(fit$tree, bs)
+# You can export than this tree using write.tree or write.nexus, e.g.
+write.tree(tree)"
 
 ## 7) MAPPING TRAITS ONTO TREES
 
@@ -190,9 +234,6 @@ x <- phylo4d(nj.rooted, traits)
 table.phylo4d(x,treetype="clad", show.node=FALSE, cex.leg=0.5, cex.label = 0.5,
 use.edge.length=FALSE, edge.color="blue", edge.width=2, box=FALSE, las = 1) 
 
-
-
-
 library(latticeExtra)
 dd.col <- as.dendrogram(hc)
 col.ord <- order.dendrogram(dd.col)
@@ -214,10 +255,6 @@ levelplot(mat[tree$tip,tree$tip],type=c('g','p'),
             panel.levelplot.points(...,cex=12,pch=23)
           }
 )
-
-
-
-
 ```
 
 
@@ -243,7 +280,6 @@ levins.2 <- function(p_xi = ""){
   return(nb)
 }  
 levins.2(p.growth[1, ])
-
 ```
 
 ## 8) PHYLOGENETIC SIGNAL
@@ -255,16 +291,10 @@ If there is *not* any phylogenetic signal, then the relationship between traits 
 ### Pagel’s Lambda
 http://bodegaphylo.wikispot.org/iv._testing_phylogenetic_signal_in_r
 http://blog.phytools.org/2013/10/simplified-lambdatree.html
-
-
 ```{r}
 require("geiger")
 lambdaTree(read.aln.phydat, 0) ---> needs to be class phylo!!!
-
 ```
-
-
-
 
 ## 9) PHYLOGENETIC INDEPENDENT CONTRASTS
 **Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
