@@ -35,8 +35,7 @@ We will rely heavily on `ape`, which peforms a wide range of phylogenetic analys
 Documentation on `ape` can be found here: http://cran.r-project.org/web/packages/ape/ape.pdf
 We will supplement this with other packages for some specialized tasks such as sequence alignment (`muscle`), reading of alinged sequences (`seqinr`), and maximum likelihood reconstruction (`phangorn`).
 Documentation on `phangorn` can be found here: http://cran.r-project.org/web/packages/phangorn/phangorn.pdf.
-Let's install these packages using the `install.packages()` fucntion. 
-Then let's load the packages and their dependencies with the `require()` function:
+After the initial installation of these packages using the `install.packages()` fucntion, let's load the packages and their dependencies with the `require()` function:
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
 require("muscle")
@@ -47,11 +46,12 @@ require("geiger")
 ```
 
 ## 2) DESCRIPTION OF DATA
-The maintenance of biodiversity is thought to be influenced by trade-offs among species. 
-One such trade-off involves the ability of a highly specialized species to peform well on a single type of resource. 
-This specialization may be advantageous under some conditions, but disadvantageous if the species finds itself in a habitat where resource conditions change.
+The maintenance of biodiversity is thought to be influenced by **trade-offs** among species in certain functional traits. 
+One such trade-off involves the ability of a highly specialized species to peform exceptionally well on a certain resource. 
+This strategy may be advantageous if the specialist lives in an environment where it's preferred resource is in relatively high and constant supply. 
+However, the specialist strategy may not be optimal if the species finds itself itself in an environment where resource conditions change.
 In contrast, some species are capable of using many different resources, but it is assumed that there may be a fitness cost associated with being a generalist. 
-We set out to test this hypothesized trade-off in bacteria by assessing generalist and specialist strategies on different forms of phopshorus, which commonly limits growth and reproduction of organisims inhabiting freshwater ecosystems.
+We set out to test this hypothesized trade-off in bacteria by assessing generalist and specialist strategies on different forms of phopshorus, a resource which commonly limits growth and reproduction of organisms inhabiting freshwater ecosystems.
 We collected 40 strains of bacteria from two lakes. 
 After identifying these bacteria based on their 16S rRNA gene sequences, we measured their growth on 18 different forms of phosphorus. 
 We will take a phylogenetic approach to mapping phosphorus resource use onto a phylogenetic tree while testing for specialist-generalist trade-offs. 
@@ -59,25 +59,26 @@ We will take a phylogenetic approach to mapping phosphorus resource use onto a p
 ## 3) SEQUENCE ALIGNMENT
 After generating or retrieving sequence data, the first step of a phylogenetic analysis is to peform an alignment. 
 This can be done with nucleotides (DNA or RNA) or proteins (amino acids). 
-There are various methods for aligning sequences, but the basic premise is to use a algorithm to arrange sequences relative to one another based on conserved regions so that downstream phylogenetic analyses can be performed.
+There are various methods for aligning sequences, but the basic premise is to use an algorithm to arrange sequences relative to one another based on conserved regions so that downstream phylogenetic analyses can be performed.
 In R, there are at least two packages that can be used for aligning sequences: `ape` and `muscle`. 
 In `ape`, alignments can be done with the functions `clustal`, `muscle`, and `tcoffee`, all which have a range of options. 
 However, these functions require that other programs be installed on your computer.
 Therefore, for this exericse, we are going to use the `muscle` package in R becasue it will align sequences in a "stand alone" fashion without the need for installing additional software. 
 We will read in a **fasta-formatted** file into the `muslce` alignment function.
-This is a very common way to handle sequence data.
+This is a very common way to handle sequence data across various platforms. 
 Let's take a second to look at the *p.isolates.fasta* file. 
-Open the terminal and change directory to the dat folder. 
+Open the terminal and change directory to the data folder. 
 You can then type `nano p.isolates.fasta` at the command line. 
 
 Now, let's align our sequences. 
-Using the `muscle` fuction, we will read in our fasta file and create a **fasta-aligned* output file.  
+Using the `muscle` fuction, we will read in our fasta file and create a **fasta-aligned* output file (with an .afa extension).  
+
 ```{r}
 seq.aln <- muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
 ```
 
 ***Question 1***: Compare the `p.isolates.fasta` file and the `p.isolates.afa` file. 
-Describe what is going on in the alinged file. 
+Describe the differences that you observe between the two files. 
 
 > ***Answer 1***: 
 
@@ -86,19 +87,42 @@ It is good practice to view your sequences after alignment.
 This may not be practical for large databases, but in our example, the alignment only contains sequences for 45 species plus an outgroup. 
 Therefore, to visualize our alingment, first, we will read in the fasta-aligned file using the `read.alignment` function in the `seqinr` package. 
 Then, using the `ape` package, we will convert the alignnment file it into a **DNAbin object**, which is a bit-level coding scheme that allows R to store and manipulate sequence data.
-Last, we will visualize the alignment by color-coding bases different colors. 
+Last, we will visualize the alignment by color-coding bases different colors, where red = adenine, yellow = guanine, green = cytosine, blue = thymidine, grey = ambiguous call, and black = alignment gaps. 
 
 ```{r}
 read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") # read in afa file {seqinr}
 p.DNAbin <- as.DNAbin(read.aln) # convert afa to DNAbin object {ape}
 x <- p.DNAbin[,100:500] # identify base pair region of 16S rRNA gene to visuzlize
-image(x, cex.lab = 0.5) # command to visusalize seq align {ape}
+image.DNAbin(x, cex.lab = 0.5) # command to visusalize seq align {ape}
 grid(ncol(x),nrow(x),col="lightgrey") # command to add grid {ape}
 ```
 
 ***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes. Approximatley how long were our reads? 
 
 > ***Answer 2***: 
+
+## 5) MAKING A PHYLOGENETIC TREE
+
+### A. Neighbor Joining Tree
+Now that we whave alinged our sequences, we are now in a position to make a phylogenetic tree. 
+There are many ways to make a tree and careful consideration should...
+NJ is a **distance-based** approach to making trees. 
+
+Let's make a distance file
+
+```{r}
+seq.dist <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = FALSE)
+```
+
+Now let's make a NJ tree 
+
+```{r}
+nj.tree <- nj(seq.dist) # performs neihbor joining; makes object `phylo` {ape}
+outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE) # reroots tree with outgroup {ape}
+plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
+           direction = "right", cex = 0.7, label.offset = 1) # makes tree {ape}
+```
 
 ## 5) SUBSTITUTION MODELS OF DNA EVOLUTION
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
@@ -132,13 +156,7 @@ Neighbor joining trees are generated from a distance matrix based on comparisons
 Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
 Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
 
-```{r}
-nj.tree <- nj(seq.dist) # performs neihbor joining; makes object `phylo` {ape}
-outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
-nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE) # reroots tree with outgroup {ape}
-plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
-           direction = "right", cex = 0.7, label.offset = 1) # makes tree {ape}
-```
+
 
 ### B. Maximum Parsimony
 ### Perhaps should include just for equal coverage, although we're not planning to do any Bayesian stuff right now
