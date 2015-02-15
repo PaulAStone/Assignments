@@ -42,7 +42,7 @@ require("muscle")
 require("ape")
 require("seqinr")
 require("phangorn")
-require("geiger")
+require("geiger")  # What does this one do?
 ```
 
 ## 2) DESCRIPTION OF DATA
@@ -74,10 +74,11 @@ Now, let's align our sequences.
 Using the `muscle` fuction, we will read in our fasta file and create a **fasta-aligned* output file (with an .afa extension).  
 
 ```{r}
-seq.aln <- muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
+muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
 ```
 
 ***Question 1***: Compare the `p.isolates.fasta` file and the `p.isolates.afa` file. 
+You can do this using nano or your favorite text editor.
 Describe the differences that you observe between the two files. 
 
 > ***Answer 1***: 
@@ -97,23 +98,32 @@ image.DNAbin(x, cex.lab = 0.5) # command to visusalize seq align {ape}
 grid(ncol(x),nrow(x),col="lightgrey") # command to add grid {ape}
 ```
 
+### Jay, we might want to see how the grid looks in the PDF. For me it looks better without. ###
+
 ***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes. Approximatley how long were our reads? 
+
+### Is this a fair question given that you had them view only a portion of the alignment? 
 
 > ***Answer 2***: 
 
 ## 5) MAKING A PHYLOGENETIC TREE
 
 ### A. Neighbor Joining Tree
-Now that we whave alinged our sequences, we are now in a position to make a phylogenetic tree. 
+Now that we have alinged our sequences, we are now in a position to make a phylogenetic tree. 
 There are many ways to make a tree and careful consideration should...
+One approach is to make a Neighbor Joining (NJ) tree.
 NJ is a **distance-based** approach to making trees. 
+As such, it requires that we use an evolutionary model to determine the pairwise distances between sequences.
+This is similar to the distance approaches we used for $\beta$ diversity when we made *Resemblance Matrices*.
 
 Let's make a distance file
+### Is the raw model appropriate here? Looking at the doc it doesn't seem so ###
 
 ```{r}
 seq.dist <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = FALSE)
 ```
 
+Now that we have calculated distances between our sequences, we can use this information to make our NJ tree.
 Now let's make a NJ tree 
 
 ```{r}
@@ -122,7 +132,10 @@ outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup seq
 nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE) # reroots tree with outgroup {ape}
 plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
            direction = "right", cex = 0.7, label.offset = 1) # makes tree {ape}
+add.scale.bar(cex = 0.7)
 ```
+
+### Should we talk about these before making the NJ tree ###
 
 ## 5) SUBSTITUTION MODELS OF DNA EVOLUTION
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
@@ -134,8 +147,30 @@ The **Kimura model (K80)** also assumes equal frequencies of nucleotides, but re
 **Hasegawa, Kishino, and Yano (HKY85)** merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. 
 Many other models of DNA evolution exist, which take into account features such as G+C bias and the probabilities associated with time-reversible nucleotide changes (e.g., T -> C -> T).
 
-##PERHAPS WE CAN MAKE TABLE HERE
-
+\begin{center}
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
+\begin{tabular}{ m{3cm} m{7cm} }
+  \textbf{Evolutionary Model} & & \textbf{Properties} \\
+  \hline \hline \\ [-1.5ex]
+  \textbf{Jukes-Cantor model (JC69)} & 
+  the simplest **substitution model**. It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability.  \\
+  \\ [-1.5ex]
+  \textbf{Felenstein model (F81)} & 
+  builds from JC69 by allowing base frequences to vary.  \\
+  \\ [-1.5ex]  
+  \textbf{Kimura model (K80)} & 
+  assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).  \\
+  \\ [-1.5ex]   
+  \textbf{Hasegawa, Kishino, and Yano (HKY85)} & 
+  merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. \\
+  \\ [-1.5ex]   
+  \hline
+  \end{tabular}
+  \end{center}
+  
+Many other models of DNA evolution exist, which take into account features such as G+C bias and the probabilities associated with time-reversible nucleotide changes (e.g., T -> C -> T).
+  
 Fortunately, the `ape` package has a function (`dist.dna`) that will create distances for a large number of DNA substitution models. 
 Let's create a distance matrix among our bacterial isolates based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
 
@@ -144,6 +179,7 @@ seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # {ape}
 ```
 
 ## MIGHT BE GOOD TO HAVE A QUESTION HERE. IN BOOK, THEY COMPARE BY PLOTTING ONE-TO-ONES. INTERPRET?
+## I'm not sure I understand what the 1:1's are
 
 ## 6) MAKING AN PHYLOGENETIC TREE
 After processing your aligned data with a DNA substitution model, often you will want to create an evolutionary tree. 
@@ -156,6 +192,7 @@ Neighbor joining trees are generated from a distance matrix based on comparisons
 Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
 Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
 
+### Pull the information down from above?
 
 
 ### B. Maximum Parsimony
