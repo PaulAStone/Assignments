@@ -42,7 +42,7 @@ require("muscle")
 require("ape")
 require("seqinr")
 require("phangorn")
-require("geiger")  # What does this one do?
+require("geiger")  # Pagel's lambda
 ```
 
 ## 2) DESCRIPTION OF DATA
@@ -93,22 +93,28 @@ Last, we will visualize the alignment by color-coding bases different colors, wh
 ```{r}
 read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") # read in afa file {seqinr}
 p.DNAbin <- as.DNAbin(read.aln) # convert afa to DNAbin object {ape}
-x <- p.DNAbin[,100:500] # identify base pair region of 16S rRNA gene to visuzlize
-image.DNAbin(x, cex.lab = 0.5) # command to visusalize seq align {ape}
-grid(ncol(x),nrow(x),col="lightgrey") # command to add grid {ape}
+window <- p.DNAbin[,100:500] # identify base pair region of 16S rRNA gene to visuzlize
+image.DNAbin(window, cex.lab = 0.5) # command to visusalize seq align {ape}
+# optional code to add grid to help visualize rows of sequences:
+# grid(ncol(window),nrow(window),col="lightgrey") # command to add grid {ape}
 ```
 
-### Jay, we might want to see how the grid looks in the PDF. For me it looks better without. ###
+***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes. 
+Move along the alignment by changing the values in the windows object.  
+a.  Approximatley how long were our reads?  
+b.  What regions do you think would be most appropriate for phylogenetic inference?  
 
-***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes. Approximatley how long were our reads? 
-
-### Is this a fair question given that you had them view only a portion of the alignment? 
-
-> ***Answer 2***: 
+> ***Answer 1a***:   
+> ***Answer 1b***:  
 
 ## 5) MAKING A PHYLOGENETIC TREE
+Overview and include a table. Maximum Parsimony, Bayesian stuff right now. Using package `phangorn`.
+Requires phyDat formatted objects. There are functions like `optim.parsimony` that peforms tree rearragements via nearest-neighbor exchange and `pratchet` which uses parsimony ratchet to find trees with lower parsimony score. Type the following at the R terminal for a detailed exmaple: vignette ('Trees')
 
 ### A. Neighbor Joining Tree
+Neighbor joining trees are generated from a distance matrix based on comparisons of pairs of sequences.
+Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
+Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
 Now that we have alinged our sequences, we are now in a position to make a phylogenetic tree. 
 There are many ways to make a tree and careful consideration should...
 One approach is to make a Neighbor Joining (NJ) tree.
@@ -135,9 +141,7 @@ plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.lengt
 add.scale.bar(cex = 0.7)
 ```
 
-### Should we talk about these before making the NJ tree ###
-
-## 5) SUBSTITUTION MODELS OF DNA EVOLUTION
+## 6) SUBSTITUTION MODELS OF DNA EVOLUTION
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
 Various models have been developed to estimate the rates that nucleotides change, which can be important for inferring relatedness of genes.
 For example, the **Jukes-Cantor model (JC69)** is the simplest **substitution model**.
@@ -179,49 +183,18 @@ seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # {ape}
 ```
 
 ## MIGHT BE GOOD TO HAVE A QUESTION HERE. IN BOOK, THEY COMPARE BY PLOTTING ONE-TO-ONES. INTERPRET?
-## I'm not sure I understand what the 1:1's are
 
-## 6) MAKING AN PHYLOGENETIC TREE
-After processing your aligned data with a DNA substitution model, often you will want to create an evolutionary tree. 
-This can be done with various methods including neighbor-joining, maximum parsimony, maximum likelihood, and Bayesian inference.
-R has the capability of creating trees using all of these methods. 
-In the following section, we will go over a couple of them. 
+## Compare two models using a) saturation plot (pp 191), and b) facing trees (pp 109)
 
-### A. Neighbor Joining Tree
-Neighbor joining trees are generated from a distance matrix based on comparisons of pairs of sequences.
-Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
-Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
-
-### Pull the information down from above?
-
-
-### B. Maximum Parsimony
-### Perhaps should include just for equal coverage, although we're not planning to do any Bayesian stuff right now
-Using package `phangorn`.
-Requires phyDat formatted objects.
-There are functions like `optim.parsimony` that peforms tree rearragements via nearest-neighbor exchange and `pratchet` which uses parsimony ratchet to find trees with lower parsimony score.
-Type the following at the R terminal for a detailed exmaple: vignette ('Trees')
-
-```{r}
-# read.aln.mat <- as.matrix(read.aln)
-# read.aln.phydat <- phyDat(read.aln.mat, type = "DNA")
-# seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
-# tree.nj <- nj(seq.dist.phydat)
-# parsimony(tree.nj, read.aln.phydat)
-# tree.pars <- optim.parsimony(tree.nj, read.aln.phydat)
-# tree.ratch <- pratchet(read.aln.phydat, trace = 0)
-# parsimony(c(tree.pars,tree.ratch),read.aln.phydat)
-# plot(tree.pars, main = "parsimony", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
-```
-
-### C. Maximum Likelihood
+## 7) MAXIMUM LIKELIHOOD -- overview. 
 ** Discussed by Paradis (2012) on pp 138-159
 ** following a lot of what's here: http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf
 
 ```{r}
 read.aln.mat <- as.matrix(read.aln) # read in fasta-aligned file as matrix
 read.aln.phydat <- phyDat(read.aln.mat, type = "DNA") # converts aligned fasta to phyDat {phangorm}
-tree <- nj(dist.logDet(read.aln.phydat)) # pairwise distances for phyDat object {phangorn}
+tree <- nj(dist.ml(read.aln.phydat, model = "JC69")) # pairwise distances for phyDat object {phangorn}
+#tree <- nj(dist.logDet(read.aln.phydat)) # pairwise distances for phyDat object {phangorn}
 fit <- pml(tree, read.aln.phydat) # maximum likelihood function; 
           #returns data, tree, and output, etc. {phangorn}
 fit.JC <- optim.pml(fit, TRUE) # optimizes model parms; default is Jukes-Cantor {phangorn}
@@ -239,19 +212,17 @@ model.tests <- modelTest(read.aln.phydat) # compares all substitution models {ph
 env <- attr(model.tests, "env")
 ls(envir = env)
 fit.model <- eval(get("HKY+G+I", env), env)
+### instead, let's pull out min AIC from list and use the fit.model statement
 ```
 
-Calculate bootstrap support values for tree (SOMEWHAT SLOW: ~2 MINUTES)
+Calculate bootstrap support values for the BEST tree identified above(SOMEWHAT SLOW: ~2 MINUTES)
 ```{r}
 bs <- bootstrap.pml(fit.JC, bs = 100, optNni = TRUE,
             control = pml.control(trace = 0)) #{phangorn} 
 ```
 
 ### Make tree with bootstrap support values 
-### BEWARE: Won't finish, even after changin bs to 5 in the `bootstrap.pml` funtion
-### "It is possible that the bootstrap is performed in parallel, with help of the multicore package. Unfortunately the multicore package does not work under windows or with GUI/interfaces ("aqua" on a mac). However it will speed up nicely from the command line ("X11")."
-### Actually, if we're going to do this, we  would use package `parallel` http://www.stat.colostate.edu/~jah/Computing_Hints/files/parallel.pdf
-### But doesn't work with Windows apparently
+There is apparently a problem here. plotBS hangs forever
 
 ```{r}
 par(mar=c(.1,.1,.1,.1))
@@ -260,10 +231,10 @@ plotBS(fit.JC$tree, bs) #{phangorn}
 
 http://grokbase.com/t/r/r-help/12876aby2z/r-how-to-write-out-a-tree-file-with-bootstrap-from-phangorn-package
 "tree <- plotBS(fit$tree, bs)
-# You can export than this tree using write.tree or write.nexus, e.g.
-write.tree(tree)"
+You can export than this tree using write.tree or write.nexus, e.g. write.tree(tree)"
 
-## 7) MAPPING TRAITS ONTO TREES
+## 8) INTEGRATING TRAITS AND PHYLOGENY -- OVERVIEW, CATEGORICAL, CONTINUOUS
+--MEM
 
 ### A. Loading Trait Database
 ```{r}
@@ -271,7 +242,24 @@ p.growth <- read.table("./data/p.isolates.stdgrowth.txt", sep = "\t", header = T
 #p.growth <- as.data.frame(t(p.growth))
 ```
 
-### Mapping Traits on Tree
+### B. Calculating Niche Breadth
+We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2}}\right)$, where ni is each resource 
+
+```{r}
+levins <- function(p_xi = ""){
+  x = 0
+  for (i in p_xi){
+    x = x + i^2
+    }
+    nb = 1 / (length(p_xi) * x) 
+  return(nb)
+}
+```  
+
+### C. Visualzing Traits on Trees
+--MULTIPLE P TRAITS ON A TREE
+-- SINGLE TRAIT (NICHE BREADTH) ON TREE
+
 ```{r}
 nj.tree <- bionj(seq.dist) # ape command for Neighbor Joining
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
@@ -312,32 +300,23 @@ levelplot(mat[tree$tip,tree$tip],type=c('g','p'),
 )
 ```
 
+## 9) HYPOTHESIS TESTING
 
-### B. Calculating Niche Breadth
-We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2}}\right)$, where ni is each resource 
+##A) PAGEL'S LAMBDA -- Jay
+##B) BOOMBERG'S K -- Jay
+##C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
+    if this doesn't work, can we hijack phylo.struct from picante
+    -- Mario
+##D) CONSTRAINT: http://ps.uci.edu/scholar/amartiny/files/consentrait.txt
+  -- Mario
+##E) Phylogenetic independent contrasts -- Jay
+  
 
-single isolate
-```{r}
-levins <- function(p_xi = ""){
-  x = 0
-  for (i in p_xi){
-    x = x + i^2
-    }
-    nb = 1 / (length(p_xi) * x) 
-  return(nb)
-}
-```  
+## 10) HOMEWORK
+Test growth rate-niche breadth trade-off using pylognetic independent contrasts. Still signficant?
 
-```{r}
-levins.2 <- function(p_xi = ""){
-  p_xi = as.numeric(p_xi)
-  nb = 1 / (length(p_xi) * (p_xi %*% p_xi))
-  return(nb)
-}  
-levins.2(p.growth[1, ])
-```
 
-## 8) PHYLOGENETIC SIGNAL
+
 Phylogenetic signal occurs when the traits of closely related species are more similar than what is expected by chance. 
 In many cases, testing for phylogenetic signal is a prerequsite for addressing questions related to trait evolution and phylogenetic biodiversity. 
 If there is significant phylogenetic signal, then evolutionary history is important for understanding the relationships between for example a trait and the peformance of individuals being considered. 
