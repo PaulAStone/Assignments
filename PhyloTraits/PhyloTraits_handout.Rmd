@@ -167,7 +167,7 @@ plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.lengt
 add.scale.bar(cex = 0.7)
 ```
 
-## 6) SUBSTITUTION MODELS OF DNA EVOLUTION
+## 6) SUBSTITUTION MODELS OF DNA EVOLUTION 
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
 Various models have been developed to estimate the rates that nucleotides change over time. 
 These models are important for inferring relatedness of genes and/or taxa.
