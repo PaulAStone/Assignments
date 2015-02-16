@@ -227,12 +227,17 @@ raw.outgroup <- match("Methanosarcina", raw.tree$tip.label)
 K80.outgroup <- match("Methanosarcina", K80.tree$tip.label) 
 raw.rooted <- root(raw.tree, raw.outgroup, resolve.root=TRUE) 
 K80.rooted <- root(K80.tree, K80.outgroup, resolve.root=TRUE)
-layout(matrix(1:2, 1, 2), width = c(1.4, 1))
-par(mar = c(4, 0, 0, 0))
-plot(K80.rooted, type = "phylogram", adj = 3, cex = 0.5, x.lim = 1)
+layout(matrix(c(1,2), 1, 2), width = c(1.2, 1))
+par(mar = c(4, 1, 0.1, 0.1))
+plot.phylo(K80.rooted, type = "phylogram", direction = "right", 
+           use.edge.length = FALSE, adj = 0.5, cex = 0.5, label.offset = 1)
+
 axisPhylo()
-plot(raw.rooted, show.tip.label = FALSE, direction = "l")
+par(mar = c(4, 0, 0.1, 1))
+plot.phylo(raw.rooted, type = "phylogram", direction = "left", 
+           use.edge.length = FALSE, show.tip.label = FALSE)
 axisPhylo()
+layout(1)
 ```
 
 ***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the K80 substitution model has on our phylogenetic reconstruction. If plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
