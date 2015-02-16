@@ -244,12 +244,12 @@ K80.outgroup <- match("Methanosarcina", K80.tree$tip.label)
 raw.rooted <- root(raw.tree, raw.outgroup, resolve.root=TRUE) 
 K80.rooted <- root(K80.tree, K80.outgroup, resolve.root=TRUE)
 layout(matrix(c(1,2), 1, 2), width = c(1.2, 1))
-par(mar = c(4, 1, 0.1, 0.1))
+par(mar = c(4, 1, 2, 0.1))
 plot.phylo(K80.rooted, type = "phylogram", direction = "right", 
            use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "K80 tree")
 
 axisPhylo()
-par(mar = c(4, 0, 0.1, 1))
+par(mar = c(4, 0, 2, 1))
 plot.phylo(raw.rooted, type = "phylogram", direction = "left", 
            use.edge.length = FALSE, show.tip.label = FALSE, main = "raw tree")
 axisPhylo()
@@ -278,11 +278,13 @@ We will then use one of these models to test phylogenetic hypotheses about the d
 ## and also GTR. 
 ## should have a few sentence desription here saying that we're going to take a peak at a few different substitution model, before more on to investigating all. 
 
-### B. Comparing a Few Models
+### B. Comparing a Few Models (just compare "raw" vs. "K80" as formal test of visualization above)
 ```{r}
 read.aln.mat <- as.matrix(read.aln) # read in fasta-aligned file as matrix
 read.aln.phydat <- phyDat(read.aln.mat, type = "DNA") # converts aligned fasta to phyDat {phangorm}
 tree <- nj(dist.logDet(read.aln.phydat)) # pairwise distances for phyDat object {phangorn}
+outgroup <- match("Methanosarcina", tree$tip.label)
+tree <- root(tree, outgroup, resolve.root=TRUE) # reroots the tree
 fit.JC <- pml(tree, read.aln.phydat) # maximum likelihood function; 
           #returns data, tree, and output, etc. {phangorn}
 fit.JC.opt <- optim.pml(fit.JC, TRUE) # optimizes model parms; default is Jukes-Cantor {phangorn}
@@ -311,12 +313,16 @@ model.tests <- modelTest(read.aln.phydat) # {phangorn}
 sort.tests <- model.tests[order(model.tests$AIC),] # order by AIC
 best.model <- sort.tests[1,1]
 env <- attr(model.tests, "env")
-fitStart <- eval(get("GTR+G+I", env), env)
+#fitStart.1 <- eval(get("GTR+G+I", env), env)
+#fitStart <- eval(get(best.model, env), env)
 fitStart <- eval(get(model.tests$Model[which.min(model.tests$BIC)], env), env)
-fit.best <- optim.pml(fitStart, optNni=TRUE, optGamma=TRUE, optInv=TRUE, model="GTR")
-# bs <- bootstrap.pml(fit.best, bs=100, optNni=TRUE, multicore=TRUE) ### took long time (10 mins)
+outgroup <- match("Methanosarcina", fitStart$tip.label)
+fitStart.rooted <- root(fitStart, outgroup, resolve.root=TRUE) # reroots the tree
+fit.best <- optim.pml(fitStart.rooted, optNni=TRUE, optGamma=TRUE, optInv=TRUE, model="GTR")
+fit.best.rooted <- root(fit.best, outgroup, resolve.root=TRUE)
+bs <- bootstrap.pml(fit.best, bs=2, optNni=TRUE, multicore=TRUE) ### took long time (10 mins)
 par(mar=c(.1,.1,.1,.1))
-# plotBS(fitStart$tree, bs) #{phangorn}
+plotBS(fit.best$tree, bs) #{phangorn}
 ```
 
 ### C. Obtaining Bootstrap Support for the Tree
