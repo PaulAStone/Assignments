@@ -176,7 +176,10 @@ It assumes that all nucleotides occur at equal frequencies and that these nucleo
 The **Felenstein model (F81)** builds from JC69 by allowing base frequences to vary. 
 The **Kimura model (K80)** also assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).
 **Hasegawa, Kishino, and Yano (HKY85)** merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. 
-Many other models of DNA evolution exist, which take into account features such as G+C bias and the probabilities associated with time-reversible nucleotide changes (e.g., T -> C -> T).
+Many other models of DNA evolution exist.
+For example, the **Tamura (T92)** accounts for G+C bias, while **General Time Reversible (GTR)** models capture the probabilities associated with nucleotide reversions (e.g., T -> C -> T).
+
+##MARIO: CAN YOU START ADDING TEXT TO FILL OUT THIS TABLE? CAN'T GET TO KNIT. ALSO, MAYBE WE DON'T NEED IF WE HAVE TEXT ABOVE? OR I GUESS WE PROBABLY DON'T NEED BOTH
 
 \begin{center}
 \hyphenpenalty 10000
@@ -204,7 +207,7 @@ Fortunately, the `dist.dna` function that we used above for generating the neigh
 Let's create a distance matrix among our bacterial isolates based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
 
 ```{r}
-seq.dist.K80 <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # {ape}
+seq.dist.K80 <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # {ape}
 ```
 
 Now, let's compare the "raw" and "K80" distance matrices. 
@@ -221,6 +224,7 @@ text(0.65, 0.6, "1:1")
 Second, we will assess how the "raw" and "K80" distance matrices affect tree topology by making a **cophylogenetic plot**. 
 This will give us a visual sense of whether or not the two trees are in agreement with one another. 
 
+###MARIO: CAN WE ANNOTATE SOME OF THIS R CHUNK?
 ```{r}
 raw.tree <- nj(seq.dist.raw)
 K80.tree <- nj(seq.dist.K80)
@@ -231,32 +235,31 @@ K80.rooted <- root(K80.tree, K80.outgroup, resolve.root=TRUE)
 layout(matrix(c(1,2), 1, 2), width = c(1.2, 1))
 par(mar = c(4, 1, 0.1, 0.1))
 plot.phylo(K80.rooted, type = "phylogram", direction = "right", 
-           use.edge.length = FALSE, adj = 0.5, cex = 0.5, label.offset = 1)
+           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "K80 tree")
 
 axisPhylo()
 par(mar = c(4, 0, 0.1, 1))
 plot.phylo(raw.rooted, type = "phylogram", direction = "left", 
-           use.edge.length = FALSE, show.tip.label = FALSE)
+           use.edge.length = FALSE, show.tip.label = FALSE, main = "raw tree")
 axisPhylo()
 layout(1)
 ```
 
-***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the K80 substitution model has on our phylogenetic reconstruction. If plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
+***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the K80 substitution model has on our phylogenetic reconstruction. If the plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
 
 > ***Answer 3***:   
 
 ## 7) MAXIMUM LIKELIHOOD
 
 ### A. Overview
-Maximum likelihood is an approach for estimating parameters for statistical model.
-It is perhaps one of the most commonly used approaches for phylogenetic reconstruction.
-In this exercise, we will use maximum likelihood to determine which DNA substitution model best fits our sequence data. 
-We will then use this final model when moving forward to test phylogenetic hypotheses about the distribution of traits among the bacteria in our study system. 
+Maximum likelihood is an approach for estimating parameters for a statistical model.
+It is also one of the most commonly used methods for phylogenetic reconstruction.
+In this exercise, we will use maximum likelihood to determine which DNA substitution models best fits our sequence data. 
+We will then use one of these models to test phylogenetic hypotheses about the distribution of traits among the bacteria in our study system. 
 
-##following a lot of what's here: http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf##
-
-## and here too: http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf
-
+##following a lot of what's on following links: 
+##http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf##
+##http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf
 ## http://www.slideshare.net/KlausVigo/phylogenetics-cibio
 
 ##need to think about the "exclude = pairwise" command in the dist.ml function below. 
