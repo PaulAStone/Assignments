@@ -104,8 +104,8 @@ Move along the alignment by changing the values in the windows object.
 a.  Approximatley how long were our reads?  
 b.  What regions do you think would be most appropriate for phylogenetic inference?  
 
-> ***Answer 1a***:   
-> ***Answer 1b***:  
+> ***Answer 2a***:   
+> ***Answer 2b***:  
 
 ## 5) MAKING A PHYLOGENETIC TREE
 Overview and include a table. Maximum Parsimony, Bayesian stuff right now. Using package `phangorn`.
@@ -122,18 +122,20 @@ NJ is a **distance-based** approach to making trees.
 As such, it requires that we use an evolutionary model to determine the pairwise distances between sequences.
 This is similar to the distance approaches we used for $\beta$ diversity when we made *Resemblance Matrices*.
 
-Let's make a distance file
-### Is the raw model appropriate here? Looking at the doc it doesn't seem so ###
+Let's make a distance file with the `dist.dna` function from the `ape` package. 
+The "model = raw"" argument means that `dist.dna` will estimate distances based on the proportion of sites that differ between pairs of sequences. 
+The "pairwise.deletion = TRUE" argument means that sites with missing data are deleted in a pairwise way.
 
 ```{r}
-seq.dist <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = FALSE)
+seq.dist.raw <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = TRUE)
 ```
 
-Now that we have calculated distances between our sequences, we can use this information to make our NJ tree.
-Now let's make a NJ tree 
+Now that we have calculated distances between our sequences, we can use this information to make a neighor joining tree using the `nj` function in `ape`. 
+In the process we will identify an outgroup sequence (*Methanosarcina* belongs to the Archaea, not Bacteria), which we will use to root the tree. 
 
+###MEM: curious about the units on scale bar; "10"?
 ```{r}
-nj.tree <- nj(seq.dist) # performs neihbor joining; makes object `phylo` {ape}
+nj.tree <- nj(seq.dist.raw) # performs neihbor joining; makes object `phylo` {ape}
 outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
 nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE) # reroots tree with outgroup {ape}
 plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
@@ -143,8 +145,8 @@ add.scale.bar(cex = 0.7)
 
 ## 6) SUBSTITUTION MODELS OF DNA EVOLUTION
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
-Various models have been developed to estimate the rates that nucleotides change, which can be important for inferring relatedness of genes.
-For example, the **Jukes-Cantor model (JC69)** is the simplest **substitution model**.
+Various models have been developed to estimate the rates that nucleotides change over time, which can be important for inferring relatedness of genes.
+The **Jukes-Cantor model (JC69)** is the simplest **substitution model**.
 It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability. 
 The **Felenstein model (F81)** builds from JC69 by allowing base frequences to vary. 
 The **Kimura model (K80)** also assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).
@@ -173,18 +175,36 @@ Many other models of DNA evolution exist, which take into account features such 
   \end{tabular}
   \end{center}
   
-Many other models of DNA evolution exist, which take into account features such as G+C bias and the probabilities associated with time-reversible nucleotide changes (e.g., T -> C -> T).
-  
-Fortunately, the `ape` package has a function (`dist.dna`) that will create distances for a large number of DNA substitution models. 
+Fortunately, the `dist.dna` function that we used above can create distance matrices for a large number of DNA substitution models. 
 Let's create a distance matrix among our bacterial isolates based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
 
 ```{r}
-seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # {ape}
+seq.dist.K80 <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = TRUE) # {ape}
 ```
 
-## MIGHT BE GOOD TO HAVE A QUESTION HERE. IN BOOK, THEY COMPARE BY PLOTTING ONE-TO-ONES. INTERPRET?
+Now, let's compare the trees that were generated with the "raw" and "K80" distance matrices. 
+First, we will make a **saturation plot**, which allow us to visuazlie the effect of our DNA subsititution model compared to a distance matrix that does not include this feature. 
 
-## Compare two models using a) saturation plot (pp 191), and b) facing trees (pp 109)
+```{r}
+plot(seq.dist.raw, seq.dist.K80, pch = 20, col = "red", xlab = "raw distance", ylab = "K80 distance") 
+abline(b =1, a = 0, lty = 2)
+```
+
+Second, we will assess how the "raw" and "K80" distance matrices affect tree topology by making a **cophylogenetic plot**:
+
+```{r}
+K80.tree <- nj(seq.dist.K80)
+layout(matrix(1:2, 1, 2), width = c(1.4, 1))
+par(mar = c(4, 0, 0, 0))
+plot(K80.tree, type = "phylogram", adj = 3, cex = 0.5, x.lim = 1)
+axisPhylo()
+plot(nj.tree, show.tip.label = FALSE, direction = "l")
+axisPhylo()
+```
+
+***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the K80 substitution model has on our phylogenetic reconstruction. If there are differences, explain what those differences are due to.   
+
+> ***Answer 3***:   
 
 ## 7) MAXIMUM LIKELIHOOD -- overview. 
 ** Discussed by Paradis (2012) on pp 138-159
