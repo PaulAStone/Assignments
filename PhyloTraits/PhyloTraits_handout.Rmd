@@ -119,6 +119,25 @@ Instead, we wil empahasize distance-based approaches that are used for generatin
 Neighbor joining can serve as a starting point for exploring different evolutionary models using **maximum likelihood** methods, which we will explore in this handout. 
 Last, phylogenetic trees can be constructed used **Bayesian** methods in the R package '`phangorn`, but we will not cover these approaches in Quantiative Biodiversity. 
 
+\begin{center}
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
+\begin{tabular}{ m{3cm} m{7cm} }
+  \textbf{Tree Method} & & \textbf{Properties} \\
+  \hline \hline \\ [-1.5ex]
+  \textbf{} & 
+  Add Text Here \\
+  \\ [-1.5ex]
+  \textbf{} & 
+  Add Text Here  \\
+  \\ [-1.5ex]  
+  \textbf{} & 
+  Add Text Here  \\
+  \\ [-1.5ex]   
+  \hline
+\end{tabular}
+\end{center}
+
 ### A. Neighbor Joining Tree
 Neighbor joining trees are generated from a distance matrix based by comparing pairs of sequences.
 Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
@@ -135,8 +154,10 @@ seq.dist.raw <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = FALSE)
 After calculating the distances between our sequences, we are now ready to make a neighor joining tree using the `nj` function in `ape`. 
 In the process we will identify an outgroup sequence (*Methanosarcina* belongs to the Archaea, not Bacteria), which we will use to root the tree. 
 
-###MEM: curious about the units on scale bar; "10"?
+### MEM: curious about the units on scale bar; "10"?
+### We should probably check ,but I think it is for substitutions - distance.
 ### this seems to depend on the use.edge.length parameter. need to look into this. 
+
 ```{r}
 nj.tree <- nj(seq.dist.raw) # performs neihbor joining; makes object `phylo` {ape}
 outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
@@ -176,8 +197,8 @@ Many other models of DNA evolution exist, which take into account features such 
   merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. \\
   \\ [-1.5ex]   
   \hline
-  \end{tabular}
-  \end{center}
+\end{tabular}
+\end{center}
   
 Fortunately, the `dist.dna` function that we used above for generating the neighbor joining tree can easily create distance matrices for a large number of DNA substitution models. 
 Let's create a distance matrix among our bacterial isolates based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
@@ -190,20 +211,28 @@ Now, let's compare the "raw" and "K80" distance matrices.
 First, we will make a **saturation plot**, which allow us to visuazlie the effect of our DNA subsititution model compared to a distance matrix that does not include this feature. 
 
 ```{r}
-plot(seq.dist.raw, seq.dist.K80, pch = 20, col = "red", xlab = "raw distance", ylab = "K80 distance") 
+plot(seq.dist.raw, seq.dist.K80, 
+     pch = 20, col = "red", las = 1, asp = 1, xlim=c(0,0.7), ylim = c(0,0.7),
+     xlab = "Raw Distance", ylab = "K80 Distance") 
 abline(b =1, a = 0, lty = 2)
+text(0.65, 0.6, "1:1")
 ```
 
 Second, we will assess how the "raw" and "K80" distance matrices affect tree topology by making a **cophylogenetic plot**. 
 This will give us a visual sense of whether or not the two trees are in agreement with one another. 
 
 ```{r}
+raw.tree <- nj(seq.dist.raw)
 K80.tree <- nj(seq.dist.K80)
+raw.outgroup <- match("Methanosarcina", raw.tree$tip.label) 
+K80.outgroup <- match("Methanosarcina", K80.tree$tip.label) 
+raw.rooted <- root(raw.tree, raw.outgroup, resolve.root=TRUE) 
+K80.rooted <- root(K80.tree, K80.outgroup, resolve.root=TRUE)
 layout(matrix(1:2, 1, 2), width = c(1.4, 1))
 par(mar = c(4, 0, 0, 0))
-plot(K80.tree, type = "phylogram", adj = 3, cex = 0.5, x.lim = 1)
+plot(K80.rooted, type = "phylogram", adj = 3, cex = 0.5, x.lim = 1)
 axisPhylo()
-plot(nj.tree, show.tip.label = FALSE, direction = "l")
+plot(raw.rooted, show.tip.label = FALSE, direction = "l")
 axisPhylo()
 ```
 
