@@ -110,25 +110,26 @@ b.  What regions do you think would be most appropriate for phylogenetic inferen
 
 ## 5) MAKING A PHYLOGENETIC TREE
 Once you have a aligned your sequences, the next step is to construct a phylogenetic tree.
-Not only is this effective for visualizing the evolutionary relationship among your gene or taxa, but as you will see later, the information tht goes into a phylogenetic trees is needed for subsequent hypothesis testing. 
+Not only is this effective for visualizing the evolutionary relationship among your gene or taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for subsequent hypothesis testing. 
+
 There are a number of ways to construct a phylogenetic tree. 
-For example, **Maximum parsimony** is character-based approach that involves minimimizing the number of steps (or mutations) that are required for explaining a set of data. 
+For example, **maximum parsimony** is character-based approach that involves identifying one of many possible trees based upon the minimum number of evolutionary steps (or mutations). 
 We are not going to cover this method, but maximum parsimony can easily be peformed in R using the `phangorn` package. 
-Instead, we wil empahasize distance-based approaches, specifically **neighbor-joining**. 
-Neighbor joining trees can serve as a starting point for exploring different evolutionary models using **maximum likelihood** methods, which we will discuss. 
+Instead, we wil empahasize distance-based approaches that are used for generating a tree, specifically **neighbor-joining**. 
+Neighbor joining can serve as a starting point for exploring different evolutionary models using **maximum likelihood** methods, which we will explore in this handout. 
 Last, phylogenetic trees can be constructed used **Bayesian** methods in the R package '`phangorn`, but we will not cover these approaches in Quantiative Biodiversity. 
 
 ### A. Neighbor Joining Tree
-Neighbor joining trees are generated from a distance matrix based on comparisons of pairs of sequences.
+Neighbor joining trees are generated from a distance matrix based by comparing pairs of sequences.
 Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
 Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
 
 The first step in making a neighbor joining tree is to create a distance matrix. 
 We will do this with the `dist.dna` function in the `ape` package. 
-In the R chunk below, the "model = raw"" argument means that `dist.dna` will estimate distances based on the proportion of sites that differ between pairs of sequences, while the "pairwise.deletion = TRUE" argument means that sites with missing data are deleted in a pairwise fashion.
+In the R chunk below, the "model = raw"" argument means that `dist.dna` will estimate distances based on the proportion of sites that differ between pairs of sequences, while the "pairwise.deletion = FALSE" argument means that an entire site (i.e., column) is deleted if there is missing observation (i.e., a gap) for one or more of the sequences (i.e., rows). 
 
 ```{r}
-seq.dist.raw <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = TRUE)
+seq.dist.raw <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = FALSE)
 ```
 
 After calculating the distances between our sequences, we are now ready to make a neighor joining tree using the `nj` function in `ape`. 
