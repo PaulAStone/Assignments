@@ -134,6 +134,7 @@ Now that we have calculated distances between our sequences, we can use this inf
 In the process we will identify an outgroup sequence (*Methanosarcina* belongs to the Archaea, not Bacteria), which we will use to root the tree. 
 
 ###MEM: curious about the units on scale bar; "10"?
+### We should probably check ,but I think it is for substitutions - distance.
 ```{r}
 nj.tree <- nj(seq.dist.raw) # performs neihbor joining; makes object `phylo` {ape}
 outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
