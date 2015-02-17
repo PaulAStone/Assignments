@@ -47,7 +47,7 @@ require("geiger")
 The maintenance of biodiversity is thought to be influenced by **trade-offs** among species in certain functional traits. 
 One such trade-off involves the ability of a highly specialized species to peform exceptionally well on a particular resource. 
 This strategy may be advantageous if the specialist lives in an environment where its preferred resource is found in a relatively high and constant supply. 
-However, the specialist strategy may not be optimal if the species finds itself itself in an environment where resource conditions change.
+However, the specialist strategy may not be optimal if the species finds itself itself in an environment where resource conditions are more variable.
 Under these conditions, it may be beneficial if a species is capable of using a wider range of resources, even though there may be a fitness cost associated with being a generalist. 
 We set out to test this hypothesized trade-off in bacteria by assessing generalist and specialist strategies on different forms of phopshorus, a resource which commonly limits growth and reproduction of organisms inhabiting freshwater ecosystems.
 We collected 39 strains of bacteria from two lakes. 
@@ -62,6 +62,8 @@ In R, there are at least two packages that can be used for aligning sequences: `
 In `ape`, alignments can be done with the functions `clustal`, `muscle`, and `tcoffee`, all which have a range of options. 
 However, these functions require that other programs be installed on your computer.
 Therefore, for this exericse, we are going to use the `muscle` package in R becasue it will align sequences in a "stand alone" fashion without the need for installing additional software. 
+
+### A.  Examining a FASTA-File 
 We will read in a **fasta-formatted** file into the `muslce` alignment function.
 This is a very common file format that is used across platforms and disciplines. 
 Let's take a second to look at the *p.isolates.fasta* file. 
@@ -72,6 +74,7 @@ You can use Ctrl+V and Ctrl+Y to scroll towards the top and bottom of the file, 
 When you are done, you can close the file by hitting Ctrl+X.
 Do not save any inadvertent changes to *p.isolates.fasta*.
 
+### B.  Performing an Alignment 
 Now, let's align our sequences. 
 Using the `muscle` fuction, we will read in our fasta file and create a **fasta-aligned* output file (with an .afa extension).  
 
@@ -83,7 +86,7 @@ muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa")
 
 > ***Answer 1***: 
 
-## 4) VISUALIZING ALIGNMENTS
+### C.  Visualizing the Alignment
 It is good practice to view your sequences after alignment. 
 This may not be practical for large databases, but in our example, the alignment only contains sequences for 39 bacterial species plus a distantly related reference sequence that we will use as an **outgroup**. 
 To visualize our alingment, first, we will read in the fasta-aligned file using the `read.alignment` function in the `seqinr` package. 
@@ -94,29 +97,29 @@ Last, we will visualize the alignment by color-coding nucelobases different colo
 read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") # read in afa file {seqinr}
 p.DNAbin <- as.DNAbin(read.aln) # convert afa to DNAbin object {ape}
 window <- p.DNAbin[,100:500] # identify base pair region of 16S rRNA gene to visuzlize
-image.DNAbin(window, cex.lab = 0.5) # command to visusalize seq align {ape}
+image.DNAbin(window, cex.lab = 0.6) # command to visusalize seq align {ape}
 # optional code to add grid to help visualize rows of sequences:
 # grid(ncol(window),nrow(window),col="lightgrey") # command to add grid {ape}
 ```
 
-***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes and the outgroup (*Methanosarcina*). 
-Move along the alignment by changing the values in the `windows` object.  
+***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isolates and the outgroup, *Methanosarcina*, which belongs to the archaeal domain of life. 
+Move along the alignment by changing the values in the `window` object.  
 a.  Approximatley how long were our reads?  
 b.  What regions do you think would be most appropriate for phylogenetic inference?  
 
 > ***Answer 2a***:   
 > ***Answer 2b***:  
 
-## 5) MAKING A PHYLOGENETIC TREE
-Once you have a aligned your sequences, the next step is to construct a phylogenetic tree.
+## 4) MAKING A PHYLOGENETIC TREE
+Once you have aligned your sequences, the next step is to construct a phylogenetic tree.
 Not only is this effective for visualizing the evolutionary relationship among taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for subsequent hypothesis testing. 
 
 There are a number of ways to construct a phylogenetic tree. 
-For example, **maximum parsimony** is character-based approach that involves identifying one of many possible trees based upon the minimum number of evolutionary steps (or mutations). 
+For example, **maximum parsimony** is character-based approach that involves identifying one of many possible trees based upon the minimum number of evolutionary "steps"" (or mutations). 
 We are not going to cover this method, but maximum parsimony can easily be peformed in R using the `phangorn` package. 
 Instead, we wil empahasize distance-based approaches that are used for generating a tree, specifically **neighbor-joining**. 
-Neighbor joining can serve as a starting point for exploring different evolutionary models using **maximum likelihood** methods, which we will explore in this handout. 
-Last, phylogenetic trees can be constructed used **Bayesian** methods in the R package '`phangorn`.
+Neighbor joining can serve as a starting point for assessing different evolutionary models using **maximum likelihood** methods, which we will explore in this handout. 
+Last, phylogenetic trees can be constructed using **Bayesian** methods in the R package '`phangorn`.
 Although Bayesian phylogenetic methods are used by a lot of researchers, we do not have time to cover these approaches in Quantiative Biodiversity. 
 
 ##MARIO: CAN YOU START ADDING TEXT TO FILL OUT THIS TABLE?
@@ -150,19 +153,20 @@ Neighbor joining trees are created from a distance matrix that is generated by c
 Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
 The tree-building starts with an unresolved tree in "star network".
 The neighbor joining algorithm then identifies the two most similar taxa and creates a node.
-This process is iteratively applied to the remaining sequences until the tree is resolved. 
+This process is iteratively applied to the remaining sequences outside until the tree is resolved. 
 Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
 
 The first step in making a neighbor joining tree is to create a distance matrix. 
 We will do this with the `dist.dna` function in the `ape` package. 
-In the R chunk below, the "model = raw"" argument means that `dist.dna` will estimate distances based on the proportion of sites that differ between pairs of sequences, while the "pairwise.deletion = FALSE" argument means that an entire site (i.e., column) is deleted if there is missing observation (i.e., a gap) for one or more of the sequences (i.e., rows). 
+In the R chunk below, the "model = raw"" argument means that `dist.dna` will estimate distances based on the proportion of sites that differ between pairs of sequences.
+The "pairwise.deletion = FALSE" argument means that an entire site (i.e., column) is deleted if there is missing observation (i.e., a gap) for one or more of the sequences (i.e., rows). 
 
 ```{r}
 seq.dist.raw <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = FALSE)
 ```
 
 After calculating the distances between our sequences, we are now ready to make a neighor joining tree using the `nj` function in `ape`. 
-In the process we will identify an outgroup sequence (*Methanosarcina* belongs to the Archaea, not Bacteria), which we will use to root the tree. 
+In the process we will identify an outgroup sequence (*Methanosarcina*), which we will use to root the tree. 
 
 ```{r}
 # Use Neighbor Joining Algorithim to Construct Tree (makes 'phylo' object {ape})
@@ -178,7 +182,7 @@ plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.lengt
 add.scale.bar(cex = 0.7)
 ```
 
-## 6) SUBSTITUTION MODELS OF DNA EVOLUTION 
+### B) SUBSTITUTION MODELS OF DNA EVOLUTION 
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
 Various models have been developed to estimate the rates that nucleotides change over time. 
 These models are important for inferring relatedness of genes and/or taxa.
