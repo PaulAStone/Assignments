@@ -321,8 +321,8 @@ env <- attr(model.tests, "env")
 #fitStart <- eval(get(best.model, env), env)
 fitStart <- eval(get(model.tests$Model[which.min(model.tests$BIC)], env), env)
 outgroup <- match("Methanosarcina", fitStart$tip.label)
-fitStart.rooted <- root(fitStart, outgroup, resolve.root=TRUE) # reroots the tree
-fit.best <- optim.pml(fitStart.rooted, optNni=TRUE, optGamma=TRUE, optInv=TRUE, model="GTR")
+# fitStart.rooted <- root(fitStart, outgroup, resolve.root=TRUE) # reroots the tree
+fit.best <- optim.pml(fitStart, optNni=TRUE, optGamma=TRUE, optInv=TRUE, model="GTR")
 fit.best.rooted <- root(fit.best, outgroup, resolve.root=TRUE)
 bs <- bootstrap.pml(fit.best, bs=2, optNni=TRUE, multicore=TRUE) ### took long time (10 mins)
 par(mar=c(.1,.1,.1,.1))
@@ -399,17 +399,44 @@ nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
 nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
 nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
-traits <- p.growth[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
+
+# Using the Best Fit Model
+bs <- bootstrap.pml(fit.best)
+bs.1 <- bs[[1]]
+
+
+outgroup <- match("Methanosarcina", bs.1$tip.label)
+fit.best.rooted <- root(bs.1, outgroup, resolve.root=TRUE)
+fit.best.noroot <- drop.tip(fit.best.rooted, "Methanosarcina")
+
+
+traits <- p.growth.std[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
+trait.nb <- as.data.frame(nb)
+rownames(trait.nb) <- rownames(traits)
 
 # Drop Missing Branches and data
-nj.rooted <- drop.tip(nj.rooted, c("LL11A", "LL15", "WG37", "WG30A", "WG32", "LL12A"))
+fit.best.noroot <- drop.tip(fit.best.noroot, c("LL11A", "LL15", "WG37", "WG30A", "WG32", "LL12A"))
 traits <- traits[!rownames(traits) == "LL12", ]
+trait.nb <- trait.nb[!rownames(trait.nb) == "LL12", ]
 
 require(phylobase)
 require(adephylo)
-x <- phylo4d(nj.rooted, traits)
-table.phylo4d(x,treetype="clad", show.node=FALSE, cex.leg=0.5, cex.label = 0.5,
-use.edge.length=FALSE, edge.color="blue", edge.width=2, box=FALSE, las = 1) 
+x <- phylo4d(fit.best.noroot, traits)
+table.phylo4d(x, treetype="clad", symbol="colors", show.node=TRUE, 
+              cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
+              edge.color="black", edge.width=2, box=FALSE, 
+              col=topo.colors(10), pch = 15, cex.symbol = 1, 
+              ratio.tree=0.75, cex.legend=1)                                                                                                                                                                
+
+# Niche Breadth
+x.nb <- phylo4d(fit.best.noroot, trait.nb)
+table.phylo4d(x.nb, treetype="clad", symbol="colors", show.node=TRUE, 
+              cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
+              edge.color="black", edge.width=2, box=FALSE, 
+              col=topo.colors(10), pch = 15, cex.symbol = 1, 
+              ratio.tree=0.75, cex.legend=1) 
+
+# Still need to clean it up. bUt looking much better
 
 library(latticeExtra)
 dd.col <- as.dendrogram(hc)
