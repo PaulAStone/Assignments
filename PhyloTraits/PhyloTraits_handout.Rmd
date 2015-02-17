@@ -64,42 +64,51 @@ However, these functions require that other programs be installed on your comput
 Therefore, for this exericse, we are going to use the `muscle` package in R becasue it will align sequences in a "stand alone" fashion without the need for installing additional software. 
 
 ### A.  Examining a FASTA-File 
-We will read in a **fasta-formatted** file into the `muslce` alignment function.
-This is a very common file format that is used across platforms and disciplines. 
+We will read in a **FASTA-formatted** file into the `muslce` alignment function.
+This is a very common text-based format that is used across platforms and disciplines. 
 Let's take a second to look at the *p.isolates.fasta* file. 
 Open the terminal and change directory to the data folder. 
 You can then type "nano p.isolates.fasta" at the command line. 
-This will open the fasta file in nano, which is a text editing program. 
+This will open the FASTA file in nano, which is a text editing program. 
 You can use Ctrl+V and Ctrl+Y to scroll towards the top and bottom of the file, respectively.
 When you are done, you can close the file by hitting Ctrl+X.
 Do not save any inadvertent changes to *p.isolates.fasta*.
 
 ### B.  Performing an Alignment 
 Now, let's align our sequences. 
-Using the `muscle` fuction, we will read in our fasta file and create a **fasta-aligned* output file (with an .afa extension).  
+Using the `muscle` fuction, we will read in our FASTA file and create a **FASTA-aligned* output file (with an .afa extension).  
 
 ```{r}
 muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
 ```
 
-***Question 1***: Using nano or your favorite text editor, compare the `p.isolates.fasta` file and the `p.isolates.afa` file. Describe the differences that you observe between the two files. 
+***Question 1***: Using nano or your favorite text editor, compare the `p.isolates.fasta` file and the `p.isolates.afa` file. 
+Describe the differences that you observe between the two files. 
 
 > ***Answer 1***: 
 
 ### C.  Visualizing the Alignment
 It is good practice to view your sequences after alignment. 
 This may not be practical for large databases, but in our example, the alignment only contains sequences for 39 bacterial species plus a distantly related reference sequence that we will use as an **outgroup**. 
-To visualize our alingment, first, we will read in the fasta-aligned file using the `read.alignment` function in the `seqinr` package. 
+To visualize our alingment, first, we will read in the FASTA-aligned file using the `read.alignment` function in the `seqinr` package. 
 Then, using the `ape` package, we will convert the alignnment file it into a **DNAbin object**, which is a bit-level coding scheme that allows R to store and manipulate sequence data.
 Last, we will visualize the alignment by color-coding nucelobases different colors, where red = adenine, yellow = guanine, green = cytosine, blue = thymidine, grey = ambiguous call, and black = alignment gaps. 
 
 ```{r}
-read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") # read in afa file {seqinr}
-p.DNAbin <- as.DNAbin(read.aln) # convert afa to DNAbin object {ape}
-window <- p.DNAbin[,100:500] # identify base pair region of 16S rRNA gene to visuzlize
-image.DNAbin(window, cex.lab = 0.6) # command to visusalize seq align {ape}
-# optional code to add grid to help visualize rows of sequences:
-# grid(ncol(window),nrow(window),col="lightgrey") # command to add grid {ape}
+# Read Alignment File {seqinr}
+read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta")  
+
+# Convert Alignment File to DNAbin Object {ape}
+p.DNAbin <- as.DNAbin(read.aln) 
+
+# Identify Base Pair Region of 16S rRNA Gene to Visuzlize
+window <- p.DNAbin[,100:500] 
+
+# Command to Visusalize Sequence Alignment {ape}
+image.DNAbin(window, cex.lab = 0.6) 
+
+# Optional Code Adds Grid to Help Visualize Rows of Sequences 
+grid(ncol(window), nrow(window), col = "lightgrey") 
 ```
 
 ***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isolates and the outgroup, *Methanosarcina*, which belongs to the archaeal domain of life. 
@@ -112,14 +121,15 @@ b.  What regions do you think would be most appropriate for phylogenetic inferen
 
 ## 4) MAKING A PHYLOGENETIC TREE
 Once you have aligned your sequences, the next step is to construct a phylogenetic tree.
-Not only is this effective for visualizing the evolutionary relationship among taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for subsequent hypothesis testing. 
+Not only is this effective for visualizing the evolutionary relationship among taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for downstream hypothesis testing. 
 
 There are a number of ways to construct a phylogenetic tree. 
 For example, **maximum parsimony** is character-based approach that involves identifying one of many possible trees based upon the minimum number of evolutionary "steps"" (or mutations). 
-We are not going to cover this method, but maximum parsimony can easily be peformed in R using the `phangorn` package. 
-Instead, we wil empahasize distance-based approaches that are used for generating a tree, specifically **neighbor-joining**. 
-Neighbor joining can serve as a starting point for assessing different evolutionary models using **maximum likelihood** methods, which we will explore in this handout. 
-Last, phylogenetic trees can be constructed using **Bayesian** methods in the R package '`phangorn`.
+We are not going to cover this method, but it is good to know that maximum parsimony can easily be peformed in R using the `phangorn` package. 
+Instead, we wil empahasize distance-based approaches that are used for generating trees, specifically **neighbor-joining**. 
+Neighbor joining is a relatively fast algorithm and often generates correct tree topologies.
+Moreover, neighbor joining can serve as a starting point for assessing different evolutionary models using **maximum likelihood** methods, which we will explore in this handout. 
+Last, phylogenetic trees can be constructed using **Bayesian** methods in the R package `phangorn`.
 Although Bayesian phylogenetic methods are used by a lot of researchers, we do not have time to cover these approaches in Quantiative Biodiversity. 
 
 ##MARIO: CAN YOU START ADDING TEXT TO FILL OUT THIS TABLE?
@@ -149,34 +159,36 @@ Although Bayesian phylogenetic methods are used by a lot of researchers, we do n
 \end{center}
 
 ### A. Neighbor Joining Trees
-Neighbor joining trees are created from a distance matrix that is generated by comparing pairs of sequences.
-Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
+Neighbor joining trees are created from a distance matrix that is generated by comparing pairs of alinged sequences.
+Trees are then constructed in an agglomerative fashion, similar to the way that we conducted cluster analysis in the $\beta$-diversity exercise.
 The tree-building starts with an unresolved tree in "star network".
 The neighbor joining algorithm then identifies the two most similar taxa and creates a node.
-This process is iteratively applied to the remaining sequences outside until the tree is resolved. 
-Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
+This process is iteratively applied to the remaining sequences until the tree is resolved.  
 
 The first step in making a neighbor joining tree is to create a distance matrix. 
 We will do this with the `dist.dna` function in the `ape` package. 
 In the R chunk below, the "model = raw"" argument means that `dist.dna` will estimate distances based on the proportion of sites that differ between pairs of sequences.
-The "pairwise.deletion = FALSE" argument means that an entire site (i.e., column) is deleted if there is missing observation (i.e., a gap) for one or more of the sequences (i.e., rows). 
+The "pairwise.deletion = FALSE" argument means that an entire site (i.e., column) is deleted if there is a missing observation (i.e., a gap) for one or more of the sequences (i.e., rows). 
 
 ```{r}
+# Create distance matrix with "raw" model {ape}
 seq.dist.raw <- dist.dna(p.DNAbin, model = "raw", pairwise.deletion = FALSE)
 ```
 
 After calculating the distances between our sequences, we are now ready to make a neighor joining tree using the `nj` function in `ape`. 
-In the process we will identify an outgroup sequence (*Methanosarcina*), which we will use to root the tree. 
+In the process, we will identify an outgroup sequence (*Methanosarcina*) that we will use to root the tree. 
 
 ```{r}
-# Use Neighbor Joining Algorithim to Construct Tree (makes 'phylo' object {ape})
+# Neighbor Joining Algorithim to Construct Tree, a 'phylo' Object {ape}
 nj.tree <- nj(seq.dist.raw)
 
-# Identify Outgroup Sequence and Reroot Tree
+# Identify Outgroup Sequence
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
+
+# Root the Tree {ape}
 nj.rooted <- root(nj.tree, outgroup, resolve.root = TRUE)
 
-# Use Rooted Tree to Plot Phylogeny
+# Plot the Rooted Tree {ape}
 plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
            direction = "right", cex = 0.7, label.offset = 1)
 add.scale.bar(cex = 0.7)
@@ -186,6 +198,8 @@ add.scale.bar(cex = 0.7)
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
 Various models have been developed to estimate the rates that nucleotides change over time. 
 These models are important for inferring relatedness of genes and/or taxa.
+
+###Perhaps convert text below into table. 
 The **Jukes-Cantor model (JC69)** is the simplest **substitution model**.
 It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability. 
 The **Felenstein model (F81)** builds from JC69 by allowing base frequences to vary. 
@@ -194,7 +208,6 @@ The **Kimura model (K80)** also assumes equal frequencies of nucleotides, but re
 Many other models of DNA evolution exist.
 For example, the **Tamura (T92)** accounts for G+C bias, while **General Time Reversible (GTR)** models capture the probabilities associated with nucleotide reversions (e.g., T -> C -> T).
 
-##MARIO: CAN YOU START ADDING TEXT TO FILL OUT THIS TABLE? CAN'T GET TO KNIT. ALSO, MAYBE WE DON'T NEED IF WE HAVE TEXT ABOVE? OR I GUESS WE PROBABLY DON'T NEED BOTH
 
 \begin{center}
 \hyphenpenalty 10000
@@ -219,19 +232,21 @@ For example, the **Tamura (T92)** accounts for G+C bias, while **General Time Re
 \end{center}
   
 Fortunately, the `dist.dna` function that we used above for generating the neighbor joining tree can easily create distance matrices for a large number of DNA substitution models. 
-Let's create a distance matrix among our bacterial isolates based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
+Let's create a distance matrix among our bacterial isolates based on the Jukes-Cantor (JC69) subsitution model using the `dist.dna` function in `ape`. 
 
 ```{r}
-seq.dist.K80 <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # {ape}
+# Create distance matrix with "JC69" model {ape}
+seq.dist.JC69 <- dist.dna(p.DNAbin, model = "JC69", pairwise.deletion = FALSE)
 ```
 
-Now, let's compare the "raw" and "K80" distance matrices. 
+Now, let's compare the "raw" and "JC69" distance matrices. 
 First, we will make a **saturation plot**, which allow us to visuazlie the effect of our DNA subsititution model compared to a distance matrix that does not include this feature. 
 
 ```{r}
-plot(seq.dist.raw, seq.dist.K80, 
+# Plot Distances from Different DNA Substitution Models
+plot(seq.dist.raw, seq.dist.JC69, 
      pch = 20, col = "red", las = 1, asp = 1, xlim=c(0,0.7), ylim = c(0,0.7),
-     xlab = "Raw Distance", ylab = "K80 Distance") 
+     xlab = "Raw Distance", ylab = "JK69 Distance") 
 abline(b =1, a = 0, lty = 2)
 text(0.65, 0.6, "1:1")
 ```
@@ -239,18 +254,24 @@ text(0.65, 0.6, "1:1")
 Second, we will assess how the "raw" and "K80" distance matrices affect tree topology by making a **cophylogenetic plot**. 
 This will give us a visual sense of whether or not the two trees are in agreement with one another. 
 
-###MARIO: CAN WE ANNOTATE SOME OF THIS R CHUNK?
 ```{r}
+# Make Neighbor Joining Trees Using Different DNA Substitution Models {ape}
 raw.tree <- nj(seq.dist.raw)
-K80.tree <- nj(seq.dist.K80)
+JC69.tree <- nj(seq.dist.JC69)
+
+# Define Outgroups
 raw.outgroup <- match("Methanosarcina", raw.tree$tip.label) 
-K80.outgroup <- match("Methanosarcina", K80.tree$tip.label) 
+JC69.outgroup <- match("Methanosarcina", JC69.tree$tip.label) 
+
+# Root the Trees {ape}
 raw.rooted <- root(raw.tree, raw.outgroup, resolve.root=TRUE) 
-K80.rooted <- root(K80.tree, K80.outgroup, resolve.root=TRUE)
+JC69.rooted <- root(JC69.tree, JC69.outgroup, resolve.root=TRUE)
+
+# Make Cophylogenetic Plot {ape}
 layout(matrix(c(1,2), 1, 2), width = c(1.2, 1))
 par(mar = c(4, 1, 2, 0.1))
-plot.phylo(K80.rooted, type = "phylogram", direction = "right", 
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "K80 tree")
+plot.phylo(JC69.rooted, type = "phylogram", direction = "right", 
+           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "JC69 tree")
 
 axisPhylo()
 par(mar = c(4, 0, 2, 1))
@@ -260,16 +281,14 @@ axisPhylo()
 layout(1)
 ```
 
-***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the K80 substitution model has on our phylogenetic reconstruction. If the plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
+***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the JC69 substitution model has on our phylogenetic reconstruction. If the plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
 
 > ***Answer 3***:   
 
-## 7) MAXIMUM LIKELIHOOD
-
-### A. Overview
+### C.  MAXIMUM LIKELIHOOD
 Maximum likelihood is an approach for estimating parameters for a statistical model.
 It is also one of the most commonly used methods for phylogenetic reconstruction.
-In this exercise, we will use maximum likelihood to determine which DNA substitution models best fits our sequence data. 
+In this exercise, we will use maximum likelihood to identify DNA substitution models that best fit our sequence data. 
 We will then use one of these models to test phylogenetic hypotheses about the distribution of traits among the bacteria in our study system. 
 
 ##following a lot of what's on following links: 
@@ -282,45 +301,56 @@ We will then use one of these models to test phylogenetic hypotheses about the d
 ## and also GTR. 
 ## should have a few sentence desription here saying that we're going to take a peak at a few different substitution model, before more on to investigating all. 
 
-### B. Comparing a Few Models (just compare "raw" vs. "K80" as formal test of visualization above)
+### i.  Comparing Two Models 
+In the previous section, we used saturation plots and cophylogenetic trees to visualize the effect of a DNA substitution model on our data. 
+Here, we will test whether or not the K80 phylogeny is better than the raw phylogeny using maximum likelihood. 
 ```{r}
-read.aln.mat <- as.matrix(read.aln) # read in fasta-aligned file as matrix
-read.aln.phydat <- phyDat(read.aln.mat, type = "DNA") # converts aligned fasta to phyDat {phangorm}
-tree <- nj(dist.logDet(read.aln.phydat)) # pairwise distances for phyDat object {phangorn}
-outgroup <- match("Methanosarcina", tree$tip.label)
-tree <- root(tree, outgroup, resolve.root=TRUE) # reroots the tree
-fit.JC <- pml(tree, read.aln.phydat) # maximum likelihood function; 
-          #returns data, tree, and output, etc. {phangorn}
-fit.JC.opt <- optim.pml(fit.JC, TRUE) # optimizes model parms; default is Jukes-Cantor {phangorn}
-fit.GTR <- update(fit.JC, k = 4, inv = 0.2) # {phangorn}
-fit.GTR.opt <- optim.pml(fit.GTR, TRUE, TRUE, TRUE, TRUE, TRUE, 
-                     control = pml.control(trace = 0)) # {phangorn} SOMEWHAT SLOW
+# Read in FASTA-Aligned File as a Matrix
+read.aln.mat <- as.matrix(read.aln) 
+
+# Converts FASTA-Aligned File into a phyDat object {phangorn}
+read.aln.phydat <- phyDat(read.aln.mat, type = "DNA") 
+
+# Make Neighbor Joining Tree via Pairwise Distance for phyDat Object {phangorn}
+tree.raw.mle <- nj(dist.logDet(read.aln.phydat)) 
+
+# Identify Outgroup
+outgroup <- match("Methanosarcina", tree.raw.mle$tip.label)
+
+# Root Tree {ape}
+rooted.raw.mle <- root(tree.raw.mle, outgroup, resolve.root=TRUE)
+
+# Maximum Likelihood function {phangorn} returns tree, data, output
+tree.JC.mle <- pml(rooted.raw.mle, read.aln.phydat) 
+
+# Optimizes model parmameters {phangorn}
+tree.JC.opt <- optim.pml(tree.JC.mle, TRUE) 
 ```
 
 Now let's explore some of the output from the maximum liklihood analysis to see which of the few models best fits our data. 
 
 ```{r}
-anova(fit.JC, fit.JC.opt, fit.GTR, fit.GTR.opt)
+anova(tree.raw.mle, tree.JC.mle, tree.JC.opt)
 AIC(fit.JC, fit.JC.opt, fit.GTR, fit.GTR.opt)
 SH.test(fit.JC, fit.JC.opt, fit.GTR, fit.GTR.opt)
 ```
 
-### C. Identifying the "Best" Model
+### ii.  Identifying the "Best" Model
 Now let's evaluate all of the DNA substitution models available to us and see which one best fits our data. 
-This analysis is computationally intensive. 
+This analysis is somewhat computationally intensive. 
 It may take a couple of minutes to run. 
 Be patient.
-When this is done, we can see which model maximum likelihood determined to be the best
+When this is done, we can see which DNA substituion model maximum likelihood determined to be the best.
 
 ```{r}
 model.tests <- modelTest(read.aln.phydat) # {phangorn}
 sort.tests <- model.tests[order(model.tests$AIC),] # order by AIC
 best.model <- sort.tests[1,1]
 env <- attr(model.tests, "env")
-#fitStart.1 <- eval(get("GTR+G+I", env), env)
-#fitStart <- eval(get(best.model, env), env)
-fitStart <- eval(get(model.tests$Model[which.min(model.tests$BIC)], env), env)
+fitStart <- eval(get(model.tests$Model[which.min(model.tests$AIC)], env), env)
 outgroup <- match("Methanosarcina", fitStart$tip.label)
+fit.best.rooted <- root(fitStart, outgroup, resolve.root=TRUE)
+
 # fitStart.rooted <- root(fitStart, outgroup, resolve.root=TRUE) # reroots the tree
 fit.best <- optim.pml(fitStart, optNni=TRUE, optGamma=TRUE, optInv=TRUE, model="GTR")
 fit.best.rooted <- root(fit.best, outgroup, resolve.root=TRUE)
