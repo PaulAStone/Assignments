@@ -136,8 +136,8 @@ Although Bayesian phylogenetic methods are used by a lot of researchers, we do n
 \begin{center}
 \hyphenpenalty 10000
 \exhyphenpenalty 10000
-\begin{tabular}{ m{3cm} m{7cm} }
-  \textbf{Tree Method} & & \textbf{Properties} \\
+\begin{tabular}{ m{5cm} m{10cm} }
+  \textbf{Tree Method} & \textbf{Properties} \\
   \hline \hline \\ [-1.5ex]
   \textbf{UPGMA} & 
   A simple agglomerative hierarchical clustering technique. Assumes a constant rate of evolution. Likely not appropriate for infering phylogenetic relationships \\
@@ -212,8 +212,8 @@ For example, the **Tamura (T92)** accounts for G+C bias, while **General Time Re
 \begin{center}
 \hyphenpenalty 10000
 \exhyphenpenalty 10000
-\begin{tabular}{ m{3cm} m{7cm} }
-  \textbf{Evolutionary Model} & & \textbf{Properties} \\
+\begin{tabular}{ m{5cm} m{10cm} }
+  \textbf{Evolutionary Model} & \textbf{Properties} \\
   \hline \hline \\ [-1.5ex]
   \textbf{Jukes-Cantor model (JC69)} & 
   the simplest **substitution model**. It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability.  \\
@@ -291,15 +291,15 @@ It is also one of the most commonly used methods for phylogenetic reconstruction
 In this exercise, we will use maximum likelihood to identify DNA substitution models that best fit our sequence data. 
 We will then use one of these models to test phylogenetic hypotheses about the distribution of traits among the bacteria in our study system. 
 
-##following a lot of what's on following links: 
-##http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf##
-##http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf
-## http://www.slideshare.net/KlausVigo/phylogenetics-cibio
+* following a lot of what's on following links: 
+* http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf##
+* http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf
+*  http://www.slideshare.net/KlausVigo/phylogenetics-cibio
 
-##need to think about the "exclude = pairwise" command in the dist.ml function below. 
-## also need to get a better handle on what `optim.pml` is doing
-## and also GTR. 
-## should have a few sentence desription here saying that we're going to take a peak at a few different substitution model, before more on to investigating all. 
+* need to think about the "exclude = pairwise" command in the dist.ml function below. 
+*  also need to get a better handle on what `optim.pml` is doing
+*  and also GTR. 
+*  should have a few sentence desription here saying that we're going to take a peak at a few different substitution model, before more on to investigating all. 
 
 ### i.  Comparing Two Models 
 In the previous section, we used saturation plots and cophylogenetic trees to visualize the effect of a DNA substitution model on our data. 
@@ -330,9 +330,9 @@ tree.JC.opt <- optim.pml(tree.JC.mle, TRUE)
 Now let's explore some of the output from the maximum liklihood analysis to see which of the few models best fits our data. 
 
 ```{r}
-anova(tree.raw.mle, tree.JC.mle, tree.JC.opt)
-AIC(fit.JC, fit.JC.opt, fit.GTR, fit.GTR.opt)
-SH.test(fit.JC, fit.JC.opt, fit.GTR, fit.GTR.opt)
+# anova(tree.raw.mle, tree.JC.mle, tree.JC.opt)
+# AIC(fit.JC, fit.JC.opt, fit.GTR, fit.GTR.opt)
+# SH.test(fit.JC, fit.JC.opt, fit.GTR, fit.GTR.opt)
 ```
 
 ### ii.  Identifying the "Best" Model
@@ -348,15 +348,16 @@ sort.tests <- model.tests[order(model.tests$AIC),] # order by AIC
 best.model <- sort.tests[1,1]
 env <- attr(model.tests, "env")
 fitStart <- eval(get(model.tests$Model[which.min(model.tests$AIC)], env), env)
-outgroup <- match("Methanosarcina", fitStart$tip.label)
-fit.best.rooted <- root(fitStart, outgroup, resolve.root=TRUE)
 
+# outgroup <- match("Methanosarcina", fitStart$tip.label)
+# fit.best.rooted <- root(fitStart, outgroup, resolve.root=TRUE)
 # fitStart.rooted <- root(fitStart, outgroup, resolve.root=TRUE) # reroots the tree
+
 fit.best <- optim.pml(fitStart, optNni=TRUE, optGamma=TRUE, optInv=TRUE, model="GTR")
-fit.best.rooted <- root(fit.best, outgroup, resolve.root=TRUE)
-bs <- bootstrap.pml(fit.best, bs=2, optNni=TRUE, multicore=TRUE) ### took long time (10 mins)
-par(mar=c(.1,.1,.1,.1))
-plotBS(fit.best$tree, bs) #{phangorn}
+# fit.best.rooted <- root(fit.best, outgroup, resolve.root=TRUE)
+# bs <- bootstrap.pml(fit.best, bs=2, optNni=TRUE, multicore=TRUE) ### took long time (10 mins)
+# par(mar=c(.1,.1,.1,.1))
+# plotBS(fit.best$tree, bs) #{phangorn}
 ```
 
 ### C. Obtaining Bootstrap Support for the Tree
@@ -365,8 +366,8 @@ Somewhat slow process (2 mins)
 Read up on arguments
 
 ```{r}
-bs <- bootstrap.pml(fit.JC, bs = 100, optNni = TRUE,
-            control = pml.control(trace = 0)) #{phangorn}  
+# bs <- bootstrap.pml(fit.JC, bs = 100, optNni = TRUE,
+#             control = pml.control(trace = 0)) #{phangorn}  
 ```
 
 ### Make tree with bootstrap support values 
@@ -378,7 +379,7 @@ There is apparently a problem here. plotBS hangs forever
 ```
 
 http://grokbase.com/t/r/r-help/12876aby2z/r-how-to-write-out-a-tree-file-with-bootstrap-from-phangorn-package
-"tree <- plotBS(fit$tree, bs)
+"tree <- plotBS(fittree, bs)
 You can export than this tree using write.tree or write.nexus, e.g. write.tree(tree)"
 
 ## 8) INTEGRATING TRAITS AND PHYLOGENY -- OVERVIEW, CATEGORICAL, CONTINUOUS
@@ -398,7 +399,7 @@ umax <- (apply(p.growth, 1, max))
 ```
 
 ### B. Calculating Niche Breadth
-We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2}}\right)$, where ni is each resource 
+We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2} \right)}$, where ni is each resource 
 
 ```{r}
 levins <- function(p_xi = ""){
@@ -419,16 +420,16 @@ nb <- levins(p.growth.std)
 ```  
 
 ### C. Visualzing Traits on Trees
---MULTIPLE P TRAITS ON A TREE
--- SINGLE TRAIT (NICHE BREADTH) ON TREE
+MULTIPLE P TRAITS ON A TREE
+SINGLE TRAIT (NICHE BREADTH) ON TREE
 
 ```{r}
 
 ## Why using the bionj function?  how about `nj`
-nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
-outgroup <- match("Methanosarcina", nj.tree$tip.label)
-nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
-nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
+# nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
+# outgroup <- match("Methanosarcina", nj.tree$tip.label)
+# nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
+# nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
 
 # Using the Best Fit Model
 bs <- bootstrap.pml(fit.best)
@@ -446,8 +447,6 @@ rownames(trait.nb) <- rownames(traits)
 
 # Drop Missing Branches and data
 fit.best.noroot <- drop.tip(fit.best.noroot, c("LL11A", "LL15", "WG37", "WG30A", "WG32", "LL12A"))
-traits <- traits[!rownames(traits) == "LL12", ]
-trait.nb <- trait.nb[!rownames(trait.nb) == "LL12", ]
 
 require(phylobase)
 require(adephylo)
@@ -468,47 +467,48 @@ table.phylo4d(x.nb, treetype="clad", symbol="colors", show.node=TRUE,
 
 # Still need to clean it up. bUt looking much better
 
-library(latticeExtra)
-dd.col <- as.dendrogram(hc)
-col.ord <- order.dendrogram(dd.col)
-mat <- matrix(rnorm(4*4),nrow=4)
-colnames(mat) <- tree$tip.label
-rownames(mat) <- tree$tip.label
-levelplot(mat[tree$tip,tree$tip],type=c('g','p'),
-          aspect = "fill",
-          colorkey = list(space = "left"),
-          legend =
-            list(right =
-                   list(fun = dendrogramGrob,
-                        args =
-                          list(x = dd.col, 
-                               side = "right",
-                               size = 10))),
-          panel=function(...){
-            panel.fill('black',alpha=0.2)
-            panel.levelplot.points(...,cex=12,pch=23)
-          }
-)
+# library(latticeExtra)
+# dd.col <- as.dendrogram(hc)
+# col.ord <- order.dendrogram(dd.col)
+# mat <- matrix(rnorm(4*4),nrow=4)
+# colnames(mat) <- tree$tip.label
+# rownames(mat) <- tree$tip.label
+# levelplot(mat[tree$tip,tree$tip],type=c('g','p'),
+#           aspect = "fill",
+#           colorkey = list(space = "left"),
+#           legend =
+#             list(right =
+#                    list(fun = dendrogramGrob,
+#                         args =
+#                           list(x = dd.col, 
+#                                side = "right",
+#                                size = 10))),
+#           panel=function(...){
+#             panel.fill('black',alpha=0.2)
+#             panel.levelplot.points(...,cex=12,pch=23)
+#           }
+# )
 ```
 
 ## 9) HYPOTHESIS TESTING
 
-##A) PAGEL'S LAMBDA -- Jay
+### A) PAGEL'S LAMBDA - Jay
 ```{r}
-fitContinuous(nj.rooted, traits[,1], treeTransform="lambda")
+fitContinuous(fit.best.noroot, trait.nb)
 ```
 
 
 
-##B) BOOMBERG'S K -- Jay
+### B) BOOMBERG'S K - Jay
 
 
-##C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
+### C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
     if this doesn't work, can we hijack phylo.struct from picante
     -- Mario
-##D) CONSTRAINT: http://ps.uci.edu/scholar/amartiny/files/consentrait.txt
+### D) CONSTRAINT: 
+http://ps.uci.edu/scholar/amartiny/files/consentrait.txt
   -- Mario
-##E) Phylogenetic independent contrasts -- Jay
+### E) Phylogenetic independent contrasts -- Jay
   
 
 ## 10) HOMEWORK
@@ -525,18 +525,21 @@ If there is *not* any phylogenetic signal, then the relationship between traits 
 http://bodegaphylo.wikispot.org/iv._testing_phylogenetic_signal_in_r
 http://blog.phytools.org/2013/10/simplified-lambdatree.html
 ```{r}
-traits.1 <- traits[,1,drop=FALSE]
-fitContinuous(nj.rooted, traits.1)
+# traits.1 <- traits[,1,drop=FALSE]
+# fitContinuous(nj.rooted, traits.1)
 
 ```
 
 ## 9) PHYLOGENETIC INDEPENDENT CONTRASTS
-**Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
-**Can we take a trait-peformance relationship that's siginficant and correct for phylogeny? 
+Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
+Can we take a trait-peformance relationship that's siginficant and correct for phylogeny? 
 Is the relationship still significant? 
 Do the parameters or explained varition change?
 ```{r}
-pic.nb <- pic(nb, nj.rooted)
-pic.umax <- pic(umax, nj.rooted)
+# pic.nb <- pic(trait.nb, fit.best.noroot)
+# pic.umax <- pic(umax, fit.best.noroot)
+# 
+# fit.best.noroot$tip.label
+```
 
-nj.rooted$tip.label
+
