@@ -126,15 +126,21 @@ Although Bayesian phylogenetic methods are used by a lot of researchers, we do n
 \begin{tabular}{ m{3cm} m{7cm} }
   \textbf{Tree Method} & & \textbf{Properties} \\
   \hline \hline \\ [-1.5ex]
-  \textbf{} & 
-  Add Text Here \\
+  \textbf{UPGMA} & 
+  A simple agglomerative hierarchical clustering technique. Assumes a constant rate of evolution. Likely not appropriate for infering phylogenetic relationships \\
   \\ [-1.5ex]
-  \textbf{} & 
+  \textbf{Neighbor Joining} & 
+  An agglomerative hierarchical clustering technique. Based on a user defined distance matrix. Advantage: Fast  \\
+  \\ [-1.5ex]  
+  \textbf{Maximum Parsimony} & 
+  A non-parametric statistical method for constructing phylogenies. The final tree is the one that uses the least evolutionary change to explain topology. Useful when topology is based on character states, but may not be approriate for sequence based phylogenies. \\
+  \\ [-1.5ex]   
+  \textbf{Maximum Likelihook} & 
   Add Text Here  \\
   \\ [-1.5ex]  
-  \textbf{} & 
+  \textbf{Bayesian} & 
   Add Text Here  \\
-  \\ [-1.5ex]   
+  \\ [-1.5ex]  
   \hline
 \end{tabular}
 \end{center}
@@ -159,11 +165,16 @@ After calculating the distances between our sequences, we are now ready to make 
 In the process we will identify an outgroup sequence (*Methanosarcina* belongs to the Archaea, not Bacteria), which we will use to root the tree. 
 
 ```{r}
-nj.tree <- nj(seq.dist.raw) # performs neihbor joining; makes object `phylo` {ape}
-outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
-nj.rooted <- root(nj.tree, outgroup, resolve.root = TRUE) # reroots tree with outgroup {ape}
+# Use Neighbor Joining Algorithim to Construct Tree (makes 'phylo' object {ape})
+nj.tree <- nj(seq.dist.raw)
+
+# Identify Outgroup Sequence and Reroot Tree
+outgroup <- match("Methanosarcina", nj.tree$tip.label)
+nj.rooted <- root(nj.tree, outgroup, resolve.root = TRUE)
+
+# Use Rooted Tree to Plot Phylogeny
 plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
-           direction = "right", cex = 0.7, label.offset = 1) # makes tree {ape}
+           direction = "right", cex = 0.7, label.offset = 1)
 add.scale.bar(cex = 0.7)
 ```
 
@@ -328,8 +339,8 @@ bs <- bootstrap.pml(fit.JC, bs = 100, optNni = TRUE,
 There is apparently a problem here. plotBS hangs forever
 
 ```{r}
-par(mar=c(.1,.1,.1,.1))
-plotBS(fit.JC$tree, bs) #{phangorn}
+# par(mar=c(.1,.1,.1,.1))
+# plotBS(fit.JC$tree, bs) #{phangorn}
 ```
 
 http://grokbase.com/t/r/r-help/12876aby2z/r-how-to-write-out-a-tree-file-with-bootstrap-from-phangorn-package
@@ -337,19 +348,37 @@ http://grokbase.com/t/r/r-help/12876aby2z/r-how-to-write-out-a-tree-file-with-bo
 You can export than this tree using write.tree or write.nexus, e.g. write.tree(tree)"
 
 ## 8) INTEGRATING TRAITS AND PHYLOGENY -- OVERVIEW, CATEGORICAL, CONTINUOUS
---MEM
+Now that we have custructued of phylogeny, we can move on to incorporating traits into our analysis.
+
 
 ### A. Loading Trait Database
 ```{r}
+# Import Growth Rate Data
 p.growth <- read.table("./data/p.isolates.raw.growth.txt", sep = "\t", header = TRUE, row.names = 1)
 
+# Standadize Growth Rates
 p.growth.std <- p.growth / (apply(p.growth, 1, sum))
 
-umax <- (apply(p.growth, 1, max)) # calculate max growth
+# Calculate Max Growth Rate
+umax <- (apply(p.growth, 1, max)) 
 ```
 
 ### B. Calculating Niche Breadth
 We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2}}\right)$, where ni is each resource 
+
+```{r}
+levins <- function(p_xi = ""){
+  x = 0
+  for (i in p_xi){
+    x = x = i^2
+    }
+  nb = 1 / (length(p_xi) * x)
+  return(nb)
+  }
+```
+
+Now that we have a function to calculate niche breadth, we can calculate the niche breadth of our isolates on phosphorus resources.
+
 
 ```{r}
 nb <- levins(p.growth.std)
@@ -362,7 +391,7 @@ nb <- levins(p.growth.std)
 ```{r}
 
 ## Why using the bionj function?  how about `nj`
-nj.tree <- bionj(seq.dist) # ape command for Neighbor Joining
+nj.tree <- nj(seq.dist) # ape command for Neighbor Joining
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
 nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
 nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
@@ -411,6 +440,8 @@ fitContinuous(nj.rooted, traits[,1], treeTransform="lambda")
 
 
 ##B) BOOMBERG'S K -- Jay
+
+
 ##C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
     if this doesn't work, can we hijack phylo.struct from picante
     -- Mario
