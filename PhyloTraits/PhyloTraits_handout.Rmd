@@ -176,7 +176,7 @@ In the process, we will identify an outgroup sequence (*Methanosarcina*) that we
 
 ```{r}
 # Neighbor Joining Algorithim to Construct Tree, a 'phylo' Object {ape}
-nj.tree <- nj(seq.dist.raw)
+nj.tree <- bionj(seq.dist.raw)
 
 # Identify Outgroup Sequence
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
@@ -250,8 +250,8 @@ This will give us a visual sense of whether or not the two trees are in agreemen
 
 ```{r}
 # Make Neighbor Joining Trees Using Different DNA Substitution Models {ape}
-raw.tree <- nj(seq.dist.raw)
-F84.tree <- nj(seq.dist.F84)
+raw.tree <- bionj(seq.dist.raw)
+F84.tree <- bionj(seq.dist.F84)
 
 # Define Outgroups
 raw.outgroup <- match("Methanosarcina", raw.tree$tip.label) 
@@ -262,20 +262,21 @@ raw.rooted <- root(raw.tree, raw.outgroup, resolve.root=TRUE)
 F84.rooted <- root(F84.tree, F84.outgroup, resolve.root=TRUE)
 
 # Make Cophylogenetic Plot {ape}
-layout(matrix(c(1,2), 1, 2), width = c(1.2, 1))
-par(mar = c(4, 1, 2, 0.1))
-plot.phylo(F84.rooted, type = "phylogram", direction = "right", 
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "F84 tree")
+layout(matrix(c(1,2), 1, 2), width = c(1, 1))
+layout.show(2)
+par(mar = c(1, 1, 2, 0))
+plot.phylo(F84.rooted, type = "phylogram", direction = "right", show.tip.label=TRUE,
+           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "F84 Tree")
+#axisPhylo()
 
-axisPhylo()
-par(mar = c(4, 0, 2, 1))
-plot.phylo(raw.rooted, type = "phylogram", direction = "left", 
-           use.edge.length = FALSE, show.tip.label = FALSE, main = "raw tree")
-axisPhylo()
+par(mar = c(1, 0, 2, 1))
+plot.phylo(raw.rooted, type = "phylogram", direction = "left", show.tip.label=TRUE,
+           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "Raw Tree")
+#axisPhylo()
 layout(1)
 ```
 
-***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the JC69 substitution model has on our phylogenetic reconstruction. If the plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
+***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the F84 substitution model has on our phylogenetic reconstruction. If the plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
 
 > ***Answer 3***:   
 
@@ -324,17 +325,18 @@ levins <- function(p_xi = ""){
 Now let's apply our niche breadth function to the growth rate data of our isolates on the different phosphorus resources.
 
 ```{r}
-# Apply `nb` to Standardized Growth Rates
+# Calculate Niche Breadth for each isolate
 nb <- as.matrix(levins(p.growth.std))
 
-# Add Rownames
+# Add Row & Column Names
 rownames(nb) <- row.names(p.growth)
+colnames(nb) <- c("NB")
 ```  
 
 ### C. Visualzing Traits on Trees
 ```{r}
 # Generate Neighbor Joining Tree Using F84 DNA Substitution Model {ape}
-nj.tree <- nj(seq.dist.F84)
+nj.tree <- bionj(seq.dist.F84) # no negative lengths with bionj - improved alg
 
 # Define the Outgroup
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
@@ -348,42 +350,60 @@ nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
 # Subset Growth for a Few Phosphorus Sources
 traits <- p.growth.std[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
 
+# Define Color Palett
+require(RColorBrewer)
+mypalette <- colorRampPalette(brewer.pal(9, "YlOrRd"))
+
 # Need Some More Annotation
 x <- phylo4d(nj.rooted, traits)
 table.phylo4d(x, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
-              col=topo.colors(10), pch = 15, cex.symbol = 1, 
-              ratio.tree=0.75, cex.legend=1)    
+              col=mypalette(25), pch = 15, cex.symbol = 1, 
+              ratio.tree=0.75, cex.legend=1, center=FALSE)    
 
 # Niche Breadth
 x.nb <- phylo4d(nj.rooted, nb)
 table.phylo4d(x.nb, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
-              col=topo.colors(10), pch = 15, cex.symbol = 1, 
-              ratio.tree=0.75, cex.legend=1) 
+              col=mypalette(25), pch = 15, cex.symbol = 1, 
+              ratio.tree=0.75, cex.legend=1, center=FALSE)
 ```
 
 ## 9) HYPOTHESIS TESTING
 
-### A) PAGEL'S LAMBDA - Jay
+### A) PAGEL'S LAMBDA
 ```{r}
-fitContinuous(fit.best.noroot, trait.nb)
+fitContinuous(nj.rooted, nb, "lambda")
 ```
 
 ### B) BLOMBERG'S K
 ```{r}
-# Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
-#blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
 
-signal.nb <- phylosignal(nb, nj.rooted, reps = 999, checkdata = TRUE)
+nj.tree <- bionj(seq.dist.F84) # no negative lengths with bionj - improved alg
+outgroup <- match("Methanosarcina", nj.tree$tip.label)
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
+nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
+
+randtree <- rcoal(39)
+randtraits <- rTraitCont(randtree)
+phylosignal(randtraits[randtree$tip.label],randtree)
+blom.K <- Kcalc(randtraits[randtree$tip.label],randtree, checkdata = TRUE)
+randtree$tip.label <- nj.rooted$tip.label
+randtree$edge.length <- nj.rooted$edge.length
+Kcalc(nb, randtree)
+
+# Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
+blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
+
+signal.nb <- phylosignal(nb[nj.rooted$tip.label], nj.rooted)
 
 trait.list <- split(traits, rownames(traits))
 
 signal.P <- sapply(traits, phylosignal, nj.rooted, reps = 999, checkdata = TRUE)
-
-apply through all of them. use b-h correction 
+```
+#apply through all of them. use b-h correction 
 
 ### C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
     if this doesn't work, can we hijack phylo.struct from picante
