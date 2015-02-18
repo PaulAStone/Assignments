@@ -40,6 +40,8 @@ require("muscle")
 require("ape")
 require("seqinr")
 require("phangorn")
+require("phylobase"")
+require("adephylo)
 require("geiger") 
 ```
 
@@ -124,14 +126,10 @@ b.  What regions do you think would be most appropriate for phylogenetic inferen
 Once you have aligned your sequences, the next step is to construct a phylogenetic tree.
 Not only is this effective for visualizing the evolutionary relationship among taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for downstream hypothesis testing. 
 
-There are a number of ways to construct a phylogenetic tree. 
-For example, **maximum parsimony** is character-based approach that involves identifying one of many possible trees based upon the minimum number of evolutionary "steps"" (or mutations). 
-We are not going to cover this method, but it is good to know that maximum parsimony can easily be peformed in R using the `phangorn` package. 
-Instead, we wil empahasize distance-based approaches that are used for generating trees, specifically **neighbor-joining**. 
-Neighbor joining is a relatively fast algorithm and often generates correct tree topologies.
-Moreover, neighbor joining can serve as a starting point for assessing different evolutionary models using **maximum likelihood** methods, which we will explore in this handout. 
-Last, phylogenetic trees can be constructed using **Bayesian** methods in the R package `phangorn`.
-Although Bayesian phylogenetic methods are used by a lot of researchers, we do not have time to cover these approaches in Quantiative Biodiversity. 
+We could spend an entire semester discussing the theory and practice behind making phylogenetic trees.
+The objective of this handout is to quickly get you up to speed on some of the basic principles of phylognetic reconstruction. 
+In adition, we want to convey some of the opportunities and limitations of conducting phylogenetic analyses in R. 
+The following table provides an overview of the methods that are available for evolutionary reconstruction in R. 
 
 \begin{center}
 \hyphenpenalty 10000
@@ -140,31 +138,27 @@ Although Bayesian phylogenetic methods are used by a lot of researchers, we do n
   \textbf{Tree Method} & \textbf{Properties} \\
   \hline \hline \\ [-1.5ex]
   \textbf{UPGMA} & 
-  A simple agglomerative hierarchical clustering technique. Assumes a constant rate of evolution. Likely not appropriate for infering phylogenetic relationships \\
+  Hierarchical clustering technique. Progressively groups the most similiar pairs of sequences. Sometimes used as a guide tree for more sophisticated phylogenetic analyses, but prone to distorting tree topology and assumes constant rates of evolution. UPGMA can be implemented in R with the upgma function in the phangorn package.\\
   \\ [-1.5ex]
   \textbf{Neighbor Joining} & 
-  An agglomerative hierarchical clustering technique. Based on a user defined distance matrix. Advantage: Fast  \\
+  Starts with an unresolved tree in a "star network". Algorithm then identifies the two most similar taxa and creates a node. This process is iteratively applied to the remaining sequences. Can serve as a starting point for assessing evolutionary models with more sophisticated methods like maximum likelihood. Neighbor joining can be implemented in the R packages `ape` and phangorn using the function nj \\
   \\ [-1.5ex]  
   \textbf{Maximum Parsimony} & 
-  A non-parametric statistical method for constructing phylogenies. The final tree is the one that uses the least evolutionary change to explain topology. Useful when topology is based on character states, but may not be approriate for sequence based phylogenies. \\
+  A character-based, non-parametric approach that involves identifying one of many possible trees based upon the minimum number of evolutionary "steps"" (or mutations). No underlying evolutionary model. Maximum parsimony can be executed using the `parsimony` function in the package panghorn. The function optim.parsimony performs tree rearrangements using nearest-neighbor interchanges (NNI) to optimize parsimony scores.\\
   \\ [-1.5ex]   
-  \textbf{Maximum Likelihook} & 
-  Add Text Here  \\
+  \textbf{Maximum Likelihood} & 
+  Parameteric approach to identifying the relative probability associated with data fitting a given model of character evolution. One of the most commonly used approaches for building trees from sequence data. Statistically sound and flexible for accomodating realistic models of sequence evolution. Maximum likelihood can be implemented in R using the `pml` function in the pranghorn package. Parameters can be optimized using the optim.pml and evolutionary models can be compared with the model.tests function\\
   \\ [-1.5ex]  
   \textbf{Bayesian} & 
-  Add Text Here  \\
+  Uses likelihood function and prior probabilities to create a posterior probability of a tree fitting a given model of evolution. Computationally intensive; often uses Markov chains Monte Carlo (MCMC). Unlike other methods, parameters are not constant; rather, they come from probabilistic distributions. Along with maximum likelihood, considered one of the more preferable ways of generating trees. R has some packages (e.g., ips) the wrap popular Bayesian software such as MrBayes\\
   \\ [-1.5ex]  
   \hline
 \end{tabular}
 \end{center}
 
 ### A. Neighbor Joining Trees
-Neighbor joining trees are created from a distance matrix that is generated by comparing pairs of alinged sequences.
-Trees are then constructed in an agglomerative fashion, similar to the way that we conducted cluster analysis in the $\beta$-diversity exercise.
-The tree-building starts with an unresolved tree in "star network".
-The neighbor joining algorithm then identifies the two most similar taxa and creates a node.
-This process is iteratively applied to the remaining sequences until the tree is resolved.  
-
+For the purposes of this course, we are going to focus primarily on building trees using neighbor joining methods.
+As you will see in the next section, howevever, neighbor joining is commonly used for making "guide tree" that can incorporate more sophisticated models of evolution. 
 The first step in making a neighbor joining tree is to create a distance matrix. 
 We will do this with the `dist.dna` function in the `ape` package. 
 In the R chunk below, the "model = raw"" argument means that `dist.dna` will estimate distances based on the proportion of sites that differ between pairs of sequences.
@@ -198,16 +192,7 @@ add.scale.bar(cex = 0.7)
 Phylogenetic analyses require assumptions about the rates of DNA evolution. 
 Various models have been developed to estimate the rates that nucleotides change over time. 
 These models are important for inferring relatedness of genes and/or taxa.
-
-###Perhaps convert text below into table. 
-The **Jukes-Cantor model (JC69)** is the simplest **substitution model**.
-It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability. 
-The **Felenstein model (F81)** builds from JC69 by allowing base frequences to vary. 
-The **Kimura model (K80)** also assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).
-**Hasegawa, Kishino, and Yano (HKY85)** merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. 
-Many other models of DNA evolution exist.
-For example, the **Tamura (T92)** accounts for G+C bias, while **General Time Reversible (GTR)** models capture the probabilities associated with nucleotide reversions (e.g., T -> C -> T).
-
+In the following table, we describe a few of the more commonly used models.  
 
 \begin{center}
 \hyphenpenalty 10000
@@ -216,62 +201,69 @@ For example, the **Tamura (T92)** accounts for G+C bias, while **General Time Re
   \textbf{Evolutionary Model} & \textbf{Properties} \\
   \hline \hline \\ [-1.5ex]
   \textbf{Jukes-Cantor model (JC69)} & 
-  the simplest **substitution model**. It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability.  \\
+  Simplest model. Assumes all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability.\\
   \\ [-1.5ex]
   \textbf{Felenstein model (F81)} & 
-  builds from JC69 by allowing base frequences to vary.  \\
+  Builds from JC69 by allowing nucleotide frequencies to vary.\\
   \\ [-1.5ex]  
   \textbf{Kimura model (K80)} & 
-  assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).  \\
+  Assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).\\
   \\ [-1.5ex]   
-  \textbf{Hasegawa, Kishino, and Yano (HKY85)} & 
-  merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. \\
-  \\ [-1.5ex]   
+   \textbf{Felenstein model (F84)} & 
+  Assumes different rates of base transitions and trasnversions while allowing for differences in base frequencies.\\
+  \\ [-1.5ex] 
+  \textbf{Tamura model (T92)} & 
+  Similar to K80 but accounts for G + C content.\\
+  \\ [-1.5ex]  
+  \textbf{General Time Reversible model (GTR)} & 
+  Capture the probabilities associated with nucleotide reversions (e.g., T -> C -> T). All substitution rates are different. Does not assume equal base frequencies.\\
+  \\ [-1.5ex] 
+  
   \hline
 \end{tabular}
 \end{center}
   
 Fortunately, the `dist.dna` function that we used above for generating the neighbor joining tree can easily create distance matrices for a large number of DNA substitution models. 
-Let's create a distance matrix among our bacterial isolates based on the Jukes-Cantor (JC69) subsitution model using the `dist.dna` function in `ape`. 
+Let's create a distance matrix among our bacterial isolates based on the Fellenstein model (F84) subsitution model using the `dist.dna` function in `ape`. 
 
 ```{r}
-# Create distance matrix with "JC69" model {ape}
-seq.dist.JC69 <- dist.dna(p.DNAbin, model = "JC69", pairwise.deletion = FALSE)
+# Create distance matrix with "F84" model {ape}
+seq.dist.F84 <- dist.dna(p.DNAbin, model = "F84", pairwise.deletion = FALSE)
 ```
 
-Now, let's compare the "raw" and "JC69" distance matrices. 
+Now, let's compare the "raw" and "F84" distance matrices. 
 First, we will make a **saturation plot**, which allow us to visuazlie the effect of our DNA subsititution model compared to a distance matrix that does not include this feature. 
 
 ```{r}
 # Plot Distances from Different DNA Substitution Models
-plot(seq.dist.raw, seq.dist.JC69, 
+plot(seq.dist.raw, seq.dist.F84, 
      pch = 20, col = "red", las = 1, asp = 1, xlim=c(0,0.7), ylim = c(0,0.7),
-     xlab = "Raw Distance", ylab = "JK69 Distance") 
+     xlab = "Raw Distance", ylab = "F84 Distance") 
 abline(b =1, a = 0, lty = 2)
 text(0.65, 0.6, "1:1")
 ```
 
-Second, we will assess how the "raw" and "K80" distance matrices affect tree topology by making a **cophylogenetic plot**. 
+Second, we will assess how the "raw" and "F84" distance matrices affect tree topology by making a **cophylogenetic plot**. 
 This will give us a visual sense of whether or not the two trees are in agreement with one another. 
 
 ```{r}
 # Make Neighbor Joining Trees Using Different DNA Substitution Models {ape}
 raw.tree <- nj(seq.dist.raw)
-JC69.tree <- nj(seq.dist.JC69)
+F84.tree <- nj(seq.dist.F84)
 
 # Define Outgroups
 raw.outgroup <- match("Methanosarcina", raw.tree$tip.label) 
-JC69.outgroup <- match("Methanosarcina", JC69.tree$tip.label) 
+F84.outgroup <- match("Methanosarcina", F84.tree$tip.label) 
 
 # Root the Trees {ape}
 raw.rooted <- root(raw.tree, raw.outgroup, resolve.root=TRUE) 
-JC69.rooted <- root(JC69.tree, JC69.outgroup, resolve.root=TRUE)
+F84.rooted <- root(F84.tree, F84.outgroup, resolve.root=TRUE)
 
 # Make Cophylogenetic Plot {ape}
 layout(matrix(c(1,2), 1, 2), width = c(1.2, 1))
 par(mar = c(4, 1, 2, 0.1))
-plot.phylo(JC69.rooted, type = "phylogram", direction = "right", 
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "JC69 tree")
+plot.phylo(F84.rooted, type = "phylogram", direction = "right", 
+           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "F84 tree")
 
 axisPhylo()
 par(mar = c(4, 0, 2, 1))
@@ -285,24 +277,36 @@ layout(1)
 
 > ***Answer 3***:   
 
-## 8) INTEGRATING TRAITS AND PHYLOGENY -- OVERVIEW, CATEGORICAL, CONTINUOUS
-Now that we have custructued of phylogeny, we can move on to incorporating traits into our analysis.
-
+## 5) INTEGRATING TRAITS AND PHYLOGENY
+In the context of biodiveristy, many researchers are interested in being able to map traits onto phylogenetic trees.
+This can be important for addressing questions related to diversification, trait evolution, and ecological interactions.
+In this section, we import functional trait data that was collected on the 39 freshwater isoaltes for which we have 16S rRNA sequences. 
+Specifically, we measured the growth rates of each strain on 18 different forms of phosphorus (e.g., phosphate, DNA, ATP, etc.). 
+With this information we will visualize the functional traits (i.e., growth on different phosphorus) in a phylogenetic conetxt by mapping them onto the neighbor joining tree (with the F84 DNA substituion model) that we created. 
 
 ### A. Loading Trait Database
 ```{r}
 # Import Growth Rate Data
 p.growth <- read.table("./data/p.isolates.raw.growth.txt", sep = "\t", header = TRUE, row.names = 1)
 
-# Standadize Growth Rates
+# Standadize Growth Rates Across Strains
 p.growth.std <- p.growth / (apply(p.growth, 1, sum))
+```
 
+### B. Calculating Variables to Test for a Generalist-Specialist Trade-off
+From the section above where we described the data, you will recall that we were interested in testing for a **generalist-specialist** trade-off.
+To do this, we need to create two new variables. 
+First, we need calculate the maximum growth rate of each isoalte across all phosphorus types. 
+This will help us test the expectation that generalists will have lower maximum growth rates because there is a cost associated with being able to use a lot of different chemical forms of phosphorus. 
+In contrast, we expect that specialists will have a high maximum growth rate on their preferred phosphorus resource. 
+
+```{r}
 # Calculate Max Growth Rate
 umax <- (apply(p.growth, 1, max)) 
 ```
 
-### B. Calculating Niche Breadth
-We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2} \right)}$, where ni is each resource 
+Second, we need to come up with a way of quantifying whether a strain is a generalist or a specialist. 
+We will used the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2} \right)}$, where $n_{i}$ is each resource 
 
 ```{r}
 levins <- function(p_xi = ""){
@@ -315,60 +319,55 @@ levins <- function(p_xi = ""){
   }
 ```
 
-Now that we have a function to calculate niche breadth, we can calculate the niche breadth of our isolates on phosphorus resources.
+Now let's apply our niche breadth function to the standardized growth rates of our isolates on the different phosphorus resources.
 
 ```{r}
 nb <- levins(p.growth.std)
 ```  
 
 ### C. Visualzing Traits on Trees
-MULTIPLE P TRAITS ON A TREE
-SINGLE TRAIT (NICHE BREADTH) ON TREE
+
 
 ```{r}
+# Generate Neighbor Joining Tree Using F84 DNA Substitution Model {ape}
+nj.tree <- nj(seq.dist.F84)
 
-## Why using the bionj function?  how about `nj`
- nj.tree <- nj(seq.dist.JC69) # ape command for Neighbor Joining
- outgroup <- match("Methanosarcina", nj.tree$tip.label)
- nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
- nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
- nj.rooted$edge.length <- nj.rooted$edge.length + 0.1
-
-# Using the Best Fit Model
-#bs <- bootstrap.pml(fit.best)
-#bs.1 <- bs[[1]]
-
-
+# Define the Outgroup
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
-fit.best.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
-fit.best.noroot <- ape::drop.tip(fit.best.rooted, "Methanosarcina")
 
+# Create a Rooted Tree {ape}
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
+ 
+# Keep Rooted but Drop Outgroup Branch
+nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
+
+# Rescale for Negative Branch Length
+nj.rooted$edge.length <- nj.rooted$edge.length + 0.1
+
+# Subset Growth for a Few Phosphorus Sources
 traits <- p.growth.std[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
 trait.nb <- as.data.frame(nb)
 rownames(trait.nb) <- rownames(traits)
 
-# Drop Missing Branches and data
-fit.best.noroot <- drop.tip(nj.rooted, c("LL11A", "LL15", "WG37", "WG30A", "WG32", "LL12A"))
-
-require(phylobase)
-require(adephylo)
-x <- phylo4d(fit.best.noroot, traits)
+# Need Some More Annotation
+x <- phylo4d(nj.rooted, traits)
 table.phylo4d(x, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
               col=topo.colors(10), pch = 15, cex.symbol = 1, 
-              ratio.tree=0.75, cex.legend=1)                                                                                                                                                                
+              ratio.tree=0.75, cex.legend=1)    
 
+# Need to Fix Color Range
 # Niche Breadth
-x.nb <- phylo4d(fit.best.noroot, trait.nb)
+x.nb <- phylo4d(nj.rooted, trait.nb)
 table.phylo4d(x.nb, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
               col=topo.colors(10), pch = 15, cex.symbol = 1, 
               ratio.tree=0.75, cex.legend=1) 
 
-# Still need to clean it up. bUt looking much better
-
+```
+                                                                                                                                
 # library(latticeExtra)
 # dd.col <- as.dendrogram(hc)
 # col.ord <- order.dendrogram(dd.col)
