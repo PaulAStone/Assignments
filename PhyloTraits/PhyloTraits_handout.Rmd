@@ -309,15 +309,15 @@ umax <- (apply(p.growth, 1, max))
 ```
 
 Second, we need to come up with a way of quantifying whether a strain is a generalist or a specialist. 
-We will used the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2} \right)}$, where $n_{i}$ is each resource 
+We will use the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2} \right)}$, where $n$ is the total number of resources and $p_{xi}$ is the proportion of observed growth for isolate $i$ on each resource ($x$).
 
 ```{r}
 levins <- function(p_xi = ""){
-  x = 0
+  p = 0
   for (i in p_xi){
-    x = x + i^2
+    p = p + i^2
     }
-  nb = 1 / (length(p_xi) * x)
+  nb = 1 / (length(p_xi) * p)
   return(nb)
   }
 ```
@@ -336,7 +336,8 @@ colnames(nb) <- c("NB")
 ### C. Visualzing Traits on Trees
 ```{r}
 # Generate Neighbor Joining Tree Using F84 DNA Substitution Model {ape}
-nj.tree <- bionj(seq.dist.F84) # no negative lengths with bionj - improved alg
+# We're Using `bionj` function {ape} becasue it corrects for negative branch lengths
+nj.tree <- bionj(seq.dist.F84) 
 
 # Define the Outgroup
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
@@ -347,63 +348,66 @@ nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
 # Keep Rooted but Drop Outgroup Branch
 nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
 
-# Subset Growth for a Few Phosphorus Sources
-traits <- p.growth.std[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
-
 # Define Color Palett
 require(RColorBrewer)
 mypalette <- colorRampPalette(brewer.pal(9, "YlOrRd"))
 
-# Need Some More Annotation
-x <- phylo4d(nj.rooted, traits)
-table.phylo4d(x, treetype="clad", symbol="colors", show.node=TRUE, 
-              cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
-              edge.color="black", edge.width=2, box=FALSE, 
-              col=mypalette(25), pch = 15, cex.symbol = 1, 
-              ratio.tree=0.75, cex.legend=1, center=FALSE)    
+# Make Tree and Map Taits {adephylo}
+x <- phylo4d(nj.rooted, p.growth.std)
+table.phylo4d(x, treetype = "phylo", symbol = "colors", show.node = TRUE, 
+              cex.label = 0.75, scale = FALSE, use.edge.length = FALSE, 
+              edge.color = "black", edge.width = 2, box = FALSE, 
+              col=mypalette(25), pch = 15, cex.symbol = 2, 
+              ratio.tree = 0.5, cex.legend = 1.5, center = FALSE)   
 
 # Niche Breadth
 x.nb <- phylo4d(nj.rooted, nb)
-table.phylo4d(x.nb, treetype="clad", symbol="colors", show.node=TRUE, 
-              cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
-              edge.color="black", edge.width=2, box=FALSE, 
-              col=mypalette(25), pch = 15, cex.symbol = 1, 
-              ratio.tree=0.75, cex.legend=1, center=FALSE)
+table.phylo4d(x.nb, treetype="phylo", symbol="colors", show.node = TRUE, 
+              cex.label = 0.75, scale = FALSE, use.edge.length = FALSE, 
+              edge.color = "black", edge.width = 2, box = FALSE, 
+              col=mypalette(25), pch = 15, cex.symbol = 2, 
+              ratio.tree = 0.90, cex.legend = 1, center = FALSE)
 ```
+
+***Question 4***:  Based on the distribution of traits on the neighbor joining tree, what might you concldue about the degree of specialization of bacteria on diverse phosphorus resources?  
+
+> ***Answer 4***:   
 
 ## 9) HYPOTHESIS TESTING
 
-### A) PAGEL'S LAMBDA
+### A) PAGEL'S LAMBDA -- Jay will develop and annotate
 ```{r}
 fitContinuous(nj.rooted, nb, "lambda")
 ```
 
-### B) BLOMBERG'S K
+### B) BLOMBERG'S K -- Jay will annotate
 ```{r}
 
-nj.tree <- bionj(seq.dist.F84) # no negative lengths with bionj - improved alg
-outgroup <- match("Methanosarcina", nj.tree$tip.label)
-nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
-nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
-
-randtree <- rcoal(39)
-randtraits <- rTraitCont(randtree)
-phylosignal(randtraits[randtree$tip.label],randtree)
-blom.K <- Kcalc(randtraits[randtree$tip.label],randtree, checkdata = TRUE)
-randtree$tip.label <- nj.rooted$tip.label
-randtree$edge.length <- nj.rooted$edge.length
-Kcalc(nb, randtree)
+# Note: we have some odd 0s, let's add something small
+nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
 
 # Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
 blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
 
-signal.nb <- phylosignal(nb[nj.rooted$tip.label], nj.rooted)
+signal.nb <- phylosignal(nb, nj.rooted)
 
 trait.list <- split(traits, rownames(traits))
 
-signal.P <- sapply(traits, phylosignal, nj.rooted, reps = 999, checkdata = TRUE)
+
+p.phylosignal <- matrix(NA, 6, 18)
+colnames(p.phylogenetic) <- colnames(p.growth.std)
+rownamees(p.phylogenetic) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
+for (i in 1:18){
+  x <- as.matrix(p.growth.std[,i])
+  rownames(x) <- rownames(p.growth.std)
+  out <- phylosignal(x, nj.rooted)
+  p.phylosignal[1:5, i] <- t(out)
+}
+p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
+
+signal.P <- sapply(traits, phylosignal, phy = nj.rooted, reps = 999, checkdata = TRUE)
 ```
-#apply through all of them. use b-h correction 
+
 
 ### C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
     if this doesn't work, can we hijack phylo.struct from picante
