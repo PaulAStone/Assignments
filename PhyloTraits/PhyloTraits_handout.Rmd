@@ -380,23 +380,24 @@ fitContinuous(nj.rooted, nb, "lambda")
 
 ### B) BLOMBERG'S K
 ```{r}
-# Generate Neighbor Joining Tree Using F84 DNA Substitution Model {ape}
-nj.tree <- nj(seq.dist.F84) # no negative lengths with bionj - improved alg
 
-# Define the Outgroup
+nj.tree <- bionj(seq.dist.F84) # no negative lengths with bionj - improved alg
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
-
-# Create a Rooted Tree {ape}
 nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
- 
-# Keep Rooted but Drop Outgroup Branch
 nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
 
+randtree <- rcoal(39)
+randtraits <- rTraitCont(randtree)
+phylosignal(randtraits[randtree$tip.label],randtree)
+blom.K <- Kcalc(randtraits[randtree$tip.label],randtree, checkdata = TRUE)
+randtree$tip.label <- nj.rooted$tip.label
+randtree$edge.length <- nj.rooted$edge.length
+Kcalc(nb, randtree)
 
 # Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
 blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
 
-signal.nb <- phylosignal(nb[nj.rooted$tip.label,], nj.rooted)
+signal.nb <- phylosignal(nb[nj.rooted$tip.label], nj.rooted)
 
 trait.list <- split(traits, rownames(traits))
 
