@@ -43,6 +43,8 @@ require("phangorn")
 require("phylobase")
 require("adephylo")
 require("geiger") 
+require("picante")
+require("stats")
 ```
 
 ## 2) DESCRIPTION OF DATA
@@ -323,15 +325,17 @@ levins <- function(p_xi = ""){
   }
 ```
 
-Now let's apply our niche breadth function to the standardized growth rates of our isolates on the different phosphorus resources.
+Now let's apply our niche breadth function to the growth rate data of our isolates on the different phosphorus resources.
 
 ```{r}
-nb <- levins(p.growth.std)
+# Apply `nb` to Standardized Growth Rates
+nb <- as.matrix(levins(p.growth.std))
+
+# Add Rownames
+rownames(nb) <- row.names(p.growth)
 ```  
 
 ### C. Visualzing Traits on Trees
-
-
 ```{r}
 # Generate Neighbor Joining Tree Using F84 DNA Substitution Model {ape}
 nj.tree <- bionj(seq.dist.F84) # no negative lengths with bionj - improved alg
@@ -345,64 +349,28 @@ nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
 # Keep Rooted but Drop Outgroup Branch
 nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
 
-# Rescale for Negative Branch Length
-# nj.rooted$edge.length <- nj.rooted$edge.length + 0.1
-
 # Subset Growth for a Few Phosphorus Sources
 traits <- p.growth.std[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
-trait.nb <- as.data.frame(nb)
-rownames(trait.nb) <- rownames(traits)
 
 # Define Color Palett
 require(RColorBrewer)
 mypalette <- colorRampPalette(brewer.pal(9, "YlOrRd"))
-
 
 # Need Some More Annotation
 x <- phylo4d(nj.rooted, traits)
 table.phylo4d(x, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
-              col=mypalette(100), pch = 15, cex.symbol = 1, 
+              col=mypalette(25), pch = 15, cex.symbol = 1, 
               ratio.tree=0.75, cex.legend=1, center=FALSE)    
 
-# Need to Fix Color Range
 # Niche Breadth
-x.nb <- phylo4d(nj.rooted, trait.nb)
+x.nb <- phylo4d(nj.rooted, nb)
 table.phylo4d(x.nb, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
-              col=mypalette(100), pch = 15, cex.symbol = 1, 
+              col=mypalette(25), pch = 15, cex.symbol = 1, 
               ratio.tree=0.75, cex.legend=1, center=FALSE)
-
-data(mjrochet)
-temp <- read.tree(text=mjrochet$tre) # make a tree
-mjr <- phylo4d(x=temp,tip.data=mjrochet$tab) # male a phylo4d object
-table.phylo4d(x.nb,cex.lab=.5,show.node=FALSE,symb="square")
-
-```
- 
-# library(latticeExtra)
-# dd.col <- as.dendrogram(hc)
-# col.ord <- order.dendrogram(dd.col)
-# mat <- matrix(rnorm(4*4),nrow=4)
-# colnames(mat) <- tree$tip.label
-# rownames(mat) <- tree$tip.label
-# levelplot(mat[tree$tip,tree$tip],type=c('g','p'),
-#           aspect = "fill",
-#           colorkey = list(space = "left"),
-#           legend =
-#             list(right =
-#                    list(fun = dendrogramGrob,
-#                         args =
-#                           list(x = dd.col, 
-#                                side = "right",
-#                                size = 10))),
-#           panel=function(...){
-#             panel.fill('black',alpha=0.2)
-#             panel.levelplot.points(...,cex=12,pch=23)
-#           }
-# )
 ```
 
 ## 9) HYPOTHESIS TESTING
@@ -412,10 +380,18 @@ table.phylo4d(x.nb,cex.lab=.5,show.node=FALSE,symb="square")
 fitContinuous(fit.best.noroot, trait.nb)
 ```
 
+### B) BLOMBERG'S K
+```{r}
+# Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
+#blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
 
+signal.nb <- phylosignal(nb, nj.rooted, reps = 999, checkdata = TRUE)
 
-### B) BOOMBERG'S K - Jay
+trait.list <- split(traits, rownames(traits))
 
+signal.P <- sapply(traits, phylosignal, nj.rooted, reps = 999, checkdata = TRUE)
+
+apply through all of them. use b-h correction 
 
 ### C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
     if this doesn't work, can we hijack phylo.struct from picante
