@@ -40,8 +40,8 @@ require("muscle")
 require("ape")
 require("seqinr")
 require("phangorn")
-require("phylobase"")
-require("adephylo)
+require("phylobase")
+require("adephylo")
 require("geiger") 
 ```
 
@@ -261,16 +261,20 @@ F84.rooted <- root(F84.tree, F84.outgroup, resolve.root=TRUE)
 
 # Make Cophylogenetic Plot {ape}
 layout(matrix(c(1,2), 1, 2), width = c(1.2, 1))
-par(mar = c(4, 1, 2, 0.1))
-plot.phylo(F84.rooted, type = "phylogram", direction = "right", 
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 1, main = "F84 tree")
+layout.show(2)
+par(mar = c(4, 1, 2, 0))
+plot.phylo(F84.rooted, type = "phylogram", direction = "right", show.tip.label=TRUE,
+           use.edge.length = FALSE, adj = 0.75, cex = 0.7, label.offset = 2, main = "F84 tree",  )
 
 axisPhylo()
 par(mar = c(4, 0, 2, 1))
-plot.phylo(raw.rooted, type = "phylogram", direction = "left", 
-           use.edge.length = FALSE, show.tip.label = FALSE, main = "raw tree")
+plot.phylo(raw.rooted, type = "phylogram", direction = "left", show.tip.label=TRUE,
+           use.edge.length = FALSE, , main = "raw tree", label.offset = 0)
 axisPhylo()
 layout(1)
+
+cophyloplot(F84.rooted, raw.rooted, assoc=TRUE)
+
 ```
 
 ***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the JC69 substitution model has on our phylogenetic reconstruction. If the plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
@@ -312,7 +316,7 @@ We will used the niche breadth (*nb*) index from Levins (1968) which is defined 
 levins <- function(p_xi = ""){
   x = 0
   for (i in p_xi){
-    x = x = i^2
+    x = x + i^2
     }
   nb = 1 / (length(p_xi) * x)
   return(nb)
@@ -330,7 +334,7 @@ nb <- levins(p.growth.std)
 
 ```{r}
 # Generate Neighbor Joining Tree Using F84 DNA Substitution Model {ape}
-nj.tree <- nj(seq.dist.F84)
+nj.tree <- bionj(seq.dist.F84) # no negative lengths with bionj - improved alg
 
 # Define the Outgroup
 outgroup <- match("Methanosarcina", nj.tree$tip.label)
@@ -342,20 +346,25 @@ nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
 nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
 
 # Rescale for Negative Branch Length
-nj.rooted$edge.length <- nj.rooted$edge.length + 0.1
+# nj.rooted$edge.length <- nj.rooted$edge.length + 0.1
 
 # Subset Growth for a Few Phosphorus Sources
 traits <- p.growth.std[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
 trait.nb <- as.data.frame(nb)
 rownames(trait.nb) <- rownames(traits)
 
+# Define Color Palett
+require(RColorBrewer)
+mypalette <- colorRampPalette(brewer.pal(9, "YlOrRd"))
+
+
 # Need Some More Annotation
 x <- phylo4d(nj.rooted, traits)
 table.phylo4d(x, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
-              col=topo.colors(10), pch = 15, cex.symbol = 1, 
-              ratio.tree=0.75, cex.legend=1)    
+              col=mypalette(100), pch = 15, cex.symbol = 1, 
+              ratio.tree=0.75, cex.legend=1, center=FALSE)    
 
 # Need to Fix Color Range
 # Niche Breadth
@@ -363,11 +372,16 @@ x.nb <- phylo4d(nj.rooted, trait.nb)
 table.phylo4d(x.nb, treetype="clad", symbol="colors", show.node=TRUE, 
               cex.label = 0.75, scale = TRUE, use.edge.length=FALSE, 
               edge.color="black", edge.width=2, box=FALSE, 
-              col=topo.colors(10), pch = 15, cex.symbol = 1, 
-              ratio.tree=0.75, cex.legend=1) 
+              col=mypalette(100), pch = 15, cex.symbol = 1, 
+              ratio.tree=0.75, cex.legend=1, center=FALSE)
+
+data(mjrochet)
+temp <- read.tree(text=mjrochet$tre) # make a tree
+mjr <- phylo4d(x=temp,tip.data=mjrochet$tab) # male a phylo4d object
+table.phylo4d(x.nb,cex.lab=.5,show.node=FALSE,symb="square")
 
 ```
-                                                                                                                                
+ 
 # library(latticeExtra)
 # dd.col <- as.dendrogram(hc)
 # col.ord <- order.dendrogram(dd.col)
