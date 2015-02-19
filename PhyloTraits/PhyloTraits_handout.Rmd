@@ -377,8 +377,8 @@ table.phylo4d(x.nb, treetype="phylo", symbol="colors", show.node = TRUE,
 After one constructs and maps traits onto a tree, there are a number of questions and 
 
 
-### A) PAGEL'S LAMBDA 
-Mark Pagel (http://www.evolution.reading.ac.uk/) developed a fairly simple technique to quantify phylogenetic signal, which involves a tree transformation.
+### A) Phylogenetic Signal: Pagel's Lambda 
+Mark Pagel developed a fairly simple technique to quantify phylogenetic signal, which involves a tree transformation (http://goo.gl/zSSxoB).
 The transformation is accomplished by multipling lambda by the off-diagonal elements of the variance-covariance matrix describing the tree topology and branch lengths. 
 When lambda equals 1, you have your original, non-transformed branch lengths. 
 When lambda equals 0, you have removed all phylogentic signal from your tree. 
@@ -395,8 +395,8 @@ plot(nj.lambda.5, main = "lamba = 0.5")
 plot(nj.lambda.0, main = "lamba = 0")
 ```
 
-Now, let's generate quantitative output that will allow us to assess how much phylogenetis signal is in our data set.
-For this test we will compare trees with lambda values of 0 and 1, while looking for singal in the niche breadth trait. 
+Now, let's generate quantitative output that will allow us to assess how much phylogenetic signal is in our data set.
+For this test we will compare trees with lambda values of 0 and 1, while looking for signal in the niche breadth trait. 
 
 ```{r}
 # Generate Test Statistics for Comparing Phylogenetic Signal {geiger}
@@ -407,25 +407,28 @@ fitContinuous(nj.lambda.0, nb, model = "lambda")
 ***Question 5***:  There are two important pieces of output from `fitContinuous` functions that can help you interpret the phylogenetic signal in our trait data. 
 First, compare the lambda values of our rooted tree to a transformed tree with lambda = 0.
 Second, compare the Akaike information criterion (AIC) scores of the two models. 
-Differences in AIC scores can provide maximum likelihood inference as to whether or not there are differences in the quality of models fit to a given data set. 
+Differences in AIC scores provide maximum likelihood inference as to whether or not there are differences in the quality of models fit to a given data set. 
 Models with lower AIC values are better. 
 However, if the difference in AIC values between two models isn't greater than at least 2, then then the models are considered equivalent. 
 With this information in hand, what does Pagel's lambda say about the phylogenetic signal in our data set?
 
 > ***Answer 5***:   
 
-### B) BLOMBERG'S K 
+### B) Phylogenetic Signal: Blomberg's K 
+Blomberg et al. (2003) derived a statistic that quantifies phylogenetic signal by comparing observed trait distribution on a tree to what would evolve under Browninan (i.e., random) motion (http://goo.gl/0xU9Et). 
+Blomberg's K is calculated as the mean squared error of the tip data (i.e., trait) measured from the phylogenetic-corrected mean and the mean squared error based on the variance–covariance matrix derived from the given phylogeny under the assumption of Browninan motion (Münkemüller et al 2012, http://goo.gl/c08XrA).
+A K-value of 1 means that a trait is distributed on the tree according to null expecation of Browning motion. 
+A K-value >1 means that traits are "clustered" with closely related species being *more similar* than expected by chance. 
+A K-value of <1 means that traits are "over-dispersed" with closely related species *less similar* than expected by chance.  
+
+Let's test for phylogenetic signal using Blomberg's K for the standardized growth of our bacterial isolates on *each phosphorus source* based on our neighbor joining tree.
+Note: since we're generating test statistics and associated p-values for 18 different sources of phosphorus, we are going to correct for **false discovery rate (FDR)** using the **Benjamini-Hochberg** method ("PIC.P.BH"). 
+
 ```{r}
-# Note: we have some odd 0s, let's add something small
+# First, Correct for Zero Branch-Lengths on Our Tree
 nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
 
-# Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
-blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
-
-# Calcualate Phylosignal for Niche Breadth
-signal.nb <- phylosignal(nb, nj.rooted)
-
-# Calculate Phylosignal for All Phosphorus Traits
+# Calculate Phylogenetic Signal for Growth on All Phosphorus Resources
 p.phylosignal <- matrix(NA, 6, 18)
 colnames(p.phylosignal) <- colnames(p.growth.std)
 rownames(p.phylosignal) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
@@ -434,10 +437,25 @@ for (i in 1:18){
   rownames(x) <- rownames(p.growth.std)
   out <- phylosignal(x, nj.rooted)
   p.phylosignal[1:5, i] <- t(out)
+  p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
+  print(p.phylosignal)
 }
-p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
 ```
 
+Now, let's test for phylogenetic signal using Blomberg's K on *niche breadth*:
+
+```{r}
+# Calcualate Phylogenetic Signal for Niche Breadth with `phylosignal` function in `picante`
+signal.nb <- phylosignal(nb, nj.rooted)
+```
+
+***Question 6***: Using the K-values and associated p-values (i.e., "PIC.var.P"") from the `phylosignal` output, answer the following questions:
+
+a.  Is there significant phylogenetic signal for niche breadth or standardized growth on any of phosphorus resources
+b.  If there is significant phylogenetic signal, are the results suggestive of clustering or over-dispersion?
+
+> ***Answer 6a***:  
+> ***Answer 6b***:  
 
 ###C. Phylogenetic Independent Contrasts
 boxplot(log(umax))
