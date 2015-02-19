@@ -431,16 +431,18 @@ With this information in hand, what does Pagel's lambda say about the phylogenet
 
 > ***Answer 5***:   
 
-
 ### B) Phylogenetic Signal: Blomberg's K 
-Blomberg et al. (2003) derived a statistic that quantifies phylogenetic signal by comparing observed trait distribution on a tree to what would evolve under Browninan (i.e., random) motion (http://goo.gl/0xU9Et). 
+Blomberg et al. (2003) derived a statistic that quantifies phylogenetic signal by comparing observed trait distributions on a tree to what would evolve under Browninan (i.e., random) motion (http://goo.gl/0xU9Et). 
 Blomberg's K is calculated as the mean squared error of the tip data (i.e., trait) measured from the phylogenetic-corrected mean and the mean squared error based on the variance–covariance matrix derived from the given phylogeny under the assumption of Browninan motion (Münkemüller et al 2012, http://goo.gl/c08XrA).
-A K-value of 1 means that a trait is distributed on the tree according to null expecation of Browning motion. 
-A K-value >1 means that traits are "clustered" with closely related species being *more similar* than expected by chance. 
-A K-value of <1 means that traits are "over-dispersed" with closely related species *less similar* than expected by chance.  
+A **K-value of 1** means that a trait is distributed on the tree according to null expectation of Browning motion. 
+A **K-value > 1** means that traits are "clustered" with closely related species being *more similar* than expected by chance. 
+A **K-value of < 1** means that traits are "over-dispersed" with closely related species *less similar* than expected by chance.  
 
 Let's test for phylogenetic signal using Blomberg's K for the standardized growth of our bacterial isolates on *each phosphorus source* based on our neighbor joining tree.
-Note: since we're generating test statistics and associated p-values for 18 different sources of phosphorus, we are going to correct for **false discovery rate (FDR)** using the **Benjamini-Hochberg** method ("PIC.P.BH"). 
+Note: In this particular analysis, we are generating 18 test statistics with associated p-values (one for each phosphorus resource).
+This means that we are increasing our probability of rejecting the null hypothesis (ie. "no phylogenetic signal") when it is in fact true.
+This is called **false discovery rate (FDR)**.
+We are going to correct for FDR using the **Benjamini-Hochberg** method ("PIC.P.BH"). 
 
 ```{r}
 # First, Correct for Zero Branch-Lengths on Our Tree
@@ -460,8 +462,10 @@ for (i in 1:18){
   p.phylosignal[1:5, i] <- round(t(out), 3)
 }
 
-# Use the BH correction on P-values
+# Use the BH correction on P-values: NEEDS TO BE FIXED
 p.phylosignal[6, ] <- round(p.adjust(p.phylosignal[4, ], method = "BH"), 3)
+p.Kvalue <- round(p.phylosignal[1, ], 3)
+p.phylosignal.out <- data.frame(p.Kvalue, p.phylosignal[6, ])
 ```
 
 Now, let's test for phylogenetic signal using Blomberg's K on *niche breadth*:
@@ -479,7 +483,6 @@ b.  If there is significant phylogenetic signal, are the results suggestive of c
 > ***Answer 6a***:  
 > ***Answer 6b***:  
 
-
 ###C. Phylogenetic Independent Contrasts
 ```{r}
 boxplot(log(umax))
@@ -490,7 +493,7 @@ abline(model)
 summary(model)
 
 
-pic.umax <- pic(log(umax), nj.rooted)
+pic.umax <- pic(log(umax), nj.rooted, var.contrasts=TRUE)
 pic.nb <- pic(nb, nj.rooted)
 
 plot(pic.nb, pic.umax)
@@ -514,50 +517,16 @@ phylo.d(p.traits, binvar = DNA)
 phylo.d(p.traits, binvar = cAMP)
 ```
 
-
-# Determine phylogenetic constraint
-
-
-
-
-### C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
-    if this doesn't work, can we hijack phylo.struct from picante
-    -- Mario
-### D) CONSTRAINT: 
-http://ps.uci.edu/scholar/amartiny/files/consentrait.txt
-  -- Mario
-### E) Phylogenetic independent contrasts -- Jay
-  
-
 ## 10) HOMEWORK
 Test growth rate-niche breadth trade-off using pylognetic independent contrasts. Still signficant?
-
-
 
 Phylogenetic signal occurs when the traits of closely related species are more similar than what is expected by chance. 
 In many cases, testing for phylogenetic signal is a prerequsite for addressing questions related to trait evolution and phylogenetic biodiversity. 
 If there is significant phylogenetic signal, then evolutionary history is important for understanding the relationships between for example a trait and the peformance of individuals being considered. 
 If there is *not* any phylogenetic signal, then the relationship between traits and peformance can explored using normal statistical methods. 
 
-### Pagel’s Lambda
-http://bodegaphylo.wikispot.org/iv._testing_phylogenetic_signal_in_r
-http://blog.phytools.org/2013/10/simplified-lambdatree.html
-```{r}
-# traits.1 <- traits[,1,drop=FALSE]
-# fitContinuous(nj.rooted, traits.1)
-
-```
-
 ## 9) PHYLOGENETIC INDEPENDENT CONTRASTS
 Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
-Can we take a trait-peformance relationship that's siginficant and correct for phylogeny? 
-Is the relationship still significant? 
-Do the parameters or explained varition change?
-```{r}
-# pic.nb <- pic(trait.nb, fit.best.noroot)
-# pic.umax <- pic(umax, fit.best.noroot)
-# 
-# fit.best.noroot$tip.label
-```
+
 
 
