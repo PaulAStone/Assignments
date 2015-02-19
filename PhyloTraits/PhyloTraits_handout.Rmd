@@ -432,28 +432,44 @@ With this information in hand, what does Pagel's lambda say about the phylogenet
 > ***Answer 5***:   
 
 ### B) BLOMBERG'S K 
+
+To measure phylogenetic dispersion, we are going to use Blomberg's K statistic (Blomberg & Garland 2002). 
+Blomberg's K calculates the amount of "phylogenetic signal" in the tip data relative to the expectation for a trait that evolved by Brownian motion along the specified topology and branch lengths. 
+A value of 1.00 indicates exactly the amount expected by Brownian motion. 
+Values < 1 indicate less resemblance of relatives than expected, and values > 1 indicate stronger-than-expected phylogenetic `clumping' of trait values. 
+For trait 1, K=1.084, indicating that the tendency for related species to resemble each other is, averaged over the entire tree, just about what one would expect if the traits had actually evolved by a process similar to Brownian motion. 
+To calculate K we will use the `phylosignal()` function in the picante pacakge.
+
 ```{r}
 # Note: we have some odd 0s, let's add something small
 nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
 
 # Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
-blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
-
 # Calcualate Phylosignal for Niche Breadth
 signal.nb <- phylosignal(nb, nj.rooted)
 
 # Calculate Phylosignal for All Phosphorus Traits
+# First, create a blank output matirx
 p.phylosignal <- matrix(NA, 6, 18)
 colnames(p.phylosignal) <- colnames(p.growth.std)
-rownames(p.phylosignal) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
+rownames(p.phylosignal) <- c("K", "PIC.var.obs", "PIC.var.mean", 
+                             "PIC.var.P", "PIC.var.z", "PIC.P.BH")
+
+# Use a for loop to calculate K for each resource
 for (i in 1:18){
   x <- as.matrix(p.growth.std[,i])
   rownames(x) <- rownames(p.growth.std)
   out <- phylosignal(x, nj.rooted)
   p.phylosignal[1:5, i] <- t(out)
 }
+
+# Use the BH correction on P-values
 p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
 ```
+
+***Question 5***:  
+
+> ***Answer 6***: 
 
 
 ###C. Phylogenetic Independent Contrasts
@@ -474,9 +490,8 @@ summary(evo.model)
 abline(evo.model)
 
 
-
+```{r}
 # Calculate Dispersion on Traits (e.g. AEP)
-# Who can use AEP
 p.growth.pa <- as.data.frame((p.growth > 0.01) * 1)
 
 apply(p.growth.pa, 2, sum)
@@ -488,10 +503,10 @@ phylo.d(p.traits, binvar = AEP)
 phylo.d(p.traits, binvar = PhenylCP)
 phylo.d(p.traits, binvar = DNA)
 phylo.d(p.traits, binvar = cAMP)
-
+```
 # Dedermine phylogenetic constraint
 
-```
+
 
 
 ### C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
