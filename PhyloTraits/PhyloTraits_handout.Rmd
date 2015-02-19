@@ -265,13 +265,13 @@ F84.rooted <- root(F84.tree, F84.outgroup, resolve.root=TRUE)
 layout(matrix(c(1,2), 1, 2), width = c(1, 1))
 layout.show(2)
 par(mar = c(1, 1, 2, 0))
-plot.phylo(F84.rooted, type = "phylogram", direction = "right", show.tip.label=TRUE,
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "F84 Tree")
+plot.phylo(raw.rooted, type = "phylogram", direction = "right", show.tip.label=TRUE,
+           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "Raw")
 #axisPhylo()
 
 par(mar = c(1, 0, 2, 1))
-plot.phylo(raw.rooted, type = "phylogram", direction = "left", show.tip.label=TRUE,
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "Raw Tree")
+plot.phylo(F84.rooted, type = "phylogram", direction = "left", show.tip.label=TRUE,
+           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "F84")
 #axisPhylo()
 layout(1)
 ```
@@ -369,18 +369,52 @@ table.phylo4d(x.nb, treetype="phylo", symbol="colors", show.node = TRUE,
               ratio.tree = 0.90, cex.legend = 1, center = FALSE)
 ```
 
-***Question 4***:  Based on the distribution of traits on the neighbor joining tree, what might you concldue about the degree of specialization of bacteria on diverse phosphorus resources?  
+***Question 4***:  Based on the distribution of traits on the neighbor joining tree that you just created, what might you concldue about the degree of specialization of bacteria on diverse phosphorus resources?  
 
 > ***Answer 4***:   
 
-## 9) HYPOTHESIS TESTING
+## 6) HYPOTHESIS TESTING
+After one constructs and maps traits onto a tree, there are a number of questions and 
 
-### A) PAGEL'S LAMBDA -- Jay will develop and annotate
+
+### A) PAGEL'S LAMBDA 
+Mark Pagel (http://www.evolution.reading.ac.uk/) developed a fairly simple technique to quantify phylogenetic signal, which involves a tree transformation.
+The transformation is accomplished by multipling lambda by the off-diagonal elements of the variance-covariance matrix describing the tree topology and branch lengths. 
+When lambda equals 1, you have your original, non-transformed branch lengths. 
+When lambda equals 0, you have removed all phylogentic signal from your tree. 
+Let's look at what happens to our tree when we visualize our tree with a lamda of 1, 0.5, and 0. 
+
 ```{r}
-fitContinuous(nj.rooted, nb, "lambda")
+# Visualize Trees With Different Levels of  Phylogenetic Signal {geiger}
+nj.lambda.5 <- rescale(nj.rooted, "lambda", 0.5)
+nj.lambda.0 <- rescale(nj.rooted, "lambda", 0)
+
+par(mfcol=c(1,3)) 
+plot(nj.rooted, main = "lambda = 1")
+plot(nj.lambda.5, main = "lamba = 0.5")
+plot(nj.lambda.0, main = "lamba = 0")
 ```
 
-### B) BLOMBERG'S K -- Jay will annotate
+Now, let's generate quantitative output that will allow us to assess how much phylogenetis signal is in our data set.
+For this test we will compare trees with lambda values of 0 and 1, while looking for singal in the niche breadth trait. 
+
+```{r}
+# Generate Test Statistics for Comparing Phylogenetic Signal {geiger}
+fitContinuous(nj.rooted, nb, model = "lambda")
+fitContinuous(nj.lambda.0, nb, model = "lambda")
+```
+
+***Question 5***:  There are two important pieces of output from `fitContinuous` functions that can help you interpret the phylogenetic signal in our trait data. 
+First, compare the lambda values of our rooted tree to a transformed tree with lambda = 0.
+Second, compare the Akaike information criterion (AIC) scores of the two models. 
+Differences in AIC scores can provide maximum likelihood inference as to whether or not there are differences in the quality of models fit to a given data set. 
+Models with lower AIC values are better. 
+However, if the difference in AIC values between two models isn't greater than at least 2, then then the models are considered equivalent. 
+With this information in hand, what does Pagel's lambda say about the phylogenetic signal in our data set?
+
+> ***Answer 5***:   
+
+### B) BLOMBERG'S K 
 ```{r}
 # Note: we have some odd 0s, let's add something small
 nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
@@ -393,8 +427,8 @@ signal.nb <- phylosignal(nb, nj.rooted)
 
 # Calculate Phylosignal for All Phosphorus Traits
 p.phylosignal <- matrix(NA, 6, 18)
-colnames(p.phylogenetic) <- colnames(p.growth.std)
-rownamees(p.phylogenetic) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
+colnames(p.phylosignal) <- colnames(p.growth.std)
+rownames(p.phylosignal) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
 for (i in 1:18){
   x <- as.matrix(p.growth.std[,i])
   rownames(x) <- rownames(p.growth.std)
@@ -402,9 +436,10 @@ for (i in 1:18){
   p.phylosignal[1:5, i] <- t(out)
 }
 p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
+```
 
 
-# Phylogenetic Independent Contrasts
+###C. Phylogenetic Independent Contrasts
 boxplot(log(umax))
 boxplot(nb)
 plot(nb, log(umax))
