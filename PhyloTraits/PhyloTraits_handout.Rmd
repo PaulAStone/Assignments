@@ -38,16 +38,18 @@ After the initial installation of these packages using the `install.packages()` 
 require("muscle")
 require("ape")
 require("seqinr")
-require("phangorn")
+# require("phangorn")
 require("phylobase")
 require("adephylo")
 require("geiger") 
 require("picante")
 require("stats")
 require("RColorBrewer")
+require("caper")
 ```
 
 ## 2) DESCRIPTION OF DATA
+
 The maintenance of biodiversity is thought to be influenced by **trade-offs** among species in certain functional traits. 
 One such trade-off involves the ability of a highly specialized species to peform exceptionally well on a particular resource. 
 This strategy may be advantageous if the specialist lives in an environment where its preferred resource is found in a relatively high and constant supply. 
@@ -59,6 +61,7 @@ After identifying these bacteria based on their 16S rRNA gene sequences, we meas
 In this exercise, we will take a phylogenetic approach to mapping phosphorus resource use onto a phylogenetic tree while testing for specialist-generalist trade-offs. 
 
 ## 3) SEQUENCE ALIGNMENT
+
 After generating or retrieving sequence data, the first step of a phylogenetic analysis is to peform an alignment. 
 This can be done with nucleotides (DNA or RNA) or proteins (amino acids). 
 There are various methods for aligning sequences, but the basic premise is to use an algorithm to arrange sequences relative to one another based on conserved regions so that downstream phylogenetic analyses can be performed.
@@ -125,6 +128,7 @@ b.  What regions do you think would be most appropriate for phylogenetic inferen
 > ***Answer 2b***:  
 
 ## 4) MAKING A PHYLOGENETIC TREE
+
 Once you have aligned your sequences, the next step is to construct a phylogenetic tree.
 Not only is a phylogenetic tree effective for visualizing the evolutionary relationship among taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for downstream analysis. 
 
@@ -280,6 +284,7 @@ If the plots seem to be inconsistent with one another, explain what it giving ri
 > ***Answer 3***:   
 
 ## 5) INTEGRATING TRAITS AND PHYLOGENY
+
 In the context of biodiveristy, many researchers are interested in being able to map traits onto phylogenetic trees.
 This can be important for addressing questions related to diversification, trait evolution, and ecological interactions.
 In this section, we will import functional trait data that was collected on the 39 freshwater isoaltes for which we have 16S rRNA sequences. 
@@ -379,7 +384,7 @@ table.phylo4d(x.nb, treetype = "phylo", symbol = "colors", show.node = TRUE,
               cex.label = 0.5, scale = FALSE, use.edge.length = FALSE, 
               edge.color = "black", edge.width = 2, box = FALSE, 
               col=mypalette(25), pch = 15, cex.symbol = 1.25, var.label=("       NB"),
-              ratio.tree = 0.80, cex.legend = 1.5, center = FALSE)
+              ratio.tree = 0.90, cex.legend = 1.5, center = FALSE)
 ```
 
 ***Question 4***:  Based on the distribution of traits on the neighbor joining tree that we created, what might you predict about the degree of specialization of bacteria on diverse phosphorus resources?  
@@ -387,6 +392,7 @@ table.phylo4d(x.nb, treetype = "phylo", symbol = "colors", show.node = TRUE,
 > ***Answer 4***:   
 
 ## 6) HYPOTHESIS TESTING
+
 An emerging goal of biodiversity is to understand the effect that traits have on the peformance of species under different environmental conditions, but also how the traits of taxa can affect ecosytem functioning. 
 Before attempting to establish relationships among traits, however, it is important to understand that the role that evolution plays in the distribution of traits. 
 Because of hierarchical shared ancestry of species, we expect there to be non-independence of traits with respect to their evolutionary history. 
@@ -487,18 +493,32 @@ b.  If there is significant phylogenetic signal, are the results suggestive of c
 > ***Answer 6a***:  
 > ***Answer 6b***:  
 
-### C.  Calculate Dispersion on a Trait
-###SECTION NEEDS A LITTLE POLISHING AND PERHAPS ALSO A QUESTION. FOR EXAMPLE, ARE THE RESULTS CONSISTENT WITH BLOMBERG'S K?
-Another way to calculate the dispersion of a trait (i.e., clustered vs. overdispersed) is to use a formal test of dispersion. 
-Here, we will use the `phylo.d` function in the `caper` package to test for phylogenetic dispersion on the standardized growth rate of our bacterial strains. 
 
-```{r}
+### C.  Calculate Dispersion on a Trait (Continuous)
+Another way to calculate the phylogenetic signal of a trait (i.e., clustered vs. overdispersed) is to use a formal test of dispersion. 
+In ecology, dispersion is a measure of how things (e.g., traits or species) are distrubuted over and area habitat (which we will consider next week). 
+However, we can use similar approachs to determine how well traits are distributed within a phylogenetic tree.
+One measure of trait dispersion is the *D* measure of phylogenetic signal strength (Fritz & Purvis, 2009).  
+This measure of dispersion is calculated on catigorical data. 
+For example, is an isolate able to growth using DNA is the sole phosphorus source?
+Here, we will calcuate *D* using the `phylo.d` function in the `caper` package to test for phylogenetic dispersion of phosphorus usage in our bacterial strains. 
+However, there are a few things we will need to do first: 
+1) we need to turn our categorical data into continuos data,
+2) we need to add a column with our isolate names, and
+3) we need to combine our tree and trait data using the `comparative.data()` command in `caper`.
+Final, we can calculate dispersion for each of our traits using `phylo.d`.
+The output of this function will return and estimated value of D. 
+Estimates of D can either be negative (clustered traits) or positive (overdispersed traits).
+Furthermore, estimates of D being 0 indicate that the trait is clumped by randomly (Brownian motion) and estimtes of D being 1 indicate that a trait is randomly dispersed (random). 
+In addition, the function will use a permutaion test to calculate the probability of the D being different from either 1 (no phylogenetic structure; random) or 0 (Browning phylogenetic structure).
+Let's use this function to calculate dispersion on a few of our phosphorus traits.
+
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 p.growth.pa <- as.data.frame((p.growth > 0.01) * 1)
 
 apply(p.growth.pa, 2, sum)
 p.growth.pa$name <- rownames(p.growth.pa)
 
-require(caper)
 p.traits <- comparative.data(nj.rooted, p.growth.pa, "name")
 phylo.d(p.traits, binvar = AEP)
 phylo.d(p.traits, binvar = PhenylCP)
@@ -506,32 +526,40 @@ phylo.d(p.traits, binvar = DNA)
 phylo.d(p.traits, binvar = cAMP)
 ```
 
+***Question 7***: Using the estimates for D and the probabilities of each phylogenetic model, answer the following:
+
+a.  Which phosphorus traits (try a few) are clustered, Brownian, random, and overdispersed?
+b.  How do these results compare the results from Blomberg's K?
+c.  Discuss why you might observe differences. What might effect these differences?
+
+> ***Answer 7a***:  
+> ***Answer 7b***:  
+> ***Answer 7c***:  
+  
 
 ## 7) HOMEWORK
-Below is the output of a multiple regression model depicting the relationship between the maximum growth rate of each bacterial isolate and the niche breadth of that isoalte on the 18 different sources of phosphorus. 
+
+1.  Below is the output of a multiple regression model depicting the relationship between the maximum growth rate of each bacterial isolate and the niche breadth of that isoalte on the 18 different sources of phosphorus. 
 One feature of the study which we did not reveal earlier in the handout is that the isolates came from two very different lakes. 
 One of the lakes is an very oligotrophic (i.e., low phosphorus) ecosystem name Little Long (LL) Lake. 
 The other lake is extremely eutrophic (i.e., high phosphorus) ecosystem named Wintergreen (WG) Lake.
-Based on your knowledge of the the traits and their phylogenetic distributions, what conclusions would you draw about our data and evidence for a generalist-specialist tradeoff?
+Based on your knowledge of the the traits and their phylogenetic distributions, what conclusions would you draw about our data and evidence for a generalist-specialist tradeoff? 
 
-###WOULD LIKE TO HAVE INFO BELOW BLOCKED OUT. ONLY WANT THEM TO SEE THE FIGURE AND THE MULTILPE REGRESSION OUTPUT OF THE MODEL. 
-
-```{r}
-p.growth <- read.table("data/p.isolates.raw.growth.txt", sep = "\t", header = TRUE, row.names = 1)
+```{r, echo=FALSE, fig.width=6, fig.height=4}
+p.growth <- read.table("./data/p.isolates.raw.growth.txt", sep = "\t", header = TRUE, row.names = 1)
 umax <- (apply(p.growth, 1, max)) # calculate max growth
 lake <- ifelse(grepl("WG",row.names(p.growth)),'WG', 'LL') # make an empty vector for lake id
 tradeoff <- data.frame(nb,umax,lake) # make new data frame
 
 D <- (lake == "LL") * 1
 fit<-lm(log10(umax) ~ nb + D + nb * D)
-summary(fit)
 
 LL.nb <- subset(nb,lake == "LL")
 WG.nb <- subset(nb,lake == "WG")
 
 LL.umax <- subset(umax,lake == "LL")
 WG.umax<-subset(umax,lake == "WG")
-
+par(mar=c(4,4,0,1)+ 0.1)
 plot(LL.nb, log10(LL.umax), axes = F, xlab = "Niche Breadth", ylab = "Maximum Growth Rate", 
   pch = 21, cex = 2.0, las = 1, col = "black", bg = "white",
   xlim=c(0,1), ylim = c(-2, 1))
@@ -545,13 +573,15 @@ plot(LL.nb, log10(LL.umax), axes = F, xlab = "Niche Breadth", ylab = "Maximum Gr
   axis(3,labels = F)
   axis(side = 4, at = log10(ticks), labels = F)
 
-curve(coefficients[1] + coefficients[2] * x, from = min(WG.nb - 0.1), 
+curve(fit$coefficients[1] + fit$coefficients[2] * x, from = min(WG.nb - 0.1), 
   to = max(WG.nb +0.1), add = TRUE, lty = 2)
-Int <- coefficients[1] + coefficients[3]
-Slp = coefficients[2] + coefficients[4]
+Int <- fit$coefficients[1] + fit$coefficients[3]
+Slp <- fit$coefficients[2] + fit$coefficients[4]
 curve((Int) + (Slp) * x, from = min(LL.nb - 0.08), to =max(LL.nb + 0.1), add = TRUE, lty = 2)
   
   legend("topleft", legend = c("LL","WG"), pch = c(1,16), cex = 1, col = "black", bty = "n")
+
+summary(fit)
 
 coefficients <- coefficients(fit) # model coefficients
 confit <- confint(fit,level=0.95) # 95% CI for parameters
