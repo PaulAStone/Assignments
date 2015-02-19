@@ -528,8 +528,7 @@ http://ps.uci.edu/scholar/amartiny/files/consentrait.txt
 ### E) Phylogenetic independent contrasts -- Jay
   
 
-## 10) HOMEWORK
-Test growth rate-niche breadth trade-off using pylognetic independent contrasts. Still signficant?
+
 
 
 
@@ -558,5 +557,17 @@ Do the parameters or explained varition change?
 # 
 # fit.best.noroot$tip.label
 ```
+
+
+
+## 10) HOMEWORK
+1.  Complete the entire exercise in the PhyloTraits_Exercise.Rmd (in you PhyloTraits folder)
+
+2.  Use Knitr to create a pdf of your completed alpha_exercise.Rmd document, push it to GitHub, and create a pull request.
+The due date for this assignment will be announced in class and/or canvas.
+
+
+
+Test growth rate-niche breadth trade-off using pylognetic independent contrasts. Still signficant?
 
 
