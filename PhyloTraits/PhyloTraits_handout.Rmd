@@ -382,18 +382,16 @@ fitContinuous(nj.rooted, nb, "lambda")
 
 ### B) BLOMBERG'S K -- Jay will annotate
 ```{r}
-
 # Note: we have some odd 0s, let's add something small
 nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
 
 # Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
 blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
 
+# Calcualate Phylosignal for Niche Breadth
 signal.nb <- phylosignal(nb, nj.rooted)
 
-trait.list <- split(traits, rownames(traits))
-
-
+# Calculate Phylosignal for All Phosphorus Traits
 p.phylosignal <- matrix(NA, 6, 18)
 colnames(p.phylogenetic) <- colnames(p.growth.std)
 rownamees(p.phylogenetic) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
@@ -405,7 +403,17 @@ for (i in 1:18){
 }
 p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
 
-signal.P <- sapply(traits, phylosignal, phy = nj.rooted, reps = 999, checkdata = TRUE)
+
+# Phylogenetic Independent Contrasts
+
+
+
+# Calculate Dispersion on Niche Breadth
+
+
+
+# Dedermine phylogenetic constraint
+
 ```
 
 
