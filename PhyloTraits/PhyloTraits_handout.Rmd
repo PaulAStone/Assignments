@@ -405,12 +405,37 @@ p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
 
 
 # Phylogenetic Independent Contrasts
+boxplot(log(umax))
+boxplot(nb)
+plot(nb, log(umax))
+model <- lm(log(umax) ~ nb)
+abline(model)
+summary(model)
+
+
+pic.umax <- pic(log(umax), nj.rooted)
+pic.nb <- pic(nb, nj.rooted)
+
+plot(pic.nb, pic.umax)
+evo.model <- lm(pic.umax ~ pic.nb)
+summary(evo.model)
+abline(evo.model)
 
 
 
-# Calculate Dispersion on Niche Breadth
+# Calculate Dispersion on Traits (e.g. AEP)
+# Who can use AEP
+p.growth.pa <- as.data.frame((p.growth > 0.01) * 1)
 
+apply(p.growth.pa, 2, sum)
+p.growth.pa$name <- rownames(p.growth.pa)
 
+require(caper)
+p.traits <- comparative.data(nj.rooted, p.growth.pa, "name")
+phylo.d(p.traits, binvar = AEP)
+phylo.d(p.traits, binvar = PhenylCP)
+phylo.d(p.traits, binvar = DNA)
+phylo.d(p.traits, binvar = cAMP)
 
 # Dedermine phylogenetic constraint
 
