@@ -390,6 +390,7 @@ table.phylo4d(x.nb, treetype = "phylo", symbol = "colors", show.node = TRUE,
 
 ## 6) HYPOTHESIS TESTING
 After one constructs a phylogenetic tree and maps traits onto the tree, there are a number of questions and hypotheses that can be tested.
+These include tests for: phylogenetic signal, dispersion, ...
 
 ### A) PAGEL'S LAMBDA 
 Mark Pagel (http://www.evolution.reading.ac.uk/) developed a fairly simple technique to quantify phylogenetic signal.
