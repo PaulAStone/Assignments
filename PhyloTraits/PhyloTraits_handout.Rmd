@@ -382,18 +382,16 @@ fitContinuous(nj.rooted, nb, "lambda")
 
 ### B) BLOMBERG'S K -- Jay will annotate
 ```{r}
-
 # Note: we have some odd 0s, let's add something small
 nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
 
 # Calculated Phylogenetic Signal with `phylosignal` Function in the `picante` Package
 blom.K <- Kcalc(nb, nj.rooted, checkdata = TRUE)
 
+# Calcualate Phylosignal for Niche Breadth
 signal.nb <- phylosignal(nb, nj.rooted)
 
-trait.list <- split(traits, rownames(traits))
-
-
+# Calculate Phylosignal for All Phosphorus Traits
 p.phylosignal <- matrix(NA, 6, 18)
 colnames(p.phylogenetic) <- colnames(p.growth.std)
 rownamees(p.phylogenetic) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
@@ -405,7 +403,42 @@ for (i in 1:18){
 }
 p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
 
-signal.P <- sapply(traits, phylosignal, phy = nj.rooted, reps = 999, checkdata = TRUE)
+
+# Phylogenetic Independent Contrasts
+boxplot(log(umax))
+boxplot(nb)
+plot(nb, log(umax))
+model <- lm(log(umax) ~ nb)
+abline(model)
+summary(model)
+
+
+pic.umax <- pic(log(umax), nj.rooted)
+pic.nb <- pic(nb, nj.rooted)
+
+plot(pic.nb, pic.umax)
+evo.model <- lm(pic.umax ~ pic.nb)
+summary(evo.model)
+abline(evo.model)
+
+
+
+# Calculate Dispersion on Traits (e.g. AEP)
+# Who can use AEP
+p.growth.pa <- as.data.frame((p.growth > 0.01) * 1)
+
+apply(p.growth.pa, 2, sum)
+p.growth.pa$name <- rownames(p.growth.pa)
+
+require(caper)
+p.traits <- comparative.data(nj.rooted, p.growth.pa, "name")
+phylo.d(p.traits, binvar = AEP)
+phylo.d(p.traits, binvar = PhenylCP)
+phylo.d(p.traits, binvar = DNA)
+phylo.d(p.traits, binvar = cAMP)
+
+# Dedermine phylogenetic constraint
+
 ```
 
 
