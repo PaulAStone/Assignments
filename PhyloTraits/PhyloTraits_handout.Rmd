@@ -507,7 +507,7 @@ phylo.d(p.traits, binvar = PhenylCP)
 phylo.d(p.traits, binvar = DNA)
 phylo.d(p.traits, binvar = cAMP)
 
-# Dedermine phylogenetic constraint
+# Determine phylogenetic constraint
 
 ```
 
