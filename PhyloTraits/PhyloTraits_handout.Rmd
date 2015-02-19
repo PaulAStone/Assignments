@@ -45,6 +45,7 @@ require("adephylo")
 require("geiger") 
 require("picante")
 require("stats")
+require("RColorBrewer")
 ```
 
 ## 2) DESCRIPTION OF DATA
@@ -74,15 +75,15 @@ Let's take a second to look at the *p.isolates.fasta* file.
 Open the terminal and change directory to the data folder. 
 You can then type "nano p.isolates.fasta" at the command line. 
 This will open the FASTA file in nano, which is a text editing program. 
-You can use Ctrl+V and Ctrl+Y to scroll towards the bottom and top of the file, respectively.
-When you are done, you can close the file by hitting Ctrl+X.
+You can use [Ctrl+V] and [Ctrl+Y] to scroll towards the bottom and top of the file, respectively.
+When you are done, you can close the file by hitting [Ctrl+X].
 Do not save any inadvertent changes to *p.isolates.fasta*.
 
 ### B.  Performing an Alignment 
 Now, let's align our sequences. 
-Using the `muscle` fuction, we will read in our FASTA file and create a **FASTA-aligned* output file (with an .afa extension).  
+Using the `muscle` fuction, we will read in our FASTA file and create a **FASTA-aligned** output file (with an .afa extension).  
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
 # Identify input and output files to perform alignment in the `muscle` package
 muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
 ```
@@ -110,7 +111,7 @@ p.DNAbin <- as.DNAbin(read.aln)
 window <- p.DNAbin[, 100:500] 
 
 # Command to Visusalize Sequence Alignment {ape}
-image.DNAbin(window, cex.lab = 0.6) 
+image.DNAbin(window, cex.lab = 0.50) 
 
 # Optional Code Adds Grid to Help Visualize Rows of Sequences 
 grid(ncol(window), nrow(window), col = "lightgrey") 
@@ -126,7 +127,7 @@ b.  What regions do you think would be most appropriate for phylogenetic inferen
 
 ## 4) MAKING A PHYLOGENETIC TREE
 Once you have aligned your sequences, the next step is to construct a phylogenetic tree.
-Not only is this effective for visualizing the evolutionary relationship among taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for downstream hypothesis testing. 
+Not only is a phylogenetic tree effective for visualizing the evolutionary relationship among taxa, but as you will see later, the information that goes into a phylogenetic tree is needed for downstream hypothesis testing. 
 
 We could spend an entire semester discussing the theory and practice behind making phylogenetic trees.
 The objective of this handout is to quickly get you up to speed on some of the basic principles of phylognetic reconstruction. 
@@ -140,16 +141,16 @@ The following table provides an overview of the methods that are available for e
   \textbf{Tree Method} & \textbf{Properties} \\
   \hline \hline \\ [-1.5ex]
   \textbf{UPGMA} & 
-  Hierarchical clustering technique. Progressively groups the most similiar pairs of sequences. Sometimes used as a guide tree for more sophisticated phylogenetic analyses, but prone to distorting tree topology and assumes constant rates of evolution. UPGMA can be implemented in R with the upgma function in the phangorn package.\\
+  Hierarchical clustering technique. Progressively groups the most similiar pairs of sequences. Sometimes used as a guide tree for more sophisticated phylogenetic analyses, but prone to distorting tree topology and assumes constant rates of evolution. UPGMA can be implemented in R with the $\emph{upgma()}$ function in the phangorn package.\\
   \\ [-1.5ex]
   \textbf{Neighbor Joining} & 
-  Starts with an unresolved tree in a "star network". Algorithm then identifies the two most similar taxa and creates a node. This process is iteratively applied to the remaining sequences. Can serve as a starting point for assessing evolutionary models with more sophisticated methods like maximum likelihood. Neighbor joining can be implemented in the R packages `ape` and `phangorn` using the function nj \\
+  Starts with an unresolved tree in a "star network". Algorithm then identifies the two most similar taxa and creates a node. This process is iteratively applied to the remaining sequences. Can serve as a starting point for assessing evolutionary models with more sophisticated methods like maximum likelihood. Neighbor joining can be implemented in the R package ape using the $\emph{bionj()}$ function. \\
   \\ [-1.5ex]  
   \textbf{Maximum Parsimony} & 
-  A character-based, non-parametric approach that involves identifying one of many possible trees based upon the minimum number of evolutionary "steps"" (or mutations). No underlying evolutionary model. Maximum parsimony can be executed using the `parsimony` function in the package panghorn. The function optim.parsimony performs tree rearrangements using nearest-neighbor interchanges (NNI) to optimize parsimony scores.\\
+  A character-based, non-parametric approach that involves identifying one of many possible trees based upon the minimum number of evolutionary "steps" (or mutations). No underlying evolutionary model. Maximum parsimony can be executed using the $\emph{parsimony()}$ function in the package panghorn. The function optim.parsimony performs tree rearrangements using nearest-neighbor interchanges (NNI) to optimize parsimony scores.\\
   \\ [-1.5ex]   
   \textbf{Maximum Likelihood} & 
-  Parameteric approach to identifying the relative probability associated with data fitting a given model of character evolution. One of the most commonly used approaches for building trees from sequence data. Statistically sound and flexible for accomodating realistic models of sequence evolution. Maximum likelihood can be implemented in R using the `pml` function in the pranghorn package. Parameters can be optimized using the optim.pml and evolutionary models can be compared with the model.tests function\\
+  Parameteric approach to identifying the relative probability associated with data fitting a given model of character evolution. One of the most commonly used approaches for building trees from sequence data. Statistically sound and flexible for accomodating realistic models of sequence evolution. Maximum likelihood can be implemented in R using the $\emph{pml()}$ function in the pranghorn package. Parameters can be optimized using the optim.pml and evolutionary models can be compared with the $\emph{model.tests()}$ function\\
   \\ [-1.5ex]  
   \textbf{Bayesian} & 
   Uses likelihood function and prior probabilities to create a posterior probability of a tree fitting a given model of evolution. Computationally intensive; often uses Markov chains Monte Carlo (MCMC). Unlike other methods, parameters are not constant; rather, they come from probabilistic distributions. Along with maximum likelihood, considered one of the more preferable ways of generating trees. R has some packages (e.g., ips) the wrap popular Bayesian software such as MrBayes\\
@@ -188,7 +189,7 @@ nj.rooted <- root(nj.tree, outgroup, resolve.root = TRUE)
 # Plot the Rooted Tree{ape}
 par(mar = c(1,1,2,1) + 0.1)
 plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
-           direction = "right", cex = 0.7, label.offset = 1)
+           direction = "right", cex = 0.6, label.offset = 1)
 add.scale.bar(cex = 0.7)
 ```
 
@@ -267,12 +268,11 @@ F84.rooted <- root(F84.tree, F84.outgroup, resolve.root=TRUE)
 layout(matrix(c(1,2), 1, 2), width = c(1, 1))
 par(mar = c(1, 1, 2, 0))
 plot.phylo(raw.rooted, type = "phylogram", direction = "right", show.tip.label=TRUE,
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "Raw")
+           use.edge.length = FALSE, adj = 0.5, cex = 0.6, label.offset = 2, main = "Raw")
 
 par(mar = c(1, 0, 2, 1))
 plot.phylo(F84.rooted, type = "phylogram", direction = "left", show.tip.label=TRUE,
-           use.edge.length = FALSE, adj = 0.5, cex = 0.7, label.offset = 2, main = "F84")
-layout(1)
+           use.edge.length = FALSE, adj = 0.5, cex = 0.6, label.offset = 2, main = "F84")
 ```
 
 ***Question 3***:  Using the saturation plot and cophylogenetic plot, describe the effect that that the F84 substitution model has on our phylogenetic reconstruction. If the plots seem to be inconsistent with one another, explain what it giving rise to the differences.   
@@ -362,25 +362,24 @@ Here we will do both.
 
 ```{r}
 # Define Color Palett
-require(RColorBrewer)
 mypalette <- colorRampPalette(brewer.pal(9, "YlOrRd"))
 
 # Map Phosphorus Traits {adephylo}
 par(mar=c(1,1,1,1) + 0.1)
 x <- phylo4d(nj.rooted, p.growth.std)
 table.phylo4d(x, treetype = "phylo", symbol = "colors", show.node = TRUE, 
-              cex.label = 0.75, scale = FALSE, use.edge.length = FALSE, 
+              cex.label = 0.5, scale = FALSE, use.edge.length = FALSE, 
               edge.color = "black", edge.width = 2, box = FALSE, 
-              col=mypalette(25), pch = 15, cex.symbol = 2, 
+              col=mypalette(25), pch = 15, cex.symbol = 1.25, 
               ratio.tree = 0.5, cex.legend = 1.5, center = FALSE)   
 
 # Niche Breadth
 par(mar=c(1,5,1,5) + 0.1)
 x.nb <- phylo4d(nj.rooted, nb)
 table.phylo4d(x.nb, treetype = "phylo", symbol = "colors", show.node = TRUE, 
-              cex.label = 0.75, scale = FALSE, use.edge.length = FALSE, 
+              cex.label = 0.5, scale = FALSE, use.edge.length = FALSE, 
               edge.color = "black", edge.width = 2, box = FALSE, 
-              col=mypalette(25), pch = 15, cex.symbol = 2, var.label=("       NB"),
+              col=mypalette(25), pch = 15, cex.symbol = 1.25, var.label=("       NB"),
               ratio.tree = 0.80, cex.legend = 1.5, center = FALSE)
 ```
 
@@ -415,7 +414,7 @@ plot(nj.lambda.0, main = "lamba = 0",  cex = 0.7, adj = 0.5)
 Now, let's generate quantitative output that will allow us to assess how much phylogenetic signal is in our data set.
 For this test we will compare trees with lambda values of 0 and 1, while looking for signal in the niche breadth trait. 
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 # Generate Test Statistics for Comparing Phylogenetic Signal {geiger}
 fitContinuous(nj.rooted, nb, model = "lambda")
 fitContinuous(nj.lambda.0, nb, model = "lambda")
@@ -439,7 +438,8 @@ A **K-value > 1** means that traits are "clustered" with closely related species
 A **K-value of < 1** means that traits are "over-dispersed" with closely related species *less similar* than expected by chance.  
 
 Let's test for phylogenetic signal using Blomberg's K for the standardized growth of our bacterial isolates on *each phosphorus source* based on our neighbor joining tree.
-Note: In this particular analysis, we are generating 18 test statistics with associated p-values (one for each phosphorus resource).
+
+*Note:* In this particular analysis, we are generating 18 test statistics with associated p-values (one for each phosphorus resource).
 This means that we are increasing our probability of rejecting the null hypothesis (ie. "no phylogenetic signal") when it is in fact true.
 This is called **false discovery rate (FDR)**.
 We are going to correct for FDR using the **Benjamini-Hochberg** method ("PIC.P.BH"). 
@@ -468,7 +468,7 @@ p.Kvalue <- round(p.phylosignal[1, ], 3)
 p.phylosignal.out <- data.frame(p.Kvalue, p.phylosignal[6, ])
 ```
 
-Now, let's test for phylogenetic signal using Blomberg's K on *niche breadth*:
+In addition, let's test for phylogenetic signal using Blomberg's K on *niche breadth*:
 
 ```{r}
 # Calcualate Phylogenetic Signal for Niche Breadth
@@ -518,7 +518,7 @@ phylo.d(p.traits, binvar = cAMP)
 ```
 
 ## 10) HOMEWORK
-Test growth rate-niche breadth trade-off using pylognetic independent contrasts. Still signficant?
+Test growth rate-niche breadth trade-off using pylognetic independent contrasts.
 
 Phylogenetic signal occurs when the traits of closely related species are more similar than what is expected by chance. 
 In many cases, testing for phylogenetic signal is a prerequsite for addressing questions related to trait evolution and phylogenetic biodiversity. 
