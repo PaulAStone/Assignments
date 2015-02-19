@@ -431,6 +431,7 @@ With this information in hand, what does Pagel's lambda say about the phylogenet
 
 > ***Answer 5***:   
 
+
 ### B) Phylogenetic Signal: Blomberg's K 
 Blomberg et al. (2003) derived a statistic that quantifies phylogenetic signal by comparing observed trait distribution on a tree to what would evolve under Browninan (i.e., random) motion (http://goo.gl/0xU9Et). 
 Blomberg's K is calculated as the mean squared error of the tip data (i.e., trait) measured from the phylogenetic-corrected mean and the mean squared error based on the variance–covariance matrix derived from the given phylogeny under the assumption of Browninan motion (Münkemüller et al 2012, http://goo.gl/c08XrA).
@@ -446,23 +447,27 @@ Note: since we're generating test statistics and associated p-values for 18 diff
 nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
 
 # Calculate Phylogenetic Signal for Growth on All Phosphorus Resources
+# First, create a blank output matirx
 p.phylosignal <- matrix(NA, 6, 18)
 colnames(p.phylosignal) <- colnames(p.growth.std)
-rownames(p.phylosignal) <- c("K", "PIC.var.obs", "PIC.var.mean", "PIC.var.P", "PIC.var.z", "PIC.P.BH")
+rownames(p.phylosignal) <- c("K", "PIC.var.obs", "PIC.var.mean", 
+                             "PIC.var.P", "PIC.var.z", "PIC.P.BH")
+
+# Use a for loop to calculate K for each resource
 for (i in 1:18){
-  x <- as.matrix(p.growth.std[,i])
-  rownames(x) <- rownames(p.growth.std)
+  x <- as.matrix(p.growth.std[ ,i, drop = FALSE])
   out <- phylosignal(x, nj.rooted)
-  p.phylosignal[1:5, i] <- t(out)
-  p.phylosignal[6, ] <- p.adjust(p.phylosignal[4, ], method = "BH")
-  print(p.phylosignal)
+  p.phylosignal[1:5, i] <- round(t(out), 3)
 }
+
+# Use the BH correction on P-values
+p.phylosignal[6, ] <- round(p.adjust(p.phylosignal[4, ], method = "BH"), 3)
 ```
 
 Now, let's test for phylogenetic signal using Blomberg's K on *niche breadth*:
 
 ```{r}
-# Calcualate Phylogenetic Signal for Niche Breadth with `phylosignal` function in `picante`
+# Calcualate Phylogenetic Signal for Niche Breadth
 signal.nb <- phylosignal(nb, nj.rooted)
 ```
 
@@ -474,7 +479,9 @@ b.  If there is significant phylogenetic signal, are the results suggestive of c
 > ***Answer 6a***:  
 > ***Answer 6b***:  
 
+
 ###C. Phylogenetic Independent Contrasts
+```{r}
 boxplot(log(umax))
 boxplot(nb)
 plot(nb, log(umax))
@@ -494,7 +501,6 @@ abline(evo.model)
 
 
 # Calculate Dispersion on Traits (e.g. AEP)
-# Who can use AEP
 p.growth.pa <- as.data.frame((p.growth > 0.01) * 1)
 
 apply(p.growth.pa, 2, sum)
@@ -506,10 +512,12 @@ phylo.d(p.traits, binvar = AEP)
 phylo.d(p.traits, binvar = PhenylCP)
 phylo.d(p.traits, binvar = DNA)
 phylo.d(p.traits, binvar = cAMP)
+```
+
 
 # Determine phylogenetic constraint
 
-```
+
 
 
 ### C) DISPERSION "D" --> CAPER PACKAGE? CONTINUOUS VS. CATEGORICAL
