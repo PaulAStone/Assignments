@@ -36,10 +36,10 @@ Typically, the first thing you will do in either an R script or an RMarkdown fil
 This includes things such as setting the working directory and loading any packages that you will need.
 
 In the R code chunk below, provide the code to:  
-1) clear your R environment,  
-2) print your current working directory,  
-3) set your working directory to your "*/PhyloTraits*" folder, and  
-4) load all of the required R packages (be sure to install if needed).  
+1. clear your R environment,  
+2. print your current working directory,  
+3. set your working directory to your "*/PhyloTraits*" folder, and  
+4. load all of the required R packages (be sure to install if needed).  
 
 ```{r}
 
@@ -73,8 +73,8 @@ Do not save any inadvertent changes to *p.isolates.fasta*.
 ### B.  Performing an Alignment 
 
 In the R code chunk below, do the following:
-1. Use `muscle` to align the p.isolates.fasta sequences. 
-2. Save the output as p.isolates.afa in the */data* folder
+1. use `muscle` to align the p.isolates.fasta sequences, and  
+2. save the output as p.isolates.afa in the */data* folder.
 
 ```{r} 
 
@@ -90,10 +90,10 @@ Describe the differences that you observe between the files.
 ### C.  Visualizing the Alignment
 
 In the R code chunk below, do the following: 
-1. Read your alignment file.
-2. Convert the agignment to a DNAbin object.
-3. Select a region of the gene to visualize (try various regions).
-4. Plot the alignment.
+1. read your alignment file,  
+2. convert the agignment to a DNAbin object,  
+3. select a region of the gene to visualize (try various regions), and  
+4. plot the alignment.
 
 ```{r}
 
@@ -123,10 +123,10 @@ Not only is a phylogenetic tree effective for visualizing the evolutionary relat
 ### A. Neighbor Joining Trees
 
 In the R code chunk below, do the following:
-1. Calcualte the distance matrix using `model = "raw"`. 
-2. Create a Neighbor Joining tree based on these distances.
-3. Define "Methanosarcina" as the outgroup and root the tree.
-4. Plot the rooted tree. 
+1. calcualte the distance matrix using `model = "raw"`,  
+2. create a Neighbor Joining tree based on these distances,  
+3. define "Methanosarcina" as the outgroup and root the tree, and  
+4. plot the rooted tree. 
 
 ```{r}
 
@@ -143,10 +143,10 @@ In the R code chunk below, do the following:
 ### B) SUBSTITUTION MODELS OF DNA EVOLUTION 
 
 In the R code chunk below, do the following
-1. Make a second distance matrix based on the Fellenstein substitution model.
-2. Create a saturation plot to compare the *raw* and *Fellenstein* substitution models.
-3. Make Neighbor Joining trees for both.
-4. Create a cophylogenetic plot to compare the topologies of the trees.
+1. make a second distance matrix based on the Fellenstein substitution model,  
+2. create a saturation plot to compare the *raw* and *Fellenstein* substitution models,  
+3. make Neighbor Joining trees for both, and  
+4. create a cophylogenetic plot to compare the topologies of the trees.
 
 ```{r}
 
@@ -163,11 +163,11 @@ In the R code chunk below, do the following
 ```
 
 In the R code chunk below, do the following:
-1. Pick another substitution model.
-2. Create and distance matrix and tree for this model.
-2. Make a saturation plot that compares that model to the *Fellenstein* model.
-3. Make a cophylogenetic plot that compares the topologies of both models. 
-4. Be sure to format, add appropriate labels, and customize each plot.
+1. pick another substitution model,  
+2. create and distance matrix and tree for this model,  
+2. make a saturation plot that compares that model to the *Fellenstein* model,  
+3. make a cophylogenetic plot that compares the topologies of both models, and  
+4. be sure to format, add appropriate labels, and customize each plot.
 
 ```{r}
 
@@ -189,8 +189,8 @@ If the plots seem to be inconsistent with one another, explain what it giving ri
 ### A. Loading Trait Database
 
 In the R code chunk below, do the following:
-1. Import the raw phosphorus growth data.
-2. Stardardize the data for each strain.
+1. import the raw phosphorus growth data, and  
+2. stardardize the data for each strain.
 
 ```{r}
 
@@ -202,10 +202,10 @@ In the R code chunk below, do the following:
 
 ### B. Trait Manipulations
 
-In the R code chunk below, do the following
-1. Calculate the maximum growth rate ($\mu_{max}$) of each isoalte across all phosphorus types. 
-2. Create a function that calculates niche breadth (*nb*). 
-3. Use this function to calcuate *nb* for each isolate.
+In the R code chunk below, do the following:
+1. calculate the maximum growth rate ($\mu_{max}$) of each isoalte across all phosphorus types,  
+2. create a function that calculates niche breadth (*nb*), and  
+3. use this function to calcuate *nb* for each isolate.
 
 ```{r}
 
@@ -222,9 +222,9 @@ In the R code chunk below, do the following
 ### C. Visualzing Traits on Trees
 
 In the R code chunk below, do the following:
-1. Pick your favorite substitution model and make a nj tree.
-2. Define your outgroup and root the tree.
-3. Remove the outgroup branch.
+1. pick your favorite substitution model and make a nj tree,  
+2. define your outgroup and root the tree, and  
+3. remove the outgroup branch.
 
 ```{r}
 
@@ -237,10 +237,10 @@ In the R code chunk below, do the following:
 ```
 
 In the R code chunk below, do the following:
-1. Define a color palette (use something other than "YlOrRd"). 
-2. Map the phosphorus traits onto your phylogeny.
-3. Map the *nb* trait on to your phologeny.
-4. Customize the plots as desired (use `help(table.phylo4d)` to learn about the options).
+1. define a color palette (use something other than "YlOrRd"),  
+2. map the phosphorus traits onto your phylogeny,  
+3. map the *nb* trait on to your phologeny, and  
+4. customize the plots as desired (use `help(table.phylo4d)` to learn about the options).
 
 ```{r}
 
@@ -268,9 +268,9 @@ In the R code chunk below, do the following:
 ### A) Phylogenetic Signal: Pagel's Lambda 
 
 In the R code chunk below, do the following:
-1. Create two rescaled phylogenetic trees using lambda values of 0.5 and 0. 
-2. Plot your original tree and the two scaled trees.
-3. Label and customize the trees are desired.
+1. create two rescaled phylogenetic trees using lambda values of 0.5 and 0,   
+2. plot your original tree and the two scaled trees, and  
+3. label and customize the trees are desired.
 
 ```{r}
 
@@ -282,7 +282,7 @@ In the R code chunk below, do the following:
 ```
 
 In the R code chunk below, do the following:
-1. Use the fitContinuous function to compare your original tree to the transformed trees.
+1. use the fitContinuous function to compare your original tree to the transformed trees.
 
 ```{r}
 
@@ -299,15 +299,16 @@ Models with lower AIC values are better.
 However, if the difference in AIC values between two models ($\Delta$ AIC) isn't greater than at least 2, then then the models are considered equivalent. 
 With this information in hand, what does Pagel's lambda say about the phylogenetic signal of niche breadth in our data set?
 
-> ***Answer 5***:   
+> ***Answer 5***:  
+
 
 ### B) Phylogenetic Signal: Blomberg's K 
 
 In the R code chunk below, do the following:
-1. Correct tree branch-lengths to fix any zeros
-2. Calculate Blomberg's K for each phosphorus resource using the function `phylosignal()`.
-3. Use the Benjamin-Hochberg method to correct for false discovery rate.
-4. Calculate Blomberg's K for nich breadt using the function `phylosignal()`.
+1. correct tree branch-lengths to fix any zeros,  
+2. calculate Blomberg's K for each phosphorus resource using the function `phylosignal()`,  
+3. use the Benjamin-Hochberg method to correct for false discovery rate, and  
+4. calculate Blomberg's K for nich breadt using the function `phylosignal()`.
 
 ```{r}
 
@@ -321,20 +322,20 @@ In the R code chunk below, do the following:
 
 ***Question 6***: Using the K-values and associated p-values (i.e., "PIC.var.P"") from the `phylosignal` output, answer the following questions:
 
-a.  Is there significant phylogenetic signal for niche breadth or standardized growth on any of the phosphorus resources
-b.  If there is significant phylogenetic signal, are the results suggestive of clustering or overdispersion?
+a.  Is there significant phylogenetic signal for niche breadth or standardized growth on any of the phosphorus resources?  
+b.  If there is significant phylogenetic signal, are the results suggestive of clustering or overdispersion?  
 
-> ***Answer 6a***:  
-> ***Answer 6b***:  
+> ***Answer 6a***:   
+> ***Answer 6b***:   
 
 
 ### C.  Calculate Dispersion of a Trait
 
 In the R code chunk below, do the following: 
-1) Turn the continuous growth data into categorical data.
-2) Add a column to the data with the isolate name.
-3) Combine the tree and trait data using the `comparative.data()` command in `caper`.
-4) Use `phylo.d()` to calculate *D* on at least three phosphorus traits.
+1. turn the continuous growth data into categorical data,  
+2. add a column to the data with the isolate name,  
+3. combine the tree and trait data using the `comparative.data()` command in `caper`, and  
+4. use `phylo.d()` to calculate *D* on at least three phosphorus traits.
 
 ```{r}
 
