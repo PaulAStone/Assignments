@@ -72,7 +72,7 @@ Do not save any inadvertent changes to *p.isolates.fasta*.
 
 ### B.  Performing an Alignment 
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. use `muscle` to align the p.isolates.fasta sequences, and  
 2. save the output as p.isolates.afa in the */data* folder.
 
@@ -89,7 +89,7 @@ Describe the differences that you observe between the files.
 
 ### C.  Visualizing the Alignment
 
-In the R code chunk below, do the following: 
+In the R code chunk below, do the following:  
 1. read your alignment file,  
 2. convert the agignment to a DNAbin object,  
 3. select a region of the gene to visualize (try various regions), and  
@@ -109,8 +109,8 @@ In the R code chunk below, do the following:
 ***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isolates and the outgroup, *Methanosarcina*, which belongs to the archaeal domain of life. 
 Move along the alignment by changing the values in the `window` object. 
 
-a.  Approximatley how long were our reads?  
-b.  What regions do you think would be most appropriate for phylogenetic inference?  
+a. Approximatley how long were our reads?  
+b. What regions do you think would be most appropriate for phylogenetic inference?  
 
 > ***Answer 2a***:   
 > ***Answer 2b***:  
@@ -122,7 +122,7 @@ Not only is a phylogenetic tree effective for visualizing the evolutionary relat
 
 ### A. Neighbor Joining Trees
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. calcualte the distance matrix using `model = "raw"`,  
 2. create a Neighbor Joining tree based on these distances,  
 3. define "Methanosarcina" as the outgroup and root the tree, and  
@@ -142,7 +142,7 @@ In the R code chunk below, do the following:
 
 ### B) SUBSTITUTION MODELS OF DNA EVOLUTION 
 
-In the R code chunk below, do the following
+In the R code chunk below, do the following:  
 1. make a second distance matrix based on the Fellenstein substitution model,  
 2. create a saturation plot to compare the *raw* and *Fellenstein* substitution models,  
 3. make Neighbor Joining trees for both, and  
@@ -162,7 +162,7 @@ In the R code chunk below, do the following
 
 ```
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. pick another substitution model,  
 2. create and distance matrix and tree for this model,  
 2. make a saturation plot that compares that model to the *Fellenstein* model,  
@@ -188,7 +188,7 @@ If the plots seem to be inconsistent with one another, explain what it giving ri
 ## 5) INTEGRATING TRAITS AND PHYLOGENY
 ### A. Loading Trait Database
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. import the raw phosphorus growth data, and  
 2. stardardize the data for each strain.
 
@@ -202,7 +202,7 @@ In the R code chunk below, do the following:
 
 ### B. Trait Manipulations
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. calculate the maximum growth rate ($\mu_{max}$) of each isoalte across all phosphorus types,  
 2. create a function that calculates niche breadth (*nb*), and  
 3. use this function to calcuate *nb* for each isolate.
@@ -221,7 +221,7 @@ In the R code chunk below, do the following:
 
 ### C. Visualzing Traits on Trees
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. pick your favorite substitution model and make a nj tree,  
 2. define your outgroup and root the tree, and  
 3. remove the outgroup branch.
@@ -236,7 +236,7 @@ In the R code chunk below, do the following:
 
 ```
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. define a color palette (use something other than "YlOrRd"),  
 2. map the phosphorus traits onto your phylogeny,  
 3. map the *nb* trait on to your phologeny, and  
@@ -267,7 +267,7 @@ In the R code chunk below, do the following:
 ## 6) HYPOTHESIS TESTING
 ### A) Phylogenetic Signal: Pagel's Lambda 
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. create two rescaled phylogenetic trees using lambda values of 0.5 and 0,   
 2. plot your original tree and the two scaled trees, and  
 3. label and customize the trees are desired.
@@ -281,8 +281,8 @@ In the R code chunk below, do the following:
 
 ```
 
-In the R code chunk below, do the following:
-1. use the fitContinuous function to compare your original tree to the transformed trees.
+In the R code chunk below, do the following:  
+1. use the `fitContinuous()` function to compare your original tree to the transformed trees.
 
 ```{r}
 
@@ -291,7 +291,7 @@ In the R code chunk below, do the following:
 
 ```
 
-***Question 5***:  There are two important outputs from the `fitContinuous` function that can help you interpret the phylogenetic signal in trait data sets. 
+***Question 5***:  There are two important outputs from the `fitContinuous()` function that can help you interpret the phylogenetic signal in trait data sets. 
 First, compare the lambda values of the untransformed tree to the transformed (lambda = 0).
 Second, compare the Akaike information criterion (AIC) scores of the two models. 
 Differences in AIC scores provide maximum likelihood inference regarding the quality of model fit to a given data set. 
@@ -304,11 +304,11 @@ With this information in hand, what does Pagel's lambda say about the phylogenet
 
 ### B) Phylogenetic Signal: Blomberg's K 
 
-In the R code chunk below, do the following:
+In the R code chunk below, do the following:  
 1. correct tree branch-lengths to fix any zeros,  
-2. calculate Blomberg's K for each phosphorus resource using the function `phylosignal()`,  
+2. calculate Blomberg's K for each phosphorus resource using the `phylosignal()` function,  
 3. use the Benjamin-Hochberg method to correct for false discovery rate, and  
-4. calculate Blomberg's K for nich breadt using the function `phylosignal()`.
+4. calculate Blomberg's K for nich breadt using the `phylosignal()` function.
 
 ```{r}
 
@@ -331,10 +331,10 @@ b.  If there is significant phylogenetic signal, are the results suggestive of c
 
 ### C.  Calculate Dispersion of a Trait
 
-In the R code chunk below, do the following: 
+In the R code chunk below, do the following:  
 1. turn the continuous growth data into categorical data,  
 2. add a column to the data with the isolate name,  
-3. combine the tree and trait data using the `comparative.data()` command in `caper`, and  
+3. combine the tree and trait data using the `comparative.data()` function in `caper`, and  
 4. use `phylo.d()` to calculate *D* on at least three phosphorus traits.
 
 ```{r}
