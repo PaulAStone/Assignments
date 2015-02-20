@@ -36,10 +36,10 @@ Typically, the first thing you will do in either an R script or an RMarkdown fil
 This includes things such as setting the working directory and loading any packages that you will need.
 
 In the R code chunk below, provide the code to:  
-1) clear your R environment,  
-2) print your current working directory,  
-3) set your working directory to your "*/PhyloTraits*" folder, and  
-4) load all of the required R packages (be sure to install if needed).  
+1. clear your R environment,  
+2. print your current working directory,  
+3. set your working directory to your "*/PhyloTraits*" folder, and  
+4. load all of the required R packages (be sure to install if needed).  
 
 ```{r}
 
@@ -63,7 +63,7 @@ In this exercise, we will take a phylogenetic approach to mapping phosphorus res
 ## 3) SEQUENCE ALIGNMENT
 ### A.  Examining a FASTA-File 
 
-Using nano, open the *p.isolates.fasta* file by typing "nano p.isolates.fasta" at the command line. 
+Using nano, open the *p.isolates.fasta* file by typing "nano p.isolates.fasta" at the command line (you need to navigate to that file first). 
 This will open the FASTA file in nano, which is a text editing program. 
 You can use [Ctrl+V] and [Ctrl+Y] to scroll towards the bottom and top of the file, respectively.
 Use these commands to look at the formatting on the FASTA file.
@@ -72,9 +72,9 @@ Do not save any inadvertent changes to *p.isolates.fasta*.
 
 ### B.  Performing an Alignment 
 
-In the R code chunk below, do the following:
-1. Use `muscle` to align the p.isolates.fasta sequences. 
-2. Save the output as p.isolates.afa in the */data* folder
+In the R code chunk below, do the following:  
+1. use `muscle` to align the p.isolates.fasta sequences, and  
+2. save the output as p.isolates.afa in the */data* folder.
 
 ```{r} 
 
@@ -89,11 +89,11 @@ Describe the differences that you observe between the files.
 
 ### C.  Visualizing the Alignment
 
-In the R code chunk below, do the following: 
-1. Read your alignment file.
-2. Convert the agignment to a DNAbin object.
-3. Select a region of the gene to visualize (try various regions).
-4. Plot the alignment.
+In the R code chunk below, do the following:  
+1. read your alignment file,  
+2. convert the agignment to a DNAbin object,  
+3. select a region of the gene to visualize (try various regions), and  
+4. plot the alignment.
 
 ```{r}
 
@@ -109,8 +109,8 @@ In the R code chunk below, do the following:
 ***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isolates and the outgroup, *Methanosarcina*, which belongs to the archaeal domain of life. 
 Move along the alignment by changing the values in the `window` object. 
 
-a.  Approximatley how long were our reads?  
-b.  What regions do you think would be most appropriate for phylogenetic inference?  
+a. Approximatley how long were our reads?  
+b. What regions do you think would be most appropriate for phylogenetic inference?  
 
 > ***Answer 2a***:   
 > ***Answer 2b***:  
@@ -122,11 +122,11 @@ Not only is a phylogenetic tree effective for visualizing the evolutionary relat
 
 ### A. Neighbor Joining Trees
 
-In the R code chunk below, do the following:
-1. Calcualte the distance matrix using `model = "raw"`. 
-2. Create a Neighbor Joining tree based on these distances.
-3. Define "Methanosarcina" as the outgroup and root the tree.
-4. Plot the rooted tree. 
+In the R code chunk below, do the following:  
+1. calcualte the distance matrix using `model = "raw"`,  
+2. create a Neighbor Joining tree based on these distances,  
+3. define "Methanosarcina" as the outgroup and root the tree, and  
+4. plot the rooted tree. 
 
 ```{r}
 
@@ -142,11 +142,11 @@ In the R code chunk below, do the following:
 
 ### B) SUBSTITUTION MODELS OF DNA EVOLUTION 
 
-In the R code chunk below, do the following
-1. Made a second distance matrix based on the Fellenstein substitution model.
-2. Create a saturation plot to compare these substitution models.
-3. Make Neighbor Joining trees for both
-4. Create a cophylogenetic plot to compare the topologies of the trees.
+In the R code chunk below, do the following:  
+1. make a second distance matrix based on the Fellenstein substitution model,  
+2. create a saturation plot to compare the *raw* and *Fellenstein* substitution models,  
+3. make Neighbor Joining trees for both, and  
+4. create a cophylogenetic plot to compare the topologies of the trees.
 
 ```{r}
 
@@ -162,11 +162,12 @@ In the R code chunk below, do the following
 
 ```
 
-In the R code chunk below, do the following:
-1. Pick another substitution.
-2. Make a saturation plot that compares that model to the Fellenstein model.
-3. Make a cophylogenetic plot that compares the topologies of both models. 
-4. Be sure to add appropriate labels and format each plot.
+In the R code chunk below, do the following:  
+1. pick another substitution model,  
+2. create and distance matrix and tree for this model,  
+2. make a saturation plot that compares that model to the *Fellenstein* model,  
+3. make a cophylogenetic plot that compares the topologies of both models, and  
+4. be sure to format, add appropriate labels, and customize each plot.
 
 ```{r}
 
@@ -187,9 +188,9 @@ If the plots seem to be inconsistent with one another, explain what it giving ri
 ## 5) INTEGRATING TRAITS AND PHYLOGENY
 ### A. Loading Trait Database
 
-In the R code chunk below, do the following:
-1. Import the raw phosphorus growth data.
-2. Stardardize the data for each strain.
+In the R code chunk below, do the following:  
+1. import the raw phosphorus growth data, and  
+2. stardardize the data for each strain.
 
 ```{r}
 
@@ -200,19 +201,13 @@ In the R code chunk below, do the following:
 ```
 
 ### B. Trait Manipulations
-From the section above where we described the data, you will recall that we were interested in testing for a **generalist-specialist trade-off**.
-To do this, we need to create two new variables. 
-First, we need calculate 
-This will help us test the expectation that generalists will have lower maximum growth rates because there is a cost associated with being able to use a lot of different chemical forms of phosphorus. 
-In contrast, we expect that specialists will have a high maximum growth rate on their preferred phosphorus resource. 
 
-In the R code chunk below, do the following
-1. Calculate the maximum growth rate ($\mu_{max}$) of each isoalte across all phosphorus types. 
-2. Create a function that calculates niche breadth (*nb*). 
-3. Use this function to calcuate *nb* for each isolate.
+In the R code chunk below, do the following:  
+1. calculate the maximum growth rate ($\mu_{max}$) of each isoalte across all phosphorus types,  
+2. create a function that calculates niche breadth (*nb*), and  
+3. use this function to calcuate *nb* for each isolate.
 
 ```{r}
-# Calculate Max Growth Rate
 
 
 
@@ -226,10 +221,10 @@ In the R code chunk below, do the following
 
 ### C. Visualzing Traits on Trees
 
-In the R code chunk below, do the following:
-1. Pick your favorite substitution model and make a nj tree.
-2. Define your outgroup and root the tree.
-3. Remove the outgroup branch.
+In the R code chunk below, do the following:  
+1. pick your favorite substitution model and make a nj tree,  
+2. define your outgroup and root the tree, and  
+3. remove the outgroup branch.
 
 ```{r}
 
@@ -241,11 +236,11 @@ In the R code chunk below, do the following:
 
 ```
 
-In the R code chunk below, do the following:
-1. Define a color palette (use something other than "YlOrRd"). 
-2. Map the phosphorus traits onto your phylogeny.
-3. Map the *nb* trait on to your phologeny.
-4. Customize the plots as desired (use `help(table.phylo4d)` to learn about the options).
+In the R code chunk below, do the following:  
+1. define a color palette (use something other than "YlOrRd"),  
+2. map the phosphorus traits onto your phylogeny,  
+3. map the *nb* trait on to your phologeny, and  
+4. customize the plots as desired (use `help(table.phylo4d)` to learn about the options).
 
 ```{r}
 
@@ -268,14 +263,14 @@ In the R code chunk below, do the following:
 
 > ***Answer 4***:   
 
-## 6) HYPOTHESIS TESTING
 
+## 6) HYPOTHESIS TESTING
 ### A) Phylogenetic Signal: Pagel's Lambda 
 
-In the R code chunk below, do the following:
-1. Create two rescaled phylogenetic trees using lambda values of 0.5 and 0. 
-2. Plot your original tree and the two scaled trees.
-3. Label and customize the trees are desired.
+In the R code chunk below, do the following:  
+1. create two rescaled phylogenetic trees using lambda values of 0.5 and 0,   
+2. plot your original tree and the two scaled trees, and  
+3. label and customize the trees are desired.
 
 ```{r}
 
@@ -286,8 +281,8 @@ In the R code chunk below, do the following:
 
 ```
 
-In the R code chunk below, do the following:
-1. Use the fitContinuous function to compare your original tree to the transformed trees.
+In the R code chunk below, do the following:  
+1. use the `fitContinuous()` function to compare your original tree to the transformed trees.
 
 ```{r}
 
@@ -296,7 +291,7 @@ In the R code chunk below, do the following:
 
 ```
 
-***Question 5***:  There are two important outputs from the `fitContinuous` function that can help you interpret the phylogenetic signal in trait data sets. 
+***Question 5***:  There are two important outputs from the `fitContinuous()` function that can help you interpret the phylogenetic signal in trait data sets. 
 First, compare the lambda values of the untransformed tree to the transformed (lambda = 0).
 Second, compare the Akaike information criterion (AIC) scores of the two models. 
 Differences in AIC scores provide maximum likelihood inference regarding the quality of model fit to a given data set. 
@@ -304,97 +299,54 @@ Models with lower AIC values are better.
 However, if the difference in AIC values between two models ($\Delta$ AIC) isn't greater than at least 2, then then the models are considered equivalent. 
 With this information in hand, what does Pagel's lambda say about the phylogenetic signal of niche breadth in our data set?
 
-> ***Answer 5***:   
+> ***Answer 5***:  
+
 
 ### B) Phylogenetic Signal: Blomberg's K 
-Blomberg et al. (2003) derived a statistic that quantifies phylogenetic signal by comparing observed trait distributions on a tree to what would evolve under Browninan (i.e., random) motion (http://goo.gl/0xU9Et). 
-Blomberg's K is calculated as the mean squared error of the tip data (i.e., trait) measured from the phylogenetic-corrected mean and the mean squared error based on the variance–covariance matrix derived from the given phylogeny under the assumption of Browninan motion (Münkemüller et al 2012, http://goo.gl/c08XrA).
-A K-value of 1 means that a trait is distributed on the tree according to null expectation of Browning motion. 
-A K-value > 1 means that traits are **clustered** with closely related species being *more similar* than expected by chance. 
-A K-value of < 1 means that traits are **overdispersed** with closely related species *less similar* than expected by chance.  
 
-Let's test for phylogenetic signal using Blomberg's K for the standardized growth of our bacterial isolates on *each phosphorus source* based on our neighbor joining tree.
-
-*Note:* In this particular analysis, we are generating 18 test statistics with associated p-values (one for each phosphorus resource).
-This means that we are increasing our probability of rejecting the null hypothesis (ie. "no phylogenetic signal") when it is in fact true.
-This is called **false discovery rate** (FDR).
-We are going to correct for FDR using the Benjamini-Hochberg method ("PIC.P.BH"). 
+In the R code chunk below, do the following:  
+1. correct tree branch-lengths to fix any zeros,  
+2. calculate Blomberg's K for each phosphorus resource using the `phylosignal()` function,  
+3. use the Benjamin-Hochberg method to correct for false discovery rate, and  
+4. calculate Blomberg's K for nich breadt using the `phylosignal()` function.
 
 ```{r}
-# First, Correct for Zero Branch-Lengths on Our Tree
-nj.rooted$edge.length <- nj.rooted$edge.length + 10^-7
 
-# Calculate Phylogenetic Signal for Growth on All Phosphorus Resources
-# First, Create a Blank Output Matrix
-p.phylosignal <- matrix(NA, 6, 18)
-colnames(p.phylosignal) <- colnames(p.growth.std)
-rownames(p.phylosignal) <- c("K", "PIC.var.obs", "PIC.var.mean", 
-                             "PIC.var.P", "PIC.var.z", "PIC.P.BH")
 
-# Use a For Loop to Calculate Blomberg's K for Each Resource
-for (i in 1:18){
-  x <- as.matrix(p.growth.std[ ,i, drop = FALSE])
-  out <- phylosignal(x, nj.rooted)
-  p.phylosignal[1:5, i] <- round(t(out), 3)
-}
 
-# Use the BH Correction on P-values: 
-p.phylosignal[6, ] <- round(p.adjust(p.phylosignal[4, ], method = "BH"), 3)
-```
 
-In addition, let's test for phylogenetic signal using Blomberg's K on *niche breadth*:
 
-```{r}
-# Calcualate Phylogenetic Signal for Niche Breadth
-signal.nb <- phylosignal(nb, nj.rooted)
+
+
 ```
 
 ***Question 6***: Using the K-values and associated p-values (i.e., "PIC.var.P"") from the `phylosignal` output, answer the following questions:
 
-a.  Is there significant phylogenetic signal for niche breadth or standardized growth on any of the phosphorus resources
-b.  If there is significant phylogenetic signal, are the results suggestive of clustering or overdispersion?
+a.  Is there significant phylogenetic signal for niche breadth or standardized growth on any of the phosphorus resources?  
+b.  If there is significant phylogenetic signal, are the results suggestive of clustering or overdispersion?  
 
-> ***Answer 6a***:  
-> ***Answer 6b***:  
+> ***Answer 6a***:   
+> ***Answer 6b***:   
 
 
 ### C.  Calculate Dispersion of a Trait
-Another way to calculate the phylogenetic signal of a trait is to use a formal test of dispersion. 
-In ecology, dispersion is commonly used to meaasure of how things (e.g., traits or species) are distrubuted in space.
-However, we can use similar approaches to determine how well traits are distributed across a phylogenetic tree.
-Fritz & Purvis (2010) derived a measure of dispersion (*D*) for categorical traits (http://goo.gl/SUrm5j). 
-In our case study, we can use *D* to deteremine if the ability of a bacterial isolate to grow on a specific phosphorus resrouce is overdispersed or clustered. 
-Here, we will calcuate *D* using the `phylo.d()` function in the `caper` package. 
 
-First, there are a few things we need to do: 
-1) turn our continuous growth data into categorical data,
-2) add a column to our data set for our isolate names, and
-3) combine our tree and trait data using the `comparative.data()` command in `caper`.
+In the R code chunk below, do the following:  
+1. turn the continuous growth data into categorical data,  
+2. add a column to the data with the isolate name,  
+3. combine the tree and trait data using the `comparative.data()` function in `caper`, and  
+4. use `phylo.d()` to calculate *D* on at least three phosphorus traits.
 
-The output of phylo.d() will return the estimated value of *D*. 
-Estimates of *D* can be negative (clustered) or positive (overdispersed).
-When *D* is close 0, traits are randomly clumped. 
-When *D* is close to 1, traits are dispersed in way that is consistent with Brownian motion. 
+```{r}
 
-The `phylo.d()` function uses a permutaion test to calculate the probability of *D* being different from 1 (no phylogenetic structure; random) or 0 (Brownian phylogenetic structure).
-Let's use this function to calculate dispersion (*D*) on a few of our phosphorus traits.
 
-```{r, results = 'hide', message = FALSE, warning = FALSE}
-# Turn Continuous Data into Categorical Data
-p.growth.pa <- as.data.frame((p.growth > 0.01) * 1)
 
-# Look at Phosphorus Use for Each Resource
-apply(p.growth.pa, 2, sum)
 
-# Add Names Column to Data
-p.growth.pa$name <- rownames(p.growth.pa)
 
-# Merge Trait and Phylogenetic Data; Run `phylo.d`
-p.traits <- comparative.data(nj.rooted, p.growth.pa, "name")
-phylo.d(p.traits, binvar = AEP)
-phylo.d(p.traits, binvar = PhenylCP)
-phylo.d(p.traits, binvar = DNA)
-phylo.d(p.traits, binvar = cAMP)
+
+
+
+
 ```
 
 ***Question 7***: Using the estimates for *D* and the probabilities of each phylogenetic model, answer the following questions:
@@ -415,6 +367,12 @@ One of the lakes is an very oligotrophic (i.e., low phosphorus) ecosystem named 
 The other lake is an extremely eutrophic (i.e., high phosphorus) ecosystem named Wintergreen (WG) Lake.
 We included a "dummy variable" (D) in the multiple regression model (0 = WG, 1 = LL) to account for the environment from which the bacteria were obtained.  
 Based on your knowledge of the traits and their phylogenetic distributions, what conclusions would you draw about our data and the evidence for a generalist-specialist tradeoff? 
+
+> ***Answer***:
+
+
+
+
 
 2.  Use Knitr to create a pdf of your completed PhyloTraits_handout.Rmd document, push it to GitHub, and create a pull request.
 The due date for this assignment is February 25, 2015 at 12:00 PM (noon).
