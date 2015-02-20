@@ -143,8 +143,8 @@ In the R code chunk below, do the following:
 ### B) SUBSTITUTION MODELS OF DNA EVOLUTION 
 
 In the R code chunk below, do the following:  
-1. make a second distance matrix based on the Fellenstein 84 substitution model,  
-2. create a saturation plot to compare the *raw* and *Fellenstein (F84)* substitution models,  
+1. make a second distance matrix based on the Felsenstein 84 substitution model,  
+2. create a saturation plot to compare the *raw* and *Felsenstein (F84)* substitution models,  
 3. make Neighbor Joining trees for both, and  
 4. create a cophylogenetic plot to compare the topologies of the trees.
 
@@ -165,7 +165,7 @@ In the R code chunk below, do the following:
 In the R code chunk below, do the following:  
 1. pick another substitution model,  
 2. create and distance matrix and tree for this model,  
-2. make a saturation plot that compares that model to the *Fellenstein (F84)* model,  
+2. make a saturation plot that compares that model to the *Felsenstein (F84)* model,  
 3. make a cophylogenetic plot that compares the topologies of both models, and  
 4. be sure to format, add appropriate labels, and customize each plot.
 

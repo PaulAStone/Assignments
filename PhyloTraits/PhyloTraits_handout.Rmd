@@ -212,13 +212,13 @@ In the following table, we describe a few of the more commonly used models.
   \textbf{Jukes-Cantor model (JC69)} & 
   Simplest model. Assumes all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability.\\
   \\ [-1.5ex]
-  \textbf{Felenstein model (F81)} & 
+  \textbf{Felsenstein model (F81)} & 
   Builds from JC69 by allowing nucleotide frequencies to vary.\\
   \\ [-1.5ex]  
   \textbf{Kimura model (K80)} & 
   Assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).\\
   \\ [-1.5ex]   
-   \textbf{Felenstein model (F84)} & 
+   \textbf{Felsenstein model (F84)} & 
   Assumes different rates of base transitions and transversions while allowing for differences in base frequencies.\\
   \\ [-1.5ex] 
   \textbf{Tamura model (T92)} & 
@@ -232,7 +232,7 @@ In the following table, we describe a few of the more commonly used models.
 \end{center}
   
 Fortunately, the `dist.dna` function that we used above for generating the neighbor joining tree can easily create distance matrices for a large number of DNA substitution models. 
-Let's create a distance matrix among our bacterial isolates based on the Fellenstein (F84) subsitution model using the `dist.dna` function in `ape`. 
+Let's create a distance matrix among our bacterial isolates based on the Felsenstein (F84) subsitution model using the `dist.dna` function in `ape`. 
 
 ```{r}
 # Create distance matrix with "F84" model {ape}
