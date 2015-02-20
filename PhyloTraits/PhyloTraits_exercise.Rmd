@@ -110,7 +110,7 @@ In the R code chunk below, do the following:
 Move along the alignment by changing the values in the `window` object. 
 
 a. Approximatley how long were our reads?  
-b. What regions do you think would be most appropriate for phylogenetic inference?  
+b. What regions do you think would be most appropriate for phylogenetic inference? Why?  
 
 > ***Answer 2a***:   
 > ***Answer 2b***:  
@@ -143,8 +143,8 @@ In the R code chunk below, do the following:
 ### B) SUBSTITUTION MODELS OF DNA EVOLUTION 
 
 In the R code chunk below, do the following:  
-1. make a second distance matrix based on the Fellenstein substitution model,  
-2. create a saturation plot to compare the *raw* and *Fellenstein* substitution models,  
+1. make a second distance matrix based on the Fellenstein 84 substitution model,  
+2. create a saturation plot to compare the *raw* and *Fellenstein (F84)* substitution models,  
 3. make Neighbor Joining trees for both, and  
 4. create a cophylogenetic plot to compare the topologies of the trees.
 
@@ -165,7 +165,7 @@ In the R code chunk below, do the following:
 In the R code chunk below, do the following:  
 1. pick another substitution model,  
 2. create and distance matrix and tree for this model,  
-2. make a saturation plot that compares that model to the *Fellenstein* model,  
+2. make a saturation plot that compares that model to the *Fellenstein (F84)* model,  
 3. make a cophylogenetic plot that compares the topologies of both models, and  
 4. be sure to format, add appropriate labels, and customize each plot.
 
@@ -190,7 +190,7 @@ If the plots seem to be inconsistent with one another, explain what it giving ri
 
 In the R code chunk below, do the following:  
 1. import the raw phosphorus growth data, and  
-2. stardardize the data for each strain.
+2. stardardize the data for each strain by the sum of growth rates.
 
 ```{r}
 
@@ -222,7 +222,7 @@ In the R code chunk below, do the following:
 ### C. Visualzing Traits on Trees
 
 In the R code chunk below, do the following:  
-1. pick your favorite substitution model and make a nj tree,  
+1. pick your favorite substitution model and make a Neighbor Joining tree,  
 2. define your outgroup and root the tree, and  
 3. remove the outgroup branch.
 
@@ -270,7 +270,7 @@ In the R code chunk below, do the following:
 In the R code chunk below, do the following:  
 1. create two rescaled phylogenetic trees using lambda values of 0.5 and 0,   
 2. plot your original tree and the two scaled trees, and  
-3. label and customize the trees are desired.
+3. label and customize the trees as desired.
 
 ```{r}
 
@@ -307,8 +307,8 @@ With this information in hand, what does Pagel's lambda say about the phylogenet
 In the R code chunk below, do the following:  
 1. correct tree branch-lengths to fix any zeros,  
 2. calculate Blomberg's K for each phosphorus resource using the `phylosignal()` function,  
-3. use the Benjamin-Hochberg method to correct for false discovery rate, and  
-4. calculate Blomberg's K for nich breadt using the `phylosignal()` function.
+3. use the Benjamini-Hochberg method to correct for false discovery rate, and  
+4. calculate Blomberg's K for niche breadth using the `phylosignal()` function.
 
 ```{r}
 
