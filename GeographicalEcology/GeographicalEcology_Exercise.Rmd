@@ -1,7 +1,7 @@
 ---
 title: "Geographical Ecology"
 author: "Student Name; Z620: Quantitative Biodiversity, Indiana University"
-date: "February 13, 2015"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 header-includes:
    - \usepackage{array}
 output: pdf_document
@@ -91,7 +91,7 @@ Let's load the environmental and site-by-species data for the refuge ponds.
 
 Take a look at the `Environment` tab in the upper right console of RStudio. 
 You should see there are 16,384 operational taxonomic units (OTUs) distributed across 51 sites, for which, we have 19 environmental and geographic variables recorded. 
-These variables include elevation (m), geographical coordinates (lat-long), temperature (C), diameter (m), depth (m), redox potential (ORP), specific conductivity or SpC (uS/cm), dissolved oxygen (mg/L), total dissolved solids (g/L), salinity (p.s.u.=ppm), color - measured at absorbance = 660; an estimate of carbon in the water sample, chlorophyll *a* (ug/L), dissolved organic carbon (mg/L), dissolved organic nitrogen (mg/L), and total phosphorus (ug/L).
+These variables include elevation (m), geographical coordinates (lat-long), temperature (C), diameter (m), depth (m), redox potential (ORP), specific conductivity or SpC (µS/cm), dissolved oxygen (mg/L), total dissolved solids (g/L), salinity (p.s.u. ≈ ppt), color - measured at absorbance = 660; an estimate of carbon in the water sample, chlorophyll *a* (µg/L), dissolved organic carbon (mg/L), dissolved organic nitrogen (mg/L), and total phosphorus (µg/L).
 
 In addition to this wealth of environmental data, let's add four diversity-related columns of data to `Ponds` data set.
 These will provide basic diversity-related variables to explore with respect to geograpy and environmental conditions.

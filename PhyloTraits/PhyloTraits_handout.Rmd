@@ -1,0 +1,304 @@
+---
+title: "Phylogenetic Diversity - Traits"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "February 20, 2015"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+Up to this point, we have been focusing on patterns taxonomic diversity in Quantitative Biodiversity. 
+Taxonomic diversity is certainly an important dimension of biodiversity, but it fails to consider the evolutionary history and relatedness of species. 
+The goal of this exercise is to introduce basic concepts of phylogenetic diversity. 
+
+After completing this exercise you will know how to:
+
+1.  create phylogenetic trees
+2.  map traits onto phylogenetic trees
+3.  test for phylogenetic signal of traits on a phylogenetic tree
+4.  test for relationships among traits using phylogenetic independent contrasts 
+
+## 1) SETUP
+### A. Retrieve and Set Your Working Directory
+
+```{r, results = 'hide'}
+rm(list = ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloTraits")
+```
+
+### B. Load Packages 
+There are many contributed R packages that have been developed for conducting phylogenetic analyses (http://cran.r-project.org/web/views/Phylogenetics.html). 
+We will rely heavily on `ape`, which peforms a wide range of phylogenetic analyses. 
+Documentation on `ape` can be found here: http://cran.r-project.org/web/packages/ape/ape.pdf
+We will supplement this with other packages for some specialized tasks such as sequence alignment (`muscle`), reading of alinged sequences (`seqinr`), and maximum likelihood reconstruction (`phangorn`).
+Documentation on `phangorn` can be found here: http://cran.r-project.org/web/packages/phangorn/phangorn.pdf.
+Let's install these packages using the `install.packages()` fucntion. 
+Then let's load the packages and their dependencies with the `require()` function:
+
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
+require("muscle")
+require("ape")
+require("seqinr")
+require("phangorn")
+require("geiger")
+```
+
+## 2) DESCRIPTION OF DATA
+The maintenance of biodiversity is thought to be influenced by trade-offs among species. 
+One such trade-off involves the ability of a highly specialized species to peform well on a single type of resource. 
+This specialization may be advantageous under some conditions, but disadvantageous if the species finds itself in a habitat where resource conditions change.
+In contrast, some species are capable of using many different resources, but it is assumed that there may be a fitness cost associated with being a generalist. 
+We set out to test this hypothesized trade-off in bacteria by assessing generalist and specialist strategies on different forms of phopshorus, which commonly limits growth and reproduction of organisims inhabiting freshwater ecosystems.
+We collected 40 strains of bacteria from two lakes. 
+After identifying these bacteria based on their 16S rRNA gene sequences, we measured their growth on 18 different forms of phosphorus. 
+We will take a phylogenetic approach to mapping phosphorus resource use onto a phylogenetic tree while testing for specialist-generalist trade-offs. 
+
+## 3) SEQUENCE ALIGNMENT
+After generating or retrieving sequence data, the first step of a phylogenetic analysis is to peform an alignment. 
+This can be done with nucleotides (DNA or RNA) or proteins (amino acids). 
+There are various methods for aligning sequences, but the basic premise is to use a algorithm to arrange sequences relative to one another based on conserved regions so that downstream phylogenetic analyses can be performed.
+In R, there are at least two packages that can be used for aligning sequences: `ape` and `muscle`. 
+In `ape`, alignments can be done with the functions `clustal`, `muscle`, and `tcoffee`, all which have a range of options. 
+However, these functions require that other programs be installed on your computer.
+Therefore, for this exericse, we are going to use the `muscle` package in R becasue it will align sequences in a "stand alone" fashion without the need for installing additional software. 
+We will read in a **fasta-formatted** file into the `muslce` alignment function.
+This is a very common way to handle sequence data.
+Let's take a second to look at the *p.isolates.fasta* file. 
+Open the terminal and change directory to the dat folder. 
+You can then type `nano p.isolates.fasta` at the command line. 
+
+Now, let's align our sequences. 
+Using the `muscle` fuction, we will read in our fasta file and create a **fasta-aligned* output file.  
+```{r}
+seq.aln <- muscle::muscle(seqs="./data/p.isolates.fasta", out = "./data/p.isolates.afa") 
+```
+
+***Question 1***: Compare the `p.isolates.fasta` file and the `p.isolates.afa` file. 
+Describe what is going on in the alinged file. 
+
+> ***Answer 1***: 
+
+## 4) VISUALIZING ALIGNMENTS
+It is good practice to view your sequences after alignment. 
+This may not be practical for large databases, but in our example, the alignment only contains sequences for 45 species plus an outgroup. 
+Therefore, to visualize our alingment, first, we will read in the fasta-aligned file using the `read.alignment` function in the `seqinr` package. 
+Then, using the `ape` package, we will convert the alignnment file it into a **DNAbin object**, which is a bit-level coding scheme that allows R to store and manipulate sequence data.
+Last, we will visualize the alignment by color-coding bases different colors. 
+
+```{r}
+read.aln <- read.alignment(file = "./data/p.isolates.afa", format = "fasta") # read in afa file {seqinr}
+p.DNAbin <- as.DNAbin(read.aln) # convert afa to DNAbin object {ape}
+x <- p.DNAbin[,100:500] # identify base pair region of 16S rRNA gene to visuzlize
+image(x, cex.lab = 0.5) # command to visusalize seq align {ape}
+grid(ncol(x),nrow(x),col="lightgrey") # command to add grid {ape}
+```
+
+***Question 2***:  Make some observations about the `muscle` alingmnet of the 16S rRNA gene sequences for our bacterial isoaltes. Approximatley how long were our reads? 
+
+> ***Answer 2***: 
+
+## 5) SUBSTITUTION MODELS OF DNA EVOLUTION
+Phylogenetic analyses require assumptions about the rates of DNA evolution. 
+Various models have been developed to estimate the rates that nucleotides change, which can be important for inferring relatedness of genes.
+For example, the **Jukes-Cantor model (JC69)** is the simplest **substitution model**.
+It assumes that all nucleotides occur at equal frequencies and that these nucleotides can mutate from one to another with equal probability. 
+The **Felenstein model (F81)** builds from JC69 by allowing base frequences to vary. 
+The **Kimura model (K80)** also assumes equal frequencies of nucleotides, but recognizes that transition mutations (e.g., purine to a purine [A -> G] or pyrmidine to pyrmidine [C -> T]) occur with higher probability than tranversion mutations (e.g., purine to pyrmidine or vice-versa).
+**Hasegawa, Kishino, and Yano (HKY85)** merges elements of F81 and K80 by accounting for uneuqal base frequencies and differences in the rates of transitions and tranversions. 
+Many other models of DNA evolution exist, which take into account features such as G+C bias and the probabilities associated with time-reversible nucleotide changes (e.g., T -> C -> T).
+
+##PERHAPS WE CAN MAKE TABLE HERE
+
+Fortunately, the `ape` package has a function (`dist.dna`) that will create distances for a large number of DNA substitution models. 
+Let's create a distance matrix among our bacterial isolates based on the Kimura (K80) subsitution model using the `dist.dna` function in `ape`. 
+
+```{r}
+seq.dist <- dist.dna(p.DNAbin, model = "K80", pairwise.deletion = FALSE) # {ape}
+```
+
+## MIGHT BE GOOD TO HAVE A QUESTION HERE. IN BOOK, THEY COMPARE BY PLOTTING ONE-TO-ONES. INTERPRET?
+
+## 6) MAKING AN PHYLOGENETIC TREE
+After processing your aligned data with a DNA substitution model, often you will want to create an evolutionary tree. 
+This can be done with various methods including neighbor-joining, maximum parsimony, maximum likelihood, and Bayesian inference.
+R has the capability of creating trees using all of these methods. 
+In the following section, we will go over a couple of them. 
+
+### A. Neighbor Joining Tree
+Neighbor joining trees are generated from a distance matrix based on comparisons of pairs of sequences.
+Trees are then constructed in an agglomerative fashion similar to the methods that we used in cluster analysis in the $\beta$-diversity exercise.
+Neighbor joining is a relatively fast algorithm and often generates correct tree topologies. 
+
+```{r}
+nj.tree <- nj(seq.dist) # performs neihbor joining; makes object `phylo` {ape}
+outgroup <- match("Methanosarcina", nj.tree$tip.label) # identifies outgroup sequence
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE) # reroots tree with outgroup {ape}
+plot.phylo(nj.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
+           direction = "right", cex = 0.7, label.offset = 1) # makes tree {ape}
+```
+
+### B. Maximum Parsimony
+### Perhaps should include just for equal coverage, although we're not planning to do any Bayesian stuff right now
+Using package `phangorn`.
+Requires phyDat formatted objects.
+There are functions like `optim.parsimony` that peforms tree rearragements via nearest-neighbor exchange and `pratchet` which uses parsimony ratchet to find trees with lower parsimony score.
+Type the following at the R terminal for a detailed exmaple: vignette ('Trees')
+
+```{r}
+# read.aln.mat <- as.matrix(read.aln)
+# read.aln.phydat <- phyDat(read.aln.mat, type = "DNA")
+# seq.dist.phydat <- dist.dna(as.DNAbin(read.aln.phydat))
+# tree.nj <- nj(seq.dist.phydat)
+# parsimony(tree.nj, read.aln.phydat)
+# tree.pars <- optim.parsimony(tree.nj, read.aln.phydat)
+# tree.ratch <- pratchet(read.aln.phydat, trace = 0)
+# parsimony(c(tree.pars,tree.ratch),read.aln.phydat)
+# plot(tree.pars, main = "parsimony", use.edge.length = FALSE, direction = "right", cex = 0.5, label.offset = 1)
+```
+
+### C. Maximum Likelihood
+** Discussed by Paradis (2012) on pp 138-159
+** following a lot of what's here: http://cran.r-project.org/web/packages/phangorn/vignettes/Trees.pdf
+
+```{r}
+read.aln.mat <- as.matrix(read.aln) # read in fasta-aligned file as matrix
+read.aln.phydat <- phyDat(read.aln.mat, type = "DNA") # converts aligned fasta to phyDat {phangorm}
+tree <- nj(dist.logDet(read.aln.phydat)) # pairwise distances for phyDat object {phangorn}
+fit <- pml(tree, read.aln.phydat) # maximum likelihood function; 
+          #returns data, tree, and output, etc. {phangorn}
+fit.JC <- optim.pml(fit, TRUE) # optimizes model parms; default is Jukes-Cantor {phangorn}
+fit.GTR <- update(fit, k = 4, inv = 0.2) # {phangorn}
+fit.GTR <- optim.pml(fit.GTR, TRUE, TRUE, TRUE, TRUE, TRUE, 
+                     control = pml.control(trace = 0)) # {phangorn} SOMEWHAT SLOW
+```
+
+Head-to-head comparison of models.
+```{r}
+anova(fit, fit.JC, fit.GTR)
+AIC(fit, fit.JC, fit.GTR)
+SH.test(fit, fit.JC, fit.GTR)
+model.tests <- modelTest(read.aln.phydat) # compares all substitution models {phangorn} SOMEWHAT SLOW
+env <- attr(model.tests, "env")
+ls(envir = env)
+fit.model <- eval(get("HKY+G+I", env), env)
+```
+
+Calculate bootstrap support values for tree (SOMEWHAT SLOW: ~2 MINUTES)
+```{r}
+bs <- bootstrap.pml(fit.JC, bs = 100, optNni = TRUE,
+            control = pml.control(trace = 0)) #{phangorn} 
+```
+
+### Make tree with bootstrap support values 
+### BEWARE: Won't finish, even after changin bs to 5 in the `bootstrap.pml` funtion
+### "It is possible that the bootstrap is performed in parallel, with help of the multicore package. Unfortunately the multicore package does not work under windows or with GUI/interfaces ("aqua" on a mac). However it will speed up nicely from the command line ("X11")."
+### Actually, if we're going to do this, we  would use package `parallel` http://www.stat.colostate.edu/~jah/Computing_Hints/files/parallel.pdf
+### But doesn't work with Windows apparently
+
+```{r}
+par(mar=c(.1,.1,.1,.1))
+plotBS(fit.JC$tree, bs) #{phangorn}
+```
+
+http://grokbase.com/t/r/r-help/12876aby2z/r-how-to-write-out-a-tree-file-with-bootstrap-from-phangorn-package
+"tree <- plotBS(fit$tree, bs)
+# You can export than this tree using write.tree or write.nexus, e.g.
+write.tree(tree)"
+
+## 7) MAPPING TRAITS ONTO TREES
+
+### A. Loading Trait Database
+```{r}
+p.growth <- read.table("./data/p.isolates.stdgrowth.txt", sep = "\t", header = TRUE, row.names = 1)
+#p.growth <- as.data.frame(t(p.growth))
+```
+
+### Mapping Traits on Tree
+```{r}
+nj.tree <- bionj(seq.dist) # ape command for Neighbor Joining
+outgroup <- match("Methanosarcina", nj.tree$tip.label)
+nj.rooted <- root(nj.tree, outgroup, resolve.root=TRUE)
+nj.rooted <- drop.tip(nj.rooted, "Methanosarcina")
+traits <- p.growth[,c("ATP", "SRP", "PolyP", "Phyt", "AEP")]
+
+# Drop Missing Branches and data
+nj.rooted <- drop.tip(nj.rooted, c("LL11A", "LL15", "WG37", "WG30A", "WG32", "LL12A"))
+traits <- traits[!rownames(traits) == "LL12", ]
+
+require(phylobase)
+require(adephylo)
+x <- phylo4d(nj.rooted, traits)
+table.phylo4d(x,treetype="clad", show.node=FALSE, cex.leg=0.5, cex.label = 0.5,
+use.edge.length=FALSE, edge.color="blue", edge.width=2, box=FALSE, las = 1) 
+
+library(latticeExtra)
+dd.col <- as.dendrogram(hc)
+col.ord <- order.dendrogram(dd.col)
+mat <- matrix(rnorm(4*4),nrow=4)
+colnames(mat) <- tree$tip.label
+rownames(mat) <- tree$tip.label
+levelplot(mat[tree$tip,tree$tip],type=c('g','p'),
+          aspect = "fill",
+          colorkey = list(space = "left"),
+          legend =
+            list(right =
+                   list(fun = dendrogramGrob,
+                        args =
+                          list(x = dd.col, 
+                               side = "right",
+                               size = 10))),
+          panel=function(...){
+            panel.fill('black',alpha=0.2)
+            panel.levelplot.points(...,cex=12,pch=23)
+          }
+)
+```
+
+
+### B. Calculating Niche Breadth
+We calcualte the niche breadth (*nb*) index from Levins (1968) which is defined as $\frac{1}{\left( n \cdot \Sigma p_{xi}^{2}}\right)$, where ni is each resource 
+
+single isolate
+```{r}
+levins <- function(p_xi = ""){
+  x = 0
+  for (i in p_xi){
+    x = x + i^2
+    }
+    nb = 1 / (length(p_xi) * x) 
+  return(nb)
+}
+```  
+
+```{r}
+levins.2 <- function(p_xi = ""){
+  p_xi = as.numeric(p_xi)
+  nb = 1 / (length(p_xi) * (p_xi %*% p_xi))
+  return(nb)
+}  
+levins.2(p.growth[1, ])
+```
+
+## 8) PHYLOGENETIC SIGNAL
+Phylogenetic signal occurs when the traits of closely related species are more similar than what is expected by chance. 
+In many cases, testing for phylogenetic signal is a prerequsite for addressing questions related to trait evolution and phylogenetic biodiversity. 
+If there is significant phylogenetic signal, then evolutionary history is important for understanding the relationships between for example a trait and the peformance of individuals being considered. 
+If there is *not* any phylogenetic signal, then the relationship between traits and peformance can explored using normal statistical methods. 
+
+### Pagel’s Lambda
+http://bodegaphylo.wikispot.org/iv._testing_phylogenetic_signal_in_r
+http://blog.phytools.org/2013/10/simplified-lambdatree.html
+```{r}
+require("geiger")
+lambdaTree(read.aln.phydat, 0) ---> needs to be class phylo!!!
+```
+
+## 9) PHYLOGENETIC INDEPENDENT CONTRASTS
+**Phylogenetic independent contrasts are outlined in Paradis (2012) on pp 204-209
+**Can we take a trait-peformance relationship that's siginficant and correct for phylogeny? 
+Is the relationship still significant? 
+Do the parameters or explained varition change?
+
