@@ -120,7 +120,7 @@ ses.mntd.result <- ses.mntd(comm, phydist, null.model="taxa.labels", abundance.w
 ses.mntd.result
 ```
 
-## PHYLOGENETIC BETA DIVERSITY
+## PHYLOGENETIC BETA DIVERSITY 
 
 ```{r}
 comdist.result <- comdist(comm, phydist)
