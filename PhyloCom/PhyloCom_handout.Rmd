@@ -75,6 +75,65 @@ for (i in row.names(comm)) {
   }
 ```
 
+## 4. PHYLOGENETIC ALPHA DIVERSITY
+"One of the earliest measures of phylogenetic relatedness in ecological communities
+was the phylogenetic diversity (PD) index proposed by Faith (1992). 
+Faith's PD is
+definned as the total branch length spanned by the tree including all species in a local
+community. 
+The `pd` function returns two values for each community, the PD and the
+species richness (SR)"
+
+```{r}
+# compares PD and taxonomic richness (SR)
+pd.result <- pd(comm, phy, include.root=FALSE)
+pd.result
+```
+
+
+```{r}
+# plot phylo vs. taxo diversity
+par(mar = c(5, 5, 2, 1) + 0.1)
+plot(pd.result$SR, pd.result$PD, 
+     pch = 20, col = "red", las = 1, asp = 1, xlim = c(0, 35), ylim = c(0, 35),
+     xlab = "Taxonomic Richnes", ylab = "Phylodiversity") 
+abline(b = 1, a = 0, lty = 2)
+text(20, 30, "1:1")
+
+# correlation betwen phylo and taxo
+corr <- cor(pd.result$SR, pd.result$PD)
+```
+
+***Question 2***: Compare patterns of phylogenetic diversity and species richness. 
+a.  Does taxonomic richness and phylodiversity correlate?
+b.  Mathematically, why should they be correlated?  
+c.  Under what conditions would you expect these two estimates of diversity to deiate from one another?
+
+## MPD, MNTD, SES(MPD),SES(MNTD)
+
+```{r}
+phydist <- cophenetic(phy)
+ses.mpd.result <- ses.mpd(comm, phydist, null.model="taxa.labels", abundance.weighted = FALSE, runs = 99)
+ses.mpd.result
+
+ses.mntd.result <- ses.mntd(comm, phydist, null.model="taxa.labels", abundance.weighted = FASLE, rungs = 99)
+ses.mntd.result
+```
+
+## PHYLOGENETIC BETA DIVERSITY
+
+```{r}
+comdist.result <- comdist(comm, phydist)
+comdist.result
+comdist.clusters <- hclust(comdist.result)
+plot(comdist.clusters)
+```
+
+Ordinations: PCoA taxo  vs. UNIFRAC
+http://www.inside-r.org/packages/cran/picante/docs/unifrac
+http://cran.r-project.org/web/packages/GUniFrac/GUniFrac.pdf
+http://joey711.github.io/phyloseq-demo/unifrac.html
+
 ### C.  Visualizing the Alignment
 It is good practice to view your sequences after alignment. 
 This may not be practical for large databases, but in our example, the alignment only contains sequences for 39 bacterial species plus a distantly related reference sequence that we will use as an **outgroup**. 
