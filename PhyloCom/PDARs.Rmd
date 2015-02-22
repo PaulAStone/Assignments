@@ -1,0 +1,87 @@
+---
+title: "PDAR"
+author: Lil Wayne
+date: "February 21, 2015"
+output: pdf_document
+---
+
+Calculate nonspatial and spatial phylogenetic diversity area curves for an ecological data set.
+According to Helmus and Ives, the code assumes that the site by species matrix is ordered such that consecutive samples in the matrix are spatially closer to each other than to non-consecutive samples.
+There are serious serious issues with that assumption, but here's goes...
+
+```{r}
+library(picante)
+```
+
+SbyS: The site by species matrix
+Reps: The number of times to calculate mean values
+tree: Phylogenetic tree
+lt: ?
+
+```{r}
+pdac.psv<-function(SbyS, tree, reps=100, lt=1){
+  
+  Y <- SbyS # Site by species matrix
+  Y[Y > 0] <- 1 # Assign a 1 to every element of Y greater than 1; turns Y into presence absence
+  
+  m <- dim(Y)[1] # number of sites
+  SAcurve <- NULL
+  
+  for(i in 1:2){
+    
+    for(a in 1:round(lt * m)){
+      ratio <- NULL
+      
+      for(tt in 1:reps){
+        if(i == 1){  # nonspatial curve
+          pick <- sample(m)
+          pick <- pick[1:a]
+          } 
+        
+        else {      # spatial curve
+          pick <- sample(m+1-a)[1]
+          pick <- pick:(pick+a-1)
+          }
+        
+        if(a==1) { 
+          y <- Y[pick,]
+          } 
+        
+        else {
+          y <- colSums(Y[pick,]) > 0
+          }
+          
+        ratio <- rbind(ratio,psv(y,tree,compute.var=FALSE))
+        }
+      
+      SAcurve <- rbind(SAcurve, c(i, a, mean(ratio[, 1], na.rm=TRUE),
+                          sd(ratio[, 1], na.rm=TRUE), mean(ratio[, 2]), sd(ratio[, 2])))
+    }
+  }
+  
+  SAcurve<-data.frame(SAcurve)
+  SAcurve[SAcurve[,1] == 1, 1] <- "nonspatial"
+  SAcurve[SAcurve[,1] == "2", 1] <- "spatial"
+  
+  colnames(SAcurve) <- c("curve","aggregate","mean.psv","sd.psv","mean.sr","sd.sr")
+  return(SAcurve)
+  
+}
+```
+
+
+An example
+```{r}
+pdac <- pdac.psv(phylocom$SbyS, phylocom$phylo, reps=30, lt=1)
+
+par(las=1)
+plot(pdac[, 2:3], type = "n", ylab = "phylogenetic diversity (PSV)", xlab = "area (# of samples)")
+
+lines(pdac[pdac[, 1] == "nonspatial", 2:3], col="red")
+points(pdac[pdac[, 1] == "nonspatial", 2:3], col="red", pch=19)
+
+lines(pdac[pdac[, 1] == "spatial",2:3],col="blue")
+points(pdac[pdac[, 1] == "spatial",2:3],col="blue",pch=19)
+
+legend(x=4,y=0.78,pch=19,legend=c("nonspatial","spatial"),lty=1,col = c("red","blue")) 
+```
