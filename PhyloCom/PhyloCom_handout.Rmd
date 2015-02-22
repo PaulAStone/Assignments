@@ -9,7 +9,7 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-Taxonomic measures of $\alpha$- and $\beta$-diversity do not incorporate the evolutionary information into estimates of communities. 
+Taxonomic measures of $\alpha$- and $\beta$-diversity do not integrate evolutionary information into estimates of community diversity 
 In this handout, we will introduce methods used in phylogenetic community ecology.
 These methods will allow us to account for phylogenetic diversity and provide insight into the mechansisms that give rise to over- and under-dispersion (i.e., clustering) of biological communities. 
 
@@ -63,7 +63,7 @@ traits <- phylocom$traits
 
 ```{r}
 # Just working through Kembel example
-# This is actually plotting samples onto  the tree; labels just correspond to "mock" samples, which demonstrate different patterns of dispersion
+# This is actually plotting samples onto the tree; labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion; "include only species present in a community data set"
 
 prunedphy <- prune.sample(comm, phy)
 
@@ -78,9 +78,7 @@ for (i in row.names(comm)) {
 ## 4. PHYLOGENETIC ALPHA DIVERSITY
 "One of the earliest measures of phylogenetic relatedness in ecological communities
 was the phylogenetic diversity (PD) index proposed by Faith (1992). 
-Faith's PD is
-definned as the total branch length spanned by the tree including all species in a local
-community. 
+Faith's PD is definned as the total branch length spanned by the tree including all species in a local community. 
 The `pd` function returns two values for each community, the PD and the
 species richness (SR)"
 
@@ -92,7 +90,7 @@ pd.result
 
 
 ```{r}
-# plot phylo vs. taxo diversity
+# plot phylo vs. taxo diversity (perhaps do this with another measure of alpha diversity; also maybe revisit rarified richness estiates?)
 par(mar = c(5, 5, 2, 1) + 0.1)
 plot(pd.result$SR, pd.result$PD, 
      pch = 20, col = "red", las = 1, asp = 1, xlim = c(0, 35), ylim = c(0, 35),
@@ -110,13 +108,21 @@ b.  Mathematically, why should they be correlated?
 c.  Under what conditions would you expect these two estimates of diversity to deiate from one another?
 
 ## MPD, MNTD, SES(MPD),SES(MNTD)
+MPD = mean pairwise distance between all species in each community
+MNTD = mean nearest taxon distance
+Different from `pd`, MPD and MNTD take a (phylogenetic) distance matrix as input rather than a phylogeny object. 
+This conversion can be done with `cophenetic()`
 
 ```{r}
 phydist <- cophenetic(phy)
 ses.mpd.result <- ses.mpd(comm, phydist, null.model="taxa.labels", abundance.weighted = FALSE, runs = 99)
 ses.mpd.result
 
-ses.mntd.result <- ses.mntd(comm, phydist, null.model="taxa.labels", abundance.weighted = FASLE, rungs = 99)
+# for null model, can also use richness, frequency, sample.pool, phylogeny.pool, independentswa, and trialswap
+
+# abundance weighted: Should mean nearest taxon distances for each species be weighted by species abundance? (default = FALSE)
+
+ses.mntd.result <- ses.mntd(comm, phydist, null.model="taxa.labels", abundance.weighted = FALSE, runs = 99)
 ses.mntd.result
 ```
 
@@ -127,6 +133,8 @@ comdist.result <- comdist(comm, phydist)
 comdist.result
 comdist.clusters <- hclust(comdist.result)
 plot(comdist.clusters)
+
+#  phyloordination ?Phylogenetic beta diversity measures can be used with any method based onvmeasuring among-community distances. For example, they could be used in a cluster analysis or phyloordination to group communities based on their evolutionaryvsimilarity, or they could be compared with spatial or environmental distances separating communities using a Mantel test. The code below calculates MPD betweenvpairs of communities, and uses these phylogenetic distances to cluster communities based on their phylogenetic similarity:
 ```
 
 Ordinations: PCoA taxo  vs. UNIFRAC
