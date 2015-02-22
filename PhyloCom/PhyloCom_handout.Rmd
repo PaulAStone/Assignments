@@ -1,5 +1,5 @@
 ---
-title: "Phylogenetic Diversity - Traits"
+title: "Phylogenetic Diversity - Communities"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "February 26, 2015"
 header-includes:
@@ -75,7 +75,7 @@ for (i in row.names(comm)) {
   }
 ```
 
-## 4. PHYLOGENETIC ALPHA DIVERSITY
+## 4) PHYLOGENETIC ALPHA DIVERSITY
 "One of the earliest measures of phylogenetic relatedness in ecological communities
 was the phylogenetic diversity (PD) index proposed by Faith (1992). 
 Faith's PD is definned as the total branch length spanned by the tree including all species in a local community. 
@@ -100,6 +100,8 @@ text(20, 30, "1:1")
 
 # correlation betwen phylo and taxo
 corr <- cor(pd.result$SR, pd.result$PD)
+
+ses.pd(comm, phy)
 ```
 
 ***Question 2***: Compare patterns of phylogenetic diversity and species richness. 
@@ -126,7 +128,7 @@ ses.mntd.result <- ses.mntd(comm, phydist, null.model="taxa.labels", abundance.w
 ses.mntd.result
 ```
 
-## PHYLOGENETIC BETA DIVERSITY 
+## 5) PHYLOGENETIC BETA DIVERSITY 
 
 ```{r}
 comdist.result <- comdist(comm, phydist)
@@ -140,16 +142,39 @@ plot(comdist.clusters)
 Ordinations: PCoA taxo  vs. UNIFRAC
 http://www.inside-r.org/packages/cran/picante/docs/unifrac
 http://cran.r-project.org/web/packages/GUniFrac/GUniFrac.pdf
-http://joey711.github.io/phyloseq-demo/unifrac.html
+http://joey711.github.io/phyloseq-demo/unifrac.html  <- out of date. not worth it
+
+```{r}
+
+unifrac(comm, phydist)
+GUniFrac(comm, phydist)   # Tree Must be rooted
+
+
+GUniFrac(otu.tab, tree, alpha = c(0, 0.5, 1))
+
+# Calculate the UniFracs
+unifracs <- GUniFrac(otu.tab.rff, throat.tree, alpha=c(0, 0.5, 1))$unifracs
+
+#  Combine unweighted and weighted UniFrac for testing
+PermanovaG(unifracs[, , c("d_1", "d_UW")] ~ groups)
+# Combine d(0), d(0.5), d(1) for testing
+PermanovaG(unifracs[, , c("d_0", "d_0.5", "d_1")] ~ groups)
+
+
+
+phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
+    "frequency","richness","independentswap","trialswap"),
+    runs=999, iterations=1000)
+
+```
+
+
+## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP
+
+
 
 ## 7) HOMEWORK
 
-1.  Below is the output of a multiple regression model depicting the relationship between the maximum growth rate ($\mu_{max}$) of each bacterial isolate and the niche breadth of that isoalte on the 18 different sources of phosphorus. 
-One feature of the study which we did not reveal earlier in the handout is that the isolates came from two different lakes. 
-One of the lakes is an very oligotrophic (i.e., low phosphorus) ecosystem named Little Long (LL) Lake. 
-The other lake is an extremely eutrophic (i.e., high phosphorus) ecosystem named Wintergreen (WG) Lake.
-We included a "dummy variable" (D) in the multiple regression model (0 = WG, 1 = LL) to account for the environment from which the bacteria were obtained.  
-Based on your knowledge of the traits and their phylogenetic distributions, what conclusions would you draw about our data and the evidence for a generalist-specialist tradeoff? 
-
+1.  
 2.  Use Knitr to create a pdf of your completed PhyloTraits_handout.Rmd document, push it to GitHub, and create a pull request.
 The due date for this assignment is February 25, 2015 at 12:00 PM (noon).
