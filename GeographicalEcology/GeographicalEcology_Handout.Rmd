@@ -76,11 +76,13 @@ These will provide basic diversity-related variables to explore with respect to 
 There will be a column for richness (S), total abundance (N), Shannon's Diversity (H), and Simpson's evenness (De).
 
 ```{r}
+S.obs <- function(x = ""){ rowSums(x > 0) * 1}
+
 otu.names <- names(OTUs) # Get the names of the OTUs
 OTUs <- as.data.frame(OTUs[-1]) # remove first column (site names)
 
 Ponds$N <- as.vector(rowSums(OTUs)) # numbers of reads
-Ponds$S <- as.vector(rowSums(OTUs > 0) * 1)
+Ponds$S <- S.obs(OTUs)
 # For each site: S equals the number of non-zero abundances
 
 Ponds$H <- as.vector(diversity(OTUs, index = "shannon"))
