@@ -66,7 +66,7 @@ com <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 # Import Tree File and Create a `phylo` Object {ape}
 ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
 DNAbin <- as.DNAbin(ponds.cons) 
-image.DNAbin(DNAbin, cex.lab = 0.50) 
+#image.DNAbin(DNAbin, cex.lab = 0.50) 
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 jc.tree <- bionj(seq.dist.jc)
 ```
@@ -117,13 +117,14 @@ jc.tree <- bionj(seq.dist.jc)
 # This is actually plotting samples onto the tree; labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion; "include only species present in a community data set"
 # Depending on number of OTUs in our samples, this could look pretty ugly. 
 
-# The scale-dependence of dispersion is interesting to consider. For example: 
+# The scale-dependence of dispersion is interesting to consider. --Ken
+# For example: 
 # 1. Removing all higher level clades that don't have a particular trait/gene could, e.g., "clump1" to "even"
 # 2. Looking within "clumps" might reveal more clumps or an even or random distribution. How far down do the clumps or the aggregation of traits/genes go?
 
-prunedphy <- prune.sample(comm, phy)
-
-par(mfrow = c(2, 3))
+# Prune a phylogenetic tree to include only species present or that have non-missing trait data
+prunedphy <- prune.sample(comm, phy) 
+par(mfrow = c(2, 3)) # figure with 2 rows and 3 columns
 
 for (i in row.names(comm)) {
   plot(prunedphy, show.tip.label = FALSE, main = i) 
@@ -136,9 +137,11 @@ for (i in row.names(comm)) {
 
 ### A.  Faith's Phylogenetic Diversity (PD)
 In 1992, Daniel Faith developed a diversity metric called Faith's PD (http://goo.gl/wM08Oy).
-A phylognetic tree containing the regional species pool is required. 
-Then, the metric sums the branches lengths for each species in a sample from the root to the tip of the tree. 
+The metric sums the branches lengths for each species in a sample from the root to the tip of the tree.
+The value of the metric captures ... and can be interpreted as ... and used to ...  --Ken
+
 Faith's PD can be implemented in R using the `pd` function in the picante package. 
+A phylognetic tree containing the regional species pool is required. 
 The `pd()` function returns Faith's PD and species richness (SR), which is the number of species in a sample. 
 
 ```{r}
