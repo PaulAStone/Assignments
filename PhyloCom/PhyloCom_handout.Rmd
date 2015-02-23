@@ -56,73 +56,57 @@ Perhaps a bit more info on the nature of the sequence data and how we generated 
 Also, maybe reference to the reference data base. 
 
 ## 3) LOADING OF DATA
+
+First, we'll load the environmental data, along with the site-by-species matrix:
 ```{r}
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
 # Load Site-by-Species Matrix
-com <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
-
-# Import Tree File and Create a `phylo` Object {ape}
-ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
-DNAbin <- as.DNAbin(ponds.cons) 
-#image.DNAbin(DNAbin, cex.lab = 0.50) 
-seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
-jc.tree <- bionj(seq.dist.jc)
+comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 ```
 
+Now, let's load and process some of the phylogenetic data:
+```{r}
+# Import the Alignment File {seqinr}
+ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
+
+# Convert Alignment File to DNAbin Object {ape}
+DNAbin <- as.DNAbin(ponds.cons) 
+
+# Visusalize Sequence Alignment {ape}
+image.DNAbin(DNAbin, cex.lab = 0.50) 
+
+# Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
+seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
+
+# Use Neighbor Joining Algorithm to Construct Tree, a 'phylo' Object {ape}
+phy <- bionj(seq.dist.jc)
+
+# MEM: "Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
+# I don't want to add things manually outside of R. 
+# I'm thinking that we can just append the sequence to this file. 
+# I'll probably align an outgroup to silva first to make things easier though.""
+```
+
+## Example from Picante Vignette: way to move forward while figuring out the pond data set
 ```{r}
 # Examples from Picante Vignette (http://goo.gl/EYOZ55)
 data(phylocom)
 names(phylocom)
 
-# mothur Generates a Newick formatted file so we'll probably need to use the `read.tree` function in {ape}
-# We need to make sure that the names associate with the tree matach up with the names in the site-by-species matrix in `comm` below. 
+# We need to make sure that the names associate with the tree match up with the names in the site-by-species matrix in `comm` below. 
 phy <- phylocom$phy
 
 # Community Data: Site-by-Species Matrix
 comm <- phylocom$sample
-
-# Traits Data: I don't think we'll using this, and least not for ponds --Jay(?)
-# As it stands, I agree --Ken
-traits <- phylocom$traits
 ```
 
-
+## Pruning trees to only include species from phylogeny (phy) that are present in the community (comm)
 ```{r}
-# These lines load in ...?
-ponds <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
-ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
-
-# Transform a set of DNA sequences into a DNAbin object.
-DNAbin <- as.DNAbin(ponds.cons) 
-
-# Command to Visusalize Sequence Alignment {ape}
-image.DNAbin(DNAbin, cex.lab = 0.50) # THIS CRASHES MY R SESSION  --Ken
-
-# Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
-seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
-# Create a neighbor joining tree using the BIONJ algorithm
-jc.tree <- bionj(seq.dist.jc)
-
-# Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
-# I don't want to add things manually outside of R. 
-# I'm thinking that we can just append the sequence to this file. 
-# I'll probably align an outgroup to silva first to make things easier though.
-```
-
-
-
-```{r}
-# This is actually plotting samples onto the tree; labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion; "include only species present in a community data set"
-# Depending on number of OTUs in our samples, this could look pretty ugly. 
-
-# The scale-dependence of dispersion is interesting to consider. --Ken
-# For example: 
-# 1. Removing all higher level clades that don't have a particular trait/gene could, e.g., "clump1" to "even"
-# 2. Looking within "clumps" might reveal more clumps or an even or random distribution. How far down do the clumps or the aggregation of traits/genes go?
-
-# Prune a phylogenetic tree to include only species present or that have non-missing trait data
+# Prune a phylogenetic tree to include only species present
+# It' not clear that we will need the `prune.sample` function 
+# Need to make sure OTU names in comm match names in phy
 prunedphy <- prune.sample(comm, phy) 
 par(mfrow = c(2, 3)) # figure with 2 rows and 3 columns
 
@@ -132,41 +116,40 @@ for (i in row.names(comm)) {
   }
 ```
 
-
 ## 4) PHYLOGENETIC ALPHA DIVERSITY
 
 ### A.  Faith's Phylogenetic Diversity (PD)
 In 1992, Daniel Faith developed a diversity metric called Faith's PD (http://goo.gl/wM08Oy).
-The metric sums the branches lengths for each species in a sample from the root to the tip of the tree.
+The metric sums the branch lengths for each species in a sample from the root to the tip of the tree.
 The value of the metric captures ... and can be interpreted as ... and used to ...  --Ken
 
-Faith's PD can be implemented in R using the `pd` function in the picante package. 
+Faith's PD can be implemented in R using the `pd()` function in the `picante` package. 
 A phylognetic tree containing the regional species pool is required. 
-The `pd()` function returns Faith's PD and species richness (SR), which is the number of species in a sample. 
+In addition to returning Faith's PD, the `pd()` function also returns species richness (SR).
+SR is the same as observed richness ($\S_{obs}), which was introduced in the $\alpha$ diversity module. 
 
 ```{r}
 # Compares PD and Taxonomic Richness {picante}
 pd <- pd(comm, phy, include.root=FALSE)
 ```
 
-Let's compare the phylogenetic diversity estimates with taxonomic richness of our samples.
-*Not finding pd.result --Ken*
+Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness (SR) of our samples.
 
 ```{r}
-# Biplot of Taxonomic Richness and Faith's PD
+# Biplot of SR and PD
 par(mar = c(5, 5, 2, 1) + 0.1)
-plot(pd.result$SR, pd.result$PD, 
+plot(pd$SR, pd$PD, 
      pch = 20, col = "red", las = 1, asp = 1, xlim = c(0, 35), ylim = c(0, 35),
-     xlab = "Taxonomic Richness", ylab = "Phylodiversity") 
+     xlab = "Taxonomic Richness (SR)", ylab = "Phylodiversity (PD)") 
 abline(b = 1, a = 0, lty = 2)
 text(20, 30, "1:1")
 
-# Correlation of Taxonomic Richness and Faiths' PD
-corr <- cor(pd.result$SR, pd.result$PD)
+# Correlation of SR and PD
+corr <- cor(pd$SR, pd$PD)
 ```
 
-***Question 1***: Compare patterns of phylogenetic diversity and species richness. 
-a.  Does taxonomic richness and phylodiversity correlate?
+***Question 1***: Compare patterns of PD and SR. 
+a.  Is taxonomic richness correlated with phylodiversity?
 b.  Mathematically, why should they be correlated?  
 c.  Under what conditions would you expect these two estimates of diversity to deviate from one another?
 
@@ -174,8 +157,45 @@ c.  Under what conditions would you expect these two estimates of diversity to d
 > ***Answer 1b***:  
 > ***Answer 1c***:  
 
-We can address the statistical issues related to Faith's PD by conducting randomizations. 
-The `ses.pd()` function in `picante` allows one to compare the observed value for Faith's PD against randomized data derived from different null models. 
+### B. Randomizations and Null Models
+Randomizations are a way of resampling our data to assess whether or not observed patterns are different from a null expectation. 
+A number of the functions in `picante` allow us to specify different null models as an argument. 
+These null models can control for features usch as species richness, species occurrence frequencey, the diversity of the regional species pool. 
+The following table describes some of the null models that are available to us when using `picante`:
+
+\begin{center}
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
+\begin{tabular}{ m{5cm} m{10cm} }
+  \textbf{Null Model} & \textbf{Description} \\
+  \hline \hline \\ [-1.5ex]
+  \textbf{taxa.labels} & 
+  Shuffles taxa labels across tips of phylogeny (across all taxa included in phylogeny)\\
+  \\ [-1.5ex]
+  \textbf{richness} & 
+  Randomizes community data matrix abundances within samples (maintains sample species richness) \\
+  \\ [-1.5ex]  
+  \textbf{frequency} & 
+  Randomizes community data matrix abundances within species (maintains species occurence frequency)\\
+  \\ [-1.5ex]   
+  \textbf{sample.pool} & 
+  Randomizes community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability\\
+  \\ [-1.5ex]  
+  \textbf{phylogeny.pool} & 
+  Randomize community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability\\
+  \\ [-1.5ex]
+    \textbf{independentswap} & 
+  Randomizes community data matrix with the independent swap algorithm (Gotelli 2000) maintaining species occurrence frequency and sample species richness\\
+  \\ [-1.5ex]
+  \textbf{trialswap} & 
+  Randomizes community data matrix with the trial-swap algorithm (Miklos & Podani 2004) maintaining species occurrence frequency and sample species richness
+    \\ [-1.5ex]
+  \hline
+\end{tabular}
+\end{center}
+
+Now, we are going to use the `ses.pd()` function in `picante`. 
+This function estimated the standardized effect size of PD by comparing observed value against randomized data derived from different null models. 
 
 ```{r}
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
