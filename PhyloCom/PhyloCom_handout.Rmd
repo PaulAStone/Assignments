@@ -81,6 +81,26 @@ comm <- phylocom$sample
 # Traits Data: I don't think we'll using this, and least not for ponds
 traits <- phylocom$traits
 
+
+=======
+ponds <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
+ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
+DNAbin <- as.DNAbin(ponds.cons) 
+image.DNAbin(DNAbin, cex.lab = 0.50) 
+
+# Looks pretty good if you ask me
+
+
+seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
+jc.tree <- bionj(seq.dist.jc)
+
+# Need to figure out how to add an outgroup for rooting. Otherwise this looks pretty good.
+# I don't want to add things manually outside of R. I'm thinking that we can just append the sequence to this file. I'll probably align an outgroup to silva first to make things easier though.
+
+
+```
+
+
 ```{r}
 # This is actually plotting samples onto the tree; labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion; "include only species present in a community data set"
 # Depending on number of OTUs in our samples, this could look pretty ugly. 
