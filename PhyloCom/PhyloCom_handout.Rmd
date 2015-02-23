@@ -64,48 +64,22 @@ env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 com <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
 # Import Tree File and Create a `phylo` Object {ape}
-ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
-DNAbin <- as.DNAbin(ponds.cons) 
-#image.DNAbin(DNAbin, cex.lab = 0.50) 
-seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
-jc.tree <- bionj(seq.dist.jc)
-```
-
-```{r}
-# Examples from Picante Vignette (http://goo.gl/EYOZ55)
-data(phylocom)
-names(phylocom)
-
-# mothur Generates a Newick formatted file so we'll probably need to use the `read.tree` function in {ape}
-# We need to make sure that the names associate with the tree matach up with the names in the site-by-species matrix in `comm` below. 
-phy <- phylocom$phy
-
-# Community Data: Site-by-Species Matrix
-comm <- phylocom$sample
-
-# Traits Data: I don't think we'll using this, and least not for ponds --Jay(?)
-# As it stands, I agree --Ken
-traits <- phylocom$traits
+ponds.cons <- read.alignment(file= "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
 ```
 
 
+Formatting files for analysis
 ```{r}
-# These lines load in ...?
-ponds <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
-ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
-
 # Transform a set of DNA sequences into a DNAbin object.
 DNAbin <- as.DNAbin(ponds.cons) 
 
-# Command to Visusalize Sequence Alignment {ape}
-image.DNAbin(DNAbin, cex.lab = 0.50) # THIS CRASHES MY R SESSION  --Ken
-
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
+
 # Create a neighbor joining tree using the BIONJ algorithm
 jc.tree <- bionj(seq.dist.jc)
 
-# Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
+# Need to figure out how to add an outgroup for rooting.
 # I don't want to add things manually outside of R. 
 # I'm thinking that we can just append the sequence to this file. 
 # I'll probably align an outgroup to silva first to make things easier though.
@@ -114,16 +88,14 @@ jc.tree <- bionj(seq.dist.jc)
 
 
 ```{r}
-# This is actually plotting samples onto the tree; labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion; "include only species present in a community data set"
-# Depending on number of OTUs in our samples, this could look pretty ugly. 
-
-# The scale-dependence of dispersion is interesting to consider. --Ken
-# For example: 
-# 1. Removing all higher level clades that don't have a particular trait/gene could, e.g., "clump1" to "even"
-# 2. Looking within "clumps" might reveal more clumps or an even or random distribution. How far down do the clumps or the aggregation of traits/genes go?
+# This plots samples onto the tree
+# Labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion
+# "includes only species present in a community data set"
+# Depending on number of OTUs in our samples, this could look ugly. 
 
 # Prune a phylogenetic tree to include only species present or that have non-missing trait data
-prunedphy <- prune.sample(comm, phy) 
+prunedphy <- prune.sample(com, jc.tree)
+
 par(mfrow = c(2, 3)) # figure with 2 rows and 3 columns
 
 for (i in row.names(comm)) {
