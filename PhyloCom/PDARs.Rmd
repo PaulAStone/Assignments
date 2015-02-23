@@ -11,6 +11,7 @@ There are serious serious issues with that assumption, but here's goes...
 
 ```{r}
 library(picante)
+data(phylocom)
 ```
 
 SbyS: The site by species matrix
@@ -19,7 +20,7 @@ tree: Phylogenetic tree
 lt: ?
 
 ```{r}
-pdac.psv<-function(SbyS, tree, reps=100, lt=1){
+pdac.psv <- function(SbyS, tree, reps=100, lt=1){
   
   Y <- SbyS # Site by species matrix
   Y[Y > 0] <- 1 # Assign a 1 to every element of Y greater than 1; turns Y into presence absence
@@ -72,7 +73,7 @@ pdac.psv<-function(SbyS, tree, reps=100, lt=1){
 
 An example
 ```{r}
-pdac <- pdac.psv(phylocom$SbyS, phylocom$phylo, reps=30, lt=1)
+pdac <- pdac.psv(phylocom$samp, phylocom$phylo, reps=30, lt=1)
 
 par(las=1)
 plot(pdac[, 2:3], type = "n", ylab = "phylogenetic diversity (PSV)", xlab = "area (# of samples)")
