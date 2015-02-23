@@ -35,7 +35,10 @@ This package has many of the functions that are contained in the software Phyloc
 After the initial installation of these packages using the `install.packages()` fucntion, let's load the packages and their dependencies with the `require()` function:
 
 ```{r, results = 'hide', message = FALSE, warning = FALSE} 
-require("picante")
+
+require("picante")                
+require("ape")                    
+require("seqinr")                 
 ```
 
 ### C. Load Source Code
@@ -67,13 +70,14 @@ phy <-(phylocom$phy)
 # Community Data: Site-by-Species Matrix
 comm <- phylocom$sample
 
-# Traits Data: I don't think we'll using this, and least not for ponds
+# Traits Data: I don't think we'll using this, and least not for ponds --Jay(?)
+# As it stands, I agree --Ken
 traits <- phylocom$traits
 
 ponds <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
 DNAbin <- as.DNAbin(ponds.cons) 
-image.DNAbin(DNAbin, cex.lab = 0.50) 
+image.DNAbin(DNAbin, cex.lab = 0.50) # THIS CRASHES MY R SESSION  --Ken
 
 # Looks pretty good if you ask me
 
