@@ -29,7 +29,7 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloCom")
 ```
 
 ### B. Load Packages 
-We wil be relying heavily on the R package `picante`. 
+We will be relying heavily on the R package `picante`. 
 This package has many of the functions that are contained in the software Phylocom, which is used for the analysis of phylogenetic community structure and character evolution (http://phylodiversity.net/phylocom/).
 
 After the initial installation of these packages using the `install.packages()` fucntion, let's load the packages and their dependencies with the `require()` function:
@@ -173,7 +173,7 @@ phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
 
 
 
-## 7) HOMEWORK
+## 7) HOMEWORK 
 
 1.  
 2.  Use Knitr to create a pdf of your completed PhyloTraits_handout.Rmd document, push it to GitHub, and create a pull request.
