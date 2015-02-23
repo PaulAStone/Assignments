@@ -160,7 +160,7 @@ c.  Under what conditions would you expect these two estimates of diversity to d
 ### B. Randomizations and Null Models
 Randomizations are a way of resampling our data to assess whether or not observed patterns are different from a null expectation. 
 A number of the functions in `picante` allow us to specify different null models as an argument. 
-These null models can control for features usch as species richness, species occurrence frequencey, the diversity of the regional species pool. 
+These null models can control for features such as species richness, species occurrence frequencey, and the diversity of the regional species pool. 
 The following table describes some of the null models that are available to us when using `picante`:
 
 \begin{center}
@@ -202,17 +202,17 @@ This function estimated the standardized effect size of PD by comparing observed
 ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 1000, iterations = 999)
 ```
 
-***Question 2***: Using the `help()` function, identify two null models that can be used with `ses.pd()`
+***Question 2***: Using the `help()` function, choose two null models that can be used with `ses.pd()`
 Compare and interpret the output from these randomizations. 
 
 > ***Answer 2***:  
 
 ### B.  Net Relatedness Index (NRI)
-One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI) 
-The first step to NRI is to calculate the mean phylogenetic distance (MPD), which is the sum of phylogenetic pairwise distance among taxa. 
-NRI is often estimated as the observed MPD minus the mean MPD generated via randomization divided by the standard deviation of the randomized MPD. 
-The resulting value is multiplied by -1 so that negative values correspond with overdispersion and positive values correspond with clustering. 
-Let's calucate NRI:
+One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI).
+NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated via randomization, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated via randomization. 
+Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected. 
+Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
+Let's use `picante` to calucate NRI:
 
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
@@ -250,6 +250,10 @@ How does this affect the interpretation of NRI and NTI?
 > ***Answer 3***:  
 
 
+## POTENTIAL EXERCISE: HAVE STUDENTS LOOK FOR CORRELATIONS BETWEEN NRI/NTI AND ENVIRONMENTAL VARIABLES. 
+## DOES CLUSTERING/DISPERSION CHANGE ALONG GRADIENTS OR WITH PD? IF SO, WHAT ARE SOME DIFFERENT EXPLANATIONS?
+
+
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
 ```{r}
@@ -258,7 +262,7 @@ comdist.result
 comdist.clusters <- hclust(comdist.result)
 plot(comdist.clusters)
 
-#  phyloordination ?Phylogenetic beta diversity measures can be used with any method based onvmeasuring among-community distances. For example, they could be used in a cluster analysis or phyloordination to group communities based on their evolutionaryvsimilarity, or they could be compared with spatial or environmental distances separating communities using a Mantel test. The code below calculates MPD betweenvpairs of communities, and uses these phylogenetic distances to cluster communities based on their phylogenetic similarity:
+#  phyloordination ?Phylogenetic beta diversity measures can be used with any method based onvmeasuring among-community distances. For example, they could be used in a cluster analysis or phyloordination to group communities based on their evolutionaryvsimilarity, or they could be compared with spatial or environmental distances separating communities using a Mantel test. The code below calculates MPD between pairs of communities, and uses these phylogenetic distances to cluster communities based on their phylogenetic similarity:
 ```
 
 Ordinations: PCoA taxo  vs. UNIFRAC
