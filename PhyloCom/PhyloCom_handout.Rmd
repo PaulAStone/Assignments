@@ -7,3 +7,204 @@ header-includes:
 output: pdf_document
 geometry: margin=2.54cm
 ---
+
+## OVERVIEW
+Taxonomic measures of $\alpha$- and $\beta$-diversity do not integrate evolutionary information into estimates of community diversity 
+In this handout, we will introduce methods used in phylogenetic community ecology.
+These methods will allow us to account for phylogenetic diversity and provide insight into the mechansisms that give rise to over- and under-dispersion (i.e., clustering) of biological communities. 
+
+After completing this exercise you will know how to:
+
+1.  measure phylogenetic $\alpha$ diversity
+2.  measure phylogenetic $\beta$ diversity
+3.  construct phylogenetic diversity-area relationships
+
+## 1) SETUP
+### A. Retrieve and Set Your Working Directory
+
+```{r, results = 'hide'}
+rm(list = ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloCom")
+```
+
+### B. Load Packages 
+We wil be relying heavily on the R package `picante`. 
+This package has many of the functions that are contained in the software Phylocom, which is used for the analysis of phylogenetic community structure and character evolution (http://phylodiversity.net/phylocom/).
+
+After the initial installation of these packages using the `install.packages()` fucntion, let's load the packages and their dependencies with the `require()` function:
+
+```{r, results = 'hide', message = FALSE, warning = FALSE} 
+
+require("picante")                
+require("ape")                    
+require("seqinr")                 
+```
+
+### C. Load Source Code
+In addition to packages, this week we will also be using a source code file.
+A source code file is a file containing user defined function that are required in the current analysis.
+The benefit of source files is that they can easily be used in multiple project without fear of having code variation.
+Here we will be using a source code file that includes function for reading in the output files from the popular community sequencing software `mothur`.
+
+```{r}
+source("./bin/MothurTools.R")
+```
+
+## 2) DESCRIPTION OF DATA
+We will revisit the environmental, geographic, and biological data that we used a couple of weeks ago tht was collected from the Brown County refuge ponds. 
+
+## 3) LOADING OF DATA
+```{r}
+# Examples from Picante Vignette (http://goo.gl/EYOZ55)
+data(phylocom)
+names(phylocom)
+
+# Phylogentic Data: Tree of Class "Phylo"
+# Phylo object requires {ape}
+# mothur Generates a Newick formatted file so we'll probably need to use the `read.tree` function in {ape}
+# We need to make sure that the names associate with the tree matach up with the names in the site-by-species matrix in `comm` below. 
+
+phy <-(phylocom$phy)
+
+# Community Data: Site-by-Species Matrix
+comm <- phylocom$sample
+
+# Traits Data: I don't think we'll using this, and least not for ponds --Jay(?)
+# As it stands, I agree --Ken
+traits <- phylocom$traits
+
+ponds <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
+ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
+DNAbin <- as.DNAbin(ponds.cons) 
+image.DNAbin(DNAbin, cex.lab = 0.50) # THIS CRASHES MY R SESSION  --Ken
+
+# Looks pretty good if you ask me
+
+
+seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
+jc.tree <- bionj(seq.dist.jc)
+
+# Need to figure out how to add an outgroup for rooting. Otherwise this looks pretty good.
+# I don't want to add things manually outside of R. I'm thinking that we can just append the sequence to this file. I'll probably align an outgroup to silva first to make things easier though.
+
+
+```
+
+```{r}
+# Just working through Kembel example
+# This is actually plotting samples onto the tree; labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion; "include only species present in a community data set"
+
+prunedphy <- prune.sample(comm, phy)
+
+par(mfrow = c(2, 3))
+
+for (i in row.names(comm)) {
+  plot(prunedphy, show.tip.label = FALSE, main = i) 
+  tiplabels(tip = which(prunedphy$tip.label %in% names(which(comm [i, ] > 0))), pch = 19, cex = 2)
+  }
+```
+
+## 4) PHYLOGENETIC ALPHA DIVERSITY
+"One of the earliest measures of phylogenetic relatedness in ecological communities
+was the phylogenetic diversity (PD) index proposed by Faith (1992). 
+Faith's PD is definned as the total branch length spanned by the tree including all species in a local community. 
+The `pd` function returns two values for each community, the PD and the
+species richness (SR)"
+
+```{r}
+# compares PD and taxonomic richness (SR)
+pd.result <- pd(comm, phy, include.root=FALSE)
+pd.result
+```
+
+
+```{r}
+# plot phylo vs. taxo diversity (perhaps do this with another measure of alpha diversity; also maybe revisit rarified richness estiates?)
+par(mar = c(5, 5, 2, 1) + 0.1)
+plot(pd.result$SR, pd.result$PD, 
+     pch = 20, col = "red", las = 1, asp = 1, xlim = c(0, 35), ylim = c(0, 35),
+     xlab = "Taxonomic Richnes", ylab = "Phylodiversity") 
+abline(b = 1, a = 0, lty = 2)
+text(20, 30, "1:1")
+
+# correlation betwen phylo and taxo
+corr <- cor(pd.result$SR, pd.result$PD)
+
+ses.pd(comm, phy)
+```
+
+***Question 2***: Compare patterns of phylogenetic diversity and species richness. 
+a.  Does taxonomic richness and phylodiversity correlate?
+b.  Mathematically, why should they be correlated?  
+c.  Under what conditions would you expect these two estimates of diversity to deiate from one another?
+
+## MPD, MNTD, SES(MPD),SES(MNTD)
+MPD = mean pairwise distance between all species in each community
+MNTD = mean nearest taxon distance
+Different from `pd`, MPD and MNTD take a (phylogenetic) distance matrix as input rather than a phylogeny object. 
+This conversion can be done with `cophenetic()`
+
+```{r}
+phydist <- cophenetic(phy)
+ses.mpd.result <- ses.mpd(comm, phydist, null.model="taxa.labels", abundance.weighted = FALSE, runs = 99)
+ses.mpd.result
+
+# for null model, can also use richness, frequency, sample.pool, phylogeny.pool, independentswa, and trialswap
+
+# abundance weighted: Should mean nearest taxon distances for each species be weighted by species abundance? (default = FALSE)
+
+ses.mntd.result <- ses.mntd(comm, phydist, null.model="taxa.labels", abundance.weighted = FALSE, runs = 99)
+ses.mntd.result
+```
+
+## 5) PHYLOGENETIC BETA DIVERSITY 
+
+```{r}
+comdist.result <- comdist(comm, phydist)
+comdist.result
+comdist.clusters <- hclust(comdist.result)
+plot(comdist.clusters)
+
+#  phyloordination ?Phylogenetic beta diversity measures can be used with any method based onvmeasuring among-community distances. For example, they could be used in a cluster analysis or phyloordination to group communities based on their evolutionaryvsimilarity, or they could be compared with spatial or environmental distances separating communities using a Mantel test. The code below calculates MPD betweenvpairs of communities, and uses these phylogenetic distances to cluster communities based on their phylogenetic similarity:
+```
+
+Ordinations: PCoA taxo  vs. UNIFRAC
+http://www.inside-r.org/packages/cran/picante/docs/unifrac
+http://cran.r-project.org/web/packages/GUniFrac/GUniFrac.pdf
+http://joey711.github.io/phyloseq-demo/unifrac.html  <- out of date. not worth it
+
+```{r}
+
+unifrac(comm, phydist)
+GUniFrac(comm, phydist)   # Tree Must be rooted
+
+
+GUniFrac(otu.tab, tree, alpha = c(0, 0.5, 1))
+
+# Calculate the UniFracs
+unifracs <- GUniFrac(otu.tab.rff, throat.tree, alpha=c(0, 0.5, 1))$unifracs
+
+#  Combine unweighted and weighted UniFrac for testing
+PermanovaG(unifracs[, , c("d_1", "d_UW")] ~ groups)
+# Combine d(0), d(0.5), d(1) for testing
+PermanovaG(unifracs[, , c("d_0", "d_0.5", "d_1")] ~ groups)
+
+
+
+phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
+    "frequency","richness","independentswap","trialswap"),
+    runs=999, iterations=1000)
+
+```
+
+
+## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP
+
+
+
+## 7) HOMEWORK
+
+1.  
+2.  Use Knitr to create a pdf of your completed PhyloTraits_handout.Rmd document, push it to GitHub, and create a pull request.
+The due date for this assignment is February 25, 2015 at 12:00 PM (noon).
