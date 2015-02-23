@@ -150,6 +150,8 @@ pd <- pd(comm, phy, include.root=FALSE)
 ```
 
 Let's compare the phylogenetic diversity estimates with taxonomic richness of our samples.
+*Not finding pd.result --Ken*
+
 ```{r}
 # Biplot of Taxonomic Richness and Faith's PD
 par(mar = c(5, 5, 2, 1) + 0.1)
