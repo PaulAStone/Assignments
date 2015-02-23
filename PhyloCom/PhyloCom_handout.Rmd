@@ -84,14 +84,13 @@ seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 phy <- bionj(seq.dist.jc)
 
 # MEM: "Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
-# I don't want to add things manually outside of R. 
 # I'm thinking that we can just append the sequence to this file. 
-# I'll probably align an outgroup to silva first to make things easier though.""
+# I'll probably align an outgroup to silva first to make things easier though."
 ```
 
 ## Example from Picante Vignette: way to move forward while figuring out the pond data set
 ```{r}
-# Examples from Picante Vignette (http://goo.gl/EYOZ55)
+# From Picante Vignette (http://goo.gl/EYOZ55)
 data(phylocom)
 names(phylocom)
 
@@ -105,9 +104,10 @@ comm <- phylocom$sample
 ## Pruning trees to only include species from phylogeny (phy) that are present in the community (comm)
 ```{r}
 # Prune a phylogenetic tree to include only species present
-# It' not clear that we will need the `prune.sample` function 
+# It's not clear that we will need the `prune.sample` function 
 # Need to make sure OTU names in comm match names in phy
 prunedphy <- prune.sample(comm, phy) 
+
 par(mfrow = c(2, 3)) # figure with 2 rows and 3 columns
 
 for (i in row.names(comm)) {
