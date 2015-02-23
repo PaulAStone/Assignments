@@ -74,26 +74,36 @@ comm <- phylocom$sample
 # As it stands, I agree --Ken
 traits <- phylocom$traits
 
+# These lines load in ...?
 ponds <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
+
+# Transform a set of DNA sequences into a DNAbin object.
 DNAbin <- as.DNAbin(ponds.cons) 
+
+# Command to Visusalize Sequence Alignment {ape}
 image.DNAbin(DNAbin, cex.lab = 0.50) # THIS CRASHES MY R SESSION  --Ken
 
-# Looks pretty good if you ask me
-
-
+# Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
+# Create a neighbor joining tree using the BIONJ algorithm
 jc.tree <- bionj(seq.dist.jc)
 
-# Need to figure out how to add an outgroup for rooting. Otherwise this looks pretty good.
-# I don't want to add things manually outside of R. I'm thinking that we can just append the sequence to this file. I'll probably align an outgroup to silva first to make things easier though.
-
-
+# Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
+# I don't want to add things manually outside of R. 
+# I'm thinking that we can just append the sequence to this file. 
+# I'll probably align an outgroup to silva first to make things easier though.
 ```
+
+
 
 ```{r}
 # Just working through Kembel example
 # This is actually plotting samples onto the tree; labels (rownames) just correspond to "mock" samples, which demonstrate different patterns of dispersion; "include only species present in a community data set"
+
+# The scale-dependence of dispersion is interesting to consider. For example: 
+# 1. Removing all higher level clades that don't have a particular trait/gene could, e.g., "clump1" to "even"
+# 2. Looking within "clumps" might reveal more clumps or an even or random distribution. How far down do the clumps or the aggregation of traits/genes go?
 
 prunedphy <- prune.sample(comm, phy)
 
