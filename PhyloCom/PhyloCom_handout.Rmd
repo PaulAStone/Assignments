@@ -65,21 +65,21 @@ env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
-# Select Only DNA and Remove Empty Species
-com <- com[grep("*-DNA", rownames(com)), ]
-rownames(com) <- gsub("\\-DNA", "", rownames(com))
-com <- com[ , colSums(com) > 0]
+# Select Only DNA 
+comm <- comm[grep("*-DNA", rownames(comm)), ]
+rownames(comm) <- gsub("\\-DNA", "", rownames(comm))
 
-# Import Tree File and Create a `phylo` Object {ape}
-ponds.cons <- read.alignment(file= "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta") 
-
-ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
+# Remove Zero-Occurrence Species
+comm <- comm[ , colSums(comm) > 0]
 ```
 
 Now, let's load and process some of the phylogenetic data:
 ```{r}
 # Import the Alignment File {seqinr}
 ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
+
+# Rename OTUs in FASTA file
+ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
 
 # Convert Alignment File to DNAbin Object {ape}
 DNAbin <- as.DNAbin(ponds.cons) 
@@ -91,12 +91,10 @@ image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.1, las=1)
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 
 # Use Neighbor Joining Algorithm to Construct Tree, a 'phylo' Object {ape}
-phy <- bionj(seq.dist.jc)
+phy.all <- bionj(seq.dist.jc)
 
-# Create a neighbor joining tree using the BIONJ algorithm
-jc.tree.all <- bionj(seq.dist.jc)
-
-jc.tree <- drop.tip(jc.tree.all, jc.tree.all$tip.label[!jc.tree.all$tip.label %in% colnames(com)])
+# Drop Tips of Zero-Occurrence OTUs
+phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% colnames(comm)])
 
 # MEM: "Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
 # I'm thinking that we can just append the sequence to this file. 
@@ -110,25 +108,10 @@ data(phylocom)
 names(phylocom)
 
 # We need to make sure that the names associate with the tree match up with the names in the site-by-species matrix in `comm` below. 
-phy <- phylocom$phy
+phy.eg <- phylocom$phy
 
 # Community Data: Site-by-Species Matrix
-comm <- phylocom$sample
-```
-
-## Pruning trees to only include species from phylogeny (phy) that are present in the community (comm)
-```{r}
-# Prune a phylogenetic tree to include only species present
-# It's not clear that we will need the `prune.sample` function 
-# Need to make sure OTU names in comm match names in phy
-prunedphy <- prune.sample(comm, phy) 
-
-par(mfrow = c(2, 3)) # figure with 2 rows and 3 columns
-
-for (i in row.names(com)) {
-  plot(prunedphy, show.tip.label = FALSE, main = i) 
-  tiplabels(tip = which(prunedphy$tip.label %in% names(which(com [i, ] > 0))), pch = 19, cex = 2)
-  }
+comm.eg <- phylocom$sample
 ```
 
 ## 4) PHYLOGENETIC ALPHA DIVERSITY
@@ -145,7 +128,7 @@ SR is the same as observed richness ($\S_{obs}), which was introduced in the $\a
 
 ```{r}
 # Compares PD and Taxonomic Richness {picante}
-pd <- pd(com, jc.tree, include.root=FALSE)
+pd <- pd(comm, phy, include.root=FALSE)
 ```
 
 Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness (SR) of our samples.
@@ -154,10 +137,10 @@ Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness 
 # Biplot of SR and PD
 par(mar = c(5, 5, 2, 1) + 0.1)
 plot(pd$SR, pd$PD, 
-     pch = 20, col = "red", las = 1, asp = 1, xlim = c(0, 35), ylim = c(0, 35),
+     pch = 20, col = "red", las = 1, xlim = c(0, 800), ylim = c(0, 100),
      xlab = "Taxonomic Richness (SR)", ylab = "Phylodiversity (PD)") 
 abline(b = 1, a = 0, lty = 2)
-text(20, 30, "1:1")
+text(50, 90, "1:1")
 
 # Correlation of SR and PD
 corr <- cor(pd$SR, pd$PD)
@@ -181,56 +164,59 @@ The following table describes some of the null models that are available to us w
 \begin{center}
 \hyphenpenalty 10000
 \exhyphenpenalty 10000
-\begin{tabular}{ m{5cm} m{10cm} }
+\begin{tabular}{ m{5cm}  m{10cm} }
   \textbf{Null Model} & \textbf{Description} \\
   \hline \hline \\ [-1.5ex]
   \textbf{taxa.labels} & 
-  Shuffles taxa labels across tips of phylogeny (across all taxa included in phylogeny)\\
+  Shuffles taxa labels across tips of phylogeny (across all taxa included in phylogeny) \\
   \\ [-1.5ex]
   \textbf{richness} & 
   Randomizes community data matrix abundances within samples (maintains sample species richness) \\
   \\ [-1.5ex]  
   \textbf{frequency} & 
-  Randomizes community data matrix abundances within species (maintains species occurence frequency)\\
+  Randomizes community data matrix abundances within species (maintains species occurence frequency) \\
   \\ [-1.5ex]   
   \textbf{sample.pool} & 
-  Randomizes community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability\\
+  Randomizes community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability \\
   \\ [-1.5ex]  
-  \textbf{phylogeny.pool} & 
-  Randomize community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability\\
+    \textbf{phylogeny.pool} & 
+  Randomize community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability \\
   \\ [-1.5ex]
-    \textbf{independentswap} & 
-  Randomizes community data matrix with the independent swap algorithm (Gotelli 2000) maintaining species occurrence frequency and sample species richness\\
+  \textbf{independentswap} & 
+  Randomizes community data matrix with the independent swap algorithm (Gotelli 2000) maintaining species occurrence frequency and sample species richness \\
   \\ [-1.5ex]
   \textbf{trialswap} & 
-  Randomizes community data matrix with the trial-swap algorithm (Miklos & Podani 2004) maintaining species occurrence frequency and sample species richness
-    \\ [-1.5ex]
-  \hline
+  Randomizes community data matrix with the trial-swap algorithm (Miklos \& Podani 2004) maintaining species occurrence frequency and sample species richness \\
+  \\ [-1.5ex]
+    \hline
 \end{tabular}
 \end{center}
 
 Now, we are going to use the `ses.pd()` function in `picante`. 
-This function estimated the standardized effect size of PD by comparing observed value against randomized data derived from different null models. 
+This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model. 
 
 ```{r}
+# Need to root tree first
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
-ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 1000, iterations = 999)
+ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, iterations = 99)
 ```
 
-***Question 2***: Using the `help()` function, choose two null models that can be used with `ses.pd()`
-Compare and interpret the output from these randomizations. 
+***Question 2***: Using the `help()` function, choose two null models that can be used with `ses.pd()`.
+Rerun `ses.pd()` with these null models.
+Compare and interpret the output. 
 
 > ***Answer 2***:  
 
 ### B.  Net Relatedness Index (NRI)
 One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI).
-NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated via randomization, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated via randomization. 
+NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated from a tree randomized under a null model, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated from a tree randomized under a null model. 
 Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected. 
 Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
 Let's use `picante` to calucate NRI:
 
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
+# Important Concept? Variance-Covariance? Not exactly the same thing...
 phydist <- cophenetic(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
