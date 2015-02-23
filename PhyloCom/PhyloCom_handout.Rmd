@@ -64,6 +64,16 @@ env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
+
+# Select Only DNA and Remove Empty Species
+com <- com[grep("*-DNA", rownames(com)), ]
+rownames(com) <- gsub("\\-DNA", "", rownames(com))
+com <- com[ , colSums(com) > 0]
+
+# Import Tree File and Create a `phylo` Object {ape}
+ponds.cons <- read.alignment(file= "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta") 
+
+ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
 ```
 
 Now, let's load and process some of the phylogenetic data:
@@ -75,13 +85,18 @@ ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", form
 DNAbin <- as.DNAbin(ponds.cons) 
 
 # Visusalize Sequence Alignment {ape}
-image.DNAbin(DNAbin, cex.lab = 0.50) 
+image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.1, las=1) 
 
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 
 # Use Neighbor Joining Algorithm to Construct Tree, a 'phylo' Object {ape}
 phy <- bionj(seq.dist.jc)
+
+# Create a neighbor joining tree using the BIONJ algorithm
+jc.tree.all <- bionj(seq.dist.jc)
+
+jc.tree <- drop.tip(jc.tree.all, jc.tree.all$tip.label[!jc.tree.all$tip.label %in% colnames(com)])
 
 # MEM: "Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
 # I'm thinking that we can just append the sequence to this file. 
@@ -110,9 +125,9 @@ prunedphy <- prune.sample(comm, phy)
 
 par(mfrow = c(2, 3)) # figure with 2 rows and 3 columns
 
-for (i in row.names(comm)) {
+for (i in row.names(com)) {
   plot(prunedphy, show.tip.label = FALSE, main = i) 
-  tiplabels(tip = which(prunedphy$tip.label %in% names(which(comm [i, ] > 0))), pch = 19, cex = 2)
+  tiplabels(tip = which(prunedphy$tip.label %in% names(which(com [i, ] > 0))), pch = 19, cex = 2)
   }
 ```
 
@@ -130,7 +145,7 @@ SR is the same as observed richness ($\S_{obs}), which was introduced in the $\a
 
 ```{r}
 # Compares PD and Taxonomic Richness {picante}
-pd <- pd(comm, phy, include.root=FALSE)
+pd <- pd(com, jc.tree, include.root=FALSE)
 ```
 
 Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness (SR) of our samples.
@@ -273,7 +288,7 @@ http://joey711.github.io/phyloseq-demo/unifrac.html  <- out of date. not worth i
 ```{r}
 
 unifrac(comm, phydist)
-GUniFrac(comm, phydist)   # Tree Must be rooted
+# GUniFrac(comm, phydist)   # Tree Must be rooted
 
 
 GUniFrac(otu.tab, tree, alpha = c(0, 0.5, 1))
