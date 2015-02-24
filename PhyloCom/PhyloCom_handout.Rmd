@@ -244,7 +244,9 @@ Let's use `picante` to calucate NRI:
 # Important Concept? Variance-Covariance? Not exactly the same thing... --Jay(?)
 # The off-diagonal terms are covariances; sum((Xi - Xm)*(Yi - Ym))  --Ken
 # Since the variance is the covariance of a term with itself, the diagonal terms are variances: sum((Xi - Xm)*(Xi - Xm)) --Ken
-# Does this use the (co)variance or sample (co)variance?  --Ken
+# The covariance is the numerator in Pearson's correlation coefficient: cov(X,Y)/(std(X)*std(Y))
+# So, multiplying Pearson's correlation coefficient by the standard deviations of X and Y will yield the covariance. --Ken
+# Does the code use the (co)variance or sample (co)variance?  --Ken
 
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
