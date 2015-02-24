@@ -114,7 +114,7 @@ phy.rooted <- root(phy, outgroup, resolve.root = TRUE)
 par(mar = c(1,1,2,1) + 0.1)
 plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
            direction = "right", cex = 0.6, label.offset = 1)
-add.scale.bar(cex = 0.7)
+
 
 phy <- phy.rooted
 
