@@ -329,48 +329,54 @@ phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
 ```
 
 
-## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP
-Description 
+## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP (PDAR)
+Helmus and Ives (2012) studied how phylogenetic diversity changes with increasing area.
+This relationship, abbreviated PDAR, is analogous to the species-area relationship (SAR) we learned about in Geographical Ecology.
+Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
+In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
 
-Calculate nonspatial and spatial phylogenetic diversity area curves for an ecological data set.
-According to Helmus and Ives, the code assumes that the site by species matrix is ordered such that consecutive samples in the matrix are spatially closer to each other than to non-consecutive samples.
-There are serious serious issues with that assumption, but here's goes...
+In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
+While both sampling methods capture the effect of increasing area, sampling with respect to location also captures the effect of increasing distance.
+Here, we will construct PDARs similar to the spatial (aggregating adjacent plots) and non-spatial (aggregating plots at random) forms of Helmus and Ives (2012).
+**Fortunately, Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in Geographical Ecology.**
 
+Let's begin by writing a function to generate the PDAR.
+This function will accept the following arguments:
+comm     :  the site-by-species matrix 
+phy.rooted  : the rooted phylogenetic tree
+spatial  :  aggregate randomly or with respect to distance;  values are TRUE or FALSE; use FALSE as the default
+PD.index  :   phylogenetic diversity index; use 'PSV', 'NRI', 'NDI'
 
 ```{r}
-pdac.psv <- function(comm, phy.rooted, reps=100, lt=1){
+pdac.psv <- function(comm, phy.rooted, PD.index, spatial=FALSE){
+
+  reps=100
+  areas <- c()
+  diversity <- c()
   
-  Y <- comm # Site by species matrix
-  Y[Y > 0] <- 1 # Assign a 1 to every element of Y greater than 1; turns Y into presence absence
+  for (i in 1:51) { # Loop through all values of sample size
   
-  m <- dim(Y)[1] # number of sites
-  SAcurve <- NULL
-  
-  for(i in 1:2){
+    pond.sample <- sample(51, replace = FALSE, size = i) # draw a random sample w/out replacement      
+    area <- 0 # a variable to hold accumulating area
+    sites <- c() # a vector to hold accumulating taxa
     
-    for(a in 1:round(lt * m)){
-      ratio <- NULL
+    for (j in pond.sample) { # Loop through each randomly drawn pond
+      area <- area + pond.areas[j] # aggregating area
+      sites <- rbind(sites, as.numeric(OTUs[j, ]) # accumulating abundances of OTUs, and new OTUs
+      }
+
+    
+    if (PD.index == 'PSV')
+      ratio <- rbind(ratio, psv(, phy, compute.var=FALSE))
+    
+    if (PD.index == 'S'){
+      S1 <- length(cum.abs[cum.abs > 0])
+      #print(c(i, area, S1, S2))
+      sar.area <- c(sar.area, area)
+      sar.richness <- c(sar.richness, S1)
+  
+}
       
-      for(tt in 1:reps){
-        if(i == 1){  # nonspatial curve
-          pick <- sample(m)
-          pick <- pick[1:a]
-          } 
-        
-        else {      # spatial curve
-          pick <- sample(m+1-a)[1]
-          pick <- pick:(pick+a-1)
-          }
-        
-        if(a==1) { 
-          y <- Y[pick,]
-          } 
-        
-        else {
-          y <- colSums(Y[pick,]) > 0
-          }
-          
-        ratio <- rbind(ratio,psv(y, phy, compute.var=FALSE))
         }
       
       SAcurve <- rbind(SAcurve, c(i, a, mean(ratio[, 1], na.rm=TRUE),
@@ -379,9 +385,6 @@ pdac.psv <- function(comm, phy.rooted, reps=100, lt=1){
   }
   
   SAcurve<-data.frame(SAcurve)
-  SAcurve[SAcurve[,1] == 1, 1] <- "nonspatial"
-  SAcurve[SAcurve[,1] == "2", 1] <- "spatial"
-  
   colnames(SAcurve) <- c("curve","aggregate","mean.psv","sd.psv","mean.sr","sd.sr")
   return(SAcurve)
   
