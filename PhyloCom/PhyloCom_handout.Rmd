@@ -94,7 +94,7 @@ outgroup <- read.alignment(file = "./data/methanosarcina.fasta", format = "fasta
 DNAbin <- rbind(as.DNAbin(outgroup), as.DNAbin(ponds.cons))
 
 # Visusalize Sequence Alignment {ape}
-#image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1) 
+image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1) 
 
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
@@ -241,9 +241,16 @@ Negative NRI values indicate that a sample is phylogenetically overdispersed; th
 Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
 Let's use `picante` to calucate NRI:
 
+# Important Concept? Variance-Covariance? Not exactly the same thing... --Jay(?)
+# The off-diagonal terms are covariances; sum((Xi - Xm)*(Yi - Ym))  --Ken
+# Since the variance is the covariance of a term with itself, the diagonal terms are variances: sum((Xi - Xm)*(Xi - Xm)) --Ken
+# The covariance is the numerator in Pearson's correlation coefficient: cov(X,Y)/(std(X)*std(Y))
+# So, multiplying Pearson's correlation coefficient by the standard deviations of X and Y will yield the covariance. --Ken
+# Does the code use the (co)variance or sample (co)variance?  --Ken
+
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
-# Important Concept? Variance-Covariance? Not exactly the same thing...
+
 phydist <- cophenetic(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
@@ -280,7 +287,6 @@ How does this affect the interpretation of NRI and NTI?
 
 ## POTENTIAL EXERCISE: HAVE STUDENTS LOOK FOR CORRELATIONS BETWEEN NRI/NTI AND ENVIRONMENTAL VARIABLES. 
 ## DOES CLUSTERING/DISPERSION CHANGE ALONG GRADIENTS OR WITH PD? IF SO, WHAT ARE SOME DIFFERENT EXPLANATIONS?
-
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
