@@ -59,6 +59,8 @@ Also, maybe reference to the reference data base.
 
 First, we'll load the environmental data, along with the site-by-species matrix:
 ```{r}
+require("reshape")
+
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
@@ -66,9 +68,9 @@ env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
 # Select Only DNA 
-comm <- comm[grep("*-DNA", rownames(comm)), ]
-rownames(comm) <- gsub("\\-DNA", "", rownames(comm))
-rownames(comm) <- gsub("\\_", "", rownames(comm))
+comm <- comm[grep("*-DNA", rownames(comm)), ] # insert comment, i.e., what's this do?
+rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) # insert comment
+rownames(comm) <- gsub("\\_", "", rownames(comm)) # insert comment
 
 # Remove Zero-Occurrence Species
 comm <- comm[ , colSums(comm) > 0]
@@ -154,18 +156,21 @@ pd <- pd(comm, phy, include.root=FALSE)
 ```
 
 Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness (SR) of our samples.
+We'll use a log-log transformation, so that the slope of the relationship gives us a power-law exponent which describes how PD scales with SR.
 
 ```{r}
-# Biplot of SR and PD
+# Biplot of SR and PD, log-transforming
 par(mar = c(5, 5, 2, 1) + 0.1)
-plot(pd$SR, pd$PD, 
-     pch = 20, col = "red", las = 1, xlim = c(0, 800), ylim = c(0, 100),
-     xlab = "Taxonomic Richness (SR)", ylab = "Phylodiversity (PD)") 
-abline(b = 1, a = 0, lty = 2)
-text(50, 90, "1:1")
 
-# Correlation of SR and PD
-corr <- cor(pd$SR, pd$PD)
+plot(log(pd$SR), log(pd$PD), 
+     pch = 20, col = "red", las = 1,
+     xlab = "log(SR)", ylab = "log(PD)", 
+     main="Phylodiversity (PD) vs. \nTaxonomic richness (SR)")
+
+OLS <- lm('log(pd$PD) ~ log(pd$SR)')
+abline(OLS, col="red", lw=2)
+exponent <- round(coefficients(OLS)[2], 3)
+legend("topleft", legend=paste("Scaling exponent=", exponent), bty="n", lw=2, col = "red") 
 ```
 
 ***Question 1***: Compare patterns of PD and SR. 
@@ -236,14 +241,21 @@ Negative NRI values indicate that a sample is phylogenetically overdispersed; th
 Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
 Let's use `picante` to calucate NRI:
 
+# Important Concept? Variance-Covariance? Not exactly the same thing... --Jay(?)
+# The off-diagonal terms are covariances; sum((Xi - Xm)*(Yi - Ym))  --Ken
+# Since the variance is the covariance of a term with itself, the diagonal terms are variances: sum((Xi - Xm)*(Xi - Xm)) --Ken
+# The covariance is the numerator in Pearson's correlation coefficient: cov(X,Y)/(std(X)*std(Y))
+# So, multiplying Pearson's correlation coefficient by the standard deviations of X and Y will yield the covariance. --Ken
+# Does the code use the (co)variance or sample (co)variance?  --Ken
+
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
-# Important Concept? Variance-Covariance? Not exactly the same thing...
+
 phydist <- cophenetic(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
 ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 1000)
- 
+
 # Calculate NRI
 NRI <- as.matrix(-1 * ((ses.mpd[,1] - ses.mpd[,2]) / ses.mpd[,3]))
 rownames(NRI) <- row.names(ses.mpd)
@@ -275,7 +287,6 @@ How does this affect the interpretation of NRI and NTI?
 
 ## POTENTIAL EXERCISE: HAVE STUDENTS LOOK FOR CORRELATIONS BETWEEN NRI/NTI AND ENVIRONMENTAL VARIABLES. 
 ## DOES CLUSTERING/DISPERSION CHANGE ALONG GRADIENTS OR WITH PD? IF SO, WHAT ARE SOME DIFFERENT EXPLANATIONS?
-
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
@@ -318,7 +329,92 @@ phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
 ```
 
 
-## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP
+## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP (PDAR)
+Helmus and Ives (2012) studied how phylogenetic diversity changes with increasing area.
+This relationship, abbreviated PDAR, is analogous to the species-area relationship (SAR) we learned about in Geographical Ecology.
+Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
+In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
+
+Helmus and Ives use the Phylogenetic species variability (PSV) metric.
+PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical unselected (i.e. neutral) trait shared by all species in a community. 
+Type 'help(psv)' to learn more.
+
+In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
+While both sampling methods capture the effect of increasing area, sampling with respect to location also captures the effect of increasing distance.
+Here, we will construct PDARs similar to the spatial (aggregating adjacent plots) and non-spatial (aggregating plots at random) forms of Helmus and Ives (2012).
+**Fortunately, Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in Geographical Ecology.**
+
+Let's begin by writing a function to generate the PDAR.
+
+```{r}
+pdac.psv <- function(comm, phy.rooted, PD.index, spatial=FALSE){
+  
+  # This function will accept the following arguments:
+    # comm     :  the site-by-species matrix 
+    # phy.rooted  : the rooted phylogenetic tree
+    # spatial  :  aggregate randomly or with respect to distance
+  
+  reps=100
+  areas <- c()
+  diversity <- c()
+  
+  for (i in 1:51) { # Loop through all values of sample size
+  
+    pond.sample <- sample(51, replace = FALSE, size = i) # draw a random sample w/out replacement      
+    area <- 0 # a variable to hold accumulating area
+    sites <- c() # a vector to hold accumulating taxa
+    
+    for (j in pond.sample) { # Loop through each randomly drawn pond
+      area <- area + pond.areas[j] # aggregating area
+      sites <- rbind(sites, as.numeric(OTUs[j, ]) # accumulating abundances of OTUs, and new OTUs
+      }
+
+    
+    if (PD.index == 'PSV')
+      ratio <- rbind(ratio, psv(, phy, compute.var=FALSE))
+    
+    if (PD.index == 'S'){
+      S1 <- length(cum.abs[cum.abs > 0])
+      #print(c(i, area, S1, S2))
+      sar.area <- c(sar.area, area)
+      sar.richness <- c(sar.richness, S1)
+  
+}
+      
+        }
+      
+      SAcurve <- rbind(SAcurve, c(i, a, mean(ratio[, 1], na.rm=TRUE),
+                          sd(ratio[, 1], na.rm=TRUE), mean(ratio[, 2]), sd(ratio[, 2])))
+    }
+  }
+  
+  SAcurve<-data.frame(SAcurve)
+  colnames(SAcurve) <- c("curve","aggregate","mean.psv","sd.psv","mean.sr","sd.sr")
+  return(SAcurve)
+  
+}
+```
+
+
+An example
+```{r}
+pdac <- pdac.psv(comm[1:10, 100:200], phy)
+
+par(las=1)
+plot(pdac[, 2:3], type = "n", ylab = "phylogenetic diversity (PSV)", xlab = "area (# of samples)")
+
+lines(pdac[pdac[, 1] == "nonspatial", 2:3], col="red")
+points(pdac[pdac[, 1] == "nonspatial", 2:3], col="red", pch=19)
+
+lines(pdac[pdac[, 1] == "spatial",2:3],col="blue")
+points(pdac[pdac[, 1] == "spatial",2:3],col="blue",pch=19)
+
+legend(x=4,y=0.78,pch=19,legend=c("nonspatial","spatial"),lty=1,col = c("red","blue")) 
+```
+
+
+
+
 
 
 
