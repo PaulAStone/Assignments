@@ -38,6 +38,7 @@ After the initial installation of these packages using the `install.packages()` 
 require("picante")
 require("ape")
 require("seqinr")
+require("reshape")
 ```
 
 ### C. Load Source Code
@@ -56,26 +57,23 @@ Perhaps a bit more info on the nature of the sequence data and how we generated 
 Also, maybe reference to the reference data base. 
 
 ## 3) LOADING OF DATA
-
 First, we'll load the environmental data, along with the site-by-species matrix:
 ```{r}
-require("reshape")
-
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
-# Select Only DNA 
+# Select Taxa Recovered via DNA (not RNA) Sequencing
 comm <- comm[grep("*-DNA", rownames(comm)), ] # insert comment, i.e., what's this do?
 rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) # insert comment
 rownames(comm) <- gsub("\\_", "", rownames(comm)) # insert comment
 
-# Remove Zero-Occurrence Species
+# Remove Zero-Occurrence Taxa
 comm <- comm[ , colSums(comm) > 0]
 
-# Taxonomy Data
+# Acquire Taxonomic Data Associated with Sequences
 tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
 ```
 
@@ -84,10 +82,10 @@ Now, let's load and process some of the phylogenetic data:
 # Import the Alignment File {seqinr}
 ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
 
-# Rename OTUs in FASTA file
+# Rename OTUs in FASTA File
 ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
 
-# Import Outgroup FASTA File
+# Import Outgroup FASTA File {seqinr}
 outgroup <- read.alignment(file = "./data/methanosarcina.fasta", format = "fasta")
 
 # Convert Alignment File to DNAbin Object {ape}
@@ -99,30 +97,27 @@ image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1)
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 
-# Use Neighbor Joining Algorithm to Construct Tree, a 'phylo' Object {ape}
+# Use Neighbor Joining Algorithm to Construct a Full Tree (DNA and RNA sequences) {ape}
 phy.all <- bionj(seq.dist.jc)
 
-# Drop Tips of Zero-Occurrence OTUs
+# Drop Tips of Zero-Occurrence OTUs (Removes Taxa Only Found via RNA sequences) {ape}
 phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% c(colnames(comm), "Methanosarcina")])
 
-# Root Tree
 # Identify Outgroup Sequence
 outgroup <- match("Methanosarcina", phy$tip.label)
 
 # Root the Tree {ape}
 phy.rooted <- root(phy, outgroup, resolve.root = TRUE)
 
-# Plot the Rooted Tree{ape}
+# Plot the Rooted Tree {ape}
 par(mar = c(1,1,2,1) + 0.1)
-plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
+plot.phylo(phy.rooted, main = "Neighbor Joining Tree", "phylogram", use.edge.length = FALSE,
            direction = "right", cex = 0.6, label.offset = 1)
 add.scale.bar(cex = 0.7)
 
 phy <- phy.rooted
 
-# MEM: "Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
-# I'm thinking that we can just append the sequence to this file. 
-# I'll probably align an outgroup to silva first to make things easier though."
+### MEM: code in last section seems to be creating two trees: phy and the other one that is plotted. Do we need both?
 ```
 
 ## Example from Picante Vignette: way to move forward while figuring out the pond data set
@@ -143,16 +138,17 @@ comm.eg <- phylocom$sample
 ### A.  Faith's Phylogenetic Diversity (PD)
 In 1992, Daniel Faith developed a diversity metric called Faith's PD (http://goo.gl/wM08Oy).
 The metric sums the branch lengths for each species in a sample from the root to the tip of the tree.
-The value of the metric captures ... and can be interpreted as ... and used to ...  --Ken
+The value of the metric captures the evolutionary history of an assemblage. 
+Higher PD values indicate that an assemblage contains more evoluiotnarily divergent taxa, while lower PD values indicate that an assemblage contains taxa with a more restricted evolutionary history. 
 
 Faith's PD can be implemented in R using the `pd()` function in the `picante` package. 
 A phylognetic tree containing the regional species pool is required. 
 In addition to returning Faith's PD, the `pd()` function also returns species richness (SR).
-SR is the same as observed richness ($\S_{obs}), which was introduced in the $\alpha$ diversity module. 
+SR is the same as observed richness ($\S_{obs}), which we covered in the $\alpha$ diversity module. 
 
 ```{r}
 # Compares PD and Taxonomic Richness {picante}
-pd <- pd(comm, phy, include.root=FALSE)
+pd <- pd(comm, phy, include.root = FALSE)
 ```
 
 Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness (SR) of our samples.
@@ -174,7 +170,7 @@ legend("topleft", legend=paste("Scaling exponent=", exponent), bty="n", lw=2, co
 ```
 
 ***Question 1***: Compare patterns of PD and SR. 
-a.  Is taxonomic richness correlated with phylodiversity?
+a.  Describe the relationship between taxonomic richness and phylodiversity?
 b.  Mathematically, why should they be correlated?  
 c.  Under what conditions would you expect these two estimates of diversity to deviate from one another?
 
@@ -221,6 +217,10 @@ The following table describes some of the null models that are available to us w
 
 Now, we are going to use the `ses.pd()` function in `picante`. 
 This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model. 
+
+### JTL: perhpas we can work with a reduced commmunity data set (a few sites and a subset of the taxa) to address the slow performance of ses.pd
+### JTL: the other thing to do is to carefully compared the types of data that are going into the function (comm and phy)
+### JTL: last, Mario suggested that maybe it has something to do with the null.model
 
 ```{r}
 # Need to root tree first
