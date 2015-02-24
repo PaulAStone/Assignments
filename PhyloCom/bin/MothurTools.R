@@ -33,6 +33,17 @@ read.otu <- function(shared = " ", cutoff = "0.03"){
   return(matrix.out)
   }
 
+read.tax <- function(taxonomy = " ", format = "rdp"){
+  tax_raw <- read.delim(taxonomy)                 # load genus-level data
+  if (format == "rdp"){
+  tax <- cbind(OTU = tax_raw[,1],colsplit(tax_raw[,3], split="\\;",
+               names=c("Domain","Phylum","Class","Order","Family","Genus")))
+  } else {
+    stop("This funciton currently only works for RDP taxonomy")
+  }
+  return(tax)
+}
+
 # Count All Groups
 count.groups <- function(otu.matrix = " "){
   counts <- rowSums(otu.matrix)

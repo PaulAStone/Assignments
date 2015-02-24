@@ -68,9 +68,13 @@ comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 # Select Only DNA 
 comm <- comm[grep("*-DNA", rownames(comm)), ]
 rownames(comm) <- gsub("\\-DNA", "", rownames(comm))
+rownames(comm) <- gsub("\\_", "", rownames(comm))
 
 # Remove Zero-Occurrence Species
 comm <- comm[ , colSums(comm) > 0]
+
+# Taxonomy Data
+tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
 ```
 
 Now, let's load and process some of the phylogenetic data:
@@ -81,11 +85,14 @@ ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", form
 # Rename OTUs in FASTA file
 ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
 
+# Import Outgroup FASTA File
+outgroup <- read.alignment(file = "./data/methanosarcina.fasta", format = "fasta")
+
 # Convert Alignment File to DNAbin Object {ape}
-DNAbin <- as.DNAbin(ponds.cons) 
+DNAbin <- rbind(as.DNAbin(outgroup), as.DNAbin(ponds.cons))
 
 # Visusalize Sequence Alignment {ape}
-image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.1, las=1) 
+image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1) 
 
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
@@ -94,7 +101,22 @@ seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 phy.all <- bionj(seq.dist.jc)
 
 # Drop Tips of Zero-Occurrence OTUs
-phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% colnames(comm)])
+phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% c(colnames(comm), "Methanosarcina")])
+
+# Root Tree
+# Identify Outgroup Sequence
+outgroup <- match("Methanosarcina", phy$tip.label)
+
+# Root the Tree {ape}
+phy.rooted <- root(phy, outgroup, resolve.root = TRUE)
+
+# Plot the Rooted Tree{ape}
+par(mar = c(1,1,2,1) + 0.1)
+plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
+           direction = "right", cex = 0.6, label.offset = 1)
+add.scale.bar(cex = 0.7)
+
+phy <- phy.rooted
 
 # MEM: "Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
 # I'm thinking that we can just append the sequence to this file. 
@@ -198,7 +220,7 @@ This function estimates the standardized effect size ("ses") by comparing the ob
 ```{r}
 # Need to root tree first
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
-ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, iterations = 99)
+ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, iterations = 2, include.root=FALSE)
 ```
 
 ***Question 2***: Using the `help()` function, choose two null models that can be used with `ses.pd()`.
