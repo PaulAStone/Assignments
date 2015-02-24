@@ -335,21 +335,25 @@ This relationship, abbreviated PDAR, is analogous to the species-area relationsh
 Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
 In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
 
+Helmus and Ives use the Phylogenetic species variability (PSV) metric.
+PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical unselected (i.e. neutral) trait shared by all species in a community. 
+Type 'help(psv)' to learn more.
+
 In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
 While both sampling methods capture the effect of increasing area, sampling with respect to location also captures the effect of increasing distance.
 Here, we will construct PDARs similar to the spatial (aggregating adjacent plots) and non-spatial (aggregating plots at random) forms of Helmus and Ives (2012).
 **Fortunately, Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in Geographical Ecology.**
 
 Let's begin by writing a function to generate the PDAR.
-This function will accept the following arguments:
-comm     :  the site-by-species matrix 
-phy.rooted  : the rooted phylogenetic tree
-spatial  :  aggregate randomly or with respect to distance;  values are TRUE or FALSE; use FALSE as the default
-PD.index  :   phylogenetic diversity index; use 'PSV', 'NRI', 'NDI'
 
 ```{r}
 pdac.psv <- function(comm, phy.rooted, PD.index, spatial=FALSE){
-
+  
+  # This function will accept the following arguments:
+    # comm     :  the site-by-species matrix 
+    # phy.rooted  : the rooted phylogenetic tree
+    # spatial  :  aggregate randomly or with respect to distance
+  
   reps=100
   areas <- c()
   diversity <- c()
