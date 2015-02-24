@@ -59,6 +59,8 @@ Also, maybe reference to the reference data base.
 
 First, we'll load the environmental data, along with the site-by-species matrix:
 ```{r}
+require("reshape")
+
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
@@ -66,9 +68,9 @@ env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
 # Select Only DNA 
-comm <- comm[grep("*-DNA", rownames(comm)), ]
-rownames(comm) <- gsub("\\-DNA", "", rownames(comm))
-rownames(comm) <- gsub("\\_", "", rownames(comm))
+comm <- comm[grep("*-DNA", rownames(comm)), ] # insert comment, i.e., what's this do?
+rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) # insert comment
+rownames(comm) <- gsub("\\_", "", rownames(comm)) # insert comment
 
 # Remove Zero-Occurrence Species
 comm <- comm[ , colSums(comm) > 0]
@@ -92,7 +94,7 @@ outgroup <- read.alignment(file = "./data/methanosarcina.fasta", format = "fasta
 DNAbin <- rbind(as.DNAbin(outgroup), as.DNAbin(ponds.cons))
 
 # Visusalize Sequence Alignment {ape}
-image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1) 
+#image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1) 
 
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
@@ -154,18 +156,21 @@ pd <- pd(comm, phy, include.root=FALSE)
 ```
 
 Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness (SR) of our samples.
+We'll use a log-log transformation, so that the slope of the relationship gives us a power-law exponent which describes how PD scales with SR.
 
 ```{r}
-# Biplot of SR and PD
+# Biplot of SR and PD, log-transforming
 par(mar = c(5, 5, 2, 1) + 0.1)
-plot(pd$SR, pd$PD, 
-     pch = 20, col = "red", las = 1, xlim = c(0, 800), ylim = c(0, 100),
-     xlab = "Taxonomic Richness (SR)", ylab = "Phylodiversity (PD)") 
-abline(b = 1, a = 0, lty = 2)
-text(50, 90, "1:1")
 
-# Correlation of SR and PD
-corr <- cor(pd$SR, pd$PD)
+plot(log(pd$SR), log(pd$PD), 
+     pch = 20, col = "red", las = 1,
+     xlab = "log(SR)", ylab = "log(PD)", 
+     main="Phylodiversity (PD) vs. \nTaxonomic richness (SR)")
+
+OLS <- lm('log(pd$PD) ~ log(pd$SR)')
+abline(OLS, col="red", lw=2)
+exponent <- round(coefficients(OLS)[2], 3)
+legend("topleft", legend=paste("Scaling exponent=", exponent), bty="n", lw=2, col = "red") 
 ```
 
 ***Question 1***: Compare patterns of PD and SR. 
@@ -243,7 +248,7 @@ phydist <- cophenetic(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
 ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 1000)
- 
+
 # Calculate NRI
 NRI <- as.matrix(-1 * ((ses.mpd[,1] - ses.mpd[,2]) / ses.mpd[,3]))
 rownames(NRI) <- row.names(ses.mpd)
@@ -319,6 +324,84 @@ phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
 
 
 ## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP
+Description 
+
+Calculate nonspatial and spatial phylogenetic diversity area curves for an ecological data set.
+According to Helmus and Ives, the code assumes that the site by species matrix is ordered such that consecutive samples in the matrix are spatially closer to each other than to non-consecutive samples.
+There are serious serious issues with that assumption, but here's goes...
+
+
+```{r}
+pdac.psv <- function(comm, phy.rooted, reps=100, lt=1){
+  
+  Y <- comm # Site by species matrix
+  Y[Y > 0] <- 1 # Assign a 1 to every element of Y greater than 1; turns Y into presence absence
+  
+  m <- dim(Y)[1] # number of sites
+  SAcurve <- NULL
+  
+  for(i in 1:2){
+    
+    for(a in 1:round(lt * m)){
+      ratio <- NULL
+      
+      for(tt in 1:reps){
+        if(i == 1){  # nonspatial curve
+          pick <- sample(m)
+          pick <- pick[1:a]
+          } 
+        
+        else {      # spatial curve
+          pick <- sample(m+1-a)[1]
+          pick <- pick:(pick+a-1)
+          }
+        
+        if(a==1) { 
+          y <- Y[pick,]
+          } 
+        
+        else {
+          y <- colSums(Y[pick,]) > 0
+          }
+          
+        ratio <- rbind(ratio,psv(y, phy, compute.var=FALSE))
+        }
+      
+      SAcurve <- rbind(SAcurve, c(i, a, mean(ratio[, 1], na.rm=TRUE),
+                          sd(ratio[, 1], na.rm=TRUE), mean(ratio[, 2]), sd(ratio[, 2])))
+    }
+  }
+  
+  SAcurve<-data.frame(SAcurve)
+  SAcurve[SAcurve[,1] == 1, 1] <- "nonspatial"
+  SAcurve[SAcurve[,1] == "2", 1] <- "spatial"
+  
+  colnames(SAcurve) <- c("curve","aggregate","mean.psv","sd.psv","mean.sr","sd.sr")
+  return(SAcurve)
+  
+}
+```
+
+
+An example
+```{r}
+pdac <- pdac.psv(comm[1:10, 100:200], phy)
+
+par(las=1)
+plot(pdac[, 2:3], type = "n", ylab = "phylogenetic diversity (PSV)", xlab = "area (# of samples)")
+
+lines(pdac[pdac[, 1] == "nonspatial", 2:3], col="red")
+points(pdac[pdac[, 1] == "nonspatial", 2:3], col="red", pch=19)
+
+lines(pdac[pdac[, 1] == "spatial",2:3],col="blue")
+points(pdac[pdac[, 1] == "spatial",2:3],col="blue",pch=19)
+
+legend(x=4,y=0.78,pch=19,legend=c("nonspatial","spatial"),lty=1,col = c("red","blue")) 
+```
+
+
+
+
 
 
 
