@@ -58,6 +58,7 @@ Also, maybe reference to the reference data base.
 
 ## 3) LOADING OF DATA
 First, we'll load the environmental data, along with the site-by-species matrix:
+
 ```{r}
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
@@ -78,6 +79,7 @@ tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
 ```
 
 Now, let's load and process some of the phylogenetic data:
+
 ```{r}
 # Import the Alignment File {seqinr}
 ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
@@ -121,6 +123,7 @@ phy <- phy.rooted
 ```
 
 ## Example from Picante Vignette: way to move forward while figuring out the pond data set
+
 ```{r}
 # From Picante Vignette (http://goo.gl/EYOZ55)
 data(phylocom)
@@ -160,13 +163,13 @@ par(mar = c(5, 5, 2, 1) + 0.1)
 
 plot(log(pd$SR), log(pd$PD), 
      pch = 20, col = "red", las = 1,
-     xlab = "log(SR)", ylab = "log(PD)", 
-     main="Phylodiversity (PD) vs. \nTaxonomic richness (SR)")
+     xlab = "log(SR)", ylab = "log(PD)", cex.main = 0.85,
+     main="Phylodiversity (PD) vs. Taxonomic richness (SR)")
 
 OLS <- lm('log(pd$PD) ~ log(pd$SR)')
-abline(OLS, col="red", lw=2)
+abline(OLS, col = "red", lw = 2)
 exponent <- round(coefficients(OLS)[2], 3)
-legend("topleft", legend=paste("Scaling exponent=", exponent), bty="n", lw=2, col = "red") 
+legend("topleft", legend = paste("Scaling exponent =", exponent), bty = "n", lw = 2, col = "red") 
 ```
 
 ***Question 1***: Compare patterns of PD and SR. 
@@ -218,14 +221,10 @@ The following table describes some of the null models that are available to us w
 Now, we are going to use the `ses.pd()` function in `picante`. 
 This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model. 
 
-### JTL: perhpas we can work with a reduced commmunity data set (a few sites and a subset of the taxa) to address the slow performance of ses.pd
-### JTL: the other thing to do is to carefully compared the types of data that are going into the function (comm and phy)
-### JTL: last, Mario suggested that maybe it has something to do with the null.model
-
 ```{r}
 # Need to root tree first
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
-ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, iterations = 2, include.root=FALSE)
+ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 10, iterations = 2, include.root = FALSE)
 ```
 
 ***Question 2***: Using the `help()` function, choose two null models that can be used with `ses.pd()`.
@@ -253,7 +252,7 @@ Let's use `picante` to calucate NRI:
 phydist <- cophenetic(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 1000)
+ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 10)
 
 # Calculate NRI
 NRI <- as.matrix(-1 * ((ses.mpd[,1] - ses.mpd[,2]) / ses.mpd[,3]))
