@@ -64,7 +64,7 @@ First, we'll load the environmental data, along with the site-by-species matrix:
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
 # Need to remove following 7 samples from env and comm
-# BC010, HNF191, HNF221, HNF242, HNF236, HNF237, YSF46, YSF67"
+# BC010, HNF191, HNF221, HNF236, HNF237, YSF46, YSF67
 
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
