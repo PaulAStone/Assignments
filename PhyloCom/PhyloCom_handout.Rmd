@@ -288,6 +288,7 @@ How does this affect the interpretation of NRI and NTI?
 
 ```{r}
 disp <- data.frame(NRI, NTI)
+```
 
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
@@ -410,6 +411,20 @@ Sp <- round(Spearman$p.value,3)
 plot(pdac, xlab='Area', ylab='PSV', main='Phylogenetic diversity-area relationship', col='red')
 legend("topleft", legend=paste("Spearman correlation =", S, "p =", Sp,
                                "\nPearson correlation =", P, "p =", Pp), bty="n", lw=0, col = "red") 
+```
+
+## 6) PHYLOGENETIC DISTANCE-DECAY RELATIONSHIP (PDD)
+Remember from the Geographical Ecology lesson that the Distance Decay relationship reflects the spatial autocorrelation of community similarity.
+That is, geographically near communities should be more similar than geographically distant communities.
+Given that similarity in community composition generally decreases with geographic distance, let's apply the concept of spatial autocorrelation to phylogenetic diversity and ask whether similarity in phylogenetic diversity also decreases with distance.
+Once more, we will use the PSV metric of Helmus and Ives (2012).
+
+```{r}
+
+
+
+
+
 ```
 
 ## 7) HOMEWORK 
