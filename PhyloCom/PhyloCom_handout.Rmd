@@ -371,9 +371,7 @@ pdac.psv <- function(comm, tree, PD.index='PSV'){
       area <- 0 # a variable to hold accumulating area
       sites <- c() # a vector to hold accumulating taxa
       
-      sites <- NULL # declare a null object
-      for (k in pond.sample) { # Loop through each randomly drawn pond...
-        
+      for (k in pond.sample) { # Loop through each randomly drawn pond...  
         area <- area + pond.areas[k] # aggregating area...
         sites <- rbind(sites, comm[k, ]) # and sites
         }
@@ -400,6 +398,7 @@ pdac.psv <- function(comm, tree, PD.index='PSV'){
 Now, let's examine the PDAR for our pond data set.
 We will investigate the relationship of phylogenetic diversity to area using both Spearman's correlation coefficient (S) and Pearson's correlation coefficient (P).
 It is informative to use both because while S is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), P is computed on the observed values and therefore depicts linear relationships.
+For example, if you S > P then the correlation is more monotonic than linear and vice versa.
 
 ```{r}
 pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
