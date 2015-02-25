@@ -59,23 +59,21 @@ Also, maybe reference to the reference data base.
 
 First, we'll load the environmental data, along with the site-by-species matrix:
 ```{r}
-require("reshape")
-
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
-# Select Only DNA 
-comm <- comm[grep("*-DNA", rownames(comm)), ] # insert comment, i.e., what's this do?
-rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) # insert comment
-rownames(comm) <- gsub("\\_", "", rownames(comm)) # insert comment
+# Select Only DNA Using GREP command and rename using gsub
+comm <- comm[grep("*-DNA", rownames(comm)), ] 
+rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) 
+rownames(comm) <- gsub("\\_", "", rownames(comm))
 
 # Remove Zero-Occurrence Species
 comm <- comm[ , colSums(comm) > 0]
 
-# Taxonomy Data
+# Import Taxonomy Data using read.tax from source code
 tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
 ```
 
@@ -117,12 +115,9 @@ par(mar = c(1,1,2,1) + 0.1)
 plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
            direction = "right", cex = 0.6, label.offset = 1)
 
-
+# Save tree as phy
 phy <- phy.rooted
 
-# MEM: "Need to figure out how to add an outgroup for rooting; otherwise this looks pretty good.
-# I'm thinking that we can just append the sequence to this file. 
-# I'll probably align an outgroup to silva first to make things easier though."
 ```
 
 ## Example from Picante Vignette: way to move forward while figuring out the pond data set
@@ -160,17 +155,18 @@ We'll use a log-log transformation, so that the slope of the relationship gives 
 
 ```{r}
 # Biplot of SR and PD, log-transforming
-par(mar = c(5, 5, 2, 1) + 0.1)
+par(mar = c(5, 5, 4, 1) + 0.1)
 
 plot(log(pd$SR), log(pd$PD), 
      pch = 20, col = "red", las = 1,
      xlab = "log(SR)", ylab = "log(PD)", 
-     main="Phylodiversity (PD) vs. \nTaxonomic richness (SR)")
+     main="Phylodiversity (PD) vs. Taxonomic Richness (SR)")
 
 OLS <- lm('log(pd$PD) ~ log(pd$SR)')
 abline(OLS, col="red", lw=2)
 exponent <- round(coefficients(OLS)[2], 3)
-legend("topleft", legend=paste("Scaling exponent=", exponent), bty="n", lw=2, col = "red") 
+legend("topleft", legend=paste("Scaling exponent = ", exponent, sep = ""), 
+       bty="n", lw=2, col = "red") 
 ```
 
 ***Question 1***: Compare patterns of PD and SR. 
