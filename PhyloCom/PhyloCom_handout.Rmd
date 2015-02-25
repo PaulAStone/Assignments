@@ -454,8 +454,7 @@ SAR <- function(OTUs){
 }
 ```
 
-
-Let's generate the SAR for our ponds dataset.
+Now, let's generate the SAR for our ponds dataset.
 
 ```{r}
 pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
@@ -471,6 +470,12 @@ abline(OLS, col = "red", lw = 2)
 slope <- round(coefficients(OLS)[2], 3)
 legend("topleft", legend = paste("slope =", slope), bty = "n", lw = 2, col = "red")  
 ```
+
+
+***Question X**: We observed a slope for our SAR that is only slightly lower than would normally be expected, but which is steeper than for many microbial communities. However, what did we observe for the PDAR and how might we explain the differences in the results of these biodiversity patterns, one being taxonomic (SAR) and the other being phylogenetic (PDAR)?
+
+> ***Answer X***:
+
 
 
 ## 6) PHYLOGENETIC DISTANCE-DECAY RELATIONSHIP (PDD)
