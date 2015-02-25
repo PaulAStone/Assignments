@@ -496,76 +496,41 @@ require("simba")
 Next, let's write a function to find the geographic distances and the differences in phylogenetic diversity between all unique pair-wise combinations of ponds.
 
 ```{r}
-PDD <- function( ){
+unifrac.dist <- unifrac(comm, phy) # unifrac distance
+bray.curtis.dist <- 1 - vegdist(OTUs) # Bray-Curtis similarity between the plots
+coord.dist <- dist(as.matrix(env$lat, env$long)) # geographic distance between plots
   
-  struc.dist <- unifrac(comm, phylo) # unifrac distance
-  coord.dist <- dist(as.matrix(lats, lons)) # geographical distance between plots
+# transform all distance matrices into list format:
+unifrac.dist.ls <- liste(unifrac.dist, entry="unifrac")
+bray.curtis.dist.ls <- liste(bray.curtis.dist, entry="bray.curtis")
+coord.dist.ls <- liste(coord.dist, entry="geo.dist")
 
-  # transform environmental data to numeric types
-  temp <- as.numeric(Ponds$"Salinity")
-  elev <- as.numeric(Ponds$"ORP")
-  depth <- as.numeric(Ponds$"Depth")
-  doc <- as.numeric(Ponds$"DOC")
+# Now, create a data frame containing similarity of the environment and similarity of community.
+df <- data.frame(coord.dist.ls, bray.curtis.dist.ls[,3], unifrac.dist.ls[,3])
+names(df)[4:5] <- c("bray.curtis", "unifrac")
+attach(df) #df <- subset(df, struc != 0)
 
-  # calculate the distance (Euclidean) between the plots regarding environmental variables
-  env.dist <- 1 - vegdist(cbind(temp, elev, depth, doc), "euclidean")
-
-  # transform all distance matrices into list format:
-  struc.dist.ls <- liste(struc.dist, entry="struc")
-  env.dist.ls <- liste(env.dist, entry="env")
-  coord.dist.ls <- liste(coord.dist, entry="dist")
-
-  # Now, create a data frame containing similarity of the environment and similarity of community.
-
-  df <- data.frame(coord.dist.ls, env.dist.ls[,3], struc.dist.ls[,3])
-  names(df)[4:5] <- c("env", "struc")
-  attach(df) #df <- subset(df, struc != 0)
-
-  # Finally, let's plot the Distance-decay relationships, with regression lines in red.
-
-plot(dist, env, xlab="Geographic Distance", ylab="Euclidean Distance", 
-     main = "Distance-Decay for the Environment", col='SteelBlue')
+# Finally, let's plot the Distance-decay relationships, with regression lines in red.
+plot(geo.dist, bray.curtis, xlab="Geographic Distance", ylab="Bray-Curtis Similarity", 
+   main = "Distance-Decay for Taxa", col='SteelBlue')
 
 OLS <- lm(env ~ dist)
 OLS # print regression results to the screen
 abline(OLS, col="red4")
 
 par(mfrow=c(1, 1))
-plot(dist, struc, xlab="Geographic Distance", ylab="Bray-Curtis (similarity)", 
-     main="Distance-Decay for Community Composition", col='darkorchid4')
+plot(geo.dist, unifrac, xlab="Geographic Distance", ylab="Unifrac Distance", 
+     main="Distance-Decay for Phylogenetic", col='darkorchid4')
 
 OLS <- lm(struc ~ dist)
 OLS # print regression results to the screen
 abline(OLS, col="red4")
 
-  # Let's, examine the slope of the regression lines, asking whether they are significantly different from one another.
+# Let's, examine the slope of the regression lines, asking whether they are significantly different from one another.
 
-diffslope(dist, env, dist, struc)
+diffslope(geo.dist, unifrac, geo.dist, bray.curtis)
 ```
 
-
-Now, let's generate and analyze the distance decay relationship for phylogenetic diversity.
-We'll be using Helmus and Ives (2012) metric, i.e., phylogenetic species variability (PSV).
-
-```{r}
-pdd <- PDD() # Generate the phylogenetic diversity distance decay
-pdd2 <- as.data.frame(pdd)
-
-Pearson <- cor.test(pdd2$V1, pdd2$PSVs, method="pearson")
-P <- round(Pearson$estimate,2) # Pearson's
-Pp <- round(Pearson$p.value,3) # p-value
-
-Spearman <- cor.test(pdd2$V1, pdd2$PSVs, method="spearman")
-S <- round(Spearman$estimate,2) # Spearman's
-Sp <- round(Spearman$p.value,3) # p-value
-
-plot(pdd2, xlab='Distance (Km)', ylab='Difference in phylodiversity, PSV',
-     main='Difference in phylogenetic diversity
-     with increasing distance lags', col='red')
-
-legend("topleft", legend=paste("Spearman correlation =", S, "p =", Sp,
-        "\nPearson correlation =", P, "p =", Pp), bty="n", lw=0, col = "red") 
-```
 
 ## 7) HOMEWORK 
 
