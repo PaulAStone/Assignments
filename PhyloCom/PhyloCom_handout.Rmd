@@ -333,6 +333,59 @@ phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
 
 
 ## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP (PDAR)
+
+
+```{r, echo=FALSE}
+# Ken's SAR function
+SAR <- function(OTUs){
+  Alist <- c()
+  Slist <- c()
+  
+  num.ponds <- c(1,2,4,8,16,32,51)
+  for (i in num.ponds) {   
+    areas <- c() # hold iterated area values 
+    Ss <- c() # hold iterated S values
+    
+    for(j in 1:100){
+      pond.sample <- sample(51, replace = FALSE, size = i) 
+      area <- 0
+      cum.abs <- vector(mode="numeric", length=length(comm))
+  
+      for (k in pond.sample) { # Loop through each randomly drawn pond
+        area <- area + pond.areas[k] # aggregating area, (incrementing)
+        cum.abs <- cum.abs + as.numeric(comm[k, ])
+    
+      } # End random pond samples loop
+      S <- length(cum.abs[cum.abs > 0])
+      areas <- c(areas, area)
+      Ss <- c(Ss, S)
+    }
+    Alist <- rbind(Alist, mean(areas))
+    Slist <- rbind(Slist, mean(Ss))
+    print(c(mean(areas), mean(Ss)))
+  }
+  return(cbind(log(Alist), log(Slist)))
+}
+```
+
+Generate the SAR (random aggregation)
+
+```{r, echo=FALSE}
+pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
+sar <- SAR(comm)
+sar <- as.data.frame(sar)
+
+plot(sar, xlab="log(Area)", ylab="log(Richness)", 
+     main="Species-area relationship", col="red")
+
+OLS <- lm('sar$V2 ~ sar$V1')
+abline(OLS, col = "red", lw = 2)
+
+slope <- round(coefficients(OLS)[2], 3)
+legend("topleft", legend = paste("slope =", slope), bty = "n", lw = 2, col = "red")  
+```
+
+
 Helmus and Ives (2012) studied how phylogenetic diversity changes with increasing area.
 This relationship, abbreviated PDAR, is analogous to the species-area relationship (SAR) we learned about in Geographical Ecology.
 Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
@@ -396,7 +449,6 @@ It is informative to use both because while S is computed on ranks and depicts m
 For example, if you S > P then the correlation is more monotonic than linear and vice versa.
 
 ```{r}
-pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
 pdac <- pdac.psv(comm, phy.rooted) # Compute the PDAR
 pdac <- as.data.frame(pdac)
 
