@@ -63,6 +63,9 @@ First, we'll load the environmental data, along with the site-by-species matrix:
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 
+# Need to remove following 7 samples from env and comm
+# BC010, HNF191, HNF221, HNF242, HNF236, HNF237, YSF46, YSF67"
+
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
@@ -224,10 +227,10 @@ This function estimates the standardized effect size ("ses") by comparing the ob
 ```{r}
 # Need to root tree first
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
-ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 10, iterations = 2, include.root = FALSE)
+ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, include.root = FALSE)
 ```
 
-***Question 2***: Using the `help()` function, choose two null models that can be used with `ses.pd()`.
+***Question 2***: Using the `help()` function and the table above, identify two null models that can be used with `ses.pd()`.
 Rerun `ses.pd()` with these null models.
 Compare and interpret the output. 
 
@@ -252,10 +255,10 @@ Let's use `picante` to calucate NRI:
 phydist <- cophenetic(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 10)
+ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 100) 12:10
 
 # Calculate NRI
-NRI <- as.matrix(-1 * ((ses.mpd[,1] - ses.mpd[,2]) / ses.mpd[,3]))
+NRI <- as.matrix(-1 * ((ses.mpd[,2] - ses.mpd[,3]) / ses.mpd[,4]))
 rownames(NRI) <- row.names(ses.mpd)
 colnames(NRI) <- "NRI"
 ```
@@ -268,10 +271,10 @@ Last, we multiply by -1 so that negative values correspond with overdispersion a
 
 ```{r}
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 1000)
+ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 100)
 
 # Calculate NTI
-NTI <- as.matrix(-1 * ((ses.mntd[,1] - ses.mntd[,2]) / ses.mntd[,3]))
+NTI <- as.matrix(-1 * ((ses.mntd[,2] - ses.mntd[,3]) / ses.mntd[,4]))
 rownames(NTI) <- row.names(ses.mntd)
 colnames(NTI) <- "NTI"
 ```
@@ -285,6 +288,10 @@ How does this affect the interpretation of NRI and NTI?
 
 ## POTENTIAL EXERCISE: HAVE STUDENTS LOOK FOR CORRELATIONS BETWEEN NRI/NTI AND ENVIRONMENTAL VARIABLES. 
 ## DOES CLUSTERING/DISPERSION CHANGE ALONG GRADIENTS OR WITH PD? IF SO, WHAT ARE SOME DIFFERENT EXPLANATIONS?
+
+```{r}
+disp <- data.frame(NRI, NTI)
+
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
