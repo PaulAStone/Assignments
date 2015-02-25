@@ -94,7 +94,7 @@ outgroup <- read.alignment(file = "./data/methanosarcina.fasta", format = "fasta
 DNAbin <- rbind(as.DNAbin(outgroup), as.DNAbin(ponds.cons))
 
 # Visusalize Sequence Alignment {ape}
-image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1) 
+#image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1) 
 
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
@@ -242,15 +242,14 @@ Positive NRI values indicate that a sample is phylogentically underdispersed, or
 Let's use `picante` to calucate NRI:
 
 # Important Concept? Variance-Covariance? Not exactly the same thing... --Jay(?)
-# The off-diagonal terms are covariances; sum((Xi - Xm)*(Yi - Ym))  --Ken
-# Since the variance is the covariance of a term with itself, the diagonal terms are variances: sum((Xi - Xm)*(Xi - Xm)) --Ken
+# The off-diagonal terms are covariances; sum((Xi - Xm)*(Yi - Ym))
+# Since the variance is the covariance of a term with itself, the diagonal terms are variances: sum((Xi - Xm)*(Xi - Xm))
 # The covariance is the numerator in Pearson's correlation coefficient: cov(X,Y)/(std(X)*std(Y))
-# So, multiplying Pearson's correlation coefficient by the standard deviations of X and Y will yield the covariance. --Ken
-# Does the code use the (co)variance or sample (co)variance?  --Ken
+# So, multiplying Pearson's correlation coefficient by the standard deviations of X and Y will yield the covariance.
+# Does the code use the (co)variance or sample (co)variance?
 
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
-
 phydist <- cophenetic(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
@@ -335,8 +334,8 @@ This relationship, abbreviated PDAR, is analogous to the species-area relationsh
 Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
 In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
 
-Helmus and Ives use the Phylogenetic species variability (PSV) metric.
-PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical unselected (i.e. neutral) trait shared by all species in a community. 
+Helmus and Ives use the Phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
+PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
 Type 'help(psv)' to learn more.
 
 In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
@@ -345,60 +344,58 @@ Here, we will construct PDARs similar to the spatial (aggregating adjacent plots
 **Fortunately, Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in Geographical Ecology.**
 
 Let's begin by writing a function to generate the PDAR.
-
+  
 ```{r}
-pdac.psv <- function(comm, phy.rooted, PD.index, spatial=FALSE){
+pdac.psv <- function(comm, tree, PD.index='PSV', spatial=FALSE){
   
-  # This function will accept the following arguments:
-    # comm     :  the site-by-species matrix 
-    # phy.rooted  : the rooted phylogenetic tree
-    # spatial  :  aggregate randomly or with respect to distance
-  
-  reps=100
   areas <- c()
   diversity <- c()
   
-  for (i in 1:51) { # Loop through all values of sample size
-  
-    pond.sample <- sample(51, replace = FALSE, size = i) # draw a random sample w/out replacement      
-    area <- 0 # a variable to hold accumulating area
-    sites <- c() # a vector to hold accumulating taxa
+  num.plots <- c(2,4,8,16,24,48)
+  for (i in num.plots){ # Loop through all values of sample size
     
-    for (j in pond.sample) { # Loop through each randomly drawn pond
-      area <- area + pond.areas[j] # aggregating area
-      sites <- rbind(sites, as.numeric(OTUs[j, ]) # accumulating abundances of OTUs, and new OTUs
-      }
-
+    areas.iter <- c() # hold areas from iterations
+    diversity.iter <- c() # hold estimated diversity from iterations 
     
-    if (PD.index == 'PSV')
-      ratio <- rbind(ratio, psv(, phy, compute.var=FALSE))
-    
-    if (PD.index == 'S'){
-      S1 <- length(cum.abs[cum.abs > 0])
-      #print(c(i, area, S1, S2))
-      sar.area <- c(sar.area, area)
-      sar.richness <- c(sar.richness, S1)
-  
-}
+    for (j in 1:100){ # Iterate 100 times for each sample size
       
+      pond.sample <- sample(51, replace = FALSE, size = i) # draw a random sample, w/out replacement
+      area <- 0 # a variable to hold accumulating area
+      sites <- c() # a vector to hold accumulating taxa
+      
+      sites <- NULL
+      for (k in pond.sample) { # Loop through each randomly drawn pond...
+        
+        area <- area + pond.areas[k] # aggregating area and...
+        sites <- rbind(sites, comm[k, ]) # accumulating OTUs
         }
       
-      SAcurve <- rbind(SAcurve, c(i, a, mean(ratio[, 1], na.rm=TRUE),
-                          sd(ratio[, 1], na.rm=TRUE), mean(ratio[, 2]), sd(ratio[, 2])))
+      areas.iter <- c(areas.iter, area)
+      if (PD.index == 'PSV'){ # calculate PSV
+        
+        PSV <- psv(sites, tree, compute.var=FALSE)
+        d <- PSV$PSVs[1]
+        diversity.iter <- c(diversity.iter, as.numeric(d))
+        }
+      if (PD.index == 'S'){ # allowing us generate the SAR as well
+        
+        diversity.iter <- length(cum.abs[cum.abs > 0])
+        }
+      
+      }
+      diversity <- c(diversity, mean(diversity.iter))
+      areas <- c(areas, mean(areas.iter))
+      print(c(i, mean(diversity.iter), mean(areas.iter)))
     }
   }
-  
-  SAcurve<-data.frame(SAcurve)
-  colnames(SAcurve) <- c("curve","aggregate","mean.psv","sd.psv","mean.sr","sd.sr")
-  return(SAcurve)
-  
-}
+
 ```
 
 
 An example
 ```{r}
-pdac <- pdac.psv(comm[1:10, 100:200], phy)
+pond.areas <- as.vector(pi * (env$Diameter/2)^2)
+pdac <- pdac.psv(comm, phy.rooted)
 
 par(las=1)
 plot(pdac[, 2:3], type = "n", ylab = "phylogenetic diversity (PSV)", xlab = "area (# of samples)")
