@@ -101,7 +101,8 @@ seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 phy.all <- bionj(seq.dist.jc)
 
 # Drop Tips of Zero-Occurrence OTUs
-phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% c(colnames(comm), "Methanosarcina")])
+phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% 
+                                             c(colnames(comm), "Methanosarcina")])
 
 # Root Tree
 # Identify Outgroup Sequence
@@ -112,8 +113,8 @@ phy.rooted <- root(phy, outgroup, resolve.root = TRUE)
 
 # Plot the Rooted Tree{ape}
 par(mar = c(1,1,2,1) + 0.1)
-plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", use.edge.length = FALSE,
-           direction = "right", cex = 0.6, label.offset = 1)
+plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", 
+           use.edge.length = FALSE, direction = "right", cex = 0.6, label.offset = 1)
 
 # Save tree as phy
 phy <- phy.rooted
@@ -216,10 +217,9 @@ The following table describes some of the null models that are available to us w
 \end{center}
 
 Now, we are going to use the `ses.pd()` function in `picante`. 
-This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model. 
+This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model (see table above). 
 
 ```{r}
-# Need to root tree first
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
 ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, iterations = 2, include.root=FALSE)
 ```
@@ -232,7 +232,7 @@ Compare and interpret the output.
 
 ### B.  Net Relatedness Index (NRI)
 One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI).
-NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated from a tree randomized under a null model, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated from a tree randomized under a null model. 
+NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated from a tree randomized under a null model, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated from a tree randomized under a null model (see table above). 
 Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected. 
 Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
 Let's use `picante` to calucate NRI:
@@ -247,7 +247,7 @@ Let's use `picante` to calucate NRI:
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
 
-phydist <- cophenetic(phy)
+phydist <- cophenetic.phylo(phy)
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
 ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 1000)
@@ -257,6 +257,8 @@ NRI <- as.matrix(-1 * ((ses.mpd[,1] - ses.mpd[,2]) / ses.mpd[,3]))
 rownames(NRI) <- row.names(ses.mpd)
 colnames(NRI) <- "NRI"
 ```
+
+### It seems like these NRI values are all really really negative. Is that right? {MEM}
 
 ### C.  Nearest Taxon Index (NTI)
 Another way to test for phylogenetic clustering and oversdispersion in a sample is to use the Nearest Taxon Index (NRI).
