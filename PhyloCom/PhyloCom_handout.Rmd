@@ -341,6 +341,19 @@ phylosor.rnd(samp,tree, cstSor=TRUE, null.model=c("taxa.labels",
 
 
 ## 6) PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP (PDAR)
+Helmus and Ives (2012) studied how phylogenetic diversity changes with increasing area.
+This relationship, abbreviated PDAR, is analogous to the species-area relationship (SAR) we learned about in Geographical Ecology.
+Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
+In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
+
+Helmus and Ives use the Phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
+PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
+Type 'help(psv)' to learn more.
+
+In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
+Both sampling methods produce roughly the same result.
+Here, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
+**Fortunately, Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in Geographical Ecology.**
 
 
 ```{r, echo=FALSE}
@@ -372,13 +385,14 @@ SAR <- function(OTUs){
     Slist <- rbind(Slist, mean(Ss))
     print(c(mean(areas), mean(Ss)))
   }
-  return(cbind(log(Alist), log(Slist)))
+  return(cbind(log10(Alist), log10(Slist)))
 }
 ```
 
 Generate the SAR (random aggregation)
 
 ```{r, echo=FALSE}
+par(mfrow=c(1, 1))
 pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
 sar <- SAR(comm)
 sar <- as.data.frame(sar)
@@ -394,19 +408,6 @@ legend("topleft", legend = paste("slope =", slope), bty = "n", lw = 2, col = "re
 ```
 
 
-Helmus and Ives (2012) studied how phylogenetic diversity changes with increasing area.
-This relationship, abbreviated PDAR, is analogous to the species-area relationship (SAR) we learned about in Geographical Ecology.
-Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
-In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
-
-Helmus and Ives use the Phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
-PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
-Type 'help(psv)' to learn more.
-
-In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
-Both sampling methods produce roughly the same result.
-Here, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
-**Fortunately, Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in Geographical Ecology.**
 
 Let's begin by writing a function to generate the PDAR.
 
