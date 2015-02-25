@@ -124,7 +124,7 @@ phy <- phy.rooted
 ### MEM: code in last section seems to be creating two trees: phy and the other one that is plotted. Do we need both?
 ```
 
-## Example from Picante Vignette: way to move forward while figuring out the pond data set
+## Example from Picante Vignette: Eventually will be delted, but not yet...
 
 ```{r}
 # From Picante Vignette (http://goo.gl/EYOZ55)
