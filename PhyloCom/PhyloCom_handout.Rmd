@@ -69,15 +69,15 @@ env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
-# Select Taxa Recovered via DNA (not RNA) Sequencing
-comm <- comm[grep("*-DNA", rownames(comm)), ] # insert comment, i.e., what's this do?
-rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) # insert comment
-rownames(comm) <- gsub("\\_", "", rownames(comm)) # insert comment
+# Select Only DNA Using GREP command and rename using gsub
+comm <- comm[grep("*-DNA", rownames(comm)), ] 
+rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) 
+rownames(comm) <- gsub("\\_", "", rownames(comm))
 
 # Remove Zero-Occurrence Taxa
 comm <- comm[ , colSums(comm) > 0]
 
-# Acquire Taxonomic Data Associated with Sequences
+# Import Taxonomy Data using read.tax from source code
 tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
 ```
 
@@ -106,7 +106,8 @@ seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 phy.all <- bionj(seq.dist.jc)
 
 # Drop Tips of Zero-Occurrence OTUs (Removes Taxa Only Found via RNA sequences) {ape}
-phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% c(colnames(comm), "Methanosarcina")])
+phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% 
+                                             c(colnames(comm), "Methanosarcina")])
 
 # Identify Outgroup Sequence
 outgroup <- match("Methanosarcina", phy$tip.label)
@@ -116,12 +117,11 @@ phy.rooted <- root(phy, outgroup, resolve.root = TRUE)
 
 # Plot the Rooted Tree {ape}
 par(mar = c(1,1,2,1) + 0.1)
-plot.phylo(phy.rooted, main = "Neighbor Joining Tree", "phylogram", use.edge.length = FALSE,
-           direction = "right", cex = 0.6, label.offset = 1)
-add.scale.bar(cex = 0.7)
+plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", 
+           use.edge.length = FALSE, direction = "right", cex = 0.6, label.offset = 1)
 
+# Save tree as phy
 phy <- phy.rooted
-### MEM: code in last section seems to be creating two trees: phy and the other one that is plotted. Do we need both?
 ```
 
 ## Example from Picante Vignette: Eventually will be delted, but not yet...
@@ -161,17 +161,20 @@ We'll use a log-log transformation, so that the slope of the relationship gives 
 
 ```{r}
 # Biplot of SR and PD, log-transforming
-par(mar = c(5, 5, 2, 1) + 0.1)
+par(mar = c(5, 5, 4, 1) + 0.1)
 
 plot(log(pd$SR), log(pd$PD), 
      pch = 20, col = "red", las = 1,
+
      xlab = "log(SR)", ylab = "log(PD)", cex.main = 0.85,
      main="Phylodiversity (PD) vs. Taxonomic richness (SR)")
+
 
 OLS <- lm('log(pd$PD) ~ log(pd$SR)')
 abline(OLS, col = "red", lw = 2)
 exponent <- round(coefficients(OLS)[2], 3)
-legend("topleft", legend = paste("Scaling exponent =", exponent), bty = "n", lw = 2, col = "red") 
+legend("topleft", legend=paste("Scaling exponent = ", exponent, sep = ""), 
+       bty="n", lw=2, col = "red") 
 ```
 
 ***Question 1***: Compare patterns of PD and SR. 
@@ -221,10 +224,10 @@ The following table describes some of the null models that are available to us w
 \end{center}
 
 Now, we are going to use the `ses.pd()` function in `picante`. 
-This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model. 
-# The chunk below takes a really long time
+
+This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model (see table above). 
+
 ```{r}
-# Need to root tree first
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
 ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, include.root = FALSE)
 ```
@@ -237,7 +240,9 @@ Compare and interpret the output.
 
 ### B.  Net Relatedness Index (NRI)
 One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI).
-NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated from a tree randomized under a null model, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated from a tree randomized under a null model. 
+<<<<<<< HEAD
+NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated from a tree randomized under a null model, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated from a tree randomized under a null model (see table above). 
+ 
 Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected under the null model.
 Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to one another than expected under the null model. 
 
@@ -249,7 +254,8 @@ So, once more we see that a matrix (e.g. site-by-species matrix, resemblance mat
 
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
-phydist <- cophenetic(phy)
+phydist <- cophenetic.phylo(phy)
+
 
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
 ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 100) # 12:10 ...what's this for? --Ken
@@ -259,6 +265,8 @@ NRI <- as.matrix(-1 * ((ses.mpd[,2] - ses.mpd[,3]) / ses.mpd[,4]))
 rownames(NRI) <- row.names(ses.mpd)
 colnames(NRI) <- "NRI"
 ```
+
+### It seems like these NRI values are all really really negative. Is that right? {MEM}
 
 ### C.  Nearest Taxon Index (NTI)
 Another way to test for phylogenetic clustering and oversdispersion in a sample is to use the Nearest Taxon Index (NRI).
