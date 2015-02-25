@@ -38,6 +38,7 @@ After the initial installation of these packages using the `install.packages()` 
 require("picante")
 require("ape")
 require("seqinr")
+require("reshape")
 ```
 
 ### C. Load Source Code
@@ -56,11 +57,14 @@ Perhaps a bit more info on the nature of the sequence data and how we generated 
 Also, maybe reference to the reference data base. 
 
 ## 3) LOADING OF DATA
-
 First, we'll load the environmental data, along with the site-by-species matrix:
+
 ```{r}
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
+
+# Need to remove following 7 samples from env and comm
+# BC010, HNF191, HNF221, HNF236, HNF237, YSF46, YSF67
 
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
@@ -70,7 +74,7 @@ comm <- comm[grep("*-DNA", rownames(comm)), ]
 rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) 
 rownames(comm) <- gsub("\\_", "", rownames(comm))
 
-# Remove Zero-Occurrence Species
+# Remove Zero-Occurrence Taxa
 comm <- comm[ , colSums(comm) > 0]
 
 # Import Taxonomy Data using read.tax from source code
@@ -78,14 +82,15 @@ tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
 ```
 
 Now, let's load and process some of the phylogenetic data:
+
 ```{r}
 # Import the Alignment File {seqinr}
 ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
 
-# Rename OTUs in FASTA file
+# Rename OTUs in FASTA File
 ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
 
-# Import Outgroup FASTA File
+# Import Outgroup FASTA File {seqinr}
 outgroup <- read.alignment(file = "./data/methanosarcina.fasta", format = "fasta")
 
 # Convert Alignment File to DNAbin Object {ape}
@@ -97,31 +102,30 @@ image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las=1)
 # Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
 seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 
-# Use Neighbor Joining Algorithm to Construct Tree, a 'phylo' Object {ape}
+# Use Neighbor Joining Algorithm to Construct a Full Tree (DNA and RNA sequences) {ape}
 phy.all <- bionj(seq.dist.jc)
 
-# Drop Tips of Zero-Occurrence OTUs
+# Drop Tips of Zero-Occurrence OTUs (Removes Taxa Only Found via RNA sequences) {ape}
 phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% 
                                              c(colnames(comm), "Methanosarcina")])
 
-# Root Tree
 # Identify Outgroup Sequence
 outgroup <- match("Methanosarcina", phy$tip.label)
 
 # Root the Tree {ape}
 phy.rooted <- root(phy, outgroup, resolve.root = TRUE)
 
-# Plot the Rooted Tree{ape}
+# Plot the Rooted Tree {ape}
 par(mar = c(1,1,2,1) + 0.1)
 plot.phylo(phy.rooted, main = "Neigbor Joining Tree", "phylogram", 
            use.edge.length = FALSE, direction = "right", cex = 0.6, label.offset = 1)
 
 # Save tree as phy
 phy <- phy.rooted
-
 ```
 
 ## Example from Picante Vignette: way to move forward while figuring out the pond data set
+
 ```{r}
 # From Picante Vignette (http://goo.gl/EYOZ55)
 data(phylocom)
@@ -139,16 +143,17 @@ comm.eg <- phylocom$sample
 ### A.  Faith's Phylogenetic Diversity (PD)
 In 1992, Daniel Faith developed a diversity metric called Faith's PD (http://goo.gl/wM08Oy).
 The metric sums the branch lengths for each species in a sample from the root to the tip of the tree.
-The value of the metric captures ... and can be interpreted as ... and used to ...  --Ken
+The value of the metric captures the evolutionary history of an assemblage. 
+Higher PD values indicate that an assemblage contains more evoluiotnarily divergent taxa, while lower PD values indicate that an assemblage contains taxa with a more restricted evolutionary history. 
 
 Faith's PD can be implemented in R using the `pd()` function in the `picante` package. 
 A phylognetic tree containing the regional species pool is required. 
 In addition to returning Faith's PD, the `pd()` function also returns species richness (SR).
-SR is the same as observed richness ($\S_{obs}), which was introduced in the $\alpha$ diversity module. 
+SR is the same as observed richness ($\S_{obs}), which we covered in the $\alpha$ diversity module. 
 
 ```{r}
 # Compares PD and Taxonomic Richness {picante}
-pd <- pd(comm, phy, include.root=FALSE)
+pd <- pd(comm, phy, include.root = FALSE)
 ```
 
 Let's compare the phylogenetic diversity (PD) estimates with taxonomic richness (SR) of our samples.
@@ -160,18 +165,20 @@ par(mar = c(5, 5, 4, 1) + 0.1)
 
 plot(log(pd$SR), log(pd$PD), 
      pch = 20, col = "red", las = 1,
-     xlab = "log(SR)", ylab = "log(PD)", 
-     main="Phylodiversity (PD) vs. Taxonomic Richness (SR)")
+
+     xlab = "log(SR)", ylab = "log(PD)", cex.main = 0.85,
+     main="Phylodiversity (PD) vs. Taxonomic richness (SR)")
+
 
 OLS <- lm('log(pd$PD) ~ log(pd$SR)')
-abline(OLS, col="red", lw=2)
+abline(OLS, col = "red", lw = 2)
 exponent <- round(coefficients(OLS)[2], 3)
 legend("topleft", legend=paste("Scaling exponent = ", exponent, sep = ""), 
        bty="n", lw=2, col = "red") 
 ```
 
 ***Question 1***: Compare patterns of PD and SR. 
-a.  Is taxonomic richness correlated with phylodiversity?
+a.  Describe the relationship between taxonomic richness and phylodiversity?
 b.  Mathematically, why should they be correlated?  
 c.  Under what conditions would you expect these two estimates of diversity to deviate from one another?
 
@@ -217,14 +224,15 @@ The following table describes some of the null models that are available to us w
 \end{center}
 
 Now, we are going to use the `ses.pd()` function in `picante`. 
+
 This function estimates the standardized effect size ("ses") by comparing the observed PD value to the PD values generated from a tree randomized under a null model (see table above). 
 
 ```{r}
 # Estimate Standardized Effect Size of PD via Randomization {picante} 
-ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, iterations = 2, include.root=FALSE)
+ses.pd <- ses.pd(comm, phy, null.model = "taxa.labels", runs = 100, include.root = FALSE)
 ```
 
-***Question 2***: Using the `help()` function, choose two null models that can be used with `ses.pd()`.
+***Question 2***: Using the `help()` function and the table above, identify two null models that can be used with `ses.pd()`.
 Rerun `ses.pd()` with these null models.
 Compare and interpret the output. 
 
@@ -232,28 +240,28 @@ Compare and interpret the output.
 
 ### B.  Net Relatedness Index (NRI)
 One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI).
+<<<<<<< HEAD
 NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated from a tree randomized under a null model, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated from a tree randomized under a null model (see table above). 
-Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected. 
-Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
-Let's use `picante` to calucate NRI:
+ 
+Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected under the null model.
+Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to one another than expected under the null model. 
 
-# Important Concept? Variance-Covariance? Not exactly the same thing... --Jay(?)
-# The off-diagonal terms are covariances; sum((Xi - Xm)*(Yi - Ym))  --Ken
-# Since the variance is the covariance of a term with itself, the diagonal terms are variances: sum((Xi - Xm)*(Xi - Xm)) --Ken
-# The covariance is the numerator in Pearson's correlation coefficient: cov(X,Y)/(std(X)*std(Y))
-# So, multiplying Pearson's correlation coefficient by the standard deviations of X and Y will yield the covariance. --Ken
-# Does the code use the (co)variance or sample (co)variance?  --Ken
+Let's use `picante` to calculate NRI.
+The code below will generate a phylogenetic distance matrix, which is basically a variance-covariance matrix similar to the resemblance matrices we have used in previous lessons.
+In the variance-covariance matrix, the off-diagonal terms are covariances, i.e., sum((Xi - Xm)(Yi - Ym)).
+Since the covariance of a variable with itself is the variance, the diagonal terms are variances: sum((Xi - Xm)*(Xi - Xm)).
+So, once more we see that a matrix (e.g. site-by-species matrix, resemblance matrix, phylogenetic distance matrix) has become a primary data structure in our analysis of biodiversity.
 
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
-
 phydist <- cophenetic.phylo(phy)
 
+
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 1000)
+ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 100) # 12:10 ...what's this for? --Ken
 
 # Calculate NRI
-NRI <- as.matrix(-1 * ((ses.mpd[,1] - ses.mpd[,2]) / ses.mpd[,3]))
+NRI <- as.matrix(-1 * ((ses.mpd[,2] - ses.mpd[,3]) / ses.mpd[,4]))
 rownames(NRI) <- row.names(ses.mpd)
 colnames(NRI) <- "NRI"
 ```
@@ -268,10 +276,10 @@ Last, we multiply by -1 so that negative values correspond with overdispersion a
 
 ```{r}
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 1000)
+ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 100)
 
 # Calculate NTI
-NTI <- as.matrix(-1 * ((ses.mntd[,1] - ses.mntd[,2]) / ses.mntd[,3]))
+NTI <- as.matrix(-1 * ((ses.mntd[,2] - ses.mntd[,3]) / ses.mntd[,4]))
 rownames(NTI) <- row.names(ses.mntd)
 colnames(NTI) <- "NTI"
 ```
@@ -285,6 +293,11 @@ How does this affect the interpretation of NRI and NTI?
 
 ## POTENTIAL EXERCISE: HAVE STUDENTS LOOK FOR CORRELATIONS BETWEEN NRI/NTI AND ENVIRONMENTAL VARIABLES. 
 ## DOES CLUSTERING/DISPERSION CHANGE ALONG GRADIENTS OR WITH PD? IF SO, WHAT ARE SOME DIFFERENT EXPLANATIONS?
+
+```{r}
+disp <- data.frame(NRI, NTI)
+```
+
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
@@ -333,91 +346,156 @@ This relationship, abbreviated PDAR, is analogous to the species-area relationsh
 Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
 In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
 
-Helmus and Ives use the Phylogenetic species variability (PSV) metric.
-PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical unselected (i.e. neutral) trait shared by all species in a community. 
+Helmus and Ives use the Phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
+PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
 Type 'help(psv)' to learn more.
 
 In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
-While both sampling methods capture the effect of increasing area, sampling with respect to location also captures the effect of increasing distance.
-Here, we will construct PDARs similar to the spatial (aggregating adjacent plots) and non-spatial (aggregating plots at random) forms of Helmus and Ives (2012).
+Both sampling methods produce roughly the same result.
+Here, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
 **Fortunately, Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in Geographical Ecology.**
 
 Let's begin by writing a function to generate the PDAR.
 
 ```{r}
-pdac.psv <- function(comm, phy.rooted, PD.index, spatial=FALSE){
+pdac.psv <- function(comm, tree, PD.index='PSV'){
+  # Use the PSV index of Helmus and Ives (2012) by default
+  # Using PD.index, we've left room to call other diversity metrics
   
-  # This function will accept the following arguments:
-    # comm     :  the site-by-species matrix 
-    # phy.rooted  : the rooted phylogenetic tree
-    # spatial  :  aggregate randomly or with respect to distance
+  areas <- c() # an object to hold areas
+  diversity <- c() # an object hold diversity
   
-  reps=100
-  areas <- c()
-  diversity <- c()
+  num.plots <- c(2,4,8,16,24,48) # increase numbers of plots by 2, roughly doubling area
   
-  for (i in 1:51) { # Loop through all values of sample size
-  
-    pond.sample <- sample(51, replace = FALSE, size = i) # draw a random sample w/out replacement      
-    area <- 0 # a variable to hold accumulating area
-    sites <- c() # a vector to hold accumulating taxa
+  for (i in num.plots){    
+    areas.iter <- c() # hold areas from iterations; we'll find the mean from this
+    diversity.iter <- c() # hold estimated diversity from iterations; we'll find the mean
     
-    for (j in pond.sample) { # Loop through each randomly drawn pond
-      area <- area + pond.areas[j] # aggregating area
-      sites <- rbind(sites, as.numeric(OTUs[j, ]) # accumulating abundances of OTUs, and new OTUs
-      }
-
-    
-    if (PD.index == 'PSV')
-      ratio <- rbind(ratio, psv(, phy, compute.var=FALSE))
-    
-    if (PD.index == 'S'){
-      S1 <- length(cum.abs[cum.abs > 0])
-      #print(c(i, area, S1, S2))
-      sar.area <- c(sar.area, area)
-      sar.richness <- c(sar.richness, S1)
-  
-}
+    for (j in 1:10){ # Iterate 100 times for each sample size
+      pond.sample <- sample(51, replace = FALSE, size = i) # sampling w/out replacement
+      area <- 0 # a variable to hold accumulating area
+      sites <- c() # a vector to hold accumulating taxa
       
+      for (k in pond.sample) { # Loop through each randomly drawn pond...  
+        area <- area + pond.areas[k] # aggregating area...
+        sites <- rbind(sites, comm[k, ]) # and sites
         }
       
-      SAcurve <- rbind(SAcurve, c(i, a, mean(ratio[, 1], na.rm=TRUE),
-                          sd(ratio[, 1], na.rm=TRUE), mean(ratio[, 2]), sd(ratio[, 2])))
+      areas.iter <- c(areas.iter, area) # concatenate the area to areas.iter
+      if (PD.index == 'PSV'){ # Other 'if' statements could call other metrics        
+        psv.vals <- psv(sites, tree, compute.var=FALSE) # calculate PSV
+        psv <- psv.vals$PSVs[1] 
+        diversity.iter <- c(diversity.iter, as.numeric(psv))
+        }
+
+      }
+      diversity <- c(diversity, mean(diversity.iter)) # let diversity be the mean PSV
+      areas <- c(areas, mean(areas.iter)) # let area be the average area
+      print(c(i, mean(diversity.iter), mean(areas.iter))) # print as we go
     }
+  return(cbind(areas, diversity)) # return vectors of areas (x) and diversity (y)
+  }
+```
+
+
+Now, let's examine the PDAR for our pond data set.
+We will investigate the relationship of phylogenetic diversity to area using both Spearman's correlation coefficient (S) and Pearson's correlation coefficient (P).
+It is informative to use both because while S is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), P is computed on the observed values and therefore depicts linear relationships.
+For example, if you S > P then the correlation is more monotonic than linear and vice versa.
+
+```{r}
+pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
+pdac <- pdac.psv(comm, phy.rooted) # Compute the PDAR
+pdac <- as.data.frame(pdac)
+
+Pearson <- cor.test(pdac$areas, pdac$diversity, method="pearson")
+P <- round(Pearson$estimate,2)
+Pp <- round(Pearson$p.value,3)
+
+Spearman <- cor.test(pdac$areas, pdac$diversity, method="spearman")
+S <- round(Spearman$estimate,2)
+Sp <- round(Spearman$p.value,3)
+
+plot(pdac, xlab='Area', ylab='PSV', main='Phylogenetic diversity-area relationship', col='red')
+legend("topleft", legend=paste("Spearman correlation =", S, "p =", Sp,
+                               "\nPearson correlation =", P, "p =", Pp), bty="n", lw=0, col = "red") 
+```
+
+## 6) PHYLOGENETIC DISTANCE-DECAY RELATIONSHIP (PDD)
+Remember from the Geographical Ecology lesson that the Distance Decay relationship reflects the spatial autocorrelation of community similarity.
+That is, geographically near communities should be more similar than geographically distant communities.
+Given that similarity in community composition generally decreases with geographic distance, let's apply the concept of spatial autocorrelation to phylogenetic diversity and ask whether similarity in phylogenetic diversity also decreases with distance.
+Once more, we will use the PSV metric of Helmus and Ives (2012).
+
+To generate the PDD, we will need to calculate geographic distances based on lat-long coordinates.
+Let's use the `fossil` package for this.
+```{r}
+require("fossil")
+```
+
+Next, let's write a function to find the geographic distances and the differences in phylogenetic diversity between all unique pair-wise combinations of ponds.
+
+```{r}
+
+PDD <- function( ){
+
+  pond.pairs <- as.data.frame(combn(c(1:51), 2)) # find all unique pair-wise combinations
+  length(pond.pairs) # The number of pairs is simply (51*50)/2
+
+  dists <- c() # an object to hold geographic distances
+  diffs <- c() # an object to hold phylogenetic differences
+  
+  for (pair in pond.pairs){
+    print(pair)
+    p1 <- pair[1]
+    p2 <- pair[2]
+    
+    # Find phylogenetic difference
+    psv1 <- psv(comm[p1, ], phy, compute.var=FALSE)[1] # PSV for the first pond  
+    psv2 <- psv(comm[p2, ], phy, compute.var=FALSE)[1] # PSV for the second pond    
+    diffs <- rbind(diffs, abs(psv1 - psv2))
+    
+    # Find geographic distance
+    lat.long <- rbind(c(env$long[p1], env$lat[p1]), c(env$long[p2], env$lat[p2]))
+    geo.dist <- earth.dist(lat.long, dist=TRUE) # in kilometers
+    dists <- rbind(dists, as.numeric(geo.dist))
   }
   
-  SAcurve<-data.frame(SAcurve)
-  colnames(SAcurve) <- c("curve","aggregate","mean.psv","sd.psv","mean.sr","sd.sr")
-  return(SAcurve)
-  
+  return(cbind(dists, diffs))
 }
 ```
 
 
-An example
+Now, let's generate and analyze the distance decay relationship for phylogenetic diversity.
+We'll be using Helmus and Ives (2012) metric, i.e., phylogenetic species variability (PSV).
+
 ```{r}
-pdac <- pdac.psv(comm[1:10, 100:200], phy)
+pdd <- PDD() # Generate the phylogenetic diversity distance decay
+pdd2 <- as.data.frame(pdd)
 
-par(las=1)
-plot(pdac[, 2:3], type = "n", ylab = "phylogenetic diversity (PSV)", xlab = "area (# of samples)")
+Pearson <- cor.test(pdd2$V1, pdd2$PSVs, method="pearson")
+P <- round(Pearson$estimate,2) # Pearson's
+Pp <- round(Pearson$p.value,3) # p-value
 
-lines(pdac[pdac[, 1] == "nonspatial", 2:3], col="red")
-points(pdac[pdac[, 1] == "nonspatial", 2:3], col="red", pch=19)
+Spearman <- cor.test(pdd2$V1, pdd2$PSVs, method="spearman")
+S <- round(Spearman$estimate,2) # Spearman's
+Sp <- round(Spearman$p.value,3) # p-value
 
-lines(pdac[pdac[, 1] == "spatial",2:3],col="blue")
-points(pdac[pdac[, 1] == "spatial",2:3],col="blue",pch=19)
+plot(pdd2, xlab='Distance (Km)', ylab='Difference in phylodiversity, PSV',
+     main='Difference in phylogenetic diversity
+     with increasing distance lags', col='red')
 
-legend(x=4,y=0.78,pch=19,legend=c("nonspatial","spatial"),lty=1,col = c("red","blue")) 
+legend("topleft", legend=paste("Spearman correlation =", S, "p =", Sp,
+        "\nPearson correlation =", P, "p =", Pp), bty="n", lw=0, col = "red") 
 ```
-
-
-
-
-
-
 
 ## 7) HOMEWORK 
 
-1.  
+1.  In their study of phylogenetic diversity-area relationships (PDARs), Helmus and Ives, increased area by aggregating plots in two ways.
+First, they aggregated plots with respect to whether the plots were adjacent; what they called 'spatial'.
+Second, they aggregated plots at random ('non-spatial').
+While both spatial and non-spatial sampling methods capture the effect of increasing area, sampling with respect to location (i.e. spatial) also captures the effect of increasing distance or spatial autocorrelation.
+Explain the general difference that Helmus and Ives observed between spatial and non-spatial PDARs, and why this difference should be expected in both the species-area relationship (SAR) and the phylogenetic diversity-area relationship.
+
 2.  Use Knitr to create a pdf of your completed PhyloTraits_handout.Rmd document, push it to GitHub, and create a pull request.
 The due date for this assignment is February 25, 2015 at 12:00 PM (noon).
