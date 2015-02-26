@@ -10,13 +10,8 @@ geometry: margin=2.54cm
 
 ## OVERVIEW
 Taxonomic measures of $\alpha$- and $\beta$-diversity do not integrate evolutionary information. 
-<<<<<<< HEAD
-However, evolutionary information is imortant for broad range of biodiversity issues including conservation biology, biogeography, and community assembly. 
-In this exercise, we will introduce some commonly used methods in phylogenetic community ecology.
-=======
 However, evolutionary information is important for a broad range of biodiversity issues including conservation, biogeography, and community assembly. 
 In this handout, we introduce some commonly used methods in phylogenetic community ecology.
->>>>>>> upstream/master
 These methods will allow us to account for phylogenetic diversity and provide insight into the mechansisms that give rise to over- and under-dispersion (i.e., clustering) of biological communities. 
 
 After completing this exercise you will know how to:
@@ -51,13 +46,8 @@ require("simba")
 ```
 
 ### C. Load Source Code
-<<<<<<< HEAD
-In addition to relying on contributed packages, this week we will also be using a source code file.
-The source code file has user-defined functions that are required for certain analyses.
-=======
 In addition to relying on contributed packages, this week, we will also be using a source code file.
 A source code file has user-defined functions that are required for certain analyses.
->>>>>>> upstream/master
 The benefit of source files is that they contain "vetted" code that can be used across multiple projects. 
 Here, we will be using a source code file that includes a function for reading in the output files from the popular community sequencing software `mothur` (http://www.mothur.org/).
 
