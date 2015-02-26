@@ -555,24 +555,34 @@ attach(df) #df <- subset(df, struc != 0)
 Now, let's plot the DD relationships:
 
 ```{r}
+# Set Initial Plot Parameters
+par(mfrow=c(2, 1), mar = c(1, 5, 2, 1) + 0.1, oma = c(2, 0, 0, 0))
+
 # Make Plot for Taxonomic DD
-par(mfrow=c(2, 1))
-plot(geo.dist, bray.curtis, xlab="Geographic Distance, km", ylab="Bray-Curtis Similarity", 
-   main = "Taxonomic Distance Decay", col='SteelBlue')
+plot(geo.dist, bray.curtis, xlab = "", xaxt = "n", las = 1,
+     ylab="Bray-Curtis Similarity", 
+     main = "Distance Decay", col='SteelBlue')
 
 # Regression for Taxonomic DD 
 DD.reg.bc <- lm(bray.curtis ~ geo.dist)
 summary(DD.reg.bc)
 abline(DD.reg.bc , col="red4")
 
+# New Plot Parameters
+par(mar = c(2, 5, 1, 1) + 0.1)
+
 # Make Plot for Phylogenetic DD
-plot(geo.dist, unifrac, xlab="Geographic distance, km", ylab="Unifrac Similarity", 
-     main="Phylogenetic Distance Decay", col='darkorchid4')
+plot(geo.dist, unifrac, xlab="", 
+     ylab="Unifrac Similarity", col='darkorchid4', las = 1)
 
 # Regression for Phylogenetic DD
 DD.reg.uni <- lm(unifrac ~ geo.dist)
 summary(DD.reg.uni)
 abline(DD.reg.uni, col="red4")
+
+# Add X-Axis Label to Plot
+mtext("Geographic Distance, km", side = 1, adj = 0.65, 
+      line = 0.5, outer = TRUE)
 ```
 
 Finally, let's test whether the slopes for taxonomic and phylogenetic DD are significantly different from one another.
