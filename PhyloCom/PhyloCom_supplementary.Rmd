@@ -28,3 +28,13 @@ NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{M
 Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected. 
 Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
 Let's use `picante` to calucate NRI:
+
+
+
+
+
+source("http://bioconductor.org/biocLite.R")
+biocLite("phyloseq")
+phy.comm <- phyloseq(otu_table(comm), phy_tree(phy)
+                     
+dist.uf <- unifrac(comm, phy)
