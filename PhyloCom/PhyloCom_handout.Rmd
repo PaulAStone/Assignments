@@ -144,7 +144,7 @@ Higher PD values indicate that an assemblage contains more evolutionarily diverg
 Faith's PD can be implemented in R using the `pd()` function in the `picante` package. 
 A phylogenetic tree containing the species pool is required. 
 In addition to returning Faith's PD, the `pd()` function also returns species richness (SR).
-SR is the same as observed richness ($\S_{obs}), which we covered in the $\alpha$ diversity module. 
+SR is the same as observed richness ($S_{obs}), which we covered in the $\alpha$ diversity module. 
 
 ```{r}
 # Calculate PD and SR {picante}
@@ -498,9 +498,9 @@ arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2,
        lwd = 2, lty = 1, length = 0.2, col = "red")
 text(vectors[,1] * 2, vectors[, 2] * 2, pos = 3, 
      labels = row.names(vectors))
-axis(side = 3, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
+axis(side = 3, lwd.ticks = 2, cex.axis = 1.2, las = 1, col = "red", lwd = 2.2,
      at = pretty(range(vectors[, 1])) * 2, labels = pretty(range(vectors[, 1])))
-axis(side = 4, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
+axis(side = 4, lwd.ticks = 2, cex.axis = 1.2, las = 1, col = "red", lwd = 2.2,
      at = pretty(range(vectors[, 2])) * 2, labels = pretty(range(vectors[, 2])))
 ```
 
@@ -537,7 +537,7 @@ First, we will calcualte distances for geographic data, taxonomic data, and phyl
 ```{r}
 # Geographic Distances (Kilometers) Among Ponds
 long.lat <- as.matrix(cbind(env$long, env$lat))
-coord.dist <- earth.dist(long.lat, dist=TRUE)
+coord.dist <- earth.dist(long.lat, dist = TRUE)
 
 # Taxonomic Distances Among Ponds (Bray-Curits)
 bray.curtis.dist <- 1 - vegdist(comm) 
@@ -546,12 +546,12 @@ bray.curtis.dist <- 1 - vegdist(comm)
 unifrac.dist <- 1 - dist.uf 
   
 # Transform All Distances Into List Format:
-unifrac.dist.ls <- liste(unifrac.dist, entry="unifrac")
-bray.curtis.dist.ls <- liste(bray.curtis.dist, entry="bray.curtis")
-coord.dist.ls <- liste(coord.dist, entry="geo.dist")
+unifrac.dist.ls <- liste(unifrac.dist, entry = "unifrac")
+bray.curtis.dist.ls <- liste(bray.curtis.dist, entry = "bray.curtis")
+coord.dist.ls <- liste(coord.dist, entry = "geo.dist")
 
 # Create a Data Frame from the Lists of Distances
-df <- data.frame(coord.dist.ls, bray.curtis.dist.ls[,3], unifrac.dist.ls[,3])
+df <- data.frame(coord.dist.ls, bray.curtis.dist.ls[, 3], unifrac.dist.ls[, 3])
 names(df)[4:5] <- c("bray.curtis", "unifrac")
 attach(df)
 ```
@@ -565,24 +565,24 @@ par(mfrow=c(2, 1), mar = c(1, 5, 2, 1) + 0.1, oma = c(2, 0, 0, 0))
 # Make Plot for Taxonomic DD
 plot(coord.dist, bray.curtis, xlab = "", xaxt = "n", las = 1, ylim = c(0.1, 0.9),
      ylab="Bray-Curtis Similarity", 
-     main = "Distance Decay", col='SteelBlue')
+     main = "Distance Decay", col = "SteelBlue")
 
 # Regression for Taxonomic DD 
 DD.reg.bc <- lm(bray.curtis ~ geo.dist)
 summary(DD.reg.bc)
-abline(DD.reg.bc , col="red4")
+abline(DD.reg.bc , col = "red4")
 
 # New Plot Parameters
 par(mar = c(2, 5, 1, 1) + 0.1)
 
 # Make Plot for Phylogenetic DD
-plot(coord.dist, unifrac, xlab="", las = 1, ylim = c(0.1, 0.9),
-     ylab="Unifrac Similarity", col='darkorchid4')
+plot(coord.dist, unifrac, xlab = "", las = 1, ylim = c(0.1, 0.9),
+     ylab = "Unifrac Similarity", col = "darkorchid4")
 
 # Regression for Phylogenetic DD
 DD.reg.uni <- lm(unifrac ~ coord.dist)
 summary(DD.reg.uni)
-abline(DD.reg.uni, col="red4")
+abline(DD.reg.uni, col = "red4")
 
 # Add X-Axis Label to Plot
 mtext("Geographic Distance, km", side = 1, adj = 0.55, 
@@ -621,7 +621,7 @@ SAR <- function(OTUs){
     for(j in 1:100){
       pond.sample <- sample(51, replace = FALSE, size = i) 
       area <- 0
-      cum.abs <- vector(mode="numeric", length=length(comm))
+      cum.abs <- vector(mode = "numeric", length = length(comm))
   
       for (k in pond.sample) { # Loop through each randomly drawn pond
         area <- area + pond.areas[k] # aggregating area, (incrementing)
@@ -643,10 +643,10 @@ pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
 sar <- SAR(comm)
 sar <- as.data.frame(sar)
 
-plot(sar, xlab="log(Area)", ylab="log(Richness)", 
-     main="Species-Area Relationship", col="red")
+plot(sar, xlab = "log(Area)", ylab = "log(Richness)", 
+     main = "Species-Area Relationship", col = "red")
 
-OLS <- lm('sar$V2 ~ sar$V1')
+OLS <- lm(sar$V2 ~ sar$V1)
 abline(OLS, col = "red", lw = 2)
 
 slope <- round(coefficients(OLS)[2], 3)
@@ -698,7 +698,7 @@ PDAR <- function(comm, tree){
       # concatenate the area to areas.iter
       areas.iter <- c(areas.iter, area)  
       # calculate PSV or other phylogenetic alpha-diversity metric
-      psv.vals <- psv(sites, tree, compute.var=FALSE) 
+      psv.vals <- psv(sites, tree, compute.var = FALSE) 
       psv <- psv.vals$PSVs[1] 
       diversity.iter <- c(diversity.iter, as.numeric(psv))
       }
@@ -726,23 +726,24 @@ pdar <- as.data.frame(pdar)
 pdar$areas <- sqrt(pdar$areas)
 
 # Calculate Perason's Correlation Coefficient
-Pearson <- cor.test(pdar$areas, pdar$diversity, method="pearson")
-P <- round(Pearson$estimate,2)
-Pp <- round(Pearson$p.value,3)
+Pearson <- cor.test(pdar$areas, pdar$diversity, method = "pearson")
+P <- round(Pearson$estimate, 2)
+Pp <- round(Pearson$p.value, 3)
 
 # Calculate Spearman's Correlation Coefficient
-Spearman <- cor.test(pdar$areas, pdar$diversity, method="spearman")
-S <- round(Spearman$estimate,2)
-Sp <- round(Spearman$p.value,3)
+Spearman <- cor.test(pdar$areas, pdar$diversity, method = "spearman")
+S <- round(Spearman$estimate, 2)
+Sp <- round(Spearman$p.value, 3)
 
 # Plot the PDAR
 par(mar = c(5, 5, 4, 2) + 0.1)
-plot(pdar[, 1], pdar[, 2], xlab='Area', ylab='PSV', ylim = c(0, 1), 
-     main='Phylogenetic Diversity-Area Relationship', col = 'red', pch = 16, las = 1)
+plot(pdar[, 1], pdar[, 2], xlab = "Area", ylab = "PSV", ylim = c(0, 1), 
+     main = "Phylogenetic Diversity-Area Relationship", 
+     col = "red", pch = 16, las = 1)
 
 legend("topleft", legend= c(paste("Spearman Correlation = ", S, "; p = ", Sp, sep = ""), 
                             paste("Pearson Correlation = ", P, "; p = ", Pp, sep = "")), 
-                            bty="n", col="red") 
+                            bty = "n", col = "red") 
 ```
 
 ***Question 8***: For the bacteria in the Indiana ponds, the slope (*z*) of the SAR was 0.15.
