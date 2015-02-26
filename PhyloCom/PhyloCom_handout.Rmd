@@ -308,6 +308,7 @@ disp <- data.frame(NRI, NTI)
 Just as we needed a **Resemblance Matrix** in $\beta$, we need a community **Resemblace Matix** to quantifiy phylogenetic $\beta$-diversity. 
 However, instead of making the resemblance matrix based on just the incidence or abundance of taxa we are now going to incorporate informatin about the phylogenetic relationships amoung taxa. 
 Similar to other measures of $\beta$ diversity, there are numerous ways to calculate the distances in the phylogenetic resemblance matrix.
+Here, we will explore two: mean pairwise distance and UniFrac distance.
 
 \begin{center}
 \hyphenpenalty 10000
@@ -316,18 +317,20 @@ Similar to other measures of $\beta$ diversity, there are numerous ways to calcu
   \textbf{Index} & \textbf{Description} \\
   \hline \hline \\ [-1.5ex]
   \textbf{Mean Pairwise Distance} & 
-  The phylogenetic distance between two taxa: the sum of all intervening branch lengths. \\
+  The average phylogenetic distance between two taxa calculated as the sum of all intervening branch lengths. \\
   \\ [-1.5ex]
   \textbf{UniFrac} & 
-  The distance between the two samples calculated as (the sum of "unshared" branch lengths)/(the sum of all tree branch lengths) in a rooted tree. \\
+  The distance between the two samples calculated as (the sum of *unshared* branch lengths)/(the sum of all tree branch lengths) in a rooted tree. \\
   \\ [-1.5ex]
   \hline
 \end{tabular}
 \end{center}
 
+**Table Needs Help**
+
 ```{r}
 # Mean Pairwise Distance
-dist.mp <- comdist(comm, phydist)
+dist.mp <- mpd(comm, phydist)
 
 # UniFrac Distanc
 dist.uf <- unifrac(comm, phy)
@@ -363,7 +366,7 @@ par(mar = c(5, 5, 1, 2) + 0.1)
 
 # Initiate Plot
 plot(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2],
-     xlim = c(-0.2, 0.2), ylim = c(-0.25, 0.15),
+     xlim = c(-0.2, 0.2), ylim = c(-0.3, 0.15),
      xlab = paste("PCoA 1 (", explainvar1, "%)", sep = ""),
      ylab = paste("PCoA 2 (", explainvar2, "%)", sep = ""),
      pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
@@ -383,7 +386,7 @@ text(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2],
 
 ### C. Hypothesis Testing
 
-#### i. Categorical Approach: Water Shet
+#### i. Categorical Approach: Water Shed
 
 ```{r}
 # Define Environmental Catagory
@@ -398,10 +401,19 @@ adonis(dist.uf ~ water.shed, permutations = 999)
 
 ```{r}
 # Define Environmental Gradient
-envs <- env[,5:19]
+envs <- env[,17:19]
+envs.2 <- scale(envs)
 
+env.dist <- vegdist(scale(envs), method = "euclid")
 
+mantel(dist.uf, env.dist)
 
+test2 <- princomp(envs.2, scores=TRUE)
+
+ponds.cca <- vegan::cca(dist.uf ~ test2$scores)
+
+ponds.cca <- vegan::cca(dist.uf ~ envs.2)
+plot(ponds.cca)
 ```
 
 
