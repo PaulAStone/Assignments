@@ -9,7 +9,8 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-Taxonomic measures of $\alpha$- and $\beta$-diversity do not integrate evolutionary information despite the fact that it may be useful for understanding community assembly and for identifying conservation priorities.  
+Taxonomic measures of $\alpha$- and $\beta$-diversity do not integrate evolutionary information. 
+However, evolutionary information is imortant for broad range of biodiversity issues including conservation biology, biogeography, and community assembly. 
 In this handout, we will introduce some commonly used methods in phylogenetic community ecology.
 These methods will allow us to account for phylogenetic diversity and provide insight into the mechansisms that give rise to over- and under-dispersion (i.e., clustering) of biological communities. 
 
@@ -17,7 +18,7 @@ After completing this exercise you will know how to:
 
 1.  measure phylogenetic $\alpha$ diversity
 2.  measure phylogenetic $\beta$ diversity
-3.  construct phylogenetic diversity-area relationships
+3.  evaluate the contribution of phylogenetic information to geographical patterns of biodiversity
 
 ## 1) SETUP
 ### A. Retrieve and Set Your Working Directory
@@ -42,9 +43,9 @@ require("seqinr")
 ```
 
 ### C. Load Source Code
-In addition to relying on the installation of contributed packages, this week we will also be using a source code file.
-A source code file is a file containing user-defined functions that are required for certain analyses.
-The benefit of source files is that they contain "vetted" code  that can be used across multiple projects. 
+In addition to relying on contributed packages, this week we will also be using a source code file.
+A source code file has user-defined functions that are required for certain analyses.
+The benefit of source files is that they contain "vetted" code that can be used across multiple projects. 
 Here, we will be using a source code file that includes a function for reading in the output files from the popular community sequencing software `mothur` (http://www.mothur.org/).
 
 ```{r}
@@ -54,36 +55,37 @@ source("./bin/MothurTools.R")
 ## 2) DESCRIPTION OF DATA
 We will revisit the data that was used in the Geographical Ecology module. 
 As a reminder, in 2013 we sampled ~ 50 forested ponds located in Brown County State Park, Yellowood State Park, and Hoosier National Forest. 
-In addition to measuring a suite of geographic and environmental variables, we characterized the diversity of bacteria in the ponds using molecular based approaches.
-Specifically, we amplified the 16S rRNA gene (i.e., "DNA") and 16S rRNA transcripts (i.e., "RNA") of bacteria using barcoded primers on teh Illumina MiSeq platform. 
-We then used a `mothur` pipeline to quality-trim our data set and assign sequences to operational taxonomic units (OTU). 
+In addition to measuring a suite of geographic and environmental variables, we characterized the diversity of bacteria in the ponds using molecular-based approaches.
+Specifically, we amplified the 16S rRNA gene (i.e., "DNA") and 16S rRNA transcripts (i.e., "RNA") of bacteria using barcoded primers on the Illumina MiSeq platform.
+We then used a `mothur` pipeline to quality-trim our data set and assign sequences to operational taxonomic units (OTU).
+In this exercise, we will use the DNA sequence data for making community phylogenetic inferece.  
 
 ## 3) LOADING OF DATA
-First, we'll load the environmental data:
+First, let us load the environmental data:
 
 ```{r}
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 ```
 
-Next, we'll load the bacterial OTU data (i.e., site-by-species matrix):
+Next, let us load the bacterial OTU data (i.e., site-by-species matrix):
 
 ```{r}
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
-# Select Only DNA Using GREP command and rename using gsub
-comm <- comm[grep("*-DNA", rownames(comm)), ] 
-rownames(comm) <- gsub("\\-DNA", "", rownames(comm)) 
+# Select DNA Data: Use `grep()` Command and Rename with `gsub()`
+comm <- comm[grep("*-DNA", rownames(comm)), ]
+rownames(comm) <- gsub("\\-DNA", "", rownames(comm))
 rownames(comm) <- gsub("\\_", "", rownames(comm))
 
-# Remove Sites that do not appear in Environmental Data
+# Remove Sites Not in Environmental Data Set
 comm <- comm[rownames(comm)  %in% env$Sample_ID, ]
 
 # Remove Zero-Occurrence Taxa 
 comm <- comm[ , colSums(comm) > 0]
 
-# Import Taxonomy Data using read.tax from source code
+# Import Taxonomy Data Using `read.tax()` from Source Code
 tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
 ```
 
@@ -221,7 +223,7 @@ Therfore, we are only going to run the `ses.pd` function for two ponds with a li
 ses.pd <- ses.pd(comm[1:2,], phy, null.model = "richness", runs = 25, include.root = FALSE)
 ```
 
-***Question 2***: Using `help()` and the table above, identify two null models that can be used with the `ses.pd()`.
+***Question 2***: Using `help()` and the table above, identify two null models that can be used with the `ses.pd()` function.
 Rerun `ses.pd()` with these null models and answer the following questions:
 
 a.  What hypotheses are being tested with the p-values associated with `ses.pd`?
@@ -231,17 +233,17 @@ b.  What features might affect the intepretation of the `ses.pd` output?
 > ***Answer 2b***:  
 
 ### B.  Phylogenetic Dispersion Within a Sample
-Another way to assess the $/alpha$-phylogenetic diversity is to look at dispersion within a sample. 
+Another way to assess the phylogenetic $/alpha$-diversity is to look at dispersion within a sample. 
 In the following section we will introduce to commonly used metrics --- the Net Relatedness Index (NRI) and the Nearest Taxon Index --- to quantify the degree to which closely related taxa co-occur.
 We will use randomization procedures to test whether species are phylogenetically clustered or overdispersed. 
 
 #### i. Phylogenetic Resemblance Matrix 
-Before estimating dispersion metric, we need to create a phylogenetic resemblance matrix.
+Before estimating dispersion metrics, we need to create a phylogenetic resemblance matrix.
 This type of matrix is nearly identical to the resemblance matrix introduced in the $/beta$-diversity module.
 The only difference is that the phylogenetic resemblance matrix contains distances between taxa in a tree, whereas the community resemblance matrix contains distances among sites. 
 The elements in phylogenetic resemblance matrix are calculated as the pairwise branch-length distances between tips (i.e., taxa) on a phylogenetic tree. 
 The phylogenetic resemblance matrix is sometimes referred to as the phylogenetic variance-covariance matrix. 
-We will use the `cophenetic.phylo` function in `picante` to calculate the phylogenetic resemblance matrix.
+We will use the `cophenetic.phylo()` function in `picante` to calculate the phylogenetic resemblance matrix.
 
 ```{r}
 # Create a Phylogenetic Distance Matrix {picante}
@@ -257,7 +259,7 @@ With this information in hand, NRI is expressed as: - (`mpd.obs` - `mpd.rand.mea
 Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected under the null model.
 Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to one another than expected under the null model. 
 
-As with Faith's PD, the radomization procedures are computationally intensive, so we are only going to run a relatively small number of "runs".
+As with Faith's PD, the radomization procedures are computationally intensive, so we are only going to peform a relatively small number of "runs".
 
 ```{r}
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
@@ -271,15 +273,15 @@ colnames(NRI) <- "NRI"
 
 ### iii.  Nearest Taxon Index (NTI)
 Another way to test for phylogenetic clustering and oversdispersion in a sample is to use the Nearest Taxon Index (NTI).
-This index is similar to NRI, but uses the mean nearest phylogenetic neighbor distance (MNND) insted of MPD. 
-MNND quantifies the mean phylogenetic distance for each taxon to it's nearest phylogenetic taxon.
+This index is mathemically similar to NRI, but uses the mean nearest phylogenetic neighbor distance (MNND) insted of MPD. 
+MNND is the mean phylogenetic distance between all taxa in a sample and their phylogenetically closest neighbor.
 As a result, NTI tends to emphasize terminal clustering, independent of deep level clustering (Webb et al. 2002; http://goo.gl/WikgWE).
 Just like NRI, we peform randomizations and use this information to estimate the standardized effect size. 
 Negative NRI values indicate phylogenetic overdispersion and positive NRI values indicate phylogenetic clustering. 
 
 ```{r}
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 100)
+ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 25)
 
 # Calculate NTI
 NTI <- as.matrix(-1 * ((ses.mntd[,2] - ses.mntd[,3]) / ses.mntd[,4]))
@@ -287,27 +289,23 @@ rownames(NTI) <- row.names(ses.mntd)
 colnames(NTI) <- "NTI"
 ```
 
-***Question 3***: In the NRI and NTI examples above, the arguments "abundance.weighted = FALSE" means that the indices were calculated on presence-absence data.
+***Question 3***: In the NRI and NTI examples above, the arguments "abundance.weighted = FALSE" means that the indices were calculated using presence-absence data.
 Modify and rerun the code so that NRI and NTI are caculated using abundance data. 
 How does this affect the interpretation of NRI and NTI?
 
 > ***Answer 3***:  
 
+### C) Mini-Exercise On Phylogenetic Alpha-Diversity
 
 ## POTENTIAL EXERCISE: HAVE STUDENTS LOOK FOR CORRELATIONS BETWEEN NRI/NTI AND ENVIRONMENTAL VARIABLES. 
 ## DOES CLUSTERING/DISPERSION CHANGE ALONG GRADIENTS OR WITH PD? IF SO, WHAT ARE SOME DIFFERENT EXPLANATIONS?
 
-```{r}
-disp <- data.frame(NRI, NTI)
-```
-
-
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
-### A. Phylogenetic Community Resemblance Matrix
-Just as we needed a **Resemblance Matrix** in $\beta$, we need a community **Resemblace Matix** to quantifiy phylogenetic $\beta$-diversity. 
-However, instead of making the resemblance matrix based on just the incidence or abundance of taxa we are now going to incorporate informatin about the phylogenetic relationships amoung taxa. 
-Similar to other measures of $\beta$ diversity, there are numerous ways to calculate the distances in the phylogenetic resemblance matrix.
+### A. A Phylogenetically Based Community Resemblance Matrix
+Just as we needed a resemblance matrix in taxonomic $\beta$-diversity, we need a community resemblace matix to quantifiy phylogenetic $\beta$-diversity. 
+However, instead of making the resemblance matrix based on incidence or abundance of taxa we are now going to incorporate information about the phylogenetic relationships among taxa. 
+Similar to other measures of $\beta$ diversity, there are numerous ways to calculate the phylogenetic distances in the community resemblance matrix.
 
 \begin{center}
 \hyphenpenalty 10000
