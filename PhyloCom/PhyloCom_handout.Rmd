@@ -10,8 +10,8 @@ geometry: margin=2.54cm
 
 ## OVERVIEW
 Taxonomic measures of $\alpha$- and $\beta$-diversity do not integrate evolutionary information. 
-However, evolutionary information is imortant for broad range of biodiversity issues including conservation biology, biogeography, and community assembly. 
-In this handout, we will introduce some commonly used methods in phylogenetic community ecology.
+However, evolutionary information is important for a broad range of biodiversity issues including conservation, biogeography, and community assembly. 
+In this handout, we introduce some commonly used methods in phylogenetic community ecology.
 These methods will allow us to account for phylogenetic diversity and provide insight into the mechansisms that give rise to over- and under-dispersion (i.e., clustering) of biological communities. 
 
 After completing this exercise you will know how to:
@@ -32,7 +32,7 @@ setwd("~/GitHub/QuantitativeBiodiversity/Assignments/PhyloCom")
 ### B. Load Packages 
 We will be relying heavily on the R package `picante`. 
 This package has many of the functions that are contained in the software Phylocom, which is used for the analysis of phylogenetic community structure and character evolution (http://phylodiversity.net/phylocom/).
-We will also use a couple of packages that were introduced in the Phylogenetic Traits module. 
+We will also use a few other packages packages, some of which were introduced in the Phylogenetic Traits module. 
 
 After the initial installation of these packages using the `install.packages()` fucntion, let's load the packages and their dependencies with the `require()` function:
 
@@ -43,7 +43,7 @@ require("seqinr")
 ```
 
 ### C. Load Source Code
-In addition to relying on contributed packages, this week we will also be using a source code file.
+In addition to relying on contributed packages, this week, we will also be using a source code file.
 A source code file has user-defined functions that are required for certain analyses.
 The benefit of source files is that they contain "vetted" code that can be used across multiple projects. 
 Here, we will be using a source code file that includes a function for reading in the output files from the popular community sequencing software `mothur` (http://www.mothur.org/).
@@ -58,28 +58,28 @@ As a reminder, in 2013 we sampled ~ 50 forested ponds located in Brown County St
 In addition to measuring a suite of geographic and environmental variables, we characterized the diversity of bacteria in the ponds using molecular-based approaches.
 Specifically, we amplified the 16S rRNA gene (i.e., "DNA") and 16S rRNA transcripts (i.e., "RNA") of bacteria using barcoded primers on the Illumina MiSeq platform.
 We then used a `mothur` pipeline to quality-trim our data set and assign sequences to operational taxonomic units (OTU).
-In this exercise, we will use the DNA sequence data for making community phylogenetic inferece.  
+In this exercise, we will use the DNA sequence data for making community phylogenetic inference.  
 
 ## 3) LOADING OF DATA
-First, let us load the environmental data:
+First, let's load the environmental data:
 
 ```{r}
 # Load Environmental Data
 env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
 ```
 
-Next, let us load the bacterial OTU data (i.e., site-by-species matrix):
+Next, let's load the bacterial OTU data (i.e., site-by-species matrix):
 
 ```{r}
 # Load Site-by-Species Matrix
 comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
-# Select DNA Data: Use `grep()` Command and Rename with `gsub()`
+# Select DNA Data: Use the `grep()` Command and Rename with `gsub()`
 comm <- comm[grep("*-DNA", rownames(comm)), ]
 rownames(comm) <- gsub("\\-DNA", "", rownames(comm))
 rownames(comm) <- gsub("\\_", "", rownames(comm))
 
-# Remove Sites Not in Environmental Data Set
+# Remove Sites Not in the Environmental Data Set
 comm <- comm[rownames(comm)  %in% env$Sample_ID, ]
 
 # Remove Zero-Occurrence Taxa 
@@ -113,7 +113,7 @@ seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
 # Use Neighbor Joining Algorithm to Construct a Full Tree (DNA and RNA sequences) {ape}
 phy.all <- bionj(seq.dist.jc)
 
-# Drop Tips of Zero-Occurrence OTUs (Removes Taxa Only Found via RNA sequences) {ape}
+# Drop Tips of Zero-Occurrence OTUs (Removes Taxa Only Found via RNA sequencing) {ape}
 phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% 
                                              c(colnames(comm), "Methanosarcina")])
 
@@ -135,10 +135,10 @@ plot.phylo(phy, main = "Neighbor Joining Tree", "phylogram",
 In 1992, Daniel Faith developed a diversity metric called Faith's PD (http://goo.gl/wM08Oy).
 The metric sums the branch lengths for each species found in a sample from the root to the tip of a the phylogenetic tree.
 The value of the metric captures the evolutionary history of an assemblage. 
-Higher PD values indicate that an assemblage contains more evoluiotnarily divergent taxa, while lower PD values indicate that an assemblage contains taxa with a more restricted evolutionary history. 
+Higher PD values indicate that an assemblage contains more evolutionarily divergent taxa, while lower PD values indicate that an assemblage contains taxa with a more restricted evolutionary history. 
 
 Faith's PD can be implemented in R using the `pd()` function in the `picante` package. 
-A phylognetic tree containing the species pool is required. 
+A phylogenetic tree containing the species pool is required. 
 In addition to returning Faith's PD, the `pd()` function also returns species richness (SR).
 SR is the same as observed richness ($\S_{obs}), which we covered in the $\alpha$ diversity module. 
 
@@ -148,7 +148,7 @@ pd <- pd(comm, phy, include.root = FALSE)
 ```
 
 Let's compare PD estimates with SR of our samples.
-We'll use a (natural) log-log transformation, so that the slope of the relationship gives us a power-law exponent, which describes how PD scales with SR.
+We'll natural-log-transform our data so that the slope of the relationship gives us a power-law exponent, which describes how PD scales with SR.
 
 ```{r}
 # Biplot of SR and PD
@@ -233,8 +233,8 @@ b.  What features might affect the intepretation of the `ses.pd` output?
 > ***Answer 2b***:  
 
 ### B.  Phylogenetic Dispersion Within a Sample
-Another way to assess the phylogenetic $/alpha$-diversity is to look at dispersion within a sample. 
-In the following section we will introduce to commonly used metrics --- the Net Relatedness Index (NRI) and the Nearest Taxon Index --- to quantify the degree to which closely related taxa co-occur.
+Another way to assess phylogenetic $/alpha$-diversity is to look at dispersion within a sample. 
+In the following section we will introduce two commonly used metrics --- the Net Relatedness Index (NRI) and the Nearest Taxon Index --- to quantify the degree to which closely related taxa co-occur.
 We will use randomization procedures to test whether species are phylogenetically clustered or overdispersed. 
 
 #### i. Phylogenetic Resemblance Matrix 
@@ -273,7 +273,7 @@ colnames(NRI) <- "NRI"
 
 ### iii.  Nearest Taxon Index (NTI)
 Another way to test for phylogenetic clustering and oversdispersion in a sample is to use the Nearest Taxon Index (NTI).
-This index is mathemically similar to NRI, but uses the mean nearest phylogenetic neighbor distance (MNND) insted of MPD. 
+This index is mathemically similar to NRI, but uses the mean nearest phylogenetic neighbor distance (MNND) instead of MPD. 
 MNND is the mean phylogenetic distance between all taxa in a sample and their phylogenetically closest neighbor.
 As a result, NTI tends to emphasize terminal clustering, independent of deep level clustering (Webb et al. 2002; http://goo.gl/WikgWE).
 Just like NRI, we peform randomizations and use this information to estimate the standardized effect size. 
@@ -296,9 +296,15 @@ How does this affect the interpretation of NRI and NTI?
 > ***Answer 3***:  
 
 ### C) Mini-Exercise On Phylogenetic Alpha-Diversity
+Conduct an exploratory analysis of the phylogenetic $\alpha$-diversity of the Indiana refuge ponds.
+Using techniques from the *Week1_Handout.Rmd* and other statistical techniques at your disposal, identify enviornmental variables that may influence the taxonomic richness (SR), phylodiveristy (PD), and dispersion (NRI and NTI) of the bacterial communities in the sampled ponds. 
+Generate some hypotheses as to what ecological and/or evolutionary processes are giving rise to these patterns of phylogenetic $\alpha$-diversity.  
 
-## POTENTIAL EXERCISE: HAVE STUDENTS LOOK FOR CORRELATIONS BETWEEN NRI/NTI AND ENVIRONMENTAL VARIABLES. 
-## DOES CLUSTERING/DISPERSION CHANGE ALONG GRADIENTS OR WITH PD? IF SO, WHAT ARE SOME DIFFERENT EXPLANATIONS?
+```{r}
+
+
+
+```
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
