@@ -412,7 +412,7 @@ test2 <- princomp(envs.2, scores=TRUE)
 
 ponds.cca <- vegan::cca(dist.uf ~ test2$scores)
 
-ponds.cca <- vegan::cca(dist.uf ~ envs.2)
+ponds.cca <- vegan::cca(dist.uf ~ envs.2 + water.shed)
 plot(ponds.cca)
 ```
 
