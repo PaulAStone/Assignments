@@ -1,7 +1,7 @@
 ---
 title: "Phylogenetic Diversity - Communities"
 author: "Z620: Quantitative Biodiversity, Indiana University"
-date: "February 26, 2015"
+date: "February 27, 2015"
 header-includes:
    - \usepackage{array}
 output: pdf_document
@@ -96,7 +96,8 @@ Now, let's load and process some of the phylogenetic data:
 
 ```{r}
 # Import the Alignment File {seqinr}
-ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", format = "fasta")  
+ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", 
+                             format = "fasta")  
 
 # Rename OTUs in FASTA File
 ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
@@ -128,7 +129,7 @@ phy <- root(phy, outgroup, resolve.root = TRUE)
 
 # Plot the Rooted Tree {ape}
 par(mar = c(1,1,2,1) + 0.1)
-plot.phylo(phy, main = "Neighbor Joining Tree", "phylogram", 
+plot.phylo(phy, main = "Neighbor Joining Tree", "phylogram", show.tip.label = FALSE, 
            use.edge.length = FALSE, direction = "right", cex = 0.6, label.offset = 1)
 ```
 
@@ -223,7 +224,8 @@ Therfore, we are only going to run the `ses.pd` function for two ponds with a li
 
 ```{r}
 # Estimate Standardized Effect Size of PD via Randomization {picante}
-ses.pd <- ses.pd(comm[1:2,], phy, null.model = "richness", runs = 25, include.root = FALSE)
+ses.pd <- ses.pd(comm[1:2,], phy, null.model = "richness", runs = 25, 
+                 include.root = FALSE)
 ```
 
 ***Question 2***: Using `help()` and the table above, identify two null models that can be used with the `ses.pd()` function.
@@ -266,7 +268,8 @@ As with Faith's PD, the radomization procedures are computationally intensive, s
 
 ```{r}
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 25) 
+ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", 
+                   abundance.weighted = FALSE, runs = 25) 
 
 # Calculate NRI
 NRI <- as.matrix(-1 * ((ses.mpd[,2] - ses.mpd[,3]) / ses.mpd[,4]))
@@ -284,7 +287,8 @@ Negative NRI values indicate phylogenetic overdispersion and positive NRI values
 
 ```{r}
 # Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", abundance.weighted = FALSE, runs = 25)
+ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", 
+                     abundance.weighted = FALSE, runs = 25)
 
 # Calculate NTI
 NTI <- as.matrix(-1 * ((ses.mntd[,2] - ses.mntd[,3]) / ses.mntd[,4]))
@@ -339,7 +343,7 @@ Here, we will explore two: mean pairwise distance and UniFrac distance.
 \end{center}
 
 Let's calculate the phylogenetically based community resemblance matrices for our pond data set. 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 # Mean Pairwise Distance
 dist.mp <- comdist(comm, phydist)
 
@@ -355,7 +359,7 @@ plot(dist.mp, dist.uf,
      pch = 20, col = "red", las = 1, asp = 1, xlim = c(0.15, 0.5), ylim = c(0.15, 0.5),
      xlab = "Mean Pair Distance", ylab = "UniFrac Distance") 
 abline(b = 1, a = 0, lty = 2)
-text(0.2, 0.25, "1:1")
+text(0.5, 0.47, "1:1")
 ```
 
 ***Question 4***: Using the plot above, describe the relationship between Mean Pair Distance and UniFrac distance. 
@@ -418,7 +422,7 @@ The ponds that we sampled in southern Indiana were located in three distinct wat
 For many organisms, watershed boundaries represent major dispersal baries, which may influence the phylogenetic distribution of species. 
 Here, we will test for this watershed affect using the Permutational Multivariate Analysis of Variance (PERMANOVA) test that we learned about in the $\beta$-diversity module. 
 
-```{r}
+```{r, results = 'hide'}
 # Define Environmental Catagory
 water.shed <- env$Location
 
@@ -450,7 +454,7 @@ mantel(dist.uf, env.dist)
 Last, let's conduct a Canonical correspondence analysis (CCA). 
 You will recall that this constrained ordination technique allows one to test for the effects of an explanatory matrix (e.g., environmental data) on a response matrix (phylogenetic distance matrix). 
 
-```{r}
+```{r, results = 'hide'}
 # Conduct CCA {vegan}
 ponds.cca <- vegan::cca(dist.uf ~ scale(envs))
 
@@ -488,7 +492,8 @@ text(scores(ponds.cca, display = "wa"),
 
 # Add Environmental Vectors
 vectors <- scores(ponds.cca, display = "bp")
-row.names(vectors) <- c("Elev", "Dia", "Dep", "Vol", "ORP", "Temp", "SpC", "DO", "TDS", "Sal", "pH", "Col", "Chla", "DOC", "DON")
+row.names(vectors) <- c("Elev", "Dia", "Dep", "Vol", "ORP", "Temp", "SpC", "DO", 
+                        "TDS", "Sal", "pH", "Col", "Chla", "DOC", "DON")
 arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, 
        lwd = 2, lty = 1, length = 0.2, col = "red")
 text(vectors[,1] * 2, vectors[, 2] * 2, pos = 3, 
@@ -530,10 +535,9 @@ Here, we will test to what degree spatial autocorrelation can also affect phylog
 First, we will calcualte distances for geographic data, taxonomic data, and phylognetic among all unique pair-wise combinations of ponds.
 
 ```{r}
-# Geographic Distances Among Ponds
+# Geographic Distances (Kilometers) Among Ponds
 long.lat <- as.matrix(cbind(env$long, env$lat))
-coord.dist <- earth.dist(long.lat, dist=TRUE) # in kilometers
-coord.dist <- dist(as.matrix(env$lat, env$long)) 
+coord.dist <- earth.dist(long.lat, dist=TRUE)
 
 # Taxonomic Distances Among Ponds (Bray-Curits)
 bray.curtis.dist <- 1 - vegdist(comm) 
@@ -549,17 +553,17 @@ coord.dist.ls <- liste(coord.dist, entry="geo.dist")
 # Create a Data Frame from the Lists of Distances
 df <- data.frame(coord.dist.ls, bray.curtis.dist.ls[,3], unifrac.dist.ls[,3])
 names(df)[4:5] <- c("bray.curtis", "unifrac")
-attach(df) #df <- subset(df, struc != 0)
+attach(df)
 ```
 
 Now, let's plot the DD relationships:
 
-```{r}
+```{r, results = 'hide'}
 # Set Initial Plot Parameters
 par(mfrow=c(2, 1), mar = c(1, 5, 2, 1) + 0.1, oma = c(2, 0, 0, 0))
 
 # Make Plot for Taxonomic DD
-plot(geo.dist, bray.curtis, xlab = "", xaxt = "n", las = 1,
+plot(coord.dist, bray.curtis, xlab = "", xaxt = "n", las = 1, ylim = c(0.1, 0.9),
      ylab="Bray-Curtis Similarity", 
      main = "Distance Decay", col='SteelBlue')
 
@@ -572,22 +576,22 @@ abline(DD.reg.bc , col="red4")
 par(mar = c(2, 5, 1, 1) + 0.1)
 
 # Make Plot for Phylogenetic DD
-plot(geo.dist, unifrac, xlab="", 
-     ylab="Unifrac Similarity", col='darkorchid4', las = 1)
+plot(coord.dist, unifrac, xlab="", las = 1, ylim = c(0.1, 0.9),
+     ylab="Unifrac Similarity", col='darkorchid4')
 
 # Regression for Phylogenetic DD
-DD.reg.uni <- lm(unifrac ~ geo.dist)
+DD.reg.uni <- lm(unifrac ~ coord.dist)
 summary(DD.reg.uni)
 abline(DD.reg.uni, col="red4")
 
 # Add X-Axis Label to Plot
-mtext("Geographic Distance, km", side = 1, adj = 0.65, 
+mtext("Geographic Distance, km", side = 1, adj = 0.55, 
       line = 0.5, outer = TRUE)
 ```
 
 Finally, let's test whether the slopes for taxonomic and phylogenetic DD are significantly different from one another.
 
-```{r}
+```{r, results = 'hide'}
 diffslope(geo.dist, unifrac, geo.dist, bray.curtis)
 ```
 
@@ -604,7 +608,7 @@ You will recall that the SAR is a cumulative relationship (S = cA^z) and so, can
 In fact, the shallowest the SAR can get is to have a slope of 0.0, meaning that all species are found in all samples.
 Below is a plot of the taxonomically based SAR for the pond data. 
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, results = 'hide'}
 SAR <- function(OTUs){
   Alist <- c()
   Slist <- c()
@@ -665,36 +669,46 @@ Let's begin by writing a function to generate the PDAR.
 ```{r}
 PDAR <- function(comm, tree){
 
-  areas <- c() # an object to hold areas
-  diversity <- c() # an object hold diversity
+  # Create objects to hold areas and diversity
+  areas <- c() 
+  diversity <- c() 
   
-  num.plots <- c(2, 4, 8, 16, 32, 51) # increase numbers of plots by 2x
+  # Create vector increasing number of plots by 2x
+  num.plots <- c(2, 4, 8, 16, 32, 51)
   
-  for (i in num.plots){    
-    areas.iter <- c() # hold areas from iterations; we'll find the mean from this
-    diversity.iter <- c() # hold estimated diversity from iterations; we'll find the mean
+  for (i in num.plots){   
+    # Create vectors to hold areas and diversity form iterations, used for means
+    areas.iter <- c() 
+    diversity.iter <- c() 
     
-    for (j in 1:10){ # Iterate 10 times for each sample size
-      pond.sample <- sample(51, replace = FALSE, size = i) # sampling w/out replacement
-      area <- 0 # a variable to hold accumulating area
-      sites <- c() # a vector to hold accumulating taxa
+    # Iterate 10 times per sample size
+    for (j in 1:10){ 
+      # Sample w/o replacement
+      pond.sample <- sample(51, replace = FALSE, size = i)
       
-      for (k in pond.sample) { # Loop through each randomly drawn pond  
+      # Create variable and vector to hold accumulating area and taxa
+      area <- 0 
+      sites <- c() 
+      
+      for (k in pond.sample) {       # Loop through each randomly drawn pond  
         area <- area + pond.areas[k] # aggregating area (roughly doubling)
-        sites <- rbind(sites, comm[k, ]) # and sites
+        sites <- rbind(sites, comm[k, ])    # and sites
         }
       
-      areas.iter <- c(areas.iter, area) # concatenate the area to areas.iter      
-      psv.vals <- psv(sites, tree, compute.var=FALSE) # calculate PSV or other phylogenetic alpha-diversity metric
+      # concatenate the area to areas.iter
+      areas.iter <- c(areas.iter, area)  
+      # calculate PSV or other phylogenetic alpha-diversity metric
+      psv.vals <- psv(sites, tree, compute.var=FALSE) 
       psv <- psv.vals$PSVs[1] 
       diversity.iter <- c(diversity.iter, as.numeric(psv))
       }
 
     diversity <- c(diversity, mean(diversity.iter)) # let diversity be the mean PSV
-    areas <- c(areas, mean(areas.iter)) # let areas be the average area
+    areas <- c(areas, mean(areas.iter))             # let areas be the average area
     print(c(i, mean(diversity.iter), mean(areas.iter))) # print as we go
     }
-  return(cbind(areas, diversity)) # return vectors of areas (x) and diversity (y)
+  # return vectors of areas (x) and diversity (y)
+  return(cbind(areas, diversity)) 
   }
 ```
 
@@ -702,9 +716,9 @@ PDAR <- function(comm, tree){
 We will examine the relationship between phylogenetic diversity and area using both Spearman's correlation coefficient (S) and Pearson's correlation coefficient (P).
 It is informative to use both because while S is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), P is computed on the observed values and therefore depicts linear relationships.
 
-```{r}
-# Calculate areas for ponds
-pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
+```{r, results = 'hide'}
+# Calculate areas for ponds: Find areas of all 51 ponds
+pond.areas <- as.vector(pi * (env$Diameter/2)^2) 
 
 # Compute the PDAR
 pdar <- PDAR(comm, phy) 
@@ -722,13 +736,13 @@ S <- round(Spearman$estimate,2)
 Sp <- round(Spearman$p.value,3)
 
 # Plot the PDAR
-#par(mar = c(5, 5, 4, 2) + 0.1)
+par(mar = c(5, 5, 4, 2) + 0.1)
 plot(pdar[, 1], pdar[, 2], xlab='Area', ylab='PSV', ylim = c(0, 1), 
-     main='Phylogenetic Diversity-Area Relationship', col='red', pch = 16, las = 1)
+     main='Phylogenetic Diversity-Area Relationship', col = 'red', pch = 16, las = 1)
 
 legend("topleft", legend= c(paste("Spearman Correlation = ", S, "; p = ", Sp, sep = ""), 
                             paste("Pearson Correlation = ", P, "; p = ", Pp, sep = "")), 
-                            bty="n", lw=0, col="red") 
+                            bty="n", col="red") 
 ```
 
 ***Question 8***: For the bacteria in the Indiana ponds, the slope (*z*) of the SAR was 0.15.
