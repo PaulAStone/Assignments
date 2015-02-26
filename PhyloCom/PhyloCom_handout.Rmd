@@ -437,7 +437,7 @@ First, let's define the environmental data and then create an enviornmental dist
 envs <- env[, 5:19]
 
 # Distance Matrix for Environmental Variables
-env.dis <- vegdist(scale(envs), method = "euclid")
+env.dist <- vegdist(scale(envs), method = "euclid")
 ```
 
 Second, let's conduct a Mantel's test to see whether UniFrac distance is correlated with environmental variation:
@@ -531,13 +531,15 @@ First, we will calcualte distances for geographic data, taxonomic data, and phyl
 
 ```{r}
 # Geographic Distances Among Ponds
+long.lat <- as.matrix(cbind(env$long, env$lat))
+coord.dist <- earth.dist(long.lat, dist=TRUE) # in kilometers
 coord.dist <- dist(as.matrix(env$lat, env$long)) 
 
 # Taxonomic Distances Among Ponds (Bray-Curits)
 bray.curtis.dist <- 1 - vegdist(comm) 
 
 # Phylogenetic Distances Among Ponds
-unifrac.dist <- 1 - unifrac(comm, phy) 
+unifrac.dist <- 1 - dist.uf 
   
 # Transform All Distances Into List Format:
 unifrac.dist.ls <- liste(unifrac.dist, entry="unifrac")
@@ -555,26 +557,28 @@ Now, let's plot the DD relationships:
 ```{r}
 # Make Plot for Taxonomic DD
 par(mfrow=c(2, 1))
-plot(geo.dist, bray.curtis, xlab="Geographic Distance (degree distance)", ylab="Bray-Curtis Similarity", 
+plot(geo.dist, bray.curtis, xlab="Geographic Distance, km", ylab="Bray-Curtis Similarity", 
    main = "Taxonomic Distance Decay", col='SteelBlue')
 
 # Regression for Taxonomic DD 
 DD.reg.bc <- lm(bray.curtis ~ geo.dist)
+summary(DD.reg.bc)
 abline(DD.reg.bc , col="red4")
 
 # Make Plot for Phylogenetic DD
-plot(geo.dist, unifrac, xlab="Geographic Distance", ylab="Unifrac Similarity", 
+plot(geo.dist, unifrac, xlab="Geographic distance, km", ylab="Unifrac Similarity", 
      main="Phylogenetic Distance Decay", col='darkorchid4')
 
+# Regression for Phylogenetic DD
 DD.reg.uni <- lm(unifrac ~ geo.dist)
+summary(DD.reg.uni)
 abline(DD.reg.uni, col="red4")
 ```
 
-Finally, let's test whether or not the parameters (slopes and intercepts) for taxonomic and phylogenetic DD are significantly different from one another.
+Finally, let's test whether the slopes for taxonomic and phylogenetic DD are significantly different from one another.
 
 ```{r}
 diffslope(geo.dist, unifrac, geo.dist, bray.curtis)
-diffic(geo.dist, unifrac, geo.dist, bray.curtis)
 ```
 
 ***Question 7***: Interpret the parameters from the taxonomic and phylogenetic DD relationships. If there are differences, hypothesize why this might be.   
@@ -591,8 +595,6 @@ In fact, the shallowest the SAR can get is to have a slope of 0.0, meaning that 
 Below is a plot of the taxonomically based SAR for the pond data. 
 
 ```{r, echo=FALSE}
-# I'm commenting this out as I'm not sure they need to rewrite this all. 
-# Just want to jog their memories. Not a direct comaparison like other chunks in other sections. 
 SAR <- function(OTUs){
   Alist <- c()
   Slist <- c()
@@ -656,7 +658,7 @@ PDAR <- function(comm, tree){
   areas <- c() # an object to hold areas
   diversity <- c() # an object hold diversity
   
-  num.plots <- c(2, 4, 8, 16, 32, 51) # increase numbers of plots by 2, roughly doubling area
+  num.plots <- c(2, 4, 8, 16, 32, 51) # increase numbers of plots by 2x
   
   for (i in num.plots){    
     areas.iter <- c() # hold areas from iterations; we'll find the mean from this
@@ -668,12 +670,12 @@ PDAR <- function(comm, tree){
       sites <- c() # a vector to hold accumulating taxa
       
       for (k in pond.sample) { # Loop through each randomly drawn pond  
-        area <- area + length(pond.sample) # aggregating area
+        area <- area + pond.areas[k] # aggregating area (roughly doubling)
         sites <- rbind(sites, comm[k, ]) # and sites
         }
       
       areas.iter <- c(areas.iter, area) # concatenate the area to areas.iter      
-      psv.vals <- psv(sites, tree, compute.var=FALSE) # calculate PSV or other metric (e.g., UniFrac)
+      psv.vals <- psv(sites, tree, compute.var=FALSE) # calculate PSV or other phylogenetic alpha-diversity metric
       psv <- psv.vals$PSVs[1] 
       diversity.iter <- c(diversity.iter, as.numeric(psv))
       }
@@ -691,6 +693,9 @@ We will examine the relationship between phylogenetic diversity and area using b
 It is informative to use both because while S is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), P is computed on the observed values and therefore depicts linear relationships.
 
 ```{r}
+# Calculate areas for ponds
+pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
+
 # Compute the PDAR
 pdar <- PDAR(comm, phy) 
 pdar <- as.data.frame(pdar)
@@ -707,8 +712,8 @@ S <- round(Spearman$estimate,2)
 Sp <- round(Spearman$p.value,3)
 
 # Plot the PDAR
-par(mar = c(5, 5, 4, 2) + 0.1)
-plot(pdar[, 1], pdar[, 2], xlab='Area', ylab='PSV', xlim = c(0 , 52), ylim = c(0, 1), 
+#par(mar = c(5, 5, 4, 2) + 0.1)
+plot(pdar[, 1], pdar[, 2], xlab='Area', ylab='PSV', ylim = c(0, 1), 
      main='Phylogenetic Diversity-Area Relationship', col='red', pch = 16, las = 1)
 
 legend("topleft", legend= c(paste("Spearman Correlation = ", S, "; p = ", Sp, sep = ""), 
