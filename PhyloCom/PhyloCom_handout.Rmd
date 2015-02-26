@@ -554,20 +554,25 @@ Now, let's plot the DD relationships:
 
 ```{r}
 # Make Plot for Taxonomic DD
-par(mfrow=c(2, 1))
-plot(geo.dist, bray.curtis, xlab="Geographic Distance (degree distance)", ylab="Bray-Curtis Similarity", 
-   main = "Taxonomic Distance Decay", col='SteelBlue')
+par(mfrow=c(2, 1), mar = c(1, 5, 2, 1) + 0.1, oma = c(2, 0, 0, 0))
+plot(geo.dist, bray.curtis, xlab = "", xaxt = "n", las = 1,
+     ylab="Bray-Curtis Similarity", 
+     main = "Distance Decay", col='SteelBlue')
 
 # Regression for Taxonomic DD 
 DD.reg.bc <- lm(bray.curtis ~ geo.dist)
 abline(DD.reg.bc , col="red4")
 
+par(mar = c(2, 5, 1, 1) + 0.1)
 # Make Plot for Phylogenetic DD
-plot(geo.dist, unifrac, xlab="Geographic Distance", ylab="Unifrac Similarity", 
-     main="Phylogenetic Distance Decay", col='darkorchid4')
+plot(geo.dist, unifrac, xlab="", 
+     ylab="Unifrac Similarity", col='darkorchid4', las = 1)
 
 DD.reg.uni <- lm(unifrac ~ geo.dist)
 abline(DD.reg.uni, col="red4")
+
+mtext("Geographic Distance (degree distance)", side = 1, adj = 0.65, 
+      line = 0.5, outer = TRUE)
 ```
 
 Finally, let's test whether or not the parameters (slopes and intercepts) for taxonomic and phylogenetic DD are significantly different from one another.
