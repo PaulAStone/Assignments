@@ -11,7 +11,7 @@ geometry: margin=2.54cm
 ## OVERVIEW
 Taxonomic measures of $\alpha$- and $\beta$-diversity do not integrate evolutionary information. 
 However, evolutionary information is imortant for broad range of biodiversity issues including conservation biology, biogeography, and community assembly. 
-In this handout, we will introduce some commonly used methods in phylogenetic community ecology.
+In this exercise, we will introduce some commonly used methods in phylogenetic community ecology.
 These methods will allow us to account for phylogenetic diversity and provide insight into the mechansisms that give rise to over- and under-dispersion (i.e., clustering) of biological communities. 
 
 After completing this exercise you will know how to:
@@ -44,7 +44,7 @@ require("seqinr")
 
 ### C. Load Source Code
 In addition to relying on contributed packages, this week we will also be using a source code file.
-A source code file has user-defined functions that are required for certain analyses.
+The source code file has user-defined functions that are required for certain analyses.
 The benefit of source files is that they contain "vetted" code that can be used across multiple projects. 
 Here, we will be using a source code file that includes a function for reading in the output files from the popular community sequencing software `mothur` (http://www.mothur.org/).
 
@@ -135,7 +135,7 @@ plot.phylo(phy, main = "Neighbor Joining Tree", "phylogram",
 In 1992, Daniel Faith developed a diversity metric called Faith's PD (http://goo.gl/wM08Oy).
 The metric sums the branch lengths for each species found in a sample from the root to the tip of a the phylogenetic tree.
 The value of the metric captures the evolutionary history of an assemblage. 
-Higher PD values indicate that an assemblage contains more evoluiotnarily divergent taxa, while lower PD values indicate that an assemblage contains taxa with a more restricted evolutionary history. 
+Higher PD values indicate that an assemblage contains more evolutionary divergent taxa, while lower PD values indicate that an assemblage contains taxa with a more restricted evolutionary history. 
 
 Faith's PD can be implemented in R using the `pd()` function in the `picante` package. 
 A phylognetic tree containing the species pool is required. 
@@ -405,10 +405,9 @@ mantel(dist.uf, env.dist)
 # Conduct Canonical Correspondence Analysis
 ponds.cca <- vegan::cca(dist.uf ~ scale(envs))
 
-<<<<<<< HEAD
+
 ponds.cca <- vegan::cca(dist.uf ~ envs.2 + water.shed)
-=======
->>>>>>> upstream/master
+
 plot(ponds.cca)
 ```
 
