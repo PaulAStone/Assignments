@@ -40,6 +40,9 @@ After the initial installation of these packages using the `install.packages()` 
 require("picante")
 require("ape")
 require("seqinr")
+require("vegan")
+require("fossil")
+require("simba")
 ```
 
 ### C. Load Source Code
@@ -308,9 +311,11 @@ Generate some hypotheses as to what ecological and/or evolutionary processes are
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
-### A. A Phylogenetically Based Community Resemblance Matrix
-Just as we needed a resemblance matrix in taxonomic $\beta$-diversity, we need a community resemblace matix to quantifiy phylogenetic $\beta$-diversity. 
-However, instead of making the resemblance matrix based on incidence or abundance of taxa we are now going to incorporate information about the phylogenetic relationships among taxa. 
+### A. Phylogenetically Based Community Resemblance Matrix
+As you may recall, in order to quantify $\beta$-diversity for more than two samples, one needs to create a resemblance matrix. 
+When quantifying taxonomic $\beta$-diversity, we calculated the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix using metrics such as the Sørensen index or the Bray-Curtis index. 
+More or less, we need to go through the same process for quantifying phylogenetic $\beta$-diversity.
+Instead of making the resemblance matrix based on incidence or abundance of taxa, we are going to incorporate information about the phylogenetic relationships among taxa. 
 Similar to other measures of $\beta$ diversity, there are numerous ways to calculate the phylogenetic distances in the community resemblance matrix.
 Here, we will explore two: mean pairwise distance and UniFrac distance.
 
@@ -321,15 +326,16 @@ Here, we will explore two: mean pairwise distance and UniFrac distance.
   \textbf{Index} & \textbf{Description} \\
   \hline \hline \\ [-1.5ex]
   \textbf{Mean Pairwise Distance} & 
-  The average phylogenetic distance between two taxa calculated as the sum of all intervening branch lengths. "Mean phylogenetic distance between pairs of species drawn from two distinct communities.\\
+  Distance between two samples calculated as the mean phylogenetic distance between pairs of taxa \\
   \\ [-1.5ex]
   \textbf{UniFrac} & 
-  The distance between the two samples calculated as (the sum of *unshared* branch lengths)/(the sum of all [shared and unshared] tree branch lengths) in a rooted tree. \\
+  Distance between two samples calculated as $\Sigma_{unshared}$ / $\Sigma_{total}$, where $\Sigma_{unshared}$ is the sum of unshared branch lengths between samples and $\Sigma_{total}$ is the total (shared and unshared) branch lengths in a rooted tree \\
   \\ [-1.5ex]
   \hline
 \end{tabular}
 \end{center}
 
+Let's calculate the phylogenetically based community resemblance matrices for our pond data set. 
 ```{r}
 # Mean Pairwise Distance
 dist.mp <- comdist(comm, phydist)
@@ -338,15 +344,29 @@ dist.mp <- comdist(comm, phydist)
 dist.uf <- unifrac(comm, phy)
 ```
 
-Here we are calcuating unweighted phylogenetic distances (similar to incidence based measures).
+Now, let's compare the Mean Pair Distance and UniFrac distance matrices. 
+
+```{r}
+par(mar = c(5, 5, 2, 1) + 0.1)
+plot(dist.mp, dist.uf, 
+     pch = 20, col = "red", las = 1, asp = 1, xlim = c(0.15, 0.5), ylim = c(0.15, 0.5),
+     xlab = "Mean Pair Distance", ylab = "UniFrac Distance") 
+abline(b = 1, a = 0, lty = 2)
+text(0.2, 0.25, "1:1")
+```
+
+***Question 4***: Using the plot above, describe the relationship between Mean Pair Distance and UniFrac distance. 
+Note: we are calcuating unweighted phylogenetic distances (similar to incidence based measures).
 That means that we are not taking into account the abundance of each taxa in each site.
 
-### B. Visualizing Phylogenetic Beta Diversity
+> ***Answer 4***: 
 
-Now that we have our phylogenetically based community resemblance matrix, we can visualize $\beta$ diversity using the same techniques we used in the $\beta$-diversity module.
-As an example, we will use ordination, but any of the other $/beta$-diversity viualization techniques would also work (e.g., heatmaps and cluster analysis). 
+
+### B. Visualizing Phylogenetic Beta Diversity
+Now that we have our phylogenetically based community resemblance matrix, we can visualize phyogenetic diversity among samples using the same techniques that we used in the $\beta$-diversity module.
+As an example, we will use ordination, but any of the other $\beta$-diversity viualization techniques would also work (e.g., heatmaps and cluster analysis). 
 Specifically, we will use the `cmdscale()` function to conduct a Principal Coordinates Analysis (PCoA) using the UniFrac distance matrix.
-Additinally, we we calculate the amount of explained variation for each phylogenetically informed PCoA axis.
+Additinally, we will calculate the amount of explained variation for each phylogenetically informed PCoA axis.
 
 ```{r}
 pond.pcoa <- cmdscale(dist.uf, eig = T, k = 3)
@@ -384,54 +404,143 @@ text(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2],
      labels = row.names(pond.pcoa$points))
 ```
 
+***Question 5***: How much variation is explained in the first three PCoA axes if Mean Pair Distance is used as the resemblance matrix instead of UniFrac?
+
+> ***Answer 5***: 
+
 ### C. Hypothesis Testing
 
-#### i. Categorical Approach: Water Shed
+#### i. Categorical Approach: Watershed Effect
+The ponds that we sampled in southern Indiana were located in three distinct watersheds (BCSP, HNF, and YSF). 
+For many organisms, watershed boundaries represent major dispersal baries, which may influence the phylogenetic distribution of species. 
+Here, we will test for this watershed affect using the Permutational Multivariate Analysis of Variance (PERMANOVA) test that we learned about in the $\beta$-diversity module. 
 
 ```{r}
 # Define Environmental Catagory
 water.shed <- env$Location
 
-# Run PERMANOVA with adonis function
+# Run PERMANOVA with `adonis()` Function {vegan}
 adonis(dist.uf ~ water.shed, permutations = 999)
 ```
 
 #### ii. Continuous Approach: Environmental Gradients
+In the Geographic Ecology module, we demonstrated that there was substantial variation in enviornmental variables that are known to influence the structure and function of microbial communities.
+In the following section, we will revist two methods that are used to test for relationships among multivariate environmental and biological data. 
+
+First, let's define the environmental data and then create an enviornmental distance matrix:
 
 ```{r}
-# Define Environmental Gradient
+# Define Environmental Variables
 envs <- env[, 5:19]
 
 # Distance Matrix for Environmental Variables
 env.dis <- vegdist(scale(envs), method = "euclid")
+```
 
-# Mantel Test: Is UniFrac Distance Correlated with Environmental Variation?
-mantel(dist.uf, env.dist)
+Second, let's conduct a Mantel's test to see whether UniFrac distance is correlated with environmental variation:
 
-# Conduct Canonical Correspondence Analysis
+```{r}
+# Conduct Mantel Test {vegan}
+mantel(dist.uf, env.dist) 
+```
+
+Last, let's conduct a Canonical correspondence analysis (CCA). 
+You will recall that this constrained ordination technique allows one to test for the effects of an explanatory matrix (e.g., environmental data) on a response matrix (phylogenetic distance matrix). 
+
+```{r}
+# Conduct CCA {vegan}
 ponds.cca <- vegan::cca(dist.uf ~ scale(envs))
 
+# Permutation Tests
+anova(ponds.cca, by = "axis")
+ponds.fit <- envfit(ponds.cca, envs, perm = 999)
+ponds.fit
+
+# Plot the CCA
 plot(ponds.cca)
 ```
 
-## 6) Geographical Phylogenetic Community Ecology
+***Question 6***: Based on the multivariate procecures conducted above, describe some of the phylogenetic patterns of $\beta$-diversity for bacterial communities in the Indiana refuge ponds.   
 
-### A. PHYLOGENETIC DIVERSITY-AREA RELATIONSHIP (PDAR)
+> ***Answer 6***: 
 
-In this week's reading, you learned how Helmus and Ives (2012) studied how phylogenetic diversity changes with increasing area.
-This phylogenetic diversity-area relationship (PDAR) is analogous to the species-area relationship (SAR) that we learned about in Geographical Ecology.
-Remember that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
+
+## 6) GEOGRAPHICAL PHYLOGENETIC COMMUNITY ECOLOGY
+
+### A. Phylogenetic Distance-Decay (PDD)
+You will recall from the Geographical Ecology module, that the distance decay (DD) relationship reflects the spatial autocorrelation of community similarity.
+That is, geographically near communities should be more similar than geographically distant communities.
+Here, we will test to what degree spatial autocorrelation can also affect phylogenetic DD.  
+
+First, we will calcualte distances for geographic data, taxonomic data, and phylognetic among all unique pair-wise combinations of ponds.
+
+```{r}
+# Geographic Distances Among Ponds
+coord.dist <- dist(as.matrix(env$lat, env$long)) 
+
+# Taxonomic Distances Among Ponds (Bray-Curits)
+bray.curtis.dist <- 1 - vegdist(comm) 
+
+# Phylogenetic Distances Among Ponds
+unifrac.dist <- 1 - unifrac(comm, phy) 
+  
+# Transform All Distances Into List Format:
+unifrac.dist.ls <- liste(unifrac.dist, entry="unifrac")
+bray.curtis.dist.ls <- liste(bray.curtis.dist, entry="bray.curtis")
+coord.dist.ls <- liste(coord.dist, entry="geo.dist")
+
+# Create a Data Frame from the Lists of Distances
+df <- data.frame(coord.dist.ls, bray.curtis.dist.ls[,3], unifrac.dist.ls[,3])
+names(df)[4:5] <- c("bray.curtis", "unifrac")
+attach(df) #df <- subset(df, struc != 0)
+```
+
+Now, let's plot the DD relationships:
+
+```{r}
+# Make Plot for Taxonomic DD
+par(mfrow=c(2, 1))
+plot(geo.dist, bray.curtis, xlab="Geographic Distance (degree distance)", ylab="Bray-Curtis Similarity", 
+   main = "Taxonomic Distance Decay", col='SteelBlue')
+
+# Regression for Taxonomic DD 
+DD.reg.bc <- lm(bray.curtis ~ geo.dist)
+abline(DD.reg.bc , col="red4")
+
+# Make Plot for Phylogenetic DD
+plot(geo.dist, unifrac, xlab="Geographic Distance", ylab="Unifrac Similarity", 
+     main="Phylogenetic Distance Decay", col='darkorchid4')
+
+DD.reg.uni <- lm(unifrac ~ geo.dist)
+abline(DD.reg.uni, col="red4")
+```
+
+Finally, let's test whether or not the parameters (slopes and intercepts) for taxonomic and phylogenetic DD are significantly different from one another.
+
+```{r}
+diffslope(geo.dist, unifrac, geo.dist, bray.curtis)
+diffic(geo.dist, unifrac, geo.dist, bray.curtis)
+```
+
+***Question 7***: Interpret the parameters from the taxonomic and phylogenetic DD relationships. If there are differences, hypothesize why this might be.   
+
+> ***Answer 7***: 
+
+
+### A. Phlogenetic diversity-area relationship (PDAR)
+
+Helmus and Ives (2012) developed methods to study how phylogenetic diversity changes with increasing area.
+This phylogenetic diversity-area relationship (PDAR) is analogous to the species-area relationship (SAR) that we learned about in the Geographical Ecology module.
+You will recall that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
 In fact, the shallowest the SAR can get is to have a slope of 0.0, meaning that all species are found in all samples.
-In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects of forces or processes on the shape of the PDAR.
+In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects that different ecological and evolutionary processes have on the shape of the PDAR.
 
 Helmus and Ives use the Phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
 PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
 Type 'help(psv)' to learn more.
 
-In their study, Helmus and Ives, increased area by aggregating plots at random either with or without respect to whether the plots were adjacent.
-Both sampling methods produce roughly the same result.
-Here, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
-**Helmus and Ives (2012) did this in a way that is similar to how we constructed SARs in the Geographical Ecology lesson.**
+In this exercise, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
+This approach is similar to how we constructed SARs in the Geographical Ecology module.
 
 Let's begin by writing a function to generate the PDAR.
 
@@ -559,58 +668,7 @@ legend("topleft", legend = paste("slope =", slope), bty = "n", lw = 2, col = "re
 > ***Answer X***:
 
 
-### B. PHYLOGENETIC DISTANCE-DECAY RELATIONSHIP (PDD)
-Remember from the Geographical Ecology lesson that the Distance Decay relationship (DD) reflects the spatial autocorrelation of community similarity.
-That is, geographically near communities should be more similar than geographically distant communities.
-Given that similarity in community composition generally decreases with geographic distance, let's apply the concept of spatial autocorrelation to phylogenetic diversity and ask whether similarity in phylogenetic diversity also decreases with distance.
-Instead of the PSV metric of Helmus and Ives (2012), we'll use the UNIFRAC distance, which is more analogous to the Bray-Curtis metric used in the DD.
 
-To generate the PDD, we will need to calculate geographic distances based on lat-long coordinates.
-Let's use the `fossil` package for this.
-```{r}
-require("fossil")
-require("simba")
-```
-
-Next, let's write a function to find the geographic distances and the differences in phylogenetic diversity between all unique pair-wise combinations of ponds.
-
-```{r}
-unifrac.dist <- 1 - unifrac(comm, phy) # unifrac distance
-bray.curtis.dist <- 1 - vegdist(comm) # Bray-Curtis similarity between the plots
-coord.dist <- dist(as.matrix(env$lat, env$long)) # geographic distance between plots
-  
-# transform all distance matrices into list format:
-unifrac.dist.ls <- liste(unifrac.dist, entry="unifrac")
-bray.curtis.dist.ls <- liste(bray.curtis.dist, entry="bray.curtis")
-coord.dist.ls <- liste(coord.dist, entry="geo.dist")
-
-# Now, create a data frame containing similarity of the environment and similarity of community.
-df <- data.frame(coord.dist.ls, bray.curtis.dist.ls[,3], unifrac.dist.ls[,3])
-names(df)[4:5] <- c("bray.curtis", "unifrac")
-attach(df) #df <- subset(df, struc != 0)
-
-par(mfrow=c(2, 1))
-
-# Finally, let's plot the Distance-decay relationships, with regression lines in red.
-plot(geo.dist, bray.curtis, xlab="Geographic Distance (degree distance)", ylab="Bray-Curtis Similarity", 
-   main = "Distance-Decay for Taxa", col='SteelBlue')
-
-OLS <- lm(bray.curtis ~ geo.dist)
-OLS # print regression results to the screen
-abline(OLS, col="red4")
-
-
-plot(geo.dist, unifrac, xlab="Geographic Distance", ylab="Unifrac Similarity", 
-     main="Distance-Decay for Phylogenetic", col='darkorchid4')
-
-OLS <- lm(unifrac ~ geo.dist)
-OLS # print regression results to the screen
-abline(OLS, col="red4")
-
-# Let's, examine the slope of the regression lines, asking whether they are significantly different from one another.
-
-diffslope(geo.dist, unifrac, geo.dist, bray.curtis)
-```
 
 
 ## 7) HOMEWORK 
