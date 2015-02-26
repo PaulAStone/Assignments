@@ -51,7 +51,7 @@ A source code file has user-defined functions that are required for certain anal
 The benefit of source files is that they contain "vetted" code that can be used across multiple projects. 
 Here, we will be using a source code file that includes a function for reading in the output files from the popular community sequencing software `mothur` (http://www.mothur.org/).
 
-```{r}
+```{r, results = 'hide', message = FALSE, warning = FALSE}
 source("./bin/MothurTools.R")
 ```
 
@@ -309,6 +309,9 @@ Generate some hypotheses as to what ecological and/or evolutionary processes are
 
 ```
 
+> ***Mini-Exercise Discussion***:
+
+
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
 ### A. Phylogenetically Based Community Resemblance Matrix
@@ -439,7 +442,7 @@ env.dist <- vegdist(scale(envs), method = "euclid")
 
 Second, let's conduct a Mantel's test to see whether UniFrac distance is correlated with environmental variation:
 
-```{r}
+```{r, results = 'hide'}
 # Conduct Mantel Test {vegan}
 mantel(dist.uf, env.dist) 
 ```
@@ -451,18 +454,70 @@ You will recall that this constrained ordination technique allows one to test fo
 # Conduct CCA {vegan}
 ponds.cca <- vegan::cca(dist.uf ~ scale(envs))
 
-# Permutation Tests
+# Permutation Tests: Axes and Env Variables
 anova(ponds.cca, by = "axis")
 ponds.fit <- envfit(ponds.cca, envs, perm = 999)
 ponds.fit
 
-# Plot the CCA
-plot(ponds.cca)
+# Calculate Explained Variation
+cca.explainvar1 <- round(ponds.cca$CCA$eig[1] / 
+                         sum(c(ponds.cca$CCA$eig, ponds.cca$CA$eig)), 3) * 100
+cca.explainvar2 <- round(ponds.cca$CCA$eig[2] / 
+                         sum(c(ponds.cca$CCA$eig, ponds.cca$CA$eig)), 3) * 100
+
+# Define Plot Parameters
+par(mar = c(5, 5, 4, 4) + 0.1)
+
+# Initiate Plot
+plot(scores(ponds.cca, display = "wa"), xlim = c(-3, 3), ylim = c(-3.5, 3),
+     xlab = paste("CCA 1 (", cca.explainvar1, "%)", sep = ""),
+     ylab = paste("CCA 2 (", cca.explainvar2, "%)", sep = ""),
+     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
+
+# Add Axes
+axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
+axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
+abline(h = 0, v = 0, lty = 3)
+box(lwd = 2)
+
+# Add Points & Labels
+points(scores(ponds.cca, display = "wa"),
+       pch = 19, cex = 3, bg = "gray", col = "gray")
+text(scores(ponds.cca, display = "wa"), 
+    labels = row.names(scores(ponds.cca, display = "wa")), cex = 0.5)
+
+# Add Environmental Vectors
+vectors <- scores(ponds.cca, display = "bp")
+row.names(vectors) <- c("Elev", "Dia", "Dep", "Vol", "ORP", "Temp", "SpC", "DO", "TDS", "Sal", "pH", "Col", "Chla", "DOC", "DON")
+arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, 
+       lwd = 2, lty = 1, length = 0.2, col = "red")
+text(vectors[,1] * 2, vectors[, 2] * 2, pos = 3, 
+     labels = row.names(vectors))
+axis(side = 3, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
+     at = pretty(range(vectors[, 1])) * 2, labels = pretty(range(vectors[, 1])))
+axis(side = 4, lwd.ticks=2, cex.axis=1.2, las = 1, col = "red", lwd = 2.2,
+     at = pretty(range(vectors[, 2])) * 2, labels = pretty(range(vectors[, 2])))
 ```
 
 ***Question 6***: Based on the multivariate procecures conducted above, describe some of the phylogenetic patterns of $\beta$-diversity for bacterial communities in the Indiana refuge ponds.   
 
 > ***Answer 6***: 
+
+### D) Mini-Exercise On Phylogenetic Beta-Diversity
+Generate and test hypotheses about the phylogenetic $\beta$-diversity of the Indiana refuge ponds.
+Using the environemtanal variables identified in the $\alpha$-diversity mini-exercise, redo either the PERMANOVA or CCA analysis above using just these variables. 
+Feel free to add any additional approaches we used in *Beta_Handout.Rmd*. 
+Compare your results to the results from above, discuss any differencese. 
+
+```{r}
+
+
+
+
+
+```
+
+> ***Mini-Exercise Discussion***:
 
 
 ## 6) GEOGRAPHICAL PHYLOGENETIC COMMUNITY ECOLOGY
