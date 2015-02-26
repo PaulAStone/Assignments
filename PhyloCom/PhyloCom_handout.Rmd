@@ -533,87 +533,11 @@ Helmus and Ives (2012) developed methods to study how phylogenetic diversity cha
 This phylogenetic diversity-area relationship (PDAR) is analogous to the species-area relationship (SAR) that we learned about in the Geographical Ecology module.
 You will recall that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
 In fact, the shallowest the SAR can get is to have a slope of 0.0, meaning that all species are found in all samples.
-In contrast the PDAR can increase or decrease with area, which provoked Helmus and Ives (2012) to develop theoretical expectations for the effects that different ecological and evolutionary processes have on the shape of the PDAR.
+Below is a plot of the taxonomically based SAR for the pond data. 
 
-Helmus and Ives use the Phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
-PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
-Type 'help(psv)' to learn more.
-
-In this exercise, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
-This approach is similar to how we constructed SARs in the Geographical Ecology module.
-
-Let's begin by writing a function to generate the PDAR.
-
-```{r}
-PDAR <- function(comm, tree){
-  # Use the PSV index of Helmus and Ives (2012) by default
-  # Using PD.index, we've left room to call other diversity metrics
-  
-  areas <- c() # an object to hold areas
-  diversity <- c() # an object hold diversity
-  
-  num.plots <- c(2, 4, 8, 16, 32, 51) # increase numbers of plots by 2, roughly doubling area
-  
-  for (i in num.plots){    
-    areas.iter <- c() # hold areas from iterations; we'll find the mean from this
-    diversity.iter <- c() # hold estimated diversity from iterations; we'll find the mean
-    
-    for (j in 1:10){ # Iterate 100 times for each sample size
-      pond.sample <- sample(51, replace = FALSE, size = i) # sampling w/out replacement
-      area <- 0 # a variable to hold accumulating area
-      sites <- c() # a vector to hold accumulating taxa
-      
-      for (k in pond.sample) { # Loop through each randomly drawn pond...  
-        area <- area + length(pond.sample) # aggregating area...
-        sites <- rbind(sites, comm[k, ]) # and sites
-        }
-      
-      areas.iter <- c(areas.iter, area) # concatenate the area to areas.iter      
-      psv.vals <- psv(sites, tree, compute.var=FALSE) # calculate PSV
-      psv <- psv.vals$PSVs[1] 
-      diversity.iter <- c(diversity.iter, as.numeric(psv))
-      }
-
-    diversity <- c(diversity, mean(diversity.iter)) # let diversity be the mean PSV
-    areas <- c(areas, mean(areas.iter)) # let area be the average area
-    print(c(i, mean(diversity.iter), mean(areas.iter))) # print as we go
-    }
-  return(cbind(areas, diversity)) # return vectors of areas (x) and diversity (y)
-  }
-```
-
-Now, let's examine the PDAR for our pond data set.
-We will examine the relationship of phylogenetic diversity to area using both Spearman's correlation coefficient (S) and Pearson's correlation coefficient (P).
-It is informative to use both because while S is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), P is computed on the observed values and therefore depicts linear relationships.
-For example, if you S > P then the correlation is more monotonic than linear and vice versa.
-
-```{r}
-#par(mfrow=c(1, 2))
-pdar <- PDAR(comm, phy) # Compute the PDAR
-pdar <- as.data.frame(pdar)
-pdar$areas <- sqrt(pdar$areas)
-
-Pearson <- cor.test(pdar$areas, pdar$diversity, method="pearson")
-P <- round(Pearson$estimate,2)
-Pp <- round(Pearson$p.value,3)
-
-Spearman <- cor.test(pdar$areas, pdar$diversity, method="spearman")
-S <- round(Spearman$estimate,2)
-Sp <- round(Spearman$p.value,3)
-
-par(mar = c(5, 5, 4, 2) + 0.1)
-plot(pdar[, 1], pdar[, 2], xlab='Area', ylab='PSV', xlim = c(0 , 52), ylim = c(0, 1), 
-     main='Phylogenetic Diversity-Area Relationship', col='red', pch = 16, las = 1)
-
-legend("topleft", legend= c(paste("Spearman Correlation = ", S, "; p = ", Sp, sep = ""), 
-                            paste("Pearson Correlation = ", P, "; p = ", Pp, sep = "")), 
-                            bty="n", lw=0, col="red") 
-```
-
-
-Now, let's write a function to generate the SAR, similar to how we could have done it a few weeks ago.
-
-```{r}
+```{r, echo=FALSE}
+# I'm commenting this out as I'm not sure they need to rewrite this all. 
+# Just want to jog their memories. Not a direct comaparison like other chunks in other sections. 
 SAR <- function(OTUs){
   Alist <- c()
   Slist <- c()
@@ -643,17 +567,13 @@ SAR <- function(OTUs){
   }
   return(cbind(log10(Alist), log10(Slist)))
 }
-```
 
-Now, let's generate the SAR for our ponds dataset.
-
-```{r, echo=FALSE}
 pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
 sar <- SAR(comm)
 sar <- as.data.frame(sar)
 
 plot(sar, xlab="log(Area)", ylab="log(Richness)", 
-     main="Species-area relationship", col="red")
+     main="Species-Area Relationship", col="red")
 
 OLS <- lm('sar$V2 ~ sar$V1')
 abline(OLS, col = "red", lw = 2)
@@ -662,13 +582,91 @@ slope <- round(coefficients(OLS)[2], 3)
 legend("topleft", legend = paste("slope =", slope), bty = "n", lw = 2, col = "red")  
 ```
 
+In contrast to SAR, phylogenetic divesity-area relationships can increase or decrease with area. 
+This provoked Helmus and Ives (2012) to develop theoretical expectations for the effects that ecological and evolutionary processes might have on the shape of the PDAR.
 
-***Question X**: We observed a slope for our SAR that is only slightly lower than would normally be expected, but which is steeper than for many microbial communities. However, what did we observe for the PDAR and how might we explain the differences in the results of these biodiversity patterns, one being taxonomic (SAR) and the other being phylogenetic (PDAR)?
+#### i. Constructing the PDAR
+Helmus and Ives (2012) used the phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
+PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
+Type 'help(psv)' to learn more.
 
-> ***Answer X***:
+In this exercise, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
+This approach is similar to how we constructed SARs in the Geographical Ecology module.
 
+Let's begin by writing a function to generate the PDAR.
 
+```{r}
+PDAR <- function(comm, tree){
 
+  areas <- c() # an object to hold areas
+  diversity <- c() # an object hold diversity
+  
+  num.plots <- c(2, 4, 8, 16, 32, 51) # increase numbers of plots by 2, roughly doubling area
+  
+  for (i in num.plots){    
+    areas.iter <- c() # hold areas from iterations; we'll find the mean from this
+    diversity.iter <- c() # hold estimated diversity from iterations; we'll find the mean
+    
+    for (j in 1:10){ # Iterate 10 times for each sample size
+      pond.sample <- sample(51, replace = FALSE, size = i) # sampling w/out replacement
+      area <- 0 # a variable to hold accumulating area
+      sites <- c() # a vector to hold accumulating taxa
+      
+      for (k in pond.sample) { # Loop through each randomly drawn pond  
+        area <- area + length(pond.sample) # aggregating area
+        sites <- rbind(sites, comm[k, ]) # and sites
+        }
+      
+      areas.iter <- c(areas.iter, area) # concatenate the area to areas.iter      
+      psv.vals <- psv(sites, tree, compute.var=FALSE) # calculate PSV or other metric (e.g., UniFrac)
+      psv <- psv.vals$PSVs[1] 
+      diversity.iter <- c(diversity.iter, as.numeric(psv))
+      }
+
+    diversity <- c(diversity, mean(diversity.iter)) # let diversity be the mean PSV
+    areas <- c(areas, mean(areas.iter)) # let areas be the average area
+    print(c(i, mean(diversity.iter), mean(areas.iter))) # print as we go
+    }
+  return(cbind(areas, diversity)) # return vectors of areas (x) and diversity (y)
+  }
+```
+
+#### ii. Evaluating the PDAR
+We will examine the relationship between phylogenetic diversity and area using both Spearman's correlation coefficient (S) and Pearson's correlation coefficient (P).
+It is informative to use both because while S is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), P is computed on the observed values and therefore depicts linear relationships.
+
+```{r}
+# Compute the PDAR
+pdar <- PDAR(comm, phy) 
+pdar <- as.data.frame(pdar)
+pdar$areas <- sqrt(pdar$areas)
+
+# Calculate Perason's Correlation Coefficient
+Pearson <- cor.test(pdar$areas, pdar$diversity, method="pearson")
+P <- round(Pearson$estimate,2)
+Pp <- round(Pearson$p.value,3)
+
+# Calculate Spearman's Correlation Coefficient
+Spearman <- cor.test(pdar$areas, pdar$diversity, method="spearman")
+S <- round(Spearman$estimate,2)
+Sp <- round(Spearman$p.value,3)
+
+# Plot the PDAR
+par(mar = c(5, 5, 4, 2) + 0.1)
+plot(pdar[, 1], pdar[, 2], xlab='Area', ylab='PSV', xlim = c(0 , 52), ylim = c(0, 1), 
+     main='Phylogenetic Diversity-Area Relationship', col='red', pch = 16, las = 1)
+
+legend("topleft", legend= c(paste("Spearman Correlation = ", S, "; p = ", Sp, sep = ""), 
+                            paste("Pearson Correlation = ", P, "; p = ", Pp, sep = "")), 
+                            bty="n", lw=0, col="red") 
+```
+
+***Question 8***: For the bacteria in the Indiana ponds, the slope (*z*) of the SAR was 0.15.
+This is slightly lower than *z*-values observed for many macroscopic organisms (e.g., fish, birds, plants), but is higher than what has been reported for other microbial systems. 
+However, what did we observe for the microbial PDAR in the Indiana pond?
+How might we explain the differences between the taxonomic (SAR) and phylogenetic (PDAR)?  
+
+> ***Answer 8***: 
 
 
 ## 7) HOMEWORK 
@@ -676,8 +674,8 @@ legend("topleft", legend = paste("slope =", slope), bty = "n", lw = 2, col = "re
 1.  In their study of phylogenetic diversity-area relationships (PDARs), Helmus and Ives, increased area by aggregating plots in two ways.
 First, they aggregated plots with respect to whether the plots were adjacent; what they called 'spatial'.
 Second, they aggregated plots at random ('non-spatial').
-While both spatial and non-spatial sampling methods capture the effect of increasing area, sampling with respect to location (i.e. spatial) also captures the effect of increasing distance or spatial autocorrelation.
+While both spatial and non-spatial sampling methods capture the effect of increasing area, sampling with respect to location (i.e., spatial) also captures the effect of increasing distance or spatial autocorrelation.
 Explain the general difference that Helmus and Ives observed between spatial and non-spatial PDARs, and why this difference should be expected in both the species-area relationship (SAR) and the phylogenetic diversity-area relationship.
 
 2.  Use Knitr to create a pdf of your completed PhyloTraits_handout.Rmd document, push it to GitHub, and create a pull request.
-The due date for this assignment is February 25, 2015 at 12:00 PM (noon).
+The due date for this assignment is March 4, 2015 at 12:00 PM (noon).
