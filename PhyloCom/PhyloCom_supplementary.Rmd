@@ -23,6 +23,23 @@ geometry: margin=2.54cm
 #   }
 ```
 
+
+One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI).
+NRI is caculated with the following equation: $\ - \frac{MPD_{obs} - \overline{MPD_{null}}}{\sigma \left (MPD_{null} \right )}$ where $MPD_{obs}$ is the mean phylogenetic distance cacluated from pairwise branch lengths in a sample, $\overline{MPD_{null}}$ is the mean of the MPD values generated via randomization, and $\sigma MPD_{null}$ is the standard deviation of the MPD values generated via randomization. 
+Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected. 
+Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to on another than expected. 
+Let's use `picante` to calucate NRI:
+
+
+
+
+
+source("http://bioconductor.org/biocLite.R")
+biocLite("phyloseq")
+phy.comm <- phyloseq(otu_table(comm), phy_tree(phy)
+                     
+dist.uf <- unifrac(comm, phy)
+
 ## Example from Picante Vignette: Eventually will be delted, but not yet...
 
 ```{r}
@@ -36,3 +53,4 @@ phy.eg <- phylocom$phy
 # Community Data: Site-by-Species Matrix
 comm.eg <- phylocom$sample
 ```
+

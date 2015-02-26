@@ -304,14 +304,110 @@ disp <- data.frame(NRI, NTI)
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
-```{r}
-comdist.result <- comdist(comm, phydist)
-comdist.result
-comdist.clusters <- hclust(comdist.result)
-plot(comdist.clusters)
+### A. Phylogenetic Community Resemblance Matrix
+Just as we needed a **Resemblance Matrix** in $\beta$, we need a community **Resemblace Matix** to quantifiy phylogenetic $\beta$-diversity. 
+However, instead of making the resemblance matrix based on just the incidence or abundance of taxa we are now going to incorporate informatin about the phylogenetic relationships amoung taxa. 
+Similar to other measures of $\beta$ diversity, there are numerous ways to calculate the distances in the phylogenetic resemblance matrix.
 
-#  phyloordination ?Phylogenetic beta diversity measures can be used with any method based onvmeasuring among-community distances. For example, they could be used in a cluster analysis or phyloordination to group communities based on their evolutionaryvsimilarity, or they could be compared with spatial or environmental distances separating communities using a Mantel test. The code below calculates MPD between pairs of communities, and uses these phylogenetic distances to cluster communities based on their phylogenetic similarity:
+\begin{center}
+\hyphenpenalty 10000
+\exhyphenpenalty 10000
+\begin{tabular}{ m{5cm}  m{10cm} }
+  \textbf{Index} & \textbf{Description} \\
+  \hline \hline \\ [-1.5ex]
+  \textbf{Mean Pairwise Distance} & 
+  The phylogenetic distance between two taxa: the sum of all intervening branch lengths. \\
+  \\ [-1.5ex]
+  \textbf{UniFrac} & 
+  The distance between the two samples calculated as (the sum of "unshared" branch lengths)/(the sum of all tree branch lengths) in a rooted tree. \\
+  \\ [-1.5ex]
+  \hline
+\end{tabular}
+\end{center}
+
+```{r}
+# Mean Pairwise Distance
+dist.mp <- comdist(comm, phydist)
+
+# UniFrac Distanc
+dist.uf <- unifrac(comm, phy)
 ```
+
+Here we are calcuating both as unweighted distances (similar to incidence based measures).
+That means that we are not taking into account the abundance of each taxa in each site.
+Here are, however, weighted versions of both calculations (similar to abundance based measurse).
+
+### B. Visualizing Phylogenetic Beta Diversity
+
+Now that we have our Phylogenetic Resemblance Matrix, we can visualize $\beta$ diversity using the same techniques we used in the $\beta$-diversity module.
+Here we are just going to use ordination, but any of the viualization techniques would work. 
+Here, we will use Principal Coordinates Analysis (PCoA), using the UniFrac distance based resemblance matrix.
+We will use the `cmdscale()` function to conduct our PCoA analysis.
+Additinally, we we calculate our explained variation on each axis.
+
+```{r}
+pond.pcoa <- cmdscale(dist.uf, eig = T, k = 3)
+
+explainvar1 <- round(pond.pcoa$eig[1] / sum(pond.pcoa$eig), 3) * 100
+explainvar2 <- round(pond.pcoa$eig[2] / sum(pond.pcoa$eig), 3) * 100
+explainvar3 <- round(pond.pcoa$eig[3] / sum(pond.pcoa$eig), 3) * 100
+sum.eig <- sum(explainvar1, explainvar2, explainvar3)
+```
+
+Now that we have calculated our PCoA, we can plot the results.
+Remember, you should check the eigenvalues to determine your confidence in the data reduction approach.
+
+```{r pcoalayer1, eval = TRUE, fig.width=6, fig.height=4}
+# Define Plot Parameters
+par(mar = c(5, 5, 1, 2) + 0.1)
+
+# Initiate Plot
+plot(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2],
+     xlim = c(-0.2, 0.2), ylim = c(-0.25, 0.15),
+     xlab = paste("PCoA 1 (", explainvar1, "%)", sep = ""),
+     ylab = paste("PCoA 2 (", explainvar2, "%)", sep = ""),
+     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
+
+# Add Axes
+axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
+axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
+abline(h = 0, v = 0, lty = 3)
+box(lwd = 2)
+
+# Add Points & Labels
+points(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2],
+       pch = 19, cex = 3, bg = "gray", col = "gray")
+text(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2], 
+     labels = row.names(pond.pcoa$points))
+```
+
+### C. Hypothesis Testing
+
+#### i. Categorical Approach: Water Shet
+
+```{r}
+# Define Environmental Catagory
+water.shed <- env$Location
+
+
+# Run PERMANOVA with adonis function
+adonis(dist.uf ~ water.shed, permutations = 999)
+```
+
+#### ii. Continuous Approach: Environmental Gradients
+
+```{r}
+# Define Environmental Gradient
+envs <- env[,5:19]
+
+
+
+```
+
+
+
+ phyloordination ?Phylogenetic beta diversity measures can be used with any method based onvmeasuring among-community distances. For example, they could be used in a cluster analysis or phyloordination to group communities based on their evolutionaryvsimilarity, or they could be compared with spatial or environmental distances separating communities using a Mantel test. The code below calculates MPD between pairs of communities, and uses these phylogenetic distances to cluster communities based on their phylogenetic similarity:
+
 
 Ordinations: PCoA taxo  vs. UNIFRAC
 http://www.inside-r.org/packages/cran/picante/docs/unifrac
