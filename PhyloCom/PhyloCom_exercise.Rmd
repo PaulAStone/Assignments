@@ -65,110 +65,69 @@ We then used a `mothur` pipeline to quality-trim our data set and assign sequenc
 In this exercise, we will use the DNA sequence data for making community phylogenetic inference.  
 
 ## 3) LOADING OF DATA
-First, let's load the environmental data:
+In the R code chunk below, do the following:  
+1. load the environmental data for the Brown County ponds (*20130801_PondDataMod.csv*),  
+2. load the site-by-species matrix using the `read.otu()` function,  
+3. subset the data to include only the DNA,  
+4. rename to remove extra charactors in site names,  
+5. remove any sites or OTUs in the site-by-species that need to be removed, and   
+7. load the taxanomic data using the `read.tax()` function.
 
 ```{r}
-# Load Environmental Data
-env <- read.table("data/20130801_PondDataMod.csv", sep = ",", header = TRUE)
+
+
+
+
+
+
+
 ```
 
-Next, let's load the bacterial OTU data (i.e., site-by-species matrix):
+In the R code chunk below, do the following:  
+1. load the fasta alignment for the OTUs,  
+2. rename the OTUs be removing everything before the tab (\t) and after the bar (|),  
+3. import the Methanosarcina outgroup fasta file,  
+4. convert both fasta files into the DNAbin format and combine using `rbind()`,  
+5. visualize the sequence alignment,  
+6. using the alignment (with outgroup), create a distance matrix (use any evolutionary model),  
+7. using the distance matrix above, make a neighbor joining tree
+8. remove any tips (OTUs) that are not in the community data set
+9. plot the rooted tree
 
 ```{r}
-# Load Site-by-Species Matrix
-comm <- read.otu(shared = "./data/INPonds.final.rdp.shared", cutoff = "1")
 
-# Select DNA Data: Use the `grep()` Command and Rename with `gsub()`
-comm <- comm[grep("*-DNA", rownames(comm)), ]
-rownames(comm) <- gsub("\\-DNA", "", rownames(comm))
-rownames(comm) <- gsub("\\_", "", rownames(comm))
 
-# Remove Sites Not in the Environmental Data Set
-comm <- comm[rownames(comm)  %in% env$Sample_ID, ]
 
-# Remove Zero-Occurrence Taxa 
-comm <- comm[ , colSums(comm) > 0]
 
-# Import Taxonomy Data Using `read.tax()` from Source Code
-tax <- read.tax(taxonomy = "./data/INPonds.final.rdp.1.cons.taxonomy")
-```
 
-Now, let's load and process the phylogenetic data:
 
-```{r}
-# Import the Alignment File {seqinr}
-ponds.cons <- read.alignment(file = "./data/INPonds.final.rdp.1.rep.fasta", 
-                             format = "fasta")  
 
-# Rename OTUs in the FASTA File
-ponds.cons$nam <- gsub("\\|.*$", "", gsub("^.*?\t", "", ponds.cons$nam))
 
-# Import the Outgroup FASTA File {seqinr}
-outgroup <- read.alignment(file = "./data/methanosarcina.fasta", format = "fasta")
 
-# Convert Alignment File to DNAbin Object {ape}
-DNAbin <- rbind(as.DNAbin(outgroup), as.DNAbin(ponds.cons))
-
-# Visusalize Sequence Alignment {ape}
-image.DNAbin(DNAbin, show.labels=T, cex.lab = 0.05, las = 1) 
-
-# Create Distance Matrix with the Jukes Cantor "JC" Model {ape}
-seq.dist.jc <- dist.dna(DNAbin, model = "JC", pairwise.deletion = FALSE)
-
-# Use Neighbor Joining Algorithm to Construct a Full Tree (DNA and RNA sequences) {ape}
-phy.all <- bionj(seq.dist.jc)
-
-# Drop Tips of Zero-Occurrence OTUs (Removes Taxa Only Found via RNA Sequencing) {ape}
-phy <- drop.tip(phy.all, phy.all$tip.label[!phy.all$tip.label %in% 
-                                             c(colnames(comm), "Methanosarcina")])
-
-# Identify Outgroup Sequence
-outgroup <- match("Methanosarcina", phy$tip.label)
-
-# Root the Tree {ape}
-phy <- root(phy, outgroup, resolve.root = TRUE)
-
-# Plot the Rooted Tree {ape}
-par(mar = c(1, 1, 2, 1) + 0.1)
-plot.phylo(phy, main = "Neighbor Joining Tree", "phylogram", show.tip.label = FALSE, 
-           use.edge.length = FALSE, direction = "right", cex = 0.6, label.offset = 1)
 ```
 
 ## 4) PHYLOGENETIC ALPHA DIVERSITY
 
 ### A.  Faith's Phylogenetic Diversity (PD)
-In 1992, Daniel Faith developed a diversity metric called Faith's PD (http://goo.gl/wM08Oy).
-The metric sums the branch lengths for each species found in a sample from the root to the tip of a the phylogenetic tree.
-The value of the metric captures the evolutionary history of an assemblage. 
-Higher PD values indicate that an assemblage contains more evolutionarily divergent taxa, while lower PD values indicate that an assemblage contains taxa with a more restricted evolutionary history. 
-
-Faith's PD can be implemented in R using the `pd()` function in the `picante` package. 
-A phylogenetic tree containing the species pool is required. 
-In addition to returning Faith's PD, the `pd()` function also returns species richness (SR).
-SR is the same as observed richness ($S_{obs}), which we covered in the $\alpha$ diversity module. 
+In the R code chunk below, do the following:  
+1. calculate Faith's D using the `pd()` function.
 
 ```{r}
-# Calculate PD and SR {picante}
-pd <- pd(comm, phy, include.root = FALSE)
+
+
 ```
 
-Let's compare PD estimates with SR of our samples.
-We'll natural-log-transform our data so that the slope of the relationship gives us a power-law exponent, which describes how PD scales with SR.
+In the R code chunk below, do the following:  
+1. make a biplot for species richness and Faith's D,  
+2. add the trend line, and  
+3. calculate the scaling exponent. 
 
 ```{r}
-# Biplot of SR and PD
-par(mar = c(5, 5, 4, 1) + 0.1)
 
-plot(log(pd$SR), log(pd$PD), 
-     pch = 20, col = "red", las = 1,
-     xlab = "ln(SR)", ylab = "ln(PD)", cex.main = 1,
-     main="Phylodiversity (PD) vs. Taxonomic richness (SR)")
 
-fit <- lm('log(pd$PD) ~ log(pd$SR)')
-abline(fit, col = "red", lw = 2)
-exponent <- round(coefficients(fit)[2], 2)
-legend("topleft", legend=paste("Scaling exponent = ", exponent, sep = ""), 
-       bty = "n", lw = 2, col = "red") 
+
+
+
 ```
 
 ***Question 1***: Answer the following questions about the PD-SR pattern.    
@@ -181,52 +140,16 @@ c.  Under what conditions would you expect these two estimates of diversity to d
 > ***Answer 1c***:  
 
 #### i.  Randomizations and Null Models
-Randomizations are a way of resampling data to assess whether or not observed patterns are different from a null expectation. 
-A number of the functions in `picante` allow us to specify different null models as an argument. 
-These null models can control for features such as species richness, species occurrence frequencey, and the diversity of the regional species pool. 
-We will use some of these models for assesing the degree to which phylogenetic measures of $\alpha$ diversity deviate from null expecations. 
-The following table describes some of the null models that are available to us when using `picante`:
 
-\begin{center}
-\hyphenpenalty 10000
-\exhyphenpenalty 10000
-\begin{tabular}{ m{5cm}  m{10cm} }
-  \textbf{Null Model} & \textbf{Description} \\
-  \hline \hline \\ [-1.5ex]
-  \textbf{taxa.labels} & 
-  Shuffles taxa labels across tips of phylogeny (across all taxa included in phylogeny) \\
-  \\ [-1.5ex]
-  \textbf{richness} & 
-  Randomizes community data matrix abundances within samples (maintains sample species richness) \\
-  \\ [-1.5ex]  
-  \textbf{frequency} & 
-  Randomizes community data matrix abundances within species (maintains species occurence frequency) \\
-  \\ [-1.5ex]   
-  \textbf{sample.pool} & 
-  Randomizes community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability \\
-  \\ [-1.5ex]  
-    \textbf{phylogeny.pool} & 
-  Randomize community data matrix by drawing species from pool of species occurring in at least one community (sample pool) with equal probability \\
-  \\ [-1.5ex]
-  \textbf{independentswap} & 
-  Randomizes community data matrix with the independent swap algorithm (Gotelli 2000) maintaining species occurrence frequency and sample species richness \\
-  \\ [-1.5ex]
-  \textbf{trialswap} & 
-  Randomizes community data matrix with the trial-swap algorithm (Miklos \& Podani 2004) maintaining species occurrence frequency and sample species richness \\
-  \\ [-1.5ex]
-    \hline
-\end{tabular}
-\end{center}
-
-Now, we are going to use the `ses.pd()` function in `picante`.
-This function estimates the standardized effect size ("ses") using the following equation: `ses.pd` = (`pd.obs` - `pd.rand.mean`) / `pd.rand.sd`, where `pd.obs` is the observed PD, `pd.rand.mean` is the mean of the PD values generated via randomization under a null model, and `pd.rand.sd` is the standard deviation of the PD values generated via randomization under a null model (see table above). 
-Given the size of both our site-by-species matrix and the phylogenetic tree, the randomizaiton process is computationally intensive. 
-Therfore, we are only going to run the `ses.pd` function for two ponds with a limited number of randomizations (i.e., "runs" argument).
+In the R code chunk below, do the following:
+1. estimate the standardized effect size of PD using the richness randomization method, and  
+2. pick two additional randomization methods and repeat. 
 
 ```{r}
-# Estimate Standardized Effect Size of PD via Randomization {picante}
-ses.pd <- ses.pd(comm[1:2,], phy, null.model = "richness", runs = 25, 
-                 include.root = FALSE)
+
+
+
+
 ```
 
 ***Question 2***: Using `help()` and the table above, identify two null models that can be used with the `ses.pd()` function.
@@ -240,61 +163,38 @@ b.  What features might affect the intepretation of the `ses.pd` output?
 
 ### B.  Phylogenetic Dispersion Within a Sample
 Another way to assess phylogenetic $\alpha$-diversity is to look at dispersion within a sample. 
-In the following section we will introduce two commonly used metrics --- the Net Relatedness Index (NRI) and the Nearest Taxon Index --- to quantify the degree to which closely related taxa co-occur.
-We will use randomization procedures to test whether species are phylogenetically clustered or overdispersed. 
 
 #### i. Phylogenetic Resemblance Matrix 
-Before estimating dispersion metrics, we need to create a phylogenetic resemblance matrix.
-This type of matrix is nearly identical to the resemblance matrix introduced in the $\beta$-diversity module.
-The only difference is that the phylogenetic resemblance matrix contains distances between taxa in a tree, whereas the community resemblance matrix contains distances among sites. 
-The elements in phylogenetic resemblance matrix are calculated as the pairwise branch-length distances between tips (i.e., taxa) on a phylogenetic tree. 
-The phylogenetic resemblance matrix is sometimes referred to as the phylogenetic variance-covariance matrix. 
-We will use the `cophenetic.phylo()` function in `picante` to calculate the phylogenetic resemblance matrix.
+
+In the R code chunk below, do the following:
+1. calculat the phylogenetic resemblance matrix.
 
 ```{r}
-# Create a Phylogenetic Distance Matrix {picante}
-phydist <- cophenetic.phylo(phy)
+
+
 ```
 
 #### ii.  Net Relatedness Index (NRI)
-One common way to test for phylogenetic clustering and overdispersion is to use the Net Relatedness Index (NRI).
-NRI is based on the mean phylogenetic distance (MPD).
-MPD is the mean phylogenetic distance from pairwise branch lengths in a sample.
-With this information in hand, NRI is expressed as: - (`mpd.obs` - `mpd.rand.mean`) / `mpd.rand.sd` where `mpd.obs` is the observed MPD, `mpd.rand.mean` is the mean of the MPD values generated via randomization under a null model, and `mpd.rand.sd` is the standard deviation of the MPD values generated via randomization under a null model. 
-
-Negative NRI values indicate that a sample is phylogenetically overdispersed; that is, taxa are less related to one another than expected under the null model.
-Positive NRI values indicate that a sample is phylogentically underdispersed, or clustered, such that taxa are more closely related to one another than expected under the null model. 
-
-As with Faith's PD, the radomization procedures are computationally intensive, so we are only going to peform a relatively small number of "runs".
+In the R code chunk below, do the following:
+1. Calculate the NRI for each site in the Brown County ponds data set. 
 
 ```{r}
-# Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mpd <- ses.mpd(comm, phydist, null.model = "taxa.labels", 
-                   abundance.weighted = FALSE, runs = 25) 
 
-# Calculate NRI
-NRI <- as.matrix(-1 * ((ses.mpd[,2] - ses.mpd[,3]) / ses.mpd[,4]))
-rownames(NRI) <- row.names(ses.mpd)
-colnames(NRI) <- "NRI"
+
+
+
+
+
 ```
 
-### iii.  Nearest Taxon Index (NTI)
-Another way to test for phylogenetic clustering and oversdispersion in a sample is to use the Nearest Taxon Index (NTI).
-This index is mathemically similar to NRI, but uses the mean nearest phylogenetic neighbor distance (MNND) instead of MPD. 
-MNND is the mean phylogenetic distance between all taxa in a sample and their phylogenetically closest neighbor.
-As a result, NTI tends to emphasize terminal clustering, independent of deep level clustering (Webb et al. 2002; http://goo.gl/WikgWE).
-Just like NRI, we peform randomizations and use this information to estimate the standardized effect size. 
-Negative NTI values indicate phylogenetic overdispersion and positive NTI values indicate phylogenetic clustering. 
+### iii.  Nearest Taxon Index (NTI)  
+In the R code chunk below, do the following:
+1. Calculate the NTI for each site in the Brown County ponds data set. 
 
 ```{r}
-# Estimate Standardized Effect Size of NRI via Randomization {picante} 
-ses.mntd <- ses.mntd(comm, phydist, null.model = "taxa.labels", 
-                     abundance.weighted = FALSE, runs = 25)
 
-# Calculate NTI
-NTI <- as.matrix(-1 * ((ses.mntd[,2] - ses.mntd[,3]) / ses.mntd[,4]))
-rownames(NTI) <- row.names(ses.mntd)
-colnames(NTI) <- "NTI"
+
+
 ```
 
 ***Question 3***: In the NRI and NTI examples above, the arguments "abundance.weighted = FALSE" means that the indices were calculated using presence-absence data.
@@ -343,24 +243,28 @@ Here, we will explore two: Mean Pairwise Distance and UniFrac distance.
 \end{tabular}
 \end{center}
 
-Let's calculate the phylogenetically based community resemblance matrices for our pond data set. 
-```{r, results = 'hide', message = FALSE, warning = FALSE}
-# Mean Pairwise Distance
-dist.mp <- comdist(comm, phydist)
+Let's calculate the phylogenetically based community resemblance matrices for our pond data set.
 
-# UniFrac Distance (Note: This Takes a Few Minutes; Be Patient)
-dist.uf <- unifrac(comm, phy)
-```
-
-Now, let's compare the Mean Pair Distance and UniFrac distance matrices. 
+In the R code chunk below, do the following:
+1. calculate the phylogenetically based community resemblance matrix using mean pairwise distance, and  
+2. calculate the phylogenetically based community resemblance matrix using UniFrac distance.
 
 ```{r}
-par(mar = c(5, 5, 2, 1) + 0.1)
-plot(dist.mp, dist.uf, 
-     pch = 20, col = "red", las = 1, asp = 1, xlim = c(0.15, 0.5), ylim = c(0.15, 0.5),
-     xlab = "Mean Pair Distance", ylab = "UniFrac Distance") 
-abline(b = 1, a = 0, lty = 2)
-text(0.5, 0.47, "1:1")
+
+
+
+
+```
+
+In the R code chunk below, do the following:
+1. plot mean pair distance versus UniFrac distance and compare.
+
+```{r}
+
+
+
+
+
 ```
 
 ***Question 4***: Using the plot above, describe the relationship between Mean Pair Distance and UniFrac distance. 
@@ -372,44 +276,41 @@ That means that we are not taking into account the abundance of each taxa in eac
 
 ### B. Visualizing Phylogenetic Beta Diversity
 Now that we have our phylogenetically based community resemblance matrix, we can visualize phyogenetic diversity among samples using the same techniques that we used in the $\beta$-diversity module.
-As an example, we will use ordination, but any of the other $\beta$-diversity viualization techniques would also work (e.g., heatmaps and cluster analysis). 
-Specifically, we will use the `cmdscale()` function to conduct a Principal Coordinates Analysis (PCoA) using the UniFrac distance matrix.
-Additionally, we will calculate the amount of explained variation for each phylogenetically informed PCoA axis.
+
+In the R code chunk below, do the following:  
+1. perform a PCoA based on the UniFrac distances, and  
+2. calculat the explained variation for the first three axes.
 
 ```{r}
-pond.pcoa <- cmdscale(dist.uf, eig = T, k = 3)
 
-explainvar1 <- round(pond.pcoa$eig[1] / sum(pond.pcoa$eig), 3) * 100
-explainvar2 <- round(pond.pcoa$eig[2] / sum(pond.pcoa$eig), 3) * 100
-explainvar3 <- round(pond.pcoa$eig[3] / sum(pond.pcoa$eig), 3) * 100
-sum.eig <- sum(explainvar1, explainvar2, explainvar3)
+
+
+
+
+
 ```
 
 Now that we have calculated our PCoA, we can plot the results.
-Remember, you should check the eigenvalues to determine your confidence in the data reduction approach.
 
-```{r pcoalayer1, eval = TRUE, fig.width=6, fig.height=4}
-# Define Plot Parameters
-par(mar = c(5, 5, 1, 2) + 0.1)
+In the R code chunk below, do the following:  
+1. plot the PCoA results, 
+2. include the appropriat axes,  
+3. be sure to add and label the points, and  
+4. customize the plot. 
 
-# Initiate Plot
-plot(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2],
-     xlim = c(-0.2, 0.2), ylim = c(-0.3, 0.15),
-     xlab = paste("PCoA 1 (", explainvar1, "%)", sep = ""),
-     ylab = paste("PCoA 2 (", explainvar2, "%)", sep = ""),
-     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
+```{r}
 
-# Add Axes
-axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-abline(h = 0, v = 0, lty = 3)
-box(lwd = 2)
 
-# Add Points & Labels
-points(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2],
-       pch = 19, cex = 3, bg = "gray", col = "gray")
-text(pond.pcoa$points[ ,1], pond.pcoa$points[ ,2], 
-     labels = row.names(pond.pcoa$points))
+
+
+
+
+
+
+
+
+
+
 ```
 
 ***Question 5***: How much variation is explained in the first three PCoA axes if Mean Pair Distance is used as the resemblance matrix instead of UniFrac?
