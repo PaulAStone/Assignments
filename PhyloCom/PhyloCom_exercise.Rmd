@@ -29,7 +29,7 @@ If you need a second paragraph be sure to start the first line with ">".
 6. For homework, follow the directions at the bottom of this file. 
 7. When you are done, **Knit** the text and code into a PDF file.
 8. After Knitting, please submit the completed exercise by creating a **pull request** via GitHub.
-Your pull request should include this file *PhyloTraits_exercise.Rmd* and the PDF output of `Knitr` (*PhyloTraits_exercise.pdf*).
+Your pull request should include this file *PhyloCom_exercise.Rmd* and the PDF output of `Knitr` (*PhyloCom_exercise.pdf*).
 
 ## 1) SETUP
 
@@ -140,7 +140,6 @@ c.  Under what conditions would you expect these two estimates of diversity to d
 > ***Answer 1c***:  
 
 #### i.  Randomizations and Null Models
-
 In the R code chunk below, do the following:
 1. estimate the standardized effect size of PD using the richness randomization method, and  
 2. pick two additional randomization methods and repeat. 
@@ -165,9 +164,8 @@ b.  What features might affect the intepretation of the `ses.pd` output?
 Another way to assess phylogenetic $\alpha$-diversity is to look at dispersion within a sample. 
 
 #### i. Phylogenetic Resemblance Matrix 
-
 In the R code chunk below, do the following:
-1. calculat the phylogenetic resemblance matrix.
+1. calculat the phylogenetic resemblance matrix for taxa in the Brown County ponds.
 
 ```{r}
 
@@ -214,37 +212,12 @@ Generate some hypotheses as to what ecological and/or evolutionary processes are
 
 ```
 
-> ***Mini-Exercise: Code, Output, and Discussion***:
+> ***Mini-Exercise Discussion***:
 
 
 ## 5) PHYLOGENETIC BETA DIVERSITY 
 
 ### A. Phylogenetically Based Community Resemblance Matrix
-As you may recall, in order to quantify $\beta$-diversity for more than two samples, one needs to create a resemblance matrix. 
-When quantifying taxonomic $\beta$-diversity, we calculated the pairwise **similarity** or **dissimiliarity** for all samples in a site-by-species matrix using metrics such as the Sørensen index or the Bray-Curtis index. 
-More or less, we need to go through the same process for quantifying phylogenetic $\beta$-diversity.
-Instead of making the resemblance matrix based on incidence or abundance of taxa, we are going to incorporate information about the phylogenetic relationships among taxa. 
-Similar to other measures of $\beta$-diversity, there are numerous ways to calculate the phylogenetic distances in the community resemblance matrix.
-Here, we will explore two: Mean Pairwise Distance and UniFrac distance.
-
-\begin{center}
-\hyphenpenalty 10000
-\exhyphenpenalty 10000
-\begin{tabular}{ m{5cm}  m{10cm} }
-  \textbf{Index} & \textbf{Description} \\
-  \hline \hline \\ [-1.5ex]
-  \textbf{Mean Pairwise Distance} & 
-  Distance between two samples calculated as the mean phylogenetic distance between pairs of taxa \\
-  \\ [-1.5ex]
-  \textbf{UniFrac} & 
-  Distance between two samples calculated as $\Sigma_{unshared}$ / $\Sigma_{total}$, where $\Sigma_{unshared}$ is the sum of unshared branch lengths between samples and $\Sigma_{total}$ is the total (shared and unshared) branch lengths in a rooted tree \\
-  \\ [-1.5ex]
-  \hline
-\end{tabular}
-\end{center}
-
-Let's calculate the phylogenetically based community resemblance matrices for our pond data set.
-
 In the R code chunk below, do the following:
 1. calculate the phylogenetically based community resemblance matrix using mean pairwise distance, and  
 2. calculate the phylogenetically based community resemblance matrix using UniFrac distance.
@@ -320,90 +293,56 @@ In the R code chunk below, do the following:
 ### C. Hypothesis Testing
 
 #### i. Categorical Approach: Watershed Effect  
-The ponds that we sampled in southern Indiana were located in three distinct watersheds (BCSP, HNF, and YSF). 
-For many organisms, watershed boundaries represent major dispersal barriers, which may influence the phylogenetic distribution of species. 
-Here, we will test for this watershed affect using the Permutational Multivariate Analysis of Variance (PERMANOVA) test that we learned about in the $\beta$-diversity module. 
+In the R code chunk below, do the following:
+1. test the hypothesis that watersed effects the phylogenetic diversity of bacteiral communities.
 
-```{r, results = 'hide'}
-# Define Environmental Category
-water.shed <- env$Location
+```{r}
 
-# Run PERMANOVA with `adonis()` Function {vegan}
-adonis(dist.uf ~ water.shed, permutations = 999)
+
+
+
+
 ```
 
 #### ii. Continuous Approach: Environmental Gradients  
-In the Geographic Ecology module, we demonstrated that there was substantial variation in enviornmental variables that are known to influence the structure and function of microbial communities.
-In the following section, we will revist two methods that are used to test for relationships among multivariate environmental and biological data. 
-
-First, let's define the environmental data and then create an enviornmental distance matrix:
+In the R code chunk below, do the following:
+1. define the environmental variables of interest, and  
+2. calcuate the distance between sites based on these variables.
 
 ```{r}
-# Define Environmental Variables
-envs <- env[, 5:19]
 
-# Distance Matrix for Environmental Variables
-env.dist <- vegdist(scale(envs), method = "euclid")
+
+
+
 ```
 
-Second, let's conduct a Mantel's test to see whether UniFrac distance is correlated with environmental variation:
+In the R code chunk below, do the following:
+1. conduct a Mantel's test to test whether UniFrac distance is correlated with environmental varaition.
 
-```{r, results = 'hide'}
-# Conduct Mantel Test {vegan}
-mantel(dist.uf, env.dist) 
+```{r}
+
+
 ```
 
 Last, let's conduct a Canonical Correspondence Analysis (CCA). 
 You will recall that this constrained ordination technique allows one to test for the effects of an explanatory matrix (e.g., environmental data) on a response matrix (e.g., phylogenetic distance matrix). 
+In the R code chunk below, do the following:
+1. conduct a CCA to test the hypothesis that environmental variation effects the phylogenetic diversity of bacteiral communities,  
+2. use a permutation test to determine significance,  
+3. plot the CCA results, and  
+4. customize the CCA plot. 
 
-```{r, results = 'hide'}
-# Conduct CCA {vegan}
-ponds.cca <- vegan::cca(dist.uf ~ scale(envs))
+```{r}
 
-# Permutation Tests: Axes and Env Variables
-anova(ponds.cca, by = "axis")
-ponds.fit <- envfit(ponds.cca, envs, perm = 999)
-ponds.fit
 
-# Calculate Explained Variation
-cca.explainvar1 <- round(ponds.cca$CCA$eig[1] / 
-                         sum(c(ponds.cca$CCA$eig, ponds.cca$CA$eig)), 3) * 100
-cca.explainvar2 <- round(ponds.cca$CCA$eig[2] / 
-                         sum(c(ponds.cca$CCA$eig, ponds.cca$CA$eig)), 3) * 100
 
-# Define Plot Parameters
-par(mar = c(5, 5, 4, 4) + 0.1)
 
-# Initiate Plot
-plot(scores(ponds.cca, display = "wa"), xlim = c(-3, 3), ylim = c(-3.5, 3),
-     xlab = paste("CCA 1 (", cca.explainvar1, "%)", sep = ""),
-     ylab = paste("CCA 2 (", cca.explainvar2, "%)", sep = ""),
-     pch = 16, cex = 2.0, type = "n", cex.lab = 1.5, cex.axis = 1.2, axes = FALSE)
 
-# Add Axes
-axis(side = 1, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-axis(side = 2, labels = T, lwd.ticks = 2, cex.axis = 1.2, las = 1)
-abline(h = 0, v = 0, lty = 3)
-box(lwd = 2)
 
-# Add Points & Labels
-points(scores(ponds.cca, display = "wa"),
-       pch = 19, cex = 3, bg = "gray", col = "gray")
-text(scores(ponds.cca, display = "wa"), 
-    labels = row.names(scores(ponds.cca, display = "wa")), cex = 0.5)
 
-# Add Environmental Vectors
-vectors <- scores(ponds.cca, display = "bp")
-row.names(vectors) <- c("Elev", "Dia", "Dep", "Vol", "ORP", "Temp", "SpC", "DO", 
-                        "TDS", "Sal", "pH", "Col", "Chla", "DOC", "DON")
-arrows(0, 0, vectors[,1] * 2, vectors[, 2] * 2, 
-       lwd = 2, lty = 1, length = 0.2, col = "red")
-text(vectors[,1] * 2, vectors[, 2] * 2, pos = 3, 
-     labels = row.names(vectors))
-axis(side = 3, lwd.ticks = 2, cex.axis = 1.2, las = 1, col = "red", lwd = 2.2,
-     at = pretty(range(vectors[, 1])) * 2, labels = pretty(range(vectors[, 1])))
-axis(side = 4, lwd.ticks = 2, cex.axis = 1.2, las = 1, col = "red", lwd = 2.2,
-     at = pretty(range(vectors[, 2])) * 2, labels = pretty(range(vectors[, 2])))
+
+
+
 ```
 
 ***Question 6***: Based on the multivariate procecures conducted above, describe some of the phylogenetic patterns of $\beta$-diversity for bacterial communities in the Indiana refuge ponds.   
@@ -436,65 +375,49 @@ Here, we will test to what degree spatial autocorrelation can also affect phylog
 
 First, we will calcualte distances for geographic data, taxonomic data, and phylogenetic data among all unique pair-wise combinations of ponds.
 
+In the R code chunk below, do the following:  
+1. calculat the geographic distances among ponds,  
+2. calculat the taxanomic similarity amoung ponds, 
+3. calculat the phylogeneti similarity amoung ponds, and  
+4. create a dataframe that includes all of the above information. 
+
 ```{r}
-# Geographic Distances (Kilometers) Among Ponds
-long.lat <- as.matrix(cbind(env$long, env$lat))
-coord.dist <- earth.dist(long.lat, dist = TRUE)
 
-# Taxonomic Distances Among Ponds (Bray-Curits)
-bray.curtis.dist <- 1 - vegdist(comm) 
 
-# Phylogenetic Distances Among Ponds
-unifrac.dist <- 1 - dist.uf 
-  
-# Transform All Distances Into List Format:
-unifrac.dist.ls <- liste(unifrac.dist, entry = "unifrac")
-bray.curtis.dist.ls <- liste(bray.curtis.dist, entry = "bray.curtis")
-coord.dist.ls <- liste(coord.dist, entry = "geo.dist")
 
-# Create a Data Frame from the Lists of Distances
-df <- data.frame(coord.dist.ls, bray.curtis.dist.ls[, 3], unifrac.dist.ls[, 3])
-names(df)[4:5] <- c("bray.curtis", "unifrac")
-attach(df)
+
+
+
+
+
+
 ```
 
 Now, let's plot the DD relationships:
+In the R code chunk below, do the following:
+1. plot the taxonomic distance decay relationship,   
+2. plot the phylogenetic distance decay relationship, and  
+3. add trend lines to each.
 
-```{r, results = 'hide'}
-# Set Initial Plot Parameters
-par(mfrow=c(2, 1), mar = c(1, 5, 2, 1) + 0.1, oma = c(2, 0, 0, 0))
+```{r}
 
-# Make Plot for Taxonomic DD
-plot(coord.dist, bray.curtis, xlab = "", xaxt = "n", las = 1, ylim = c(0.1, 0.9),
-     ylab="Bray-Curtis Similarity", 
-     main = "Distance Decay", col = "SteelBlue")
 
-# Regression for Taxonomic DD 
-DD.reg.bc <- lm(bray.curtis ~ geo.dist)
-summary(DD.reg.bc)
-abline(DD.reg.bc , col = "red4")
 
-# New Plot Parameters
-par(mar = c(2, 5, 1, 1) + 0.1)
 
-# Make Plot for Phylogenetic DD
-plot(coord.dist, unifrac, xlab = "", las = 1, ylim = c(0.1, 0.9),
-     ylab = "Unifrac Similarity", col = "darkorchid4")
 
-# Regression for Phylogenetic DD
-DD.reg.uni <- lm(unifrac ~ coord.dist)
-summary(DD.reg.uni)
-abline(DD.reg.uni, col = "red4")
 
-# Add X-Axis Label to Plot
-mtext("Geographic Distance, km", side = 1, adj = 0.55, 
-      line = 0.5, outer = TRUE)
+
+
+
 ```
 
-Finally, let's test whether the slopes for taxonomic and phylogenetic DD are significantly different from one another.
+In the R code chunk below, do the following:  
+1. test if the trend lines in the above distance decay relationships are different.
 
-```{r, results = 'hide'}
-diffslope(geo.dist, unifrac, geo.dist, bray.curtis)
+```{r}
+
+
+
 ```
 
 ***Question 7***: Interpret the slopes from the taxonomic and phylogenetic DD relationships. If there are differences, hypothesize why this might be.   
@@ -504,148 +427,41 @@ diffslope(geo.dist, unifrac, geo.dist, bray.curtis)
 
 ### A. Phlogenetic diversity-area relationship (PDAR)
 
-Helmus and Ives (2012) developed methods to study how phylogenetic diversity changes with increasing area.
-This phylogenetic diversity-area relationship (PDAR) is analogous to the species-area relationship (SAR) that we learned about in the Geographical Ecology module.
-You will recall that the SAR is a cumulative relationship (S = cA^z) and so, cannot be negative.
-In fact, the shallowest the SAR can get is to have a slope of 0.0, meaning that all species are found in all samples.
-Below is a plot of the taxonomically based SAR for the pond data. 
-
-```{r, echo=FALSE, results = 'hide'}
-SAR <- function(OTUs){
-  Alist <- c()
-  Slist <- c()
-  
-  num.ponds <- c(2,4,8,16,32,51)
-  for (i in num.ponds) {   
-    areas <- c() # hold iterated area values 
-    Ss <- c() # hold iterated S values
-    
-    for(j in 1:100){
-      pond.sample <- sample(51, replace = FALSE, size = i) 
-      area <- 0
-      cum.abs <- vector(mode = "numeric", length = length(comm))
-  
-      for (k in pond.sample) { # Loop through each randomly drawn pond
-        area <- area + pond.areas[k] # aggregating area, (incrementing)
-        cum.abs <- cum.abs + as.numeric(comm[k, ])
-    
-      } # End random pond samples loop
-      S <- length(cum.abs[cum.abs > 0])
-      areas <- c(areas, area)
-      Ss <- c(Ss, S)
-    }
-    Alist <- rbind(Alist, mean(areas))
-    Slist <- rbind(Slist, mean(Ss))
-    print(c(mean(areas), mean(Ss)))
-  }
-  return(cbind(log10(Alist), log10(Slist)))
-}
-
-pond.areas <- as.vector(pi * (env$Diameter/2)^2) # Find areas of all 51 ponds
-sar <- SAR(comm)
-sar <- as.data.frame(sar)
-
-plot(sar, xlab = "log(Area)", ylab = "log(Richness)", 
-     main = "Species-Area Relationship", col = "red")
-
-OLS <- lm(sar$V2 ~ sar$V1)
-abline(OLS, col = "red", lw = 2)
-
-slope <- round(coefficients(OLS)[2], 3)
-legend("topleft", legend = paste("slope =", slope), bty = "n", lw = 2, col = "red")  
-```
-
-In contrast to SAR, phylogenetic divesity-area relationships can increase or decrease with area. 
-This provoked Helmus and Ives (2012) to develop theoretical expectations for the effects that ecological and evolutionary processes might have on the shape of the PDAR.
-
 #### i. Constructing the PDAR  
-Helmus and Ives (2012) used the phylogenetic species variability (PSV) metric to quantify phylogenetic diversity.
-PSV quantifies how phylogenetic relatedness decreases the variance of a hypothetical neutral trait shared by all species in a community. 
-Type 'help(psv)' to learn more.
-
-In this exercise, we will construct PDARs using the random aggregation approach of Helmus and Ives (2012).
-This approach is similar to how we constructed SARs in the Geographical Ecology module.
-
-Let's begin by writing a function to generate the PDAR.
+In the R code chunk below, do the following:
+1. write a function to generate the PDAR.
 
 ```{r}
-PDAR <- function(comm, tree){
 
-  # Create Objects to Hold Areas and Diversity
-  areas <- c() 
-  diversity <- c() 
-  
-  # Create Vector Increasing Number of Plots by 2x
-  num.plots <- c(2, 4, 8, 16, 32, 51)
-  
-  for (i in num.plots){   
-    # Create vectors to hold areas and diversity form iterations, used for means
-    areas.iter <- c() 
-    diversity.iter <- c() 
-    
-    # Iterate 10 Times Per Sample Size
-    for (j in 1:10){ 
-      # Sample w/o replacement
-      pond.sample <- sample(51, replace = FALSE, size = i)
-      
-      # Create Variable and Vector to Hold Accumulating Area and Taxa
-      area <- 0 
-      sites <- c() 
-      
-      for (k in pond.sample) {       # Loop Through Each Randomly Drawn Pond  
-        area <- area + pond.areas[k] # Aggregating Area (Roughly Doubling)
-        sites <- rbind(sites, comm[k, ])    # And Sites
-        }
-      
-      # Concatenate the rea to areas.iter
-      areas.iter <- c(areas.iter, area)  
-      # Calculate PSV or Other Phylogenetic Alpha-Diversity Metric
-      psv.vals <- psv(sites, tree, compute.var = FALSE) 
-      psv <- psv.vals$PSVs[1] 
-      diversity.iter <- c(diversity.iter, as.numeric(psv))
-      }
 
-    diversity <- c(diversity, mean(diversity.iter)) # Let Diversity be the Mean PSV
-    areas <- c(areas, mean(areas.iter))             # Let areas be the Average Area
-    print(c(i, mean(diversity.iter), mean(areas.iter))) # Print As We Go
-    }
-  # Return Vectors of Areas (x) and Diversity (y)
-  return(cbind(areas, diversity)) 
-  }
+
+
+
+
+
+
+
 ```
 
 #### ii. Evaluating the PDAR  
 We will examine the relationship between phylogenetic diversity and area using both Spearman's correlation coefficient (S) and Pearson's correlation coefficient (P).
 It is informative to use both because while S is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), P is computed on the observed values and therefore depicts linear relationships.
 
-```{r, results = 'hide'}
-# Calculate Areas for Ponds: Find Areas of All 51 ponds
-pond.areas <- as.vector(pi * (env$Diameter/2)^2) 
+In the R code chunk below, do the following:  
+1. calculate the area for each pond,  
+2. use the `PDAR()` function you just created to calculate the PDAR for each pond, 
+3. calculate the Pearson's and Spearman's correlations coefficients,   
+4. plot the PDAR and include the correlations coefficients in the legend, and  
+5. customize the PDAR plot. 
 
-# Compute the PDAR
-pdar <- PDAR(comm, phy) 
-pdar <- as.data.frame(pdar)
-pdar$areas <- sqrt(pdar$areas)
+```{r}
 
-# Calculate Perason's Correlation Coefficient
-Pearson <- cor.test(pdar$areas, pdar$diversity, method = "pearson")
-P <- round(Pearson$estimate, 2)
-Pp <- round(Pearson$p.value, 3)
 
-# Calculate Spearman's Correlation Coefficient
-Spearman <- cor.test(pdar$areas, pdar$diversity, method = "spearman")
-S <- round(Spearman$estimate, 2)
-Sp <- round(Spearman$p.value, 3)
 
-# Plot the PDAR
-par(mar = c(5, 5, 4, 2) + 0.1)
-plot(pdar[, 1], pdar[, 2], xlab = "Area", ylab = "PSV", ylim = c(0, 1), 
-     main = "Phylogenetic Diversity-Area Relationship", 
-     col = "red", pch = 16, las = 1)
 
-legend("topleft", legend= c(paste("Spearman Correlation = ", S, "; p = ", Sp, sep = ""), 
-                            paste("Pearson Correlation = ", P, "; p = ", Pp, sep = "")), 
-                            bty = "n", col = "red") 
+
+
+
 ```
 
 ***Question 8***: For the bacteria in the Indiana ponds, the slope (*z*) of the SAR was 0.14.
