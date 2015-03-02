@@ -1,0 +1,37 @@
+---
+title: "Week 8 --- Git On"
+author: "Z620: Quantitative Biodiversity, Indiana University"
+date: "March 6, 2015"
+header-includes:
+   - \usepackage{array}
+output: pdf_document
+geometry: margin=2.54cm
+---
+
+## OVERVIEW
+Licensing your code and migrating to a public site, github.com
+
+After completing this exercise you will know how to:
+
+1.  understand differences in licesning code
+2.  make your science open via migrating to public github account
+
+
+## 1) SETUP
+### A. Retrieve and Set Your Working Directory
+
+```{r, results = 'hide'}
+rm(list = ls())
+getwd()
+setwd("~/GitHub/QuantitativeBiodiversity/Assignments/GitOn")
+```
+
+## 2) LICENSING YOUR CODE  
+When setting up public repositories on GitHub, you'll want to license your work because it will be in the public domain. 
+Licenses are what establish your legal rights to waive responsibilities/liabilities, to attract copyright, and to establish intellectual primacy. 
+Licensing allows us to be fearless; to be protected by putting our ideas and work in the public domain; not by hiding it.
+
+GitHub offers a broad selection of licenses that range from short and tidy (MIT) to long and unintelligible (GPL V3). http://choosealicense.com/. I wrote the database and license portion of this paper written using markdown and GitHub: 9 Simple ways to make it easier to (re)use your data. There's lots of goodies of in it, the repo which is found here:  https://github.com/weecology/data-sharing-paper.
+
+## 3) MIGRATING TO GITHUB.COM
+
