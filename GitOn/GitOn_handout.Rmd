@@ -13,18 +13,83 @@ Licensing your code and migrating to a public site, github.com
 
 After completing this exercise you will know how to:
 
-1.  understand differences in licesning code
-2.  make your science open via migrating to public github account
+1.  make your own GitHub repo
+2.  create an R source file
+3.  understand differences in licesning code
+4.  make your science open via migrating to public github account
 
 
-## 1) SETUP
-### A. Retrieve and Set Your Working Directory
+## 1) MAKING a REPO
+So far this semester you have been working with a repo
 
-```{r, results = 'hide'}
-rm(list = ls())
-getwd()
-setwd("~/GitHub/QuantitativeBiodiversity/Assignments/GitOn")
+
+
+## 2) CREATE SOURCE CODE FILE
+Last week we learned the benefit of using a R source code file. 
+As a reminder, a source code file has user-defined functions that are required for certain analyses.
+The benefit of source files is that they contain "vetted" code that can be used across multiple projects. 
+Last week, that file contained code for importing files created by the popular community sequencing software `mothur` (http://www.mothur.org/).
+This week, we will make our own source code file containing code (functions) that we created during QB.
+
+1. Create a blank R file. 
+2. In your menu bar, choose File > New File > R Script (alternatively, Ctrl + Shift + N)
+3. Add a file header.
+This should be a commented out section that give all of the required information for users to use this script.
+Additionally, this may contain notes for the user.
+
+Here is an example header:
+
+```{sh}
+################################################################################
+#                                                                              #
+# Quantitative Biodiversity Functions Source Code                              #
+#                                                                              #
+# Written by: Student X                                                        #
+#                                                                              #
+# Last update: 2015/03/06                                                      #
+#                                                                              #
+# Notes:                                                                       #  
+#                                                                              #
+################################################################################
 ```
+
+There are a few things to notice about the header:
+1. The comment character (#) prevents R from interpreting the information in the header
+2. The header is formatted for stylystic purposes; it is 80 characters wide (as should your file), and it is boxed off using comment characters. 
+There are other ways of stylizing your header, this is just one option.
+
+4. Add content
+A. The first thing you will want to do is add and require commands.
+This is a bit different than before because we need to make sure that the packages are installed.
+By default, the following code will try to load a package and will then install if not found.
+
+```{sh}
+require("vegan")||install.packages("vegan");require("vegan")
+
+```
+You can cusotmize this code for any package that you want loaded for our source file
+
+B. Add functions:
+The major goal this week is to make a source file that contains all of the functions we wrote this semester.
+So now you are going to populate this file with those function.
+Go through all of your assignments and find the functions you want to save.
+Copy those functions into this new source file. 
+Add comments about each function before the code.
+For example:
+
+```{sh}
+# My_Function: has some cool code
+# Inputs: x, y, z
+
+My_Function <- function(x, y, z){
+  ...
+}
+
+```
+
+Add as many functions are you want. 
+
+## 2) CREATE README
 
 ## 2) LICENSING YOUR CODE  
 When setting up public repositories on GitHub, you'll want to license your work because it will be in the public domain. 

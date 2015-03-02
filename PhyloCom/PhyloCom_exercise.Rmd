@@ -21,7 +21,7 @@ After completing this exercise you will know how to:
 ## Directions:
 1. Change "Student Name" on line 3 (above) with your name.
 2. Complete as much of the exercise as possible during class; what you do not complete in class will need to be done on your own outside of class.
-3. Use the handout as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise.  
+3. Use the handout as a guide; it contains a more complete description of data sets along with the proper scripting needed to carry out the exercise.
 4. Be sure to **answer the questions** in this exercise document; they also correspond to the handout.
 Space for your answer is provided in this document and indicated by the ">" character.
 If you need a second paragraph be sure to start the first line with ">".
@@ -71,7 +71,7 @@ In the R code chunk below, do the following:
 3. subset the data to include only DNA-based identifications of bacteria,  
 4. rename the sites by removing extra characters,  
 5. remove unnecessary OTUs in the site-by-species, and   
-7. load the taxonomic data using the `read.tax()` function.
+6. load the taxonomic data using the `read.tax()` function.
 
 ```{r}
 
@@ -85,7 +85,7 @@ In the R code chunk below, do the following:
 
 Next, in the R code chunk below, do the following:  
 1. load the FASTA alignment for the OTUs,  
-2. rename the OTUs be removing everything before the tab (\t) and after the bar (|),  
+2. rename the OTUs be removing everything before the tab (\\t) and after the bar (|),  
 3. import the *Methanosarcina* outgroup FASTA file,  
 4. convert both FASTA files into the DNAbin format and combine using `rbind()`,  
 5. visualize the sequence alignment,  
@@ -139,12 +139,11 @@ c.  Under what conditions would you expect these two estimates of diversity to d
 > ***Answer 1b***:  
 > ***Answer 1c***:  
 
-#### i.  Randomizations and Null Models
-In the R code chunk below, do the following:  
-1. estimate the standardized effect size of PD using the `richness` randomization method, and  
-2. pick another null model and compare the results to the `richness` randomization output . 
+**i. Randomizations and Null Models**  
 
-### MEM: confused about above request and question below...?
+In the R code chunk below, do the following:  
+1. estimate the standardized effect size of PD using the `richness` randomization method.  
+
 ```{r}
 
 
@@ -164,7 +163,8 @@ b.  What features might affect the intepretation of the `ses.pd` output?
 ### B.  Phylogenetic Dispersion Within a Sample
 Another way to assess phylogenetic $\alpha$-diversity is to look at dispersion within a sample. 
 
-#### i. Phylogenetic Resemblance Matrix 
+**i. Phylogenetic Resemblance Matrix**
+
 In the R code chunk below, do the following:  
 1. calculate the phylogenetic resemblance matrix for taxa in the Indiana ponds data set.
 
@@ -173,7 +173,8 @@ In the R code chunk below, do the following:
 
 ```
 
-#### ii.  Net Relatedness Index (NRI)
+**ii.  Net Relatedness Index (NRI)**
+
 In the R code chunk below, do the following:  
 1. Calculate the NRI for each site in the Indiana ponds data set. 
 
@@ -186,7 +187,8 @@ In the R code chunk below, do the following:
 
 ```
 
-### iii.  Nearest Taxon Index (NTI)  
+**iii.  Nearest Taxon Index (NTI)**
+
 In the R code chunk below, do the following:
 1. Calculate the NTI for each site in the Indiana ponds data set. 
 
@@ -202,7 +204,7 @@ How does this affect the interpretation of NRI and NTI?
 
 > ***Answer 3***:  
 
-### C) Mini-Exercise On Phylogenetic Alpha-Diversity
+### C. Mini-Exercise On Phylogenetic Alpha-Diversity
 Conduct an exploratory analysis of the phylogenetic $\alpha$-diversity for the Indiana ponds.
 Using techniques from the *Week1_Handout.Rmd* and any other statistical methods at your disposal, identify enviornmental variables that may influence the taxonomic richness (SR), phylodiveristy (PD), and dispersion (NRI and NTI) of the bacterial communities in the sampled ponds. 
 Generate some hypotheses as to what ecological and/or evolutionary processes are giving rise to these patterns of phylogenetic $\alpha$-diversity.  
@@ -293,7 +295,7 @@ In the R code chunk below, do the following:
 
 ### C. Hypothesis Testing
 
-#### i. Categorical Approach: Watershed Effect
+**i. Categorical Approach: Watershed Effect**
 
 In the R code chunk below, do the following:  
 1. test the hypothesis that watershed has an effect on the phylogenetic diversity of bacterial communities.
@@ -305,12 +307,12 @@ In the R code chunk below, do the following:
 
 
 ```
-#### MEM: I sort of find 1 and 2 below confusing???
-#### ii. Continuous Approach: Environmental Gradients
+
+**ii. Continuous Approach: Environmental Gradients**
 
 In the R code chunk below, do the following:
-1. define the environmental variables of interest, and  
-2. calcuate the distance between sites based on these variables.
+1. from the environmental data matrix, subset the variables related to physical and chemical properties of the ponds, and  
+2. calcuate the euclidean distance between ponds based on these variables (transform and center), this is your environmental gradient.
 
 ```{r}
 
@@ -353,7 +355,7 @@ In the R code chunk below, do the following:
 
 > ***Answer 6***: 
 
-### D) Mini-Exercise On Phylogenetic Beta-Diversity
+### D. Mini-Exercise On Phylogenetic Beta-Diversity
 Generate and test hypotheses about the phylogenetic $\beta$-diversity of the Indiana ponds.
 Using the environmental variables identified in the $\alpha$-diversity mini-exercise, redo either the PERMANOVA or CCA above using just these variables. 
 Feel free to add any additional approaches we used in *Beta_Handout.Rmd*. 
@@ -429,9 +431,10 @@ In the R code chunk below, do the following:
 > ***Answer 7***: 
 
 
-### A. Phlogenetic diversity-area relationship (PDAR)
+### B. Phlogenetic diversity-area relationship (PDAR)
 
-#### i. Constructing the PDAR  
+**i. Constructing the PDAR**
+
 In the R code chunk below, do the following:  
 1. write a function to generate the PDAR.
 
@@ -447,7 +450,8 @@ In the R code chunk below, do the following:
 
 ```
 
-#### ii. Evaluating the PDAR  
+**ii. Evaluating the PDAR**
+
 We will examine the relationship between phylogenetic diversity and area using both Spearman's correlation coefficient (*S*) and Pearson's correlation coefficient (*P*).
 It is informative to use both because while *S* is computed on ranks and depicts monotonic relationships (the degree to which the relationship is continually increasing or decreasing), *P* is computed on the observed values and therefore depicts linear relationships.
 
