@@ -58,7 +58,38 @@ There are a few things to notice about the header:
 2. The header is formatted for stylystic purposes; it is 80 characters wide (as should your file), and it is boxed off using comment characters. 
 There are other ways of stylizing your header, this is just one option.
 
-4. 
+4. Add content
+A. The first thing you will want to do is add and require commands.
+This is a bit different than before because we need to make sure that the packages are installed.
+By default, the following code will try to load a package and will then install if not found.
+
+```{sh}
+require("vegan")||install.packages("vegan");require("vegan")
+
+```
+You can cusotmize this code for any package that you want loaded for our source file
+
+B. Add functions:
+The major goal this week is to make a source file that contains all of the functions we wrote this semester.
+So now you are going to populate this file with those function.
+Go through all of your assignments and find the functions you want to save.
+Copy those functions into this new source file. 
+Add comments about each function before the code.
+For example:
+
+```{sh}
+# My_Function: has some cool code
+# Inputs: x, y, z
+
+My_Function <- function(x, y, z){
+  ...
+}
+
+```
+
+Add as many functions are you want. 
+
+## 2) CREATE README
 
 ## 2) LICENSING YOUR CODE  
 When setting up public repositories on GitHub, you'll want to license your work because it will be in the public domain. 
