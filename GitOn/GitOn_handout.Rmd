@@ -9,22 +9,23 @@ geometry: margin=2.54cm
 ---
 
 ## OVERVIEW
-Migrating to github.com with licensed code, an informative README file, and a website(?).
+A major goal of Quantitative Biodiversity is to provide you with the tools to conduct reproducible science.
+To this end, we have been using Github throughout the semester. 
+As you know, Github allows one to manage changes to data and code in a way that helps ensure the integrity of a project.
+Github is also a great tool for collaborating with other researchers.
+However, we've been using an Enterprise version of Github that is resitricted to people with an IU affilition. 
+Obviously, this may hinder collaboration with your colleagues at other institutions. 
+In this handout, we present a workflow that will help facilitate reproducible science upon your "graduation" from Quantitative Biodiversity.
 
 After completing this exercise you will know how to:
 
-1.  Make a repo within the IU GitHub system
-2.  Craft README.md and R source files
-3.  Open a github.com account (not restricted to IU)
-4.  Properly license your work, i.e., open but copyrighted
-5.  Request private repos from github.com
+1.  Create a source-code file  
+2.  Open a github.com account (not restricted to IU)  
+3.  Create a Github repository  
+4.  Create and modify a README.md file  
+5.  Properly license your work, i.e., open but copyrighted  
 
-## 1) MAKING a REPO
-So far this semester you have been working with a repository that was created 
-
-
-
-## 2) CREATE SOURCE CODE FILE
+## 1) CREATE SOURCE CODE FILE
 Last week we learned the benefit of using a R source code file. 
 As a reminder, a source code file has user-defined functions that are required for certain analyses.
 The benefit of source files is that they contain "vetted" code that can be used across multiple projects. 
@@ -32,8 +33,9 @@ Last week, that file contained code for importing files created by the popular c
 This week, we will make our own source code file containing code (functions) that we created during QB.
 
 1. Create a blank R file. 
-2. In your menu bar, choose File > New File > R Script (alternatively, Ctrl + Shift + N)
-3. Add a file header.
+2. In your menu bar, choose File > New File > R Script (alternatively, Ctrl + Shift + N)  
+3. Add a file header.  
+
 This should be a commented out section that give all of the required information for users to use this script.
 Additionally, this may contain notes for the user.
 
@@ -87,9 +89,22 @@ My_Function <- function(x, y, z){
 
 ```
 
-Add as many functions are you want. 
+## 2) CREATE A GITHUB.COM ACCOUNT
 
-## 2) CREATE A README.md FILE
+
+## 3) MAKING a GITHUB REPO
+So far this semester you have been working with a repository that was created 
+
+Make students choose "public". If they don't feel comfortabel with this for whatever reason, they have the following options
+
+1) don't migrate your files  
+2) choose private at which time Github is likely to ask for your credit card information  
+3) make public for now and then request private repos from github
+
+## 4) CREATE A README.md FILE
+
+We talked about supplying them with a template, which might have info such as description, software versions, author information, contact information, bugs/files/patches, etc. 
+
 In the beginning of the course, we had you edit a README.md file, which gave us some information about you.
 In general, README files provide:
 
@@ -100,15 +115,15 @@ In general, README files provide:
 
 This last one is commonplace among people who develop and distribute software (e.g. ecologists who develop R packages) and among folks who engage seriously in reproducible science.
 
-## 2) MIGRATING TO GITHUB.COM
+## 5) MIGRATING TO GITHUB.COM
 notes, add:
 1. how to setup
 2. create a repo...GitHub will ask whether you want to add a README.md.
 3. add a license...should the licensing section be moved here, as a subsection?
 4. add source file
 
-
-## 3) LICENSING YOUR CODE (this should come after "MIGRATING" because you can't automatically license code on IU's GitHub. If you figure out how to add a license, it won't mean much because IU probably owns whatever you put on their Enterprise, i.e., IU rights supercede your license)
+## 6) LICENSING YOUR CODE 
+(this should come after "MIGRATING" because you can't automatically license code on IU's GitHub. If you figure out how to add a license, it won't mean much because IU probably owns whatever you put on their Enterprise, i.e., IU rights supercede your license)
 
 When setting up public repositories on GitHub, you will want to license your work because it will be in the public domain. 
 Licenses are what allow you to establish the right to waive responsibilities and liabilities, to attract copyright, and to legally establish intellectual primacy.
@@ -116,5 +131,9 @@ Licensing allows us to be visible, transparent, and fearless professionals; prot
 
 GitHub offers a broad selection of licenses that range from short and tidy (MIT) to the thorough but lengthy (GPL V3); see http://choosealicense.com/.
 9 Simple ways to make it easier to (re)use your data. There's lots of goodies of in it, the repo which is found here:  https://github.com/weecology/data-sharing-paper.
+
+
+
+
 
 
