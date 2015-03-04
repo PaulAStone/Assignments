@@ -1,5 +1,5 @@
 ---
-title: "Week 8 --- Git On"
+title: "Week 8 Exercise: Git On"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "March 6, 2015"
 header-includes:
@@ -19,13 +19,18 @@ Obviously, this may hinder collaboration with your colleagues at other instituti
 In this handout, we present a workflow that will help facilitate reproducible science upon your "graduation" from Quantitative Biodiversity.
 
 After completing this exercise you will know how to:  
-1. Create a source-code file   
-2. Open a github.com account (not restricted to IU)   
-3. Create a Github repository   
-4. Create and modify a README.md file   
-5. Properly license your work, i.e., open but copyrighted   
+&nbsp;&nbsp;1. Create a source-code file   
+&nbsp;&nbsp;2. Open a github.com account (not restricted to IU)   
+&nbsp;&nbsp;3. Create a Github repository   
+&nbsp;&nbsp;4. Create and modify a README.md file   
+&nbsp;&nbsp;5. Properly license your work, i.e., open but copyrighted   
 
-## Make QBTools Repository First (seems to be the logical progression)
+## 1) Make New Repository
+So far this semester you have been working with a repository that was created. 
+Now, you are going to make your own repository called QBTools. 
+This repository will contain code that will be used for quantitative biodiversity analyses.
+Hopefully, at this point you know the utility of such code.
+So let's get started:
 
 1. Navigate to GitHub.iu.edu
 2. Select the "Create new..." button.
@@ -36,8 +41,8 @@ After completing this exercise you will know how to:
 
     \includegraphics[scale=1]{images/GitCreateNewRepo.png}
   
-4. Give your Repository a name (e.g. QBTools)
-5. Decide if your repository should be Public or Private
+4. Give your Repository a name (e.g., QBTools)
+5. Decide if your repository should be Public or Private (your choice)
 6. Initialize with a README
 Optional: Add .gitignore for R
 
