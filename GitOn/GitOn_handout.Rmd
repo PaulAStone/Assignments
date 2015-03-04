@@ -1,5 +1,5 @@
 ---
-title: "Week 8 Exercise: Git On"
+title: "Week 8 --- Git On"
 author: "Z620: Quantitative Biodiversity, Indiana University"
 date: "March 6, 2015"
 header-includes:
@@ -23,20 +23,6 @@ Last, Enterprise versions of Github do not help us meet the requirements of many
 In this handout, we present a workflow that will assist you with conducting reproducible science upon "graduation" from Quantitative Biodiversity.
 
 After completing this exercise you will know how to:  
-<<<<<<< HEAD
-&nbsp;&nbsp;1. Create a source-code file   
-&nbsp;&nbsp;2. Open a github.com account (not restricted to IU)   
-&nbsp;&nbsp;3. Create a Github repository   
-&nbsp;&nbsp;4. Create and modify a README.md file   
-&nbsp;&nbsp;5. Properly license your work, i.e., open but copyrighted   
-
-## 1) Make New Repository
-So far this semester you have been working with a repository that was created. 
-Now, you are going to make your own repository called QBTools. 
-This repository will contain code that will be used for quantitative biodiversity analyses.
-Hopefully, at this point you know the utility of such code.
-So let's get started:
-=======
 1. Create a Github respository  
 2. Make a source-code file  
 3. Create and modify a README file  
@@ -55,7 +41,6 @@ The final step in the Github version control process is to create a pull request
 In the following section, we are going to go through the steps that are involved in creating your own repository:
 
 **1.** Open an web browser and navigate to https://github.iu.edu/ 
->>>>>>> upstream/master
 
 **2.** At the top of page there is black banner. 
 
@@ -68,12 +53,6 @@ If you hover over this symbol, it will say "Create new...".
 
     \includegraphics[scale=1]{images/GitCreateNewRepo.png}
   
-<<<<<<< HEAD
-4. Give your Repository a name (e.g., QBTools)
-5. Decide if your repository should be Public or Private (your choice)
-6. Initialize with a README
-Optional: Add .gitignore for R
-=======
 **4.** Give your repository a name. 
 For this exericse, name your repository "QBTools".    
 
@@ -254,7 +233,6 @@ notes, add:
 2. create a repo...GitHub will ask whether you want to add a README.md.
 3. add a license...should the licensing section be moved here, as a subsection?
 4. add source file
-
 
 
 
