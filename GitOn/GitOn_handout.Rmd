@@ -62,8 +62,6 @@ For this exericse, name your repository "QBTools".
 
 **7.** Optional: you can click on the "Add .gitignore" button and select R  
 
-##This will...please add text##
-
     \includegraphics[scale=0.75]{images/GitRepoInitialize.png}
   
 **8.** When you have completed the items above, click on the green "Create repository" button
@@ -128,7 +126,7 @@ In our example, the header is 80 characters wide.
 As a rule of thumb, this is an appropriate width for both your header and code. 
 We use the comment character (#) to box-off the top and sides of the heaer.
 
-### C. Add Content to Source-Code File  
+### C. Nuts and Bolts of Source-Code File  
 
 ### i. Require commands
 In order for function in a source-code file to properly work, we need to make sure that the contributed packages are installed.
@@ -159,6 +157,9 @@ My_Function <- function(x, y, z){
 
 ```
 
+Before moving on, save your QBTools.R file to your new repo. 
+In a terminal window, add and commit the file using git.
+
 ## 3) CREATE A README FILE
 You may recall at the beginning of the course, we had you edit a README file, which gave us some basic information about you.
 In a more general sense, README files are commonly used and contain important documentation about the files (code, data, etc.) that are contained in a directory. 
@@ -171,15 +172,48 @@ A basic README file should contain the following:
 ** 4.** Potential bugs  
 
 Take a moment to modify README file in your GitOn directory with your information.
-Save the file when you are done. 
+Before moving on, save the README file to your new repo. 
+In a terminal window, add and commit the file using git.
 
-## 4) CREATE A GITHUB.COM ACCOUNT
+## 4) LICENSING YOUR CODE
+(this should come after "MIGRATING" because you can't automatically license code on IU's GitHub. If you figure out how to add a license, it won't mean much because IU probably owns whatever you put on their Enterprise, i.e., IU rights supercede your license)
+
+When setting up public repositories on GitHub, you will want to license your work because it will be in the public domain. 
+Licenses are what allow you to establish the right to waive responsibilities and liabilities, to attract copyright, and to legally establish intellectual primacy.
+Licensing allows us to be visible, transparent, and fearless professionals; protected by putting our ideas and work into the public domain while maintaining rights and restrictions to (re)use and (re)distribution.
+
+GitHub offers a broad selection of licenses that range from short and tidy (MIT) to the thorough but lengthy (GPL V3); see http://choosealicense.com/.
+9 Simple ways to make it easier to (re)use your data. There's lots of goodies of in it, the repo which is found here:  https://github.com/weecology/data-sharing-paper.
+
+
+## 5) CREATE A GITHUB.COM ACCOUNT
 We are now in the process of moving your newly created repository and source-code file to github.com. 
 If you don't already have an account, let's create one now. 
 Open up a new browser and navigate to https://github.com/.
 After supplying a username, your email, and a password, click the green button that says "Sign up for GitHub".
 
-## 5) FORKING AND CLONING YOUR QBTools REPOSITORY
+--> JTL WILL WORK OUT THE DETAILS STEP BY STEP
+
+
+## 6) CREATE NEW REPOSITORY IN GITHUB.COM
+
+--> KJL AND MEM WILL WORK OUT DETAILS
+
+A) CREATE NEW REPO IN GITHUB.COM ("QBTOOLS")
+B) INITIALIZE WITH NOTHIN
+C) ADD REMOTE
+D) THIS WILL BRIN GIN SOURCE CODE, README, AND LICENSE FILE. 
+E) STUDENTS CAN REPEAT FOR ASSIGNMENTS IF THEY WANT
+
+
+STUFF BELOW IS "LEFTOVER"; PERPHAS SOMETHING GOOD.
+
+
+
+
+
+
+FORKING AND CLONING YOUR QBTools REPOSITORY
 Unlike the Enterprise version of Github at IU, github.com encourages usesers to keep open respositories. 
 Encourages students to choose "public". If they don't feel comfortable with this for whatever reason, they have the following options
 
@@ -199,17 +233,6 @@ notes, add:
 2. create a repo...GitHub will ask whether you want to add a README.md.
 3. add a license...should the licensing section be moved here, as a subsection?
 4. add source file
-
-## 7) LICENSING YOUR CODE 
-(this should come after "MIGRATING" because you can't automatically license code on IU's GitHub. If you figure out how to add a license, it won't mean much because IU probably owns whatever you put on their Enterprise, i.e., IU rights supercede your license)
-
-When setting up public repositories on GitHub, you will want to license your work because it will be in the public domain. 
-Licenses are what allow you to establish the right to waive responsibilities and liabilities, to attract copyright, and to legally establish intellectual primacy.
-Licensing allows us to be visible, transparent, and fearless professionals; protected by putting our ideas and work into the public domain while maintaining rights and restrictions to (re)use and (re)distribution.
-
-GitHub offers a broad selection of licenses that range from short and tidy (MIT) to the thorough but lengthy (GPL V3); see http://choosealicense.com/.
-9 Simple ways to make it easier to (re)use your data. There's lots of goodies of in it, the repo which is found here:  https://github.com/weecology/data-sharing-paper.
-
 
 
 
