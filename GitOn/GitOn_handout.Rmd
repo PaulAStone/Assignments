@@ -191,9 +191,12 @@ We are now in the process of moving your newly created repository and source-cod
 If you don't already have an account, let's create one now. 
 Open up a new browser and navigate to https://github.com/.
 After supplying a username, your email, and a password, click the green button that says "Sign up for GitHub".
-
---> JTL WILL WORK OUT THE DETAILS STEP BY STEP
-
+You will then be asked to fill out some additional information:
+**Step 1: set up a personal account**: You may be asked to add personal information again including your username and password.
+**Step 2: choose your plan**: Here, you will most likely want to select the free plan ($0/month).
+Last, click the green “Finish sign up” button at the bottom of the page. 
+You should then be taken to the main page of your github.com account.
+The interface should be identical to that of IU's Enterprise Github.
 
 ## 6) CREATE NEW REPOSITORY IN GITHUB.COM
 
