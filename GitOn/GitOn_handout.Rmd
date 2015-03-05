@@ -16,10 +16,11 @@ Github helps ensure the integrity of a research project by managing changes to d
 The version-control features of Github are useful for an individual working on a "solo" project, but also greatly facilitate collaboration among researchers. 
 
 This semester we've been using an Enterprise version of Github (https://github.iu.edu/), which is restricted to people with an IU affilition.
-Although effective for teaching and development, there are a few downsides to using Enterprise versions of Github. 
+Although useful for teaching and development, there are a few downsides to using Enterprise versions of Github. 
 First, you may lose access to data or code that is stored in an Enterprise respository upon graduating from IU.
 Second, your ability to collaborate with colleagues at other institutuions will be hindered if you rely on an Enterprise version of Github.
-Last, Enterprise versions of Github do not help us meet the requirements of many journals and funding agencies that our data and code be "open".
+Last, Enterprise versions of Github do not help us meet the requirements of many journals and funding agencies that our data and code be freely accessible and freely available.
+
 In this handout, we present a workflow that will assist you with conducting reproducible science upon "graduation" from Quantitative Biodiversity.
 
 After completing this exercise you will know how to:  
@@ -30,15 +31,17 @@ After completing this exercise you will know how to:
 &nbsp;&nbsp;5. Create a github.com account (not restricted to IU)     
 &nbsp;&nbsp;6. Migrate repositories from IU's Github to github.com
   
-## 1) CREATING A GITHUB RESPOSITORY
-If you adopt Github as a part of your scientific workflow, you are going to want to create a new repository when you start a new project. 
-A repository holds all of your files, along with a history of the changes that have been made.
+## 1) CREATING AN IU ENTERPRISE GITHUB RESPOSITORY
+If you adopt Github as a part of your scientific workflow, you are going to want to create a new repository when you start a new project.
+When you start a new project within the IU Enterprise system, you are going to want to create a new repository to hold your files and to record the history of changes that have been made throughout the life of your project.
+
 This semester, you have been working with a repository that the instructors created for you (2015-QuantitativeBiodiversity). 
 On the first day of class, you forked and cloned this respository to your local computer.
-After modifying the files on your local computer, you saved and commited the changes, which were then pushed to your origin (e.g., QB2015_Smith). 
-The final step in the Github version control process is to create a pull request so that changes are merged into the upstream repository. 
+After making modifying the files on your local computer, you saved, added, and commited changes, which were then pushed to your origin, that is, the version of your repository (e.g. QB2015_Smith) on your own IU GitHub account. 
+Then, you created a pull request that the instructors could merge into the "upstream" repository. 
 
-In the following section, we are going to go through the steps that are involved in creating your own repository:
+In the following section, we are going to walk through the steps involved in creating a repository in your own IU Enterprise account.
+You will be responsible for managing this repository, which can serve as the 'hub' for the code, text, and data of any project you wish.
 
 **1.** Open a web browser and navigate to https://github.iu.edu/ 
 

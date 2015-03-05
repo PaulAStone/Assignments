@@ -699,7 +699,7 @@ PDAR <- function(comm, tree){
       areas.iter <- c(areas.iter, area)  
       # Calculate PSV or Other Phylogenetic Alpha-Diversity Metric
       psv.vals <- psv(sites, tree, compute.var = FALSE) 
-      psv <- psv.vals$PSVs[1] 
+      psv <- psv.vals$PSVs[1]
       diversity.iter <- c(diversity.iter, as.numeric(psv))
       }
 
