@@ -66,7 +66,7 @@ For this exericse, name your repository "QBTools".
 **7.** An additional option is to click on the "Add .gitignore" button and then select R.
 This allows you to identify certain files (e.g., .Rhistory) that will be ignored by Git when it looks for modified files to commit.
 
-&nbsp;&nbsp;\includegraphics[scale=0.75]{images/GitRepoInitialize.png}
+&nbsp;&nbsp;\includegraphics[scale=0.60]{images/GitRepoInitialize.png}
   
 **8.** Click on the green "Create repository" button
 
@@ -75,21 +75,21 @@ This allows you to identify certain files (e.g., .Rhistory) that will be ignored
 **9.** Now, we are going to clone the newly created repository to your local machine.
 Open a Terminal window and type the following:
 
-    ```sh
-    cd ~/GitHub
-    git clone https://github.iu.edu/User_Name/QBTools
-    cd ./QBTools
-    git status
-    ```
+```sh
+cd ~/GitHub
+git clone https://github.iu.edu/User_Name/QBTools
+cd ./QBTools
+git status
+```
 
 **10.** Congratulations on successfully creating your first repo!
 Before we move on, it is good practice to check your remotes.
 You should have just one remote: origin.
 Open a Terminal window, `cd` to the correct directory, and type the code below to confirm.
 
-    ```sh
-    git remote -v
-    ```
+```sh
+git remote -v
+```
 
 ## 2) CREATE A SOURCE-CODE FILE
 Over the past eight weeks, we have created a number of functions in R. 
@@ -278,7 +278,7 @@ For this exericse, name your repository "QBTools", the same as on github.iu.edu.
 Note: github.com can automatically add a license to your repository when you create it. 
 At this point your screen should look something like this: 
 
-&nbsp;&nbsp;\includegraphics[scale=0.75]{images/GitRepoInitializeCom.png}
+&nbsp;&nbsp;\includegraphics[scale=0.60]{images/GitRepoInitializeCom.png}
   
 **8.** To finish, click on the green "Create repository" button
 
@@ -291,18 +291,18 @@ First, you need to add a new remote to your repository:
 
 2. Add github.com to your remotes using the following code
 
-```sh
-git status
-git remote -v
-git remote add outside [url for github.com repo]
-git remote status
-```
+    ```sh
+    git status
+    git remote -v
+    git remote add outside [url for github.com repo]
+    git remote status
+    ```
 
 3. Now that you have added a new remote, simply push your repo to github.com using the following code.
 
-```sh
-git push outside
-```
+    ```sh
+    git push outside
+    ```
 
 You have now successfully migrated your IU closed-source repository to github.com.
 Feel free to do the same for any additional projects you want to share (e.g, content in "QB2015_Smith").
