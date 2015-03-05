@@ -197,16 +197,32 @@ git commit -m "Initial commit"
 git status
 ```
 
-## 4) LICENSING YOUR CODE
-(this should come after "MIGRATING" because you can't automatically license code on IU's GitHub. If you figure out how to add a license, it won't mean much because IU probably owns whatever you put on their Enterprise, i.e., IU rights supercede your license)
+## 4) LICENSING YOUR CODE AND CONTENTS
+Part of conducting reproducible science is assuming responsibility for your work and to be aware of the rights involved in either claiming or disclaiming intellectual property.
+This goes double if you adopt an open science policy, if you are employed as a postdoc or research scientist, or if you are the recipient of funding from government agencies that are *only becoming more stringent in their data and code availability standards*.
+To this end, we want to make you aware of how and when to license your code and data, especially if you own or contribute to a repository that can be viewed by people outside your collaborative circle.
 
-When setting up public repositories on GitHub, you will want to license your work because it will be in the public domain. 
-Licenses are what allow you to establish the right to waive responsibilities and liabilities, to attract copyright, and to legally establish intellectual primacy.
-Licensing allows us to be visible, transparent, and fearless professionals; protected by putting our ideas and work into the public domain while maintaining rights and restrictions to (re)use and (re)distribution.
+**Why license?** Licensing allows you to unambiguously establish the right to assume or waive responsibilities and liabilities, to attract copyright, and to legally establish intellectual primacy.
+Licensing allows you to be a visible, transparent, and fearless professional; protected by putting your ideas and work into the academic or public domain while maintaining rights and restrictions to use and redistribution.
 
-GitHub offers a broad selection of licenses that range from short and tidy (MIT) to the thorough but lengthy (GPL V3); see http://choosealicense.com/.
-9 Simple ways to make it easier to (re)use your data. There's lots of goodies of in it, the repo which is found here:  https://github.com/weecology/data-sharing-paper.
+**What can you license?** In short, you can license code you develop, data you collect, photos you take, and any novel aspect of your work that you would like to make available or visible to others while protecting your rights and retaining privelages.
+Any license can be simply be added through GitHub or simply copy and pasted into a Markdown file (extension: .md).
 
+**Licensing code through GitHub:** GitHub offers a broad selection of licenses for code that range from short and tidy (MIT) to the thorough and lengthy (GPL V3).
+The main trade-off in choosing a license is that, the more restrictive the license, the less people are going to want to use what you've developed. But, the less restrictive the license, the less control you will have over what rights and privelages you maintain.
+This is important to consider if you have discovered or developed a new algorithm, a new metric, a new dataset, or a new model.
+Straightforward information on the various licenses can be found here: see http://choosealicense.com/. This website will help you choose a license that is right for your work and preferences.
+
+Note, that if you've used code from another project, e.g., borrowed code from R or used code you found online, then you will need attribute what you used to owner. This can be as easy as making a small statement in your source code or it may entail including the license of the original project. 
+For example, if you include an R package as part of your source code, then you will need to abide by the redistribution rights that the original code was licensed under. Be sure and conduct due diligence.
+
+**Licensing data and creative works:** You can also license certain datasets or, in general, attract copyright to any novel intellectual work (videos, music, art, photos). 
+Licensing these 'products' can be done through creative commons licensing: https://creativecommons.org/licenses/. 
+This licensing offers a range of options from retaining strict legal rights to use and distribution to waiving all rights and liabilities.
+This website: https://creativecommons.org/choose/ will help you determine what license is right for you.
+
+Additional information on licensing, storing, and sharing your data can be found in the White et al. (2013) paper, "9 Simple ways to make it easier to (re)use your data", which can be found here: http://library.queensu.ca/ojs/index.php/IEE/article/view/4608.
+The writing of this paper was managed through a public GitHub repository, where the public could see it before it was finished: https://github.com/weecology/data-sharing-paper.
 
 ## 5) CREATE A GITHUB.COM ACCOUNT
 In the overview section of this document, we described some of the advantges that are afforded by using github.com.
