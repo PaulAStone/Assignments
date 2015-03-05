@@ -210,25 +210,74 @@ GitHub offers a broad selection of licenses that range from short and tidy (MIT)
 
 ## 5) CREATE A GITHUB.COM ACCOUNT
 In the overview section of this document, we described some of the advantges that are afforded by using github.com.
-If you don't already have a github.com account, let's create one now. 
-Open up a new browser and navigate to https://github.com/.
-After supplying a username, your email, and a password, click the green button that says "Sign up for GitHub".
-You will then be asked to fill out some additional information.
-*Step 1: Set up a personal account* -- You may be asked to add personal information again (username and password).
-*Step 2: Choose your plan* -- Here, you will most likely want to select the free plan ($0/month).
-Last, click the green “Finish sign up” button at the bottom of the page. 
-You should then be taken to the main page of your github.com account.
-The interface should be identical to that of IU's Enterprise Github.
+If you don't already have a github.com account, let's create one now:
+
+**1.** Open up a new browser and navigate to https://github.com/.  
+**2.** After supplying a username, your email, and a password, click the green button that says "Sign up for GitHub".  
+**3.** You will then be asked to fill out some additional information.  
+*Step 1: Set up a personal account* -- You may be asked to add personal information again (username and password).  
+*Step 2: Choose your plan* -- Here, you will most likely want to select the free plan ($0/month). 
+**4.** Last, click the green “Finish sign up” button at the bottom of the page.  
+You will then be taken to the main page of your github.com account.  
+The interface should be nearly identical to that of IU's Enterprise Github.  
 
 ## 6) CREATE NEW REPOSITORY IN GITHUB.COM
+Now that you have a GitHub.com account, let's create a repository here.
+This time, we are going to use the repository we created on IU's Enterprise GitHub. 
+Using Git, we will migrate this repository from IU Enterprise to GitHub.com. 
+However, first we need to create the online repository.
+The directions for this are almost identical to above:
 
---> KJL AND MEM WILL WORK OUT DETAILS
+**1.** At the top of page there is gray banner. 
+On the right-hand side there is `+` symbol. 
+If you hover over this symbol, it will say "Create new...".  
 
-A) CREATE NEW REPO IN GITHUB.COM ("QBTOOLS")
-B) INITIALIZE WITH NOTHING
-C) ADD REMOTE
-D) THIS WILL BRING IN SOURCE CODE, README, AND LICENSE FILE. 
-E) STUDENTS CAN REPEAT FOR ASSIGNMENTS IF THEY WANT
+&nbsp;&nbsp;\includegraphics[scale=1]{images/GitCreateNewCom.png}
+  
+**2.** Click on the `+` symbol and select "New Repository"  
+
+&nbsp;&nbsp;\includegraphics[scale=1]{images/GitCreateNewRepoCom.png}
+  
+**3.** Give your repository a name. 
+For this exericse, name your repository "QBTools", the same as on GitHub.iu.edu.    
+
+**4.** Decide if you want the repository to be Public or Private (likely, you do not have choice)  
+
+**5.** Since we already have a README.md file, DO NOT click the button that says "Initialize this repository with a README"    
+
+**7.** Additionally, do not add a ".gitignore" or "license".
+Note: GitHub.com can automatically add a license to your repository when you create it. 
+At this point your screen should look something like this: 
+
+&nbsp;&nbsp;\includegraphics[scale=0.75]{images/GitRepoInitializeCom.png}
+  
+**8.** To finish, click on the green "Create repository" button
+
+&nbsp;&nbsp;\includegraphics[scale=1]{images/GitCreate.png}
+
+Now that you have the online component of your GitHub repo, we can migrate our files.
+First, you need to add a new remote to your repository:
+
+1. In the command line (i.e., Terminal) navigate to the location of your `QBTools` repo
+
+2. Add GitHub.com to your remotes
+
+```sh
+git status
+git remote -v
+git remote add outside [url for GitHub.com repo]
+git remote status
+```
+
+3. Now that you have added a new remote, simply push your repo to GitHub.com
+
+```sh
+git push outside
+```
+
+You have now successfully migrated your IU closed source repository to GitHub.com.
+Feel free to do the same for any additional projects you want to share.
+However, please be sure to document (i.e. add a README) and license appropriatly.
 
 Many scientists who seriously engage in reproducible science elect to make their respositories public. 
 If for whatever reason you prefer not to do this, you have a few options:  
