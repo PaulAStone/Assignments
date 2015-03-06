@@ -3,7 +3,14 @@ This GitHub Repository contains functions developed in the Qunatitative Biodiver
 
 Authors
 -------
+
 Your Name
+
+
+Files and Folders
+-------
++ QBTools.R
+
 
 Software Versions
 -----------------
@@ -15,7 +22,12 @@ Contact Info
 Your Name
 Your email
 
+Recent Fixes
+------------
+
 Potential Bugs
 ------------
 
-Read LICENSE for copyright and licensing information
+License
+---------
+Read LICENSE.md for copyright and licensing information
