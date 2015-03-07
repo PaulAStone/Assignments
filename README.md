@@ -1,6 +1,6 @@
 ## Quantitative Biodiversity <br> Weekly Learning Activities and Assignments
 
-**Learning Objectives:**
+**Course Objectives:**
 
 1. 
 2.
@@ -22,7 +22,7 @@ Basic Git Installation:
 #Recommended#: Install GitHub for Mac or PC
 
 
-
+### Resources
 
 
 ### Git / GitHub Resources
@@ -32,25 +32,27 @@ http://git-scm.com/videos
 Google R Style Guide
 
 
+**Course Outline**
 
-**Week 1**
-
-
-**Week 2**
+**Week 1**: Introduction -- Course Goals; Computer Setup; Intro to Git
 
 
-**Week 3**
+**Week 2**: R Workshop
 
 
-**Week 4**
+**Week 3**: Alpha Diversity
 
 
-**Week 5**
+**Week 4**: Beta Diversity
 
 
-**Week 6**
-
-**Week 7**
+**Week 5**: Geographical Ecology
 
 
-**Week 8**
+**Week 6**: Phylogenetic Traits
+
+
+**Week 7**: Phylogenetic Community Ecology
+
+
+**Week 8**: Course Wrap Up -- Next Steps
