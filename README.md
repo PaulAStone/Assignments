@@ -1,9 +1,99 @@
-## Quantitative Biodiversity <br> Weekly Learning Activities and Assignments
+## Assignments: A repository of weekly Learning Activities and Assignments
 
-**Course Objectives:**
+###Contents
 
-1. 
-2.
+* **Week1:** Introduction -- Course Goals; Computer Setup; Intro to Git
+
+* **Week2:** R Workshop
+
+* **Alpha:** Exploring local and site-specific (i.e. alpha) diversity
+	* **data:** folder containing a file of ... data, i.e., soilbac.txt
+	* **alpha_exercise.Rmd:** Distributed to student repositories
+	* **alpha_exercise.pdf:** Output of alpha_exercise.Rmd
+	* **alpha_handout.Rmd:** Generates handout .pdf
+	* **alpha_handout.pdf:** Provides students with information and example code for exploring alpha diversity
+	* **alpha_supplementary.Rmd:** Contains code that could be made available to students or included into the exercise
+
+* **Beta:** Exploring turnover and heterogeneity in diversity among sites
+	* **data:** folder containing files of ... data
+		* bci.soil.txt
+		* soil.factors.txt
+		* soilbac.RData
+		* soilbac.list.txt
+		* soilbacfull.txt
+
+	* **beta_exercise.Rmd:** Distributed to student repositories
+	
+	* **beta_exercise.pdf:** Output of beta_exercise.Rmd
+	
+	* **beta_handout.Rmd:** Generates handout .pdf
+	
+	* **beta_handout.pdf:** Provides students with information and example code for exploring beta-diversity
+	
+	* **beta_homework_list.Rmd:** ...
+	
+	* **beta_supplementary.Rmd:** Contains code that could be made available to students or included into the exercise
+	
+* **GeographicalEcology:**  
+	
+	* **BrownCoData:**
+		* **20130801_PondDataMod.csv:**
+		* **SiteBySpecies.csv:**
+		* **pond.JPG:**
+	
+	* **LandCover:** LandCover.tif
+	
+	* **water:** 
+		* **water.dbf:**
+		* **water.prj:**
+		* **water.shp:**
+		* **water.shx:**
+		
+	* **GeographicalEcology.pdf:**
+	
+	* **GeographicalEcology_Exercise.Rmd:**
+	
+	* **GeogrpahicalEcology_Handout.Rmd:**
+	
+	* **Glossary.Rmd:** 
+
+* PhyloTraits: Phylogenetic Traits
+	* data
+	* PhyloTraits_exercise.Rmd
+	* PhyloTraits_exercise.pdf
+	* PhyloTraits_handout.Rmd
+	* PhyloTraits_handout.pdf
+	* PhyloTraits_homework_list.Rmd
+	* PhyloTraits_supplementary.Rmd 
+
+* PhyloCom:  Phylogenetic Community Ecology
+	* BrownCoData
+	* bin
+	* data
+	* PhyloCom_exercise.Rmd
+	* PhyloCom_exercise.pdf
+	* PhyloCom_handout.Rmd
+	* PhyloCom_handout.pdf
+	* PhyloCom_supplementary.Rmd
+	* PhyloCom_supplementary.pdf
+
+* GitOn: Course Wrap Up -- Next Steps
+	* images
+	* GitOn_handout.Rmd
+	* GitOn_handout.pdf
+	* README.md
+	* example_license.md 
+	
+* Resources: 
+	* GitFlow-All.pdf
+	* RMarkdownCheatSheet.pdf
+	* RMarkdownCheatSheet.png
+	* R_ReferenceCard.pdf
+	* SoftwareInstallation.Rmd
+	* SoftwareInstallation.pdf
+	* Unix_Reference.pdf
+	* git-cheat-sheet.pdf
+	* git-cheat-sheet.png	 	
 
 
 ### Software Requirements
@@ -21,7 +111,6 @@ Basic Git Installation:
 
 #Recommended#: Install GitHub for Mac or PC
 
-
 ### Resources
 
 
@@ -30,29 +119,3 @@ http://git-scm.com/videos
 
 ### R / RStudio Resources
 Google R Style Guide
-
-
-**Course Outline**
-
-**Week 1**: Introduction -- Course Goals; Computer Setup; Intro to Git
-
-
-**Week 2**: R Workshop
-
-
-**Week 3**: Alpha Diversity
-
-
-**Week 4**: Beta Diversity
-
-
-**Week 5**: Geographical Ecology
-
-
-**Week 6**: Phylogenetic Traits
-
-
-**Week 7**: Phylogenetic Community Ecology
-
-
-**Week 8**: Course Wrap Up -- Next Steps
