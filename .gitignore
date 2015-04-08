@@ -11,3 +11,7 @@
 
 # RMarkdown Output Files
 
+
+# Mac
+.DS_Store
+
