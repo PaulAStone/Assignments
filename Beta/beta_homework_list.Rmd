@@ -8,8 +8,10 @@ output: pdf_document
 geometry: margin=2.54cm
 ---
 
-##Oerview##
+##Overview##
 Following R chunk take data file with lots of taxonomy information (characters) and OTU data (site-by-species matrix) and turns it into a list. 
+This file creates the RData file "soilbac.RData" used in the Beta exercise. 
+This script was run by the instructors prior to class and the output was saved in the data folder.
 
 ## 1) SETUP
 ### A. Retrieve and Set Your Working Directory
