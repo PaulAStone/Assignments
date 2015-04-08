@@ -1,5 +1,18 @@
 ## Assignments: A repository of weekly Learning Activities and Assignments
 
+### Software Requirements
+R - 
+
+RStudio
+
+LaTeX installation
+MAC:
+PC:
+Unix: (We will assume you are a wizard and know what you are doing)
+
+Git (GitBash)
+Basic Git Installation:
+
 ###Contents
 
 * **Week1:** Introduction -- Course Goals; Computer Setup; Intro to Git
@@ -7,11 +20,16 @@
 * **Week2:** R Workshop
 
 * **Alpha:** Exploring local and site-specific (i.e. alpha) diversity
+
 	* **data:** folder containing a file of ... data, i.e., soilbac.txt
+	
 	* **alpha_exercise.Rmd:** Distributed to student repositories
+	
 	* **alpha_exercise.pdf:** Output of alpha_exercise.Rmd
-	* **alpha_handout.Rmd:** Generates handout .pdf
+	
+	* **alpha_handout.Rmd:** Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.	
 	* **alpha_handout.pdf:** Provides students with information and example code for exploring alpha diversity
+	
 	* **alpha_supplementary.Rmd:** Contains code that could be made available to students or included into the exercise
 
 * **Beta:** Exploring turnover and heterogeneity in diversity among sites
@@ -26,7 +44,7 @@
 	
 	* **beta_exercise.pdf:** Output of beta_exercise.Rmd
 	
-	* **beta_handout.Rmd:** Generates handout .pdf
+	* **beta_handout.Rmd:** Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
 	* **beta_handout.pdf:** Provides students with information and example code for exploring beta-diversity
 	
@@ -49,33 +67,33 @@
 		* **water.shp:**
 		* **water.shx:**
 		
-	* **GeographicalEcology.pdf:**
+	* **GeographicalEcology_Exercise.Rmd:** Distributed to student repositories. Knitting generates a .pdf of their work.
 	
-	* **GeographicalEcology_Exercise.Rmd:**
+	* **GeogrpahicalEcology_Handout.Rmd:** Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
-	* **GeogrpahicalEcology_Handout.Rmd:**
+	* **GeographicalEcology.pdf:** Provides students with information and example code for exploring geographical ecology, using GIS modules in R/RStudio.
 	
 	* **Glossary.Rmd:** 
 
-* PhyloTraits: Phylogenetic Traits
-	* data
-	* PhyloTraits_exercise.Rmd
-	* PhyloTraits_exercise.pdf
-	* PhyloTraits_handout.Rmd
-	* PhyloTraits_handout.pdf
-	* PhyloTraits_homework_list.Rmd
-	* PhyloTraits_supplementary.Rmd 
+* **PhyloTraits: Phylogenetic Traits**
+	* **data:**
+	* **PhyloTraits_exercise.Rmd:**
+	* **PhyloTraits_exercise.pdf:**
+	* **PhyloTraits_handout.Rmd:**
+	* **PhyloTraits_handout.pdf:**
+	* **PhyloTraits_homework_list.Rmd:**
+	* **PhyloTraits_supplementary.Rmd:** 
 
-* PhyloCom:  Phylogenetic Community Ecology
-	* BrownCoData
-	* bin
-	* data
-	* PhyloCom_exercise.Rmd
-	* PhyloCom_exercise.pdf
-	* PhyloCom_handout.Rmd
-	* PhyloCom_handout.pdf
-	* PhyloCom_supplementary.Rmd
-	* PhyloCom_supplementary.pdf
+* **PhyloCom:**  Phylogenetic Community Ecology
+	* **BrownCoData**
+	* **bin:**
+	* **data:**
+	* **PhyloCom_exercise.Rmd:**
+	* **PhyloCom_exercise.pdf:**
+	* **PhyloCom_handout.Rmd:**
+	* **PhyloCom_handout.pdf:**
+	* **PhyloCom_supplementary.Rmd:**
+	* **PhyloCom_supplementary.pdf:**
 
 * GitOn: Course Wrap Up -- Next Steps
 	* images
@@ -95,27 +113,14 @@
 	* git-cheat-sheet.pdf
 	* git-cheat-sheet.png	 	
 
-
-### Software Requirements
-R - 
-
-RStudio
-
-LaTeX installation
-MAC:
-PC:
-Unix: (We will assume you are a wizard and know what you are doing)
-
-Git (GitBash)
-Basic Git Installation:
-
-#Recommended#: Install GitHub for Mac or PC
-
-### Resources
+## Resources
 
 
-### Git / GitHub Resources
+### Git / GitHub
 http://git-scm.com/videos
 
-### R / RStudio Resources
+### R / RStudio
 Google R Style Guide
+
+
+### Acknowledgments
