@@ -25,9 +25,12 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 In week 1, we introduced students to Git and GitHub, and explained the general work flow for the class. 
 We had students fork the class repository to their own IU-Enterprise GitHub account, and then clone that repository onto their classroom desktop.
 
+### CONTENTS
 * **Course Goals:** Computer Setup; Intro to Git. This can be completed once weeks 1 and 2 are split
 
 ##Week2: R Workshop
+In week 2, we introduced students program R and the R Studio development environment. Students completed basic calculations, statistics, and data manipulation.
+
 * **To be added:** This can be completed once weeks 1 and 2 are split
 
 ##Alpha: Within-site diversity
