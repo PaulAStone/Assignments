@@ -29,9 +29,9 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 
 ##Alpha: Within-site diversity
 
-* **data:** folder containing a file of ... data, i.e., soilbac.txt
+* **data:** Contains a file of site-by-OTU data for soil bacteria, i.e., soilbac.txt
 	
-* **alpha_exercise.Rmd:** Distributed to student repositories
+* **alpha_exercise.Rmd:** An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
 * **alpha_exercise.pdf:** Output of alpha_exercise.Rmd
 	
@@ -52,7 +52,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	
 	* *soilbacfull.txt* :
 
-* **beta_exercise.Rmd:** Distributed to student repositories
+* **beta_exercise.Rmd:** An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
 * **beta_exercise.pdf:** Output of beta_exercise.Rmd
 	
@@ -80,11 +80,11 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	* *water.shp* :
 	* *water.shx* :
 		
-	* *GeographicalEcology_Exercise.Rmd* : Distributed to student repositories. Knitting generates a .pdf of their work.
+* **GeographicalEcology_Exercise.Rmd**: An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
-	* *GeogrpahicalEcology_Handout.Rmd* : Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
+* **GeogrpahicalEcology_Handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
-	* *GeographicalEcology.pdf* : Provides students with information and example code for exploring geographical ecology, using GIS modules in R/RStudio.
+* **GeographicalEcology.pdf**: Provides students with information and example code for exploring geographical ecology, using GIS modules in R/RStudio.
 	
 	* *Glossary.Rmd* : 
 
@@ -107,17 +107,17 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 
 	* p.isolates.taxonomy.txt:
 		
-* **PhyloTraits_exercise.Rmd:** Distributed to student repositories. Knitting generates a .pdf of their work.
+* **PhyloTraits_exercise.Rmd**: An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
-	* *PhyloTraits_exercise.pdf:* .pdf output of student's work
+* **PhyloTraits_exercise.pdf**: .pdf output of student's work
 	
-	* *PhyloTraits_handout.Rmd:* Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
+* **PhyloTraits_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 
-	* *PhyloTraits_handout.pdf:* Provides students with information and example code for exploring...
+* **PhyloTraits_handout.pdf**: Provides students with information and example code for exploring...
 	
-	* *PhyloTraits_homework_list.Rmd:*
+* **PhyloTraits_homework_list.Rmd**:
 	
-	* *PhyloTraits_supplementary.Rmd:* 
+* **PhyloTraits_supplementary.Rmd**: 
 
 ##PhyloCom: Phylogenetic Community Ecology
 * **BrownCoData:**
@@ -139,48 +139,48 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	* *INPonds.final.rdp.shared:*
 	* *methanosarcina.fasta:*
 	
-* **PhyloCom_exercise.Rmd:** Distributed to student repositories. Knitting generates a .pdf of their work.
+* **PhyloCom_exercise.Rmd**: An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
-* **PhyloCom_exercise.pdf:** .pdf output of student's work
+* **PhyloCom_exercise.pdf**: .pdf output of student's work
 	
-* **PhyloCom_handout.Rmd:** Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
+* **PhyloCom_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
-* **PhyloCom_handout.pdf:** Provides students with information and example code for exploring...
+* **PhyloCom_handout.pdf**: Provides students with information and example code for exploring...
 	
-* **PhyloCom_supplementary.Rmd:**
+* **PhyloCom_supplementary.Rmd**:
 	
-* **PhyloCom_supplementary.pdf:**
+* **PhyloCom_supplementary.pdf**:
 	
 
 ##GitOn: Course Wrap Up -- Next Steps
-* **images:**
+* **images**:
 
-* **GitOn_handout.Rmd:**
+* **GitOn_handout.Rmd**:
 
-* **GitOn_handout.pdf:**
+* **GitOn_handout.pdf**:
 
-* **README.md:**
+* **README.md**:
 
-* **example_license.md:** 
+* **example_license.md**:
 	
 ##Resources 
-* **GitFlow-All.pdf:**
+* **GitFlow-All.pdf**:
 	
-* **RMarkdownCheatSheet.pdf:**
+* **RMarkdownCheatSheet.pdf**:
 	
-* **RMarkdownCheatSheet.png:**
+* **RMarkdownCheatSheet.png**:
 	
-* **R_ReferenceCard.pdf:**
+* **R_ReferenceCard.pdf**:
 	
-* **SoftwareInstallation.Rmd:**
+* **SoftwareInstallation.Rmd**:
 	
-* **SoftwareInstallation.pdf:**
+* **SoftwareInstallation.pdf**:
 	
-* **Unix_Reference.pdf:**
+* **Unix_Reference.pdf**:
 	
-* **git-cheat-sheet.pdf:**
+* **git-cheat-sheet.pdf**:
 	
-* **git-cheat-sheet.png:**	 	
+* **git-cheat-sheet.png**:	 	
 
 ## Additional resources
 
