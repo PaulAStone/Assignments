@@ -21,20 +21,23 @@ LaTeX: MacTeX or BasicTeX https://tug.org/mactex/morepackages.html
 ##WEEKLY LESSONS
 The 2015 Quantitative Biodiversity class consisted of eight classes, each with its own focus. The contents of the course materials are presented here, in the order the classes were taught.
 
-##Week1: Introduction 
+##Week 1: Introduction 
 In week 1, we introduced students to Git and GitHub, and explained the general work flow for the class. 
 We had students fork the class repository to their own IU-Enterprise GitHub account, and then clone that repository onto their classroom desktop.
 
 ### CONTENTS
 * **Course Goals:** Computer Setup; Intro to Git. This can be completed once weeks 1 and 2 are split
 
-##Week2: R Workshop
+##Week 2: R Workshop
 In week 2, we introduced students program R and the R Studio development environment. Students completed basic calculations, statistics, and data manipulation.
 
+### CONTENTS
 * **To be added:** This can be completed once weeks 1 and 2 are split
 
 ##Alpha: Within-site diversity
+The third week focused on aspects of alpha-diversity, i.e., diversity within a site. Students were introduced to the site-by-species matrix as a primary ecological data structure. They estimated coverage, richness, evenness, and diversity, and conducted rarefaction and species abundance distribution analyses. Students worked with the vegan package and the BCI data within vegan, as well as soil bacteria data.
 
+### CONTENTS
 * **data:** Contains a file of site-by-OTU data for soil bacteria, i.e., soilbac.txt
 	
 * **alpha_exercise.Rmd:** An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
