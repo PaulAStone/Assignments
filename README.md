@@ -22,6 +22,9 @@ LaTeX: MacTeX or BasicTeX https://tug.org/mactex/morepackages.html
 The 2015 Quantitative Biodiversity class consisted of eight classes, each with its own focus. The contents of the course materials are presented here, in the order the classes were taught.
 
 ##Week1: Introduction 
+In week 1, we introduced students to Git and GitHub, and explained the general work flow for the class. 
+We had students fork the class repository to their own IU-Enterprise GitHub account, and then clone that repository onto their classroom desktop.
+
 * **Course Goals:** Computer Setup; Intro to Git. This can be completed once weeks 1 and 2 are split
 
 ##Week2: R Workshop
@@ -35,7 +38,8 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	
 * **alpha_exercise.pdf:** Output of alpha_exercise.Rmd
 	
-* **alpha_handout.Rmd:** Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.	
+* **alpha_handout.Rmd:** Generates a handout that was given to students to guide them through the in-class assignment and provides example code.
+	
 * **alpha_handout.pdf:** Provides students with information and example code for exploring alpha diversity
 	
 * **alpha_supplementary.Rmd:** Contains code that could be made available to students or included into the exercise
@@ -56,7 +60,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	
 * **beta_exercise.pdf:** Output of beta_exercise.Rmd. This is the file that students turned-in via submitting a pull request on GitHub.
 	
-* **beta_handout.Rmd:** Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
+* **beta_handout.Rmd:** Generates a handout that was given to students to guide them through the in-class assignment and provides example code.
 	
 * **beta_handout.pdf:** Provides students with information and example code for exploring beta-diversity
 	
@@ -75,14 +79,14 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	* *LandCover.tif* :
 	
 * **water:** 
-	* *water.dbf* :
-	* *water.prj* :
-	* *water.shp* :
-	* *water.shx* :
+	* *water.shp* : Shapefile used to generate a GIS layer of water data. Requires .dbf and .shx files.
+	* *water.dbf* : Shapefile attribute format file
+	* *water.shx* : Shape index format file
+	* *water.prj* : File of geographic projection data
 		
 * **GeographicalEcology_Exercise.Rmd**: An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
-* **GeogrpahicalEcology_Handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
+* **GeogrpahicalEcology_Handout.Rmd**: Generates a handout that was given to students to guide them through the in-class assignment and provides example code.
 	
 * **GeographicalEcology.pdf**: Provides students with information and example code for exploring geographical ecology, using GIS modules in R/RStudio.
 	
