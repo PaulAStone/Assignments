@@ -78,6 +78,7 @@ The fourth week focused on aspects of beta-diversity, i.e., heterogeneity or tur
 * **beta_supplementary.Rmd:** Contains code that could be made available to students or included into the exercise
 	
 ##GeographicalEcology: Diversity across landscapes 
+Week 5 focused on geographical ecology, i.e., examining diversity across a landscape in a spatially explicit context, using R Studio as a geographical information systems (GIS) environment. This lesson introduced students to the concepts of spatial aggregation, spatial autocorrelation, and considerations of spatial scale. This lesson also introduced students to the primary biogeographical/macroecological patterns known as the Distance-Decay relationship, Spatial abundance distribution, and the Species-area relationship. 
 	
 * **BrownCoData:**
 	* *20130801_PondDataMod.csv* :
