@@ -89,6 +89,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	* *Glossary.Rmd* : 
 
 ##PhyloTraits: Phylogenetic Traits
+
 * **data:**
 
 	* out.aln.muscle.afa:
@@ -113,11 +114,11 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	
 * **PhyloTraits_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 
-* **PhyloTraits_handout.pdf**: Provides students with information and example code for exploring...
+* **PhyloTraits_handout.pdf**: Provides students with information and example code for exploring trait-based phylogenetic diversity, in general and in a niche-breadth and specialist/generalist context.
 	
 * **PhyloTraits_homework_list.Rmd**:
 	
-* **PhyloTraits_supplementary.Rmd**: 
+* **PhyloTraits_supplementary.Rmd**: Contains supplemental code that was not included in the week's exercise but can be included in future classes. 
 
 ##PhyloCom: Phylogenetic Community Ecology
 * **BrownCoData:**
@@ -145,7 +146,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	
 * **PhyloCom_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
-* **PhyloCom_handout.pdf**: Provides students with information and example code for exploring...
+* **PhyloCom_handout.pdf**: Provides students with information and example code for exploring phylogenetic community ecology within a geographical context.
 	
 * **PhyloCom_supplementary.Rmd**:
 	
