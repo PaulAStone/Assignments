@@ -177,7 +177,7 @@ Week 7 focused on examining the Phylogenetic patterns at the community level in 
 In the eigth and final week, we had student construct their own file of R source code for various functions used throughout Quantitative Biodiversity. We discussed the topics of open science and reproducible science more thoroughly, and inroduced students to the idea of licenses. We had students set up public accounts on GitHub.com, showed them how to apply for private repositories, and demonstrate how they could move their class-based code into their own GitHub.com account.
 
 ###Contents
-* **images**
+* **images** A folder containing images that are used by the GitOn_handout.Rmd document
 
 * **GitOn_handout.Rmd**: Generates a handout leading students through migrating their course materials and assignments to GitHub, and introduces them to licensing, and GitHub.com.
 
