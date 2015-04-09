@@ -1,17 +1,22 @@
 #Assignments: Weekly Handouts and Exercises for Quantitative Biodiversity
 
+**Contributors** Jay Lennon, Ken Locey, & Mario Muscarella
+
+**Funding:** Development of Indiana University's first Quantitative Biodiversity class, including the materials in this repository, were supported by a National Science Foundation Dimensions of Biodiversity grant (#1442246) awarded to Dr.'s Jay Lennon and Ken Locey of Indiana University (Bloomington): http://www.nsf.gov/awardsearch/showAward?AWD_ID=1442246&HistoricalAwards=false
+
 ### REQUIRED SOFTWARE
-R - 
+R version 3.1.2
+RStudio Version 0.98.1062 or higher
+git version 1.9.3 or higher
 
-RStudio
+**Windows specific:**  
+LaTeX: ...   
+Git: GitBash, unix-style terminal window
 
-LaTeX installation
-MAC:
-PC:
-Unix: (We will assume you are a wizard and know what you are doing)
+**Mac specific:**   
+LaTeX: MacTeX or BasicTeX https://tug.org/mactex/morepackages.html
 
-Git (GitBash)
-Basic Git Installation:
+NOTE: GitHub for Mac or Windows can also be used, but was not used as part of the course
 
 ##WEEKLY LESSONS
 The 2015 Quantitative Biodiversity class consisted of eight classes, each with its own focus. The contents of the course materials are presented here, in the order the classes were taught.
