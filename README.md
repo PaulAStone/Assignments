@@ -22,10 +22,10 @@ NOTE: GitHub for Mac or Windows can also be used, but was not used as part of th
 The 2015 Quantitative Biodiversity class consisted of eight classes, each with its own focus. The contents of the course materials are presented here, in the order the classes were taught.
 
 ##Week1: Introduction 
-* **Course Goals:** Computer Setup; Intro to Git
+* **Course Goals:** Computer Setup; Intro to Git. This can be completed once weeks 1 and 2 are split
 
 ##Week2: R Workshop
-* **Stuff**
+* **To be added:** This can be completed once weeks 1 and 2 are split
 
 ##Alpha: Within-site diversity
 
