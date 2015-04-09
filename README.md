@@ -5,13 +5,13 @@
 **Funding:** Development of Indiana University's first Quantitative Biodiversity class, including the materials in this repository, were supported by a National Science Foundation Dimensions of Biodiversity grant (#1442246) awarded to Dr.'s Jay Lennon and Ken Locey of Indiana University (Bloomington): http://www.nsf.gov/awardsearch/showAward?AWD_ID=1442246&HistoricalAwards=false
 
 ### REQUIRED SOFTWARE
-R version 3.1.2
-RStudio Version 0.98.1062 or higher
+R version 3.1.2  
+RStudio Version 0.98.1062 or higher  
 git version 1.9.3 or higher
 
 **Windows specific:**  
-LaTeX: ...   
-Git: GitBash, unix-style terminal window
+LaTeX: MiKTEX, http://miktex.org/download   
+Git: GitBash, unix-style terminal window, may install with Git
 
 **Mac specific:**   
 LaTeX: MacTeX or BasicTeX https://tug.org/mactex/morepackages.html
