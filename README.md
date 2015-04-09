@@ -51,6 +51,9 @@ The third week focused on aspects of alpha-diversity, i.e., diversity within a s
 * **alpha_supplementary.Rmd:** Contains code that could be made available to students or included into the exercise
 
 ##Beta: Diversity among sites
+The fourth week focused on aspects of beta-diversity, i.e., heterogeneity or turnover in diversity across sites. This work focuses heavily on multivariate ordination-based approaches using pair-wise site by site similarity/dissimilarity estimates. Students were introduced to (packages, tools) and used data from ...
+
+### CONTENTS
 * **data:** folder containing files of ... data
 	* *bci.soil.txt* : Environmental data for Barro-Colorado Island (BCI), obtained from (???)
 	
