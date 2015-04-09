@@ -16,7 +16,7 @@ Git: GitBash, unix-style terminal window, may install with Git
 **Mac specific:**   
 LaTeX: MacTeX or BasicTeX https://tug.org/mactex/morepackages.html
 
-NOTE: GitHub for Mac or Windows can also be used, but was not used as part of the course
+**NOTE**: GitHub for Mac and Windows can also be used, but were not used as part of the 2015 course.
 
 ##WEEKLY LESSONS
 The 2015 Quantitative Biodiversity class consisted of eight classes, each with its own focus. The contents of the course materials are presented here, in the order the classes were taught.
