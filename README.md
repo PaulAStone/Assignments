@@ -25,19 +25,19 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 In week 1, we introduced students to Git and GitHub, and explained the general work flow for the class. 
 We had students fork the class repository to their own IU-Enterprise GitHub account, and then clone that repository onto their classroom desktop.
 
-### CONTENTS
+### Contents
 * **Course Goals:** Computer Setup; Intro to Git. This can be completed once weeks 1 and 2 are split
 
 ##Week 2: R Workshop
 In week 2, we introduced students program R and the R Studio development environment. Students completed basic calculations, statistics, and data manipulation.
 
-### CONTENTS
+### Contents
 * **To be added:** This can be completed once weeks 1 and 2 are split
 
 ##Alpha: Within-site diversity
 The third week focused on aspects of alpha-diversity, i.e., diversity within a site. Students were introduced to the site-by-species matrix as a primary ecological data structure. They estimated coverage, richness, evenness, and diversity, and conducted rarefaction and species abundance distribution analyses. Students worked with the vegan package and the BCI data within vegan, as well as soil bacteria data.
 
-### CONTENTS
+### Contents
 * **data:** Contains a file of site-by-OTU data for soil bacteria, i.e., soilbac.txt
 	
 * **alpha_exercise.Rmd:** An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
@@ -53,7 +53,7 @@ The third week focused on aspects of alpha-diversity, i.e., diversity within a s
 ##Beta: Diversity among sites
 The fourth week focused on aspects of beta-diversity, i.e., heterogeneity or turnover in diversity across sites. This work focuses heavily on multivariate ordination-based approaches using pair-wise site by site similarity/dissimilarity estimates. Students were introduced to (packages, tools) and used data from ...
 
-### CONTENTS
+### Contents
 * **data:** folder containing files of ... data
 	* *bci.soil.txt* : Environmental data for Barro-Colorado Island (BCI), obtained from (???)
 	
@@ -80,6 +80,7 @@ The fourth week focused on aspects of beta-diversity, i.e., heterogeneity or tur
 ##GeographicalEcology: Diversity across landscapes 
 Week 5 focused on geographical ecology, i.e., examining diversity across a landscape in a spatially explicit context, using R Studio as a geographical information systems (GIS) environment. This lesson introduced students to the concepts of spatial aggregation, spatial autocorrelation, and considerations of spatial scale. This lesson also introduced students to the primary biogeographical/macroecological patterns known as the Distance-Decay relationship, Spatial abundance distribution, and the Species-area relationship. 
 	
+### Contents
 * **BrownCoData:**
 	* *20130801_PondDataMod.csv* :
 	* *SiteBySpecies.csv* :
@@ -103,7 +104,9 @@ Week 5 focused on geographical ecology, i.e., examining diversity across a lands
 	* *Glossary.Rmd* : 
 
 ##PhyloTraits: Phylogenetic Traits
+Week 6 switched the focus of the Quantitative Biodiversity course from the taxonomic or species level to the level of phylogenetic diversity. Students were introduced to methods for estimating a niche-breadth and were introduced to the specialist/generalist concept as well as tools for examining it.
 
+### Contents
 * **data:**
 
 	* out.aln.muscle.afa:
@@ -128,13 +131,16 @@ Week 5 focused on geographical ecology, i.e., examining diversity across a lands
 	
 * **PhyloTraits_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 
-* **PhyloTraits_handout.pdf**: Provides students with information and example code for exploring trait-based phylogenetic diversity, in general and in a niche-breadth and specialist/generalist context.
+* **PhyloTraits_handout.pdf**: Provides students with information and example code for exploring trait-based phylogenetic diversity.
 	
 * **PhyloTraits_homework_list.Rmd**:
 	
 * **PhyloTraits_supplementary.Rmd**: Contains supplemental code that was not included in the week's exercise but can be included in future classes. 
 
 ##PhyloCom: Phylogenetic Community Ecology
+Week 7 focused on examining the Phylogenetic patterns at the community level in a geographical context. Students were introduced to measures of phylogenetic-level alpha and beta diversity, and to geographic patterns of phylogenetic diversity including a Distance-Decay Relationship and the Phylogenetic Diversity-Area Relationships.
+
+###Contents
 * **BrownCoData:**
 	* *20130801_PondDataMod.csv:*
 	* *SiteBySpecies.csv:*
@@ -168,6 +174,9 @@ Week 5 focused on geographical ecology, i.e., examining diversity across a lands
 	
 
 ##GitOn: Course Wrap Up
+
+
+###Contents
 * **images**:
 
 * **GitOn_handout.Rmd**:
