@@ -42,9 +42,9 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 
 ##Beta: Diversity among sites
 * **data:** folder containing files of ... data
-	* *bci.soil.txt* :
+	* *bci.soil.txt* : Environmental data for Barro-Colorado Island (BCI), obtained from (???)
 	
-	* *soil.factors.txt* :
+	* *soil.factors.txt* :  
 	
 	* *soilbac.RData* :
 	
@@ -54,7 +54,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 
 * **beta_exercise.Rmd:** An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
-* **beta_exercise.pdf:** Output of beta_exercise.Rmd
+* **beta_exercise.pdf:** Output of beta_exercise.Rmd. This is the file that students turned-in via submitting a pull request on GitHub.
 	
 * **beta_handout.Rmd:** Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
@@ -109,7 +109,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 		
 * **PhyloTraits_exercise.Rmd**: An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
-* **PhyloTraits_exercise.pdf**: .pdf output of student's work
+* **PhyloTraits_exercise.pdf**: Output of PhyloTraits_exercise.Rmd. This is the file that students turned-in via submitting a pull request on GitHub.
 	
 * **PhyloTraits_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 
@@ -141,7 +141,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 	
 * **PhyloCom_exercise.Rmd**: An R Markdown document to be distributed to student repositories; includes the in-class assignment and homework. Knitting generates a .pdf of their work.
 	
-* **PhyloCom_exercise.pdf**: .pdf output of student's work
+* **PhyloCom_exercise.pdf**: Output of PhyloCom_exercise.Rmd. This is the file that students turned-in via submitting a pull request on GitHub.
 	
 * **PhyloCom_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
@@ -152,7 +152,7 @@ The 2015 Quantitative Biodiversity class consisted of eight classes, each with i
 * **PhyloCom_supplementary.pdf**:
 	
 
-##GitOn: Course Wrap Up -- Next Steps
+##GitOn: Course Wrap Up
 * **images**:
 
 * **GitOn_handout.Rmd**:
