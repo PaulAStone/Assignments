@@ -89,12 +89,12 @@ This lesson also introduced students to the primary biogeographical/macroecologi
 	
 #### Contents
 * **BrownCoData:**
-	* *20130801_PondDataMod.csv* :
-	* *SiteBySpecies.csv* :
-	* *pond.JPG* :
-	
+	* *20130801_PondDataMod.csv* : Geographical and Environmental data for refuge 51 ponds sampled within the Brown County, Yellowwood State Forest, and Hoosier National Forest areas during August, 2013.
+	* *SiteBySpecies.csv* : File containing the abundances of bacterial taxa (DNA and cDNA) across the 51 refuge ponds.
+	* *pond.JPG* : An image of one of the refuge ponds that can be imported into the exercise handout.
+
 * **LandCover:** 
-	* *LandCover.tif* :
+	* *LandCover.tif* : This is not an image file. This is actually a file containing geographical data, which is called within the exercise .Rmd file to produce a heatmap of percent landcover across the central Indiana area.
 	
 * **water:** 
 	* *water.shp* : Shapefile used to generate a GIS layer of water data. 
@@ -157,9 +157,9 @@ In addition, students learned how to evaluate the contribution of phylogeny to g
 
 #### Contents
 * **BrownCoData:**
-	* *20130801_PondDataMod.csv:*
-	* *SiteBySpecies.csv:*
-	* *pond.JPG:* 
+	* *20130801_PondDataMod.csv* : Geographical and Environmental data for refuge 51 ponds sampled within the Brown County, Yellowwood State Forest, and Hoosier National Forest areas during August, 2013.
+	* *SiteBySpecies.csv* : File containing the abundances of bacterial taxa (DNA and cDNA) across the 51 refuge ponds.
+	* *pond.JPG* : An image of one of the refuge ponds that can be imported into the exercise handout. 
 	
 * **bin:**
 	* *MothurTools.R:* source functions for importing mothur output files into R
@@ -225,4 +225,4 @@ A basic set reference materials relating to Git, R, Unix/Linux, and the installa
 http://git-scm.com/videos
 
 ## R / RStudio
-R Style Guide
+R Style Guide: https://google-styleguide.googlecode.com/svn/trunk/Rguide.xml
