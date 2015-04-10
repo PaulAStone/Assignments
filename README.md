@@ -1,4 +1,4 @@
-#Assignments: Weekly Handouts and Exercises for Quantitative Biodiversity
+# Assignments: Weekly Handouts and Exercises for Quantitative Biodiversity
 
 **Contributors**: Jay Lennon, Ken Locey, Mario Muscarella
 
@@ -58,16 +58,16 @@ Instructors emphasized tools to quantify beta-diversity, including distance metr
 With this information, students learned how to visualize data (heatmaps, clustern analysis, ordination) and test hypotheses (CCA, PERMANOVA).
 
 #### Contents
-* **data:** folder containing files of ... data
-	* *bci.soil.txt* : Environmental data for Barro-Colorado Island (BCI), obtained from (???)
+* **data:** folder containing files of data needed for exercise
+	* *bci.soil.txt* : Environmental data for Barro-Colorado Island (BCI), obtained from ([anadat-r](http://www.davidzeleny.net/anadat-r/doku.php/en:data:bci))
 	
-	* *soil.factors.txt* :  
+	* *soil.factors.txt* : KBS Soil Experimental Design File
 	
-	* *soilbac.RData* :
+	* *soilbac.RData* : R Data object with KBS Soil Bacterial Community Site-by-Species matrix and taxonomy
 	
-	* *soilbac.list.txt* :
+	* *soilbac.list.txt* : Soil Bacteria Site-by-Species Matrix and Taxonomy
 	
-	* *soilbacfull.txt* :
+	* *soilbacfull.txt* : Soil Bacteria Site-by-Species Matrix and Taxonomy
 
 * **beta_exercise.Rmd:** An R Markdown document distributed to student repositories; includes the in-class assignment and homework. 
 Knitting generates a .pdf of their work.
@@ -78,7 +78,7 @@ This is the file that students turned-in via submitting a pull request on GitHub
 * **beta_handout.Rmd:** Generates a handout that was given to students to guide them through the in-class assignment, which includes example code.
 	
 * **beta_handout.pdf:** pdf version of beta_handout.Rmd	
-* **beta_homework_list.Rmd:** ...
+* **beta_homework_list.Rmd:** instructor directions for making RData file
 	
 * **beta_supplementary.Rmd:** Contains code that could be made available to students or included into the exercise
 	
@@ -107,14 +107,14 @@ This lesson also introduced students to the primary biogeographical/macroecologi
 Knitting generates a .pdf of their work.	
 
 
-* **GeographicalEcology_Exercise.pdf**:?????
+* **GeographicalEcology_Exercise.pdf**: Blank Knit of Rmd Exercise 
 
 
 * **GeogrpahicalEcology_Handout.Rmd**: Generates a handout that was given to students to guide them through the in-class assignment, which includes example code.
 	
 * **GeographicalEcology.pdf**: pdf version of GeographicalEcology_Handout.Rmd.
 	
-	* *Glossary.Rmd* : 
+* **Glossary.Rmd** : 
 
 ### PhyloTraits: Phylogenetic Traits
 Week 6 introduced concepts and methods of phylogenetic diversity. 
@@ -124,21 +124,19 @@ Last, student leanred how to map trait onto trees and test for phylogenetic sign
 #### Contents
 * **data:**
 
-	* out.aln.muscle.afa:
+	* *out.aln.muscle.afa*: muscle alignment fasta file
 
-	* p.isolates.afa:
+	* *p.isolates.afa*: aligned phosphorus isolate sequences
 
-	* p.isolates.fasta:
+	* *p.isolates.fasta*: raw phosphorus isolate sequences
 
-	* p.isolates.kali.fasta:
+	* *p.isolates.kali.fasta*: raw phosphorus isolate sequences
 
-	* p.isolates.raw.growth.txt:
+	* *p.isolates.raw.growth.txt*: raw growth rate data
 
-	* p.isolates.std.growth.txt:
+	* *p.isolates.std.growth.txt*: standardized growth rate data
 
-	* p.isolates.stdgrowth.text:
-
-	* p.isolates.taxonomy.txt:
+	* *p.isolates.taxonomy.txt*: phosphorus isolate taxonomy information
 		
 * **PhyloTraits_exercise.Rmd**: An R Markdown document distributed to student repositories; includes the in-class assignment and homework. 
 Knitting generates a .pdf of their work.
@@ -149,8 +147,6 @@ This is the file that students turned-in via submitting a pull request on GitHub
 * **PhyloTraits_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 
 * **PhyloTraits_handout.pdf**: pdf version of PhyloTraits_handout.Rmd.
-	
-* **PhyloTraits_homework_list.Rmd**:????
 	
 * **PhyloTraits_supplementary.Rmd**: Contains supplemental code that was not included in the week's exercise but can be included in future classes. 
 
@@ -166,18 +162,18 @@ In addition, students learned how to evaluate the contribution of phylogeny to g
 	* *pond.JPG:* 
 	
 * **bin:**
-	* *MothurTools.R:* 
+	* *MothurTools.R:* source functions for importing mothur output files into R
 	
 * **data:**
-	* *20130801_PondDataMod.csv:* 
-	* *INPonds.final.1.rep.fasta:*
-	* *INPonds.final.FW.1.taxonomy:*
-	* *INPonds.final.FW.shared:*
-	* *INPonds.final.FW.taxonomy:*
-	* *INPonds.final.rdp.1.cons.taxonomy:*
-	* *INPonds.final.rdp.1.rep.fasta:*
-	* *INPonds.final.rdp.shared:*
-	* *methanosarcina.fasta:*
+	* *20130801_PondDataMod.csv:* Environmental data for IN Ponds
+	* *INPonds.final.1.rep.fasta:* Genus level representative sequences
+	* *INPonds.final.FW.1.taxonomy:* Genus level taxonomy
+	* *INPonds.final.FW.shared:* IN Ponds bacterial site-by-species matrix
+	* *INPonds.final.FW.taxonomy:* IN Ponds bacterial taxonomy information
+	* *INPonds.final.rdp.1.cons.taxonomy:* IN Ponds RDP genus taxonomy information
+	* *INPonds.final.rdp.1.rep.fasta:* IN Ponds bacterial genus representative sequences
+	* *INPonds.final.rdp.shared:* IN Ponds phylotypes
+	* *methanosarcina.fasta:* Methanosarcina outgroup fasta file
 	
 * **PhyloCom_exercise.Rmd**: An R Markdown document distributed to student repositories; includes the in-class assignment and homework. 
 Knitting generates a .pdf of their work.
@@ -189,9 +185,9 @@ This is the file that students turned-in via submitting a pull request on GitHub
 	
 * **PhyloCom_handout.pdf**: pdf version of PhyloCom_handout.Rmd.
 	
-* **PhyloCom_supplementary.Rmd**:
+* **PhyloCom_supplementary.Rmd**: Supplemental analyses 
 	
-* **PhyloCom_supplementary.pdf**:
+* **PhyloCom_supplementary.pdf**: Knitted version of supplemental
 	
 
 ### GitOn: Course Wrap-Up
@@ -199,7 +195,7 @@ In the eigth and final week, we had student construct their own file of R source
 We discussed the topics of open science and reproducible science more thoroughly, and inroduced students to the idea of licenses. 
 We had students set up public accounts on GitHub.com, showed them how to apply for private repositories, and demonstrated how they could move their class-based code into their own GitHub.com account.
 
-###Contents
+### Contents
 * **images** A folder containing images that are used by the GitOn_handout.Rmd document
 
 * **GitOn_handout.Rmd**: Generates a handout that guides students through migrating their course materials and assignments to GitHub, and introduces them to licensing, and GitHub.com.
