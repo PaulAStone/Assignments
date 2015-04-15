@@ -2,12 +2,11 @@
 
 **Contributors**: Jay Lennon, Ken Locey, Mario Muscarella
 
-**Funding**: Development of Indiana University's first Quantitative Biodiversity class, including the materials in this repository, were supported by a National Science Foundation Dimensions of Biodiversity grant ([1442246](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1442246)) awarded to Drs Jay Lennon and Ken Locey of Indiana University, Bloomington.AWD_ID=1442246&HistoricalAwards=false
-
+**Funding**: Development of Indiana University's first Quantitative Biodiversity class, including the materials in this repository, were supported by a National Science Foundation Dimensions of Biodiversity grant ([1442246](http://www.nsf.gov/awardsearch/showAward?AWD_ID=1442246)) awarded to Drs Jay Lennon and Ken Locey of Indiana University, Bloomington.
 ## REQUIRED SOFTWARE
 R version 3.1.2  
 RStudio Version 0.98.1062 or higher  
-git version 1.9.3 or higher
+Git version 1.9.3 or higher
 
 **Windows specific:**  
 LaTeX: MiKTEX, http://miktex.org/download   
@@ -19,15 +18,17 @@ LaTeX: MacTeX or BasicTeX https://tug.org/mactex/morepackages.html
 **NOTE**: GitHub for Mac and Windows can also be used, but were not used as part of the 2015 course.
 
 ## WEEKLY LESSONS
-The 2015 Quantitative Biodiversity class consisted of eight classes, each with its own focus. The contents of the course materials are presented here, in the order the classes were taught.
+The 2015 Quantitative Biodiversity class consisted of eight classes. 
+The contents of the course materials are presented here, in the order the classes were taught.
 
 ### Week 1: Introduction to Git and RStudio
 The objectives in this assignment were actually conducted over the span of two weeks. 
-In the first wee, we introduced students to Git and GitHub, and explained the general workflow of the class. 
+In the first week, we introduced students to Git and GitHub, and explained the general workflow of the class. 
 We had students fork the class repository to their own IU-Enterprise GitHub account.
-Se then had students clone that repository onto their classroom desktop.
+We then had students clone that repository onto their classroom desktop.
 
-In the second week, we introduced students program R and the R Studio development environment. Students completed basic calculations, data manipulation, and introductory data visualization and statistics, including correlation, regression, and ANOVA.
+In the second week, we introduced students to programming in R and the R Studio development environment. 
+Students completed basic calculations, data manipulation, and introductory data visualization and statistics, including correlation, regression, and ANOVA.
 
 #### Contents
 * **Course Goals:** Computer Setup; Intro to Git. This can be completed once weeks 1 and 2 are split
@@ -44,7 +45,7 @@ They estimated coverage, richness, evenness, and diversity, and conducted rarefa
 Knitting generates a .pdf of their work.
 	
 * **alpha_exercise.pdf:** Output of alpha_exercise.Rmd. 
-This is the file that students turned-in via submitting a pull request on GitHub.
+This is the file that students turned in via submitting a pull request on GitHub.
 	
 * **alpha_handout.Rmd:** Generates a handout that was given to students to guide them through the in-class assignment, which includes example code.
 	
@@ -73,7 +74,7 @@ With this information, students learned how to visualize data (heatmaps, cluster
 Knitting generates a .pdf of their work.
 	
 * **beta_exercise.pdf:** Output of beta_exercise.Rmd.
-This is the file that students turned-in via submitting a pull request on GitHub.
+This is the file that students turned in via submitting a pull request on GitHub.
 	
 * **beta_handout.Rmd:** Generates a handout that was given to students to guide them through the in-class assignment, which includes example code.
 	
@@ -89,7 +90,7 @@ This lesson also introduced students to the primary biogeographical/macroecologi
 	
 #### Contents
 * **BrownCoData:**
-	* *20130801_PondDataMod.csv* : Geographical and Environmental data for refuge 51 ponds sampled within the Brown County, Yellowwood State Forest, and Hoosier National Forest areas during August, 2013.
+	* *20130801_PondDataMod.csv* : Geographical and Environmental data for refuge ponds (n = 51) sampled within the Brown County, Yellowwood State Forest, and Hoosier National Forest areas during August, 2013.
 	* *SiteBySpecies.csv* : File containing the abundances of bacterial taxa (DNA and cDNA) across the 51 refuge ponds.
 	* *pond.JPG* : An image of one of the refuge ponds that can be imported into the exercise handout.
 
@@ -142,7 +143,7 @@ Last, student leanred how to map trait onto trees and test for phylogenetic sign
 Knitting generates a .pdf of their work.
 	
 * **PhyloTraits_exercise.pdf**: Output of PhyloTraits_exercise.Rmd.
-This is the file that students turned-in via submitting a pull request on GitHub.
+This is the file that students turned in via submitting a pull request on GitHub.
 	
 * **PhyloTraits_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 
@@ -157,8 +158,8 @@ In addition, students learned how to evaluate the contribution of phylogeny to g
 
 #### Contents
 * **BrownCoData:**
-	* *20130801_PondDataMod.csv* : Geographical and Environmental data for refuge 51 ponds sampled within the Brown County, Yellowwood State Forest, and Hoosier National Forest areas during August, 2013.
-	* *SiteBySpecies.csv* : File containing the abundances of bacterial taxa (DNA and cDNA) across the 51 refuge ponds.
+	* *20130801_PondDataMod.csv* : Geographical and Environmental data for refuge ponds sampled within the Brown County, Yellowwood State Forest, and Hoosier National Forest areas during August, 2013.
+	* *SiteBySpecies.csv* : File containing the abundances of bacterial taxa (DNA and cDNA) across the refuge ponds.
 	* *pond.JPG* : An image of one of the refuge ponds that can be imported into the exercise handout. 
 	
 * **bin:**
@@ -179,7 +180,7 @@ In addition, students learned how to evaluate the contribution of phylogeny to g
 Knitting generates a .pdf of their work.
 	
 * **PhyloCom_exercise.pdf**: Output of PhyloCom_exercise.Rmd
-This is the file that students turned-in via submitting a pull request on GitHub.
+This is the file that students turned in via submitting a pull request on GitHub.
 	
 * **PhyloCom_handout.Rmd**: Generates handout .pdf that can be given to student and provides example code while guiding them through the exercise.
 	
