@@ -5,20 +5,20 @@ date: "February 10, 2015"
 output: pdf_document
 ---
 
-## 4.) IMPORTANT TERMS
-Because you may not be familiar with geographical systems and spatial analyses, we provide a few key terms to help you quickly get up to speed.
+## A SHORT GLOSSARY OF BASIC TERMS
+Because you may not be familiar with geographical systems and spatial analyses, we provide general definitions for a few key terms to help you quickly get up to speed.
 
-**Spatial:** Relating to one or more dimensions of space resulting in aspects of distance, area, and volume
+**Spatial:** Relating to one or more dimensions of space; aspects of distance, area, and volume.
 
-**Geographical:** Relating to physical, environmental, and biological features that closely follow spatial patterns 
+**Geographical:** Relating to a spatial context with respect to a location on Earth; e.g., geographical coordinates for the corners of a 10 hectare plot.
 
-**Scale:** The resolution that characterizes an observation or study, and that results from a relationship between extent and grain
+**Scale:** The resolution that characterizes an observation or study; results from a relationship between extent and grain.
 
-**Extent:** The greatest distance considered in an observation or study
+**Extent:** The greatest distance considered in an observation or study; e.g. 70m x 70m plot
 
-**Grain:** The smallest or primary unit by which extent the is measured
+**Grain:** The smallest or primary unit by which extent the is measured; e.g. 1m x 1m
 
-**GIS:** Geographical Information Systems. 
+**GIS:** Acronym for Geographical Information Systems. In general, computer-based technologies that allow a system, area, or feature to be located and studied within its geographical environment.
 
 **Shapefile:** One of two primary file formats for working with geographical data. In short, shapefiles generally store information that is displayed as polygons, e.g. habitat patches.
 
