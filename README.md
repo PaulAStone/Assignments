@@ -115,7 +115,7 @@ Knitting generates a .pdf of their work.
 	
 * **GeographicalEcology.pdf**: pdf version of GeographicalEcology_Handout.Rmd.
 	
-* **Glossary.Rmd** : 
+* **Glossary.Rmd** : Contains a few basic terms for those with little-to-no experience with spatial or geographical jargon. 
 
 ### PhyloTraits: Phylogenetic Traits
 Week 6 introduced concepts and methods of phylogenetic diversity. 
